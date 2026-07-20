@@ -1,5 +1,13 @@
 [
   {
+    "timestamp": "2026-07-20T10:22:20.703906",
+    "type": "core_upgrade",
+    "title": "Git Repository Re-init & Migration",
+    "description": "Cleaned up nested git configurations and successfully initialized and pushed workspace to a new GitHub remote.",
+    "reason": "Requested by user to point to new git remote and clean up old setup.",
+    "impact": "The workspace is now clean and pushed to the new remote at gharvanta-real/Hekki-GPT"
+  },
+  {
     "timestamp": "2026-07-20T10:18:37.930303",
     "type": "core_upgrade",
     "title": "Fix Image Card DOM Order \u2014 True Overlay Header",
