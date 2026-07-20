@@ -1,0 +1,54 @@
+{
+  "name": "hekki-desktop",
+  "version": "1.0.0",
+  "description": "Hekki AI Personal Assistant Desktop App",
+  "main": "electron_main.js",
+  "scripts": {
+    "start": "electron .",
+    "build:backend": "python build_backend.py",
+    "build:app": "electron-builder",
+    "build": "npm run build:backend && npm run build:app"
+  },
+  "devDependencies": {
+    "electron": "^31.0.0",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.hekki.assistant",
+    "productName": "Hekki",
+    "icon": "assets/hekki.ico",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "electron_main.js",
+      "preload.js",
+      "package.json",
+      "splash.html",
+      "assets/**/*",
+      "node_modules/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "backend_dist",
+        "to": "backend",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "assets/hekki.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Hekki"
+    }
+  }
+}

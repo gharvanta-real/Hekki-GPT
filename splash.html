@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hekki Loading</title>
+    <style>
+        /* CSS Reset & Variable Setup */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg-color: #ffffff;
+            --logo-filter: none;
+            --progress-bg: #e3e2de;
+            --progress-fill: #191919;
+            --transition-speed: 0.3s;
+        }
+
+        body.dark {
+            --bg-color: #0a0a0a;
+            --progress-bg: #222222;
+            --progress-fill: #ffffff;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-color);
+            transition: background-color var(--transition-speed) ease;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        /* Container & Animation Layout */
+        .boot-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: scale(0.97);
+            animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .logo-wrapper {
+            margin-bottom: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo {
+            width: 110px;
+            height: 110px;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+        }
+
+        /* Apple-like Progress Bar */
+        .progress-track {
+            width: 220px;
+            height: 4px;
+            background-color: var(--progress-bg);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background-color: var(--progress-fill);
+            border-radius: 4px;
+            /* Custom transition for ultra smooth flow */
+            transition: width 0.4s cubic-bezier(0.1, 0.8, 0.3, 1);
+        }
+
+        /* Keyframe Animations */
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .fade-out {
+            opacity: 0;
+            transform: scale(0.97);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="boot-container" id="boot-container">
+        <div class="logo-wrapper">
+            <!-- Relative to root folder where electron_main.js lives -->
+            <img src="assets/hekki.png" class="logo" alt="Hekki Logo" id="logo-img">
+        </div>
+        <div class="progress-track">
+            <div class="progress-fill" id="progress-bar"></div>
+        </div>
+    </div>
+
+    <script>
+        // Apply Light/Dark Theme dynamically from query params
+        const params = new URLSearchParams(window.location.search);
+        const theme = params.get('theme') || 'dark';
+        if (theme === 'dark') {
+            document.body.classList.add('dark');
+        }
+
+        const progressBar = document.getElementById('progress-bar');
+        const container = document.getElementById('boot-container');
+
+        let currentProgress = 0;
+        let animationFrameId;
+
+        // Custom slow-crawling simulated progress bar
+        function animateBootProgress() {
+            // Fast transition initially, then slow down asymptotically towards 88%
+            if (currentProgress < 30) {
+                currentProgress += 1.8;
+            } else if (currentProgress < 65) {
+                currentProgress += 0.8;
+            } else if (currentProgress < 85) {
+                currentProgress += 0.25;
+            } else if (currentProgress < 90) {
+                currentProgress += 0.05;
+            }
+
+            progressBar.style.width = currentProgress + '%';
+
+            if (currentProgress < 90) {
+                // Continue simulation loop
+                setTimeout(animateBootProgress, 50);
+            }
+        }
+
+        // Start loading simulation
+        setTimeout(animateBootProgress, 100);
+
+        // Called by Electron main process once the uvicorn backend server responds with 200
+        function completeProgress() {
+            // Cancel any pending simulation
+            currentProgress = 100;
+            progressBar.style.width = '100%';
+            
+            // Wait for completion animation, then fade out screen content
+            setTimeout(() => {
+                container.classList.add('fade-out');
+            }, 300);
+        }
+    </script>
+</body>
+</html>

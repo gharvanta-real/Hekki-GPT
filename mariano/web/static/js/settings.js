@@ -1,0 +1,270 @@
+/* === SETTINGS MODULE — Hekki ===
+ * All settings are real and persisted.
+ * Backend fields  → /api/settings (GET + POST)
+ * Client-only     → localStorage (theme only)
+ */
+
+export function initSettings(setGreetingCallback) {
+  const $ = id => document.getElementById(id);
+  const modal   = $('settings-modal');
+  const openBtn = $('btn-open-settings');
+  const closeBtn = $('btn-close-settings');
+  if (!modal) return;
+
+  // ── Open / Close ─────────────────────────────────────────────────────
+  const openModal = () => {
+    modal.classList.remove('hidden');
+    loadAllSettings();
+    loadActiveSkills();
+  };
+  openBtn?.addEventListener('click', openModal);
+  $('btn-user-settings')?.addEventListener('click', openModal);
+
+  closeBtn?.addEventListener('click', () => modal.classList.add('hidden'));
+  modal.addEventListener('click', e => { if (e.target === modal) modal.classList.add('hidden'); });
+  window.addEventListener('keydown', e => { if (e.key === 'Escape') modal.classList.add('hidden'); });
+
+  // ── Nav switching ─────────────────────────────────────────────────────
+  modal.querySelectorAll('.modal-nav-item').forEach(btn => {
+    btn.addEventListener('click', () => {
+      modal.querySelectorAll('.modal-nav-item').forEach(b => b.classList.remove('active'));
+      modal.querySelectorAll('.settings-section').forEach(s => s.classList.remove('active'));
+      btn.classList.add('active');
+      const sec = $('section-' + btn.dataset.section);
+      if (sec) sec.classList.add('active');
+    });
+  });
+
+  // ── Save indicator flash ──────────────────────────────────────────────
+  function flashSaved() {
+    const ind = $('settings-save-indicator');
+    if (!ind) return;
+    ind.style.opacity = '1';
+    setTimeout(() => { ind.style.opacity = '0'; }, 2000);
+  }
+
+  // ── Theme (localStorage & backend) ────────────────────────────────────
+  const savedTheme = localStorage.getItem('hekki_theme') || 'dark';
+  applyTheme(savedTheme);
+  modal.querySelectorAll('.theme-opt').forEach(b => {
+    b.classList.toggle('active', b.dataset.theme === savedTheme);
+    b.addEventListener('click', () => {
+      modal.querySelectorAll('.theme-opt').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+      localStorage.setItem('hekki_theme', b.dataset.theme);
+      
+      if (window._applyThemeGlobal) {
+        window._applyThemeGlobal(b.dataset.theme, document.getElementById('btn-user-theme'));
+      } else {
+        applyTheme(b.dataset.theme);
+      }
+
+      // Notify Electron to update the native Windows titlebar colour
+      if (window.electronAPI?.setTheme) {
+        window.electronAPI.setTheme(b.dataset.theme);
+      }
+      
+      // Sync theme to backend settings
+      fetch('/api/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ theme: b.dataset.theme })
+      }).catch(err => console.error("Failed to sync theme settings to backend:", err));
+
+      // sync titlebar icon
+      const iconEl = $('btn-theme')?.querySelector('[data-lucide]');
+      if (iconEl) {
+        let lucideName = 'moon';
+        if (b.dataset.theme === 'light') lucideName = 'sun';
+        else if (b.dataset.theme === 'oled') lucideName = 'zap';
+        iconEl.setAttribute('data-lucide', lucideName);
+        if (window.lucide) lucide.createIcons();
+      }
+    });
+  });
+
+  function applyTheme(theme) {
+    document.body.classList.remove('dark', 'oled');
+    if (theme === 'dark') document.body.classList.add('dark');
+    else if (theme === 'oled') document.body.classList.add('oled');
+  }
+
+  // ── API key visibility toggle ─────────────────────────────────────────
+  $('btn-toggle-key-visibility')?.addEventListener('click', () => {
+    const inp = $('settings-gemini-key');
+    if (!inp) return;
+    inp.type = inp.type === 'password' ? 'text' : 'password';
+    const icon = $('btn-toggle-key-visibility').querySelector('[data-lucide]');
+    if (icon) {
+      icon.setAttribute('data-lucide', inp.type === 'password' ? 'eye' : 'eye-off');
+      if (window.lucide) lucide.createIcons();
+    }
+  });
+
+  // ── Load all settings from backend ───────────────────────────────────
+  async function loadAllSettings() {
+    try {
+      const res = await fetch('/api/settings');
+      if (!res.ok) throw new Error('fetch failed');
+      const cfg = await res.json();
+
+      // Identity
+      const userName = $('settings-user-name');
+      const userInstructions = $('settings-user-instructions');
+      if (userName) userName.value = cfg.user_name || '';
+      if (userInstructions) userInstructions.value = cfg.user_instructions || '';
+
+      // Also sync greeting in main view
+      if (cfg.user_name && setGreetingCallback) setGreetingCallback(cfg.user_name);
+
+      // API key
+      const gkey = $('settings-gemini-key');
+      if (gkey) {
+        gkey.value = cfg.gemini_api_key || '';
+        updateKeyStatus(cfg.gemini_api_key);
+      }
+
+      // Model
+      const modelSel = $('settings-hekki-model');
+      if (modelSel && cfg.hekki_model) {
+        // Try to match existing option, otherwise add it
+        let found = false;
+        for (let opt of modelSel.options) {
+          if (opt.value === cfg.hekki_model) { opt.selected = true; found = true; break; }
+        }
+        if (!found) {
+          const opt = new Option(cfg.hekki_model, cfg.hekki_model, true, true);
+          modelSel.add(opt);
+        }
+      }
+
+      // Reasoning mode
+      const reasonSel = $('settings-reasoning-mode');
+      if (reasonSel && cfg.reasoning_mode) {
+        for (let opt of reasonSel.options) {
+          if (opt.value === cfg.reasoning_mode) { opt.selected = true; break; }
+        }
+      }
+
+      // Ollama
+      const useOllama = $('settings-use-ollama');
+      const ollamaModel = $('settings-ollama-model');
+      const ollamaUrl = $('settings-ollama-url');
+      if (useOllama) useOllama.checked = !!cfg.use_ollama;
+      if (ollamaModel) ollamaModel.value = cfg.ollama_model || '';
+      if (ollamaUrl) ollamaUrl.value = cfg.ollama_base_url || 'http://localhost:11434';
+
+    } catch (err) {
+      console.error('[Settings] Load failed:', err);
+    }
+  }
+
+  function updateKeyStatus(key) {
+    const statusEl = $('api-key-status');
+    if (!statusEl) return;
+    if (key && key.length > 8) {
+      statusEl.textContent = `✓ Key set (${key.slice(0, 6)}...)`;
+      statusEl.style.color = '#16a34a';
+    } else {
+      statusEl.textContent = 'No key configured. Hekki cannot respond without a Gemini API key.';
+      statusEl.style.color = '#dc2626';
+    }
+  }
+
+  // ── Save to backend ───────────────────────────────────────────────────
+  async function save(payload) {
+    try {
+      await fetch('/api/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      flashSaved();
+      if (window.updateModelPills) window.updateModelPills();
+    } catch (err) {
+      console.error('[Settings] Save failed:', err);
+    }
+  }
+
+  // ── Identity — explicit Save button ───────────────────────────────────
+  $('btn-save-identity')?.addEventListener('click', () => {
+    const name = $('settings-user-name')?.value.trim() || '';
+    const instructions = $('settings-user-instructions')?.value.trim() || '';
+    save({ user_name: name, user_instructions: instructions });
+    if (setGreetingCallback) setGreetingCallback(name);
+  });
+
+  // ── API key — on blur / Enter ─────────────────────────────────────────
+  $('settings-gemini-key')?.addEventListener('change', e => {
+    const key = e.target.value.trim();
+    save({ gemini_api_key: key });
+    updateKeyStatus(key);
+  });
+
+  // ── Model — on change ────────────────────────────────────────────────
+  $('settings-hekki-model')?.addEventListener('change', e => {
+    save({ hekki_model: e.target.value });
+  });
+
+  // ── Reasoning mode — on change ────────────────────────────────────────
+  $('settings-reasoning-mode')?.addEventListener('change', e => {
+    save({ reasoning_mode: e.target.value });
+  });
+
+  // ── Ollama — on change ────────────────────────────────────────────────
+  $('settings-use-ollama')?.addEventListener('change', e => {
+    save({ use_ollama: e.target.checked });
+  });
+  $('settings-ollama-model')?.addEventListener('change', e => {
+    save({ ollama_model: e.target.value.trim() });
+  });
+  $('settings-ollama-url')?.addEventListener('change', e => {
+    save({ ollama_base_url: e.target.value.trim() });
+  });
+
+  // ── Skills grid ───────────────────────────────────────────────────────
+  async function loadActiveSkills() {
+    const grid = $('skills-grid');
+    if (!grid) return;
+    grid.innerHTML = '<div style="color:var(--text-3);grid-column:1/-1;text-align:center;padding:20px">Loading skills...</div>';
+    try {
+      const res = await fetch('/api/skills');
+      if (!res.ok) throw new Error('fetch failed');
+      const skills = await res.json();
+      grid.innerHTML = '';
+      if (!skills || skills.length === 0) {
+        grid.innerHTML = '<div style="color:var(--text-3);grid-column:1/-1;text-align:center;padding:20px">No active skills registered.</div>';
+        return;
+      }
+      skills.forEach(s => {
+        const name = s.name.toLowerCase();
+        const iconMap = {
+          search: 'search', web: 'globe', scrape: 'globe', code: 'code', run: 'code',
+          stock: 'trending-up', news: 'newspaper', system: 'cpu', info: 'cpu',
+          excel: 'table', weather: 'cloud-sun', file: 'folder', pdf: 'file-text',
+          calc: 'calculator', translate: 'languages', wiki: 'book-open',
+          research: 'microscope', briefing: 'sun', morning: 'sun',
+          reminder: 'bell', alarm: 'bell', image: 'image', vision: 'image',
+          evolver: 'aperture', ui: 'layout', generate: 'wand-sparkles',
+        };
+        let iconName = 'compass';
+        for (const [key, icon] of Object.entries(iconMap)) {
+          if (name.includes(key)) { iconName = icon; break; }
+        }
+        const card = document.createElement('div');
+        card.className = 'skill-card';
+        card.innerHTML = `
+          <i data-lucide="${iconName}" class="skill-icon"></i>
+          <div class="skill-name">${s.name.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}</div>
+          <div class="skill-ver">v${s.version || '1.0.0'}</div>
+          <div class="skill-badge active-badge">Active</div>
+        `;
+        grid.appendChild(card);
+      });
+      if (window.lucide) lucide.createIcons();
+    } catch (err) {
+      console.error('[Skills] Load failed:', err);
+      grid.innerHTML = '<div style="color:var(--text-3);grid-column:1/-1;text-align:center;padding:20px">Error loading skills.</div>';
+    }
+  }
+}

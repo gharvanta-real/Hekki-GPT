@@ -1,0 +1,417 @@
+/* =====================================================
+   SKILLS PAGE — CSS MODULE
+   Scope: #skills-page-wrapper and its children only.
+   ===================================================== */
+
+#skills-page-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  height: 100%;
+  background: var(--bg); /* Changed from var(--card) to match app bg */
+  color: var(--text);
+  font-family: var(--font);
+  position: relative; /* support absolute positioned overlays */
+}
+
+/* Premium smooth text fadeout overlay under titlebar */
+.skills-top-fadeout {
+  display: none;
+}
+
+/* ── HEADER / CONTROLS ──────────────────────────────── */
+
+.skills-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  gap: 16px;
+  flex-shrink: 0;
+  max-width: 1000px;
+  width: 100%;
+  margin: 0 auto; /* Center the header content */
+}
+
+.skills-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.skills-heading {
+  font-size: var(--fs-2xl);    /* 18px */
+  font-weight: 600;
+  color: var(--text);
+}
+
+.skills-subheading {
+  font-size: var(--fs-sm);     /* 12px */
+  color: var(--text-3);
+}
+
+.skills-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.skills-search-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.skills-search-wrapper .search-icon {
+  position: absolute;
+  left: 10px;
+  width: 14px;
+  height: 14px;
+  color: var(--text-3);
+  pointer-events: none;
+}
+
+#skills-search-input {
+  height: 28px;
+  width: 180px;
+  padding: 0 8px 0 30px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-size: var(--fs-sm);     /* 12px */
+  font-family: var(--font);
+  outline: none;
+  transition: all 0.12s ease;
+}
+
+#skills-search-input:focus {
+  border-color: var(--text-2);
+  width: 220px;
+}
+
+.skills-btn {
+  height: 28px;
+  padding: 0 12px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-2);
+  font-size: var(--fs-sm);     /* 12px */
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: var(--shadow);
+  transition: all 0.12s ease;
+  user-select: none;
+}
+
+.skills-btn:hover {
+  background: var(--hover);
+  color: var(--text);
+  border-color: var(--text-3);
+}
+
+.skills-btn.primary {
+  background: var(--text);
+  color: var(--bg);
+  border-color: var(--text);
+}
+
+.skills-btn.primary:hover {
+  opacity: 0.9;
+}
+
+.skills-btn.danger {
+  color: #dc2626;
+  border-color: var(--border);
+}
+
+.skills-btn.danger:hover {
+  background: #fef2f2;
+  border-color: #fca5a5;
+}
+
+body.dark .skills-btn.danger:hover {
+  background: rgba(220, 38, 38, 0.1);
+  border-color: rgba(220, 38, 38, 0.3);
+}
+
+.skills-btn .lucide {
+  width: 13px;
+  height: 13px;
+}
+
+/* ── BODY & LIST VIEW ───────────────────────────────── */
+
+.skills-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  max-width: 1000px;
+  width: 100%;
+  margin: 0 auto; /* Center the body content */
+}
+
+.skills-list-view {
+  display: flex;
+  flex-direction: column;
+}
+
+.skills-row-header {
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-3);
+  font-size: var(--fs-xs);     /* 11px */
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+
+.skills-row {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  transition: background-color 0.1s;
+  gap: 12px;
+}
+.skills-row:hover {
+  background-color: var(--hover);
+}
+
+.skills-row.disabled-row {
+  opacity: 0.65;
+}
+
+/* Columns */
+.skills-col-info {
+  flex: 2;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.skills-col-tags {
+  width: 200px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.skills-col-metrics {
+  width: 250px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  color: var(--text-2);
+}
+
+.skills-col-action {
+  width: 60px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+/* Row elements */
+.skills-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.skills-icon-wrapper {
+  width: 25px; /* increased background circle size */
+  height: 25px; /* increased background circle size */
+  border-radius: 50%; /* circular icon background */
+  background: var(--hover);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-2);
+}
+.skills-icon-wrapper i,
+.skills-icon-wrapper svg {
+  width: 12px !important;
+  height: 12px !important;
+}
+
+.skills-name-text {
+  font-size: var(--fs-base);   /* 13px */
+  font-weight: 600;
+  color: var(--text);
+}
+
+.skills-ver-text {
+  font-size: var(--fs-xs);     /* 11px */
+  color: var(--text-3);
+}
+
+.skills-status-badge {
+  font-size: var(--fs-xs);     /* 11px */
+  font-weight: 600;
+  padding: 1px 5px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: .02em;
+  border: 1px solid var(--border);
+}
+
+.skills-status-badge.active {
+  border-color: rgba(22, 163, 74, 0.4);
+  background: rgba(22, 163, 74, 0.05);
+  color: var(--green);
+}
+
+.skills-status-badge.inactive {
+  border-color: var(--border);
+  background: var(--hover);
+  color: var(--text-3);
+}
+
+.skills-desc-text {
+  font-size: var(--fs-sm);     /* 12px */
+  color: var(--text-3);
+  margin-top: 4px;
+  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 95%;
+}
+
+/* Tags in row */
+.skills-tags-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.skill-row-tag {
+  font-size: 10px; /* pill font size */
+  color: var(--text-2);
+  background: var(--sidebar-bg); /* secondary background color */
+  border: none; /* borderless pill */
+  padding: 3px 9px; /* balanced padding for borderless style */
+  border-radius: 20px; /* pill/capsule shape */
+  font-weight: 500;
+}
+body.dark .skill-row-tag {
+  background: #1c1c1c;
+}
+
+/* Metrics row details */
+.metric-segment strong {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.metric-segment strong.rate-good {
+  color: var(--green);
+}
+.metric-segment strong.rate-warn {
+  color: var(--orange);
+}
+.metric-segment strong.rate-error {
+  color: #dc2626;
+}
+
+.metric-sep {
+  color: var(--text-3);
+  margin: 0 5px;
+}
+
+/* Switch Toggle (Boxy Outline shape) */
+.skills-toggle {
+  position: relative;
+  display: inline-block;
+  width: 34px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.skills-toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.skills-toggle-track {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: var(--border);
+  border-radius: 4px; /* Boxy */
+  transition: background-color 0.15s ease;
+}
+
+.skills-toggle-track::before {
+  position: absolute;
+  content: "";
+  height: 14px;
+  width: 14px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  border-radius: 2px; /* Boxy */
+  transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.skills-toggle input:checked + .skills-toggle-track {
+  background-color: var(--blue);
+}
+
+body.dark .skills-toggle input:checked + .skills-toggle-track {
+  background-color: #3b82f6;
+}
+
+.skills-toggle input:checked + .skills-toggle-track::before {
+  transform: translateX(14px);
+}
+
+/* ── EMPTY / LOADING STATE ──────────────────────────── */
+
+.skills-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 250px;
+  color: var(--text-3);
+  gap: 8px;
+  text-align: center;
+}
+
+.skills-empty-icon {
+  font-size: 32px;
+  color: var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+
+.skills-empty-icon .lucide {
+  width: 44px;
+  height: 44px;
+  stroke-width: 1.2px;
+}
+
+.skills-empty-icon .animate-spin {
+  animation: spin 1.2s linear infinite;
+}
+
+.skills-empty-text {
+  font-size: var(--fs-base);   /* 13px */
+  font-weight: 500;
+  color: var(--text-2);
+}

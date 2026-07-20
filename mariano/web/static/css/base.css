@@ -1,0 +1,158 @@
+/* === BASE VARIABLES & RESET === */
+:root {
+  --bg:          #F8F8F6; /* warm greyish white */
+  --card:        #ffffff;
+  --sidebar-bg:  #F8F8F6; 
+  --border:      #E8E8E6; 
+  --hover:       #EEEEEC;
+
+  --text:        #191919;
+  --text-primary: var(--text);
+  --text-2:      #525250;
+  --text-secondary: var(--text-2);
+  --text-3:      #8e8d89;
+
+  --orange:      #d97706;
+  --blue:        #2563eb;
+  --green:       #16a34a;
+
+  --font:        "Inter", -apple-system-body, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --font-sans:   var(--font);
+  --font-serif:  var(--font);
+  --font-mono:   ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --font-ai:     var(--font);
+
+  /* ── PREMIUM TYPE SCALE (12 – 26 px) ── */
+  --fs-xs:   12px;   /* timestamps, badges, meta          */
+  --fs-sm:   13px;   /* secondary text, code, tool steps  */
+  --fs-base: 14px;   /* body default, nav items, labels   */
+  --fs-md:   15px;   /* primary content, chat bubbles     */
+  --fs-lg:   16px;   /* AI responses, inputs              */
+  --fs-xl:   18px;   /* nav section titles                */
+  --fs-2xl:  22px;   /* sub-headings, h2                  */
+  --fs-3xl:  26px;   /* page headings, h1                 */
+
+  --radius-sm:   6px;
+  --radius-md:   10px;
+  --radius-lg:   16px;
+  --radius-xl:   24px;
+
+  --shadow:      0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md:   0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* Dark mode overrides */
+body.dark {
+  --bg:          #1F1F1E; /* precise dark theme color requested */
+  --card:        #2C2C2B; /* slightly lighter for cards/inputs */
+  --sidebar-bg:  #1F1F1E;
+  --border:      #333332;
+  --hover:       #2A2A29;
+
+  --text:        #e8e6e3; /* warm off-white text */
+  --text-primary: var(--text);
+  --text-2:      #9d9b96;
+  --text-secondary: var(--text-2);
+  --text-3:      #757470;
+
+  --shadow:      none;
+  --shadow-md:   none;
+}
+
+/* OLED true black overrides */
+body.oled {
+  --bg:          #000000; /* true black background */
+  --card:        #0E0E0E; /* extremely dark gray for cards/inputs */
+  --sidebar-bg:  #000000;
+  --border:      #1F1F1F;
+  --hover:       #181818;
+
+  --text:        #e8e6e3;
+  --text-primary: var(--text);
+  --text-2:      #9d9b96;
+  --text-secondary: var(--text-2);
+  --text-3:      #757470;
+
+  --shadow:      none;
+  --shadow-md:   none;
+}
+
+/* === RESET === */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: var(--fs-base);
+  line-height: 1.7; /* Increased from 1.6 for text-to-text spacing */
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  letter-spacing: 0.025em; /* Increased from 0.01em for alphabet-to-alphabet spacing */
+  word-spacing: 0.05em;    /* Added for word-to-word spacing */
+}
+
+/* Typography Enhancements for Arial */
+h1, h2, h3, h4, .heading {
+  letter-spacing: 0.01em !important;
+}
+
+code, pre, .mono, .timestamp, .action-time {
+  letter-spacing: 0.03em !important;
+}
+
+a { color: inherit; text-decoration: none; }
+input, textarea, select, button { 
+  font-family: var(--font); 
+  letter-spacing: inherit; 
+  word-spacing: inherit; 
+}
+
+/* === KEYFRAMES === */
+@keyframes spin    { to { transform: rotate(360deg); } }
+@keyframes fadeIn  { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@keyframes pulse   { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
+
+/* === SCROLLBAR === */
+::-webkit-scrollbar       { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-3); }
+
+.hidden {
+  display: none !important;
+}
+
+/* === SKELETON SHIMMER LOADING === */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(90deg, var(--hover) 25%, var(--border) 50%, var(--hover) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite linear;
+}
+
+.skeleton-circle {
+  border-radius: 50%;
+}
+
+.skeleton-bar {
+  border-radius: 4px;
+  height: 12px;
+  width: 100%;
+  margin: 6px 0;
+}

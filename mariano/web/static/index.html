@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+
+<!-- SETTINGS MODAL -->
+<div id="settings-modal" class="modal-overlay hidden">
+  <div class="modal-box">
+    <!-- Left nav -->
+    <div class="modal-nav">
+      <div style="display:flex;align-items:center;gap:10px;padding:12px 14px 8px;">
+        <img src="/static/hekki.png" alt="Hekki" style="width:28px;height:28px;border-radius:8px;">
+        <span style="font-weight:600;font-size:15px;color:var(--text-primary);">Hekki</span>
+      </div>
+      <div class="modal-search">
+        <i data-lucide="search" style="color:var(--text-3)"></i>
+        <input type="text" placeholder="Search settings" id="settings-search">
+      </div>
+      <div class="nav-group-label">General</div>
+      <button class="modal-nav-item active" data-section="general">
+        <i class="mi" data-lucide="user"></i> Identity
+      </button>
+      <button class="modal-nav-item" data-section="appearance">
+        <i class="mi" data-lucide="palette"></i> Appearance
+      </button>
+      <div class="nav-group-label">AI & Model</div>
+      <button class="modal-nav-item" data-section="account">
+        <i class="mi" data-lucide="key"></i> API &amp; Model
+      </button>
+      <div class="nav-group-label">Tools</div>
+      <button class="modal-nav-item" data-section="skills">
+        <i class="mi" data-lucide="compass"></i> Skills
+      </button>
+    </div>
+
+    <!-- Right content -->
+    <div class="modal-content">
+      <button class="modal-close" id="btn-close-settings"><i data-lucide="x"></i></button>
+
+      <!-- Save indicator -->
+      <div id="settings-save-indicator" style="position:absolute;top:16px;right:52px;font-size:11px;color:#16a34a;opacity:0;transition:opacity 0.5s;display:flex;align-items:center;gap:5px;">
+        <i data-lucide="check-circle" style="width:13px;height:13px;"></i> Saved
+      </div>
+
+      <!-- IDENTITY -->
+      <section class="settings-section active" id="section-general">
+        <h2 class="section-title">Identity</h2>
+        <p class="section-sub">How Hekki addresses you and understands your context.</p>
+        <div class="settings-row border-b">
+          <span class="row-label">Your name</span>
+          <input class="settings-input" type="text" id="settings-user-name" placeholder="e.g. Anshu" style="width:180px;">
+        </div>
+        <h2 class="section-title" style="margin-top:28px">Custom Instructions</h2>
+        <p class="section-sub">Hekki will follow these rules in every conversation — tone, style, language, constraints.</p>
+        <textarea class="settings-textarea" id="settings-user-instructions" placeholder="e.g. Always reply in Hinglish. Be concise. Never use bullet points unless asked."></textarea>
+        <div style="display:flex;justify-content:flex-end;margin-top:10px;">
+          <button id="btn-save-identity" style="padding:7px 18px;background:var(--text-primary);color:var(--bg);border:none;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;">Save</button>
+        </div>
+      </section>
+
+      <!-- APPEARANCE -->
+      <section class="settings-section" id="section-appearance">
+        <h2 class="section-title">Appearance</h2>
+        <p class="section-sub">Visual theme of the Hekki interface.</p>
+        <div class="settings-row border-b">
+          <span class="row-label">Theme</span>
+          <div class="theme-toggle-group">
+            <button class="theme-opt" data-theme="light" title="Light Mode"><i data-lucide="sun"></i></button>
+            <button class="theme-opt" data-theme="dark" title="Dark Mode"><i data-lucide="moon"></i></button>
+            <button class="theme-opt" data-theme="oled" title="OLED Black"><i data-lucide="zap"></i></button>
+          </div>
+        </div>
+      </section>
+
+      <!-- API & MODEL -->
+      <section class="settings-section" id="section-account">
+        <h2 class="section-title">Gemini API Key</h2>
+        <p class="section-sub">Required to use Hekki with Gemini. Get your key from <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:var(--text-primary);text-decoration:underline;">Google AI Studio &rarr;</a></p>
+        <div class="settings-row border-b" style="flex-direction:column;align-items:flex-start;gap:8px;">
+          <div style="display:flex;gap:8px;align-items:center;width:100%;">
+            <input class="settings-input" id="settings-gemini-key" type="password" placeholder="AIza..." style="flex:1;font-family:monospace;">
+            <button id="btn-toggle-key-visibility" style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text-2);cursor:pointer;font-size:12px;">
+              <i data-lucide="eye" style="width:14px;height:14px;pointer-events:none;"></i>
+            </button>
+          </div>
+          <div id="api-key-status" style="font-size:11px;color:var(--text-3);"></div>
+        </div>
+
+        <h2 class="section-title" style="margin-top:28px">Gemini Model</h2>
+        <p class="section-sub">Which Gemini model Hekki uses for responses.</p>
+        <div class="settings-row border-b">
+          <span class="row-label">Active Model</span>
+          <select class="settings-select" id="settings-hekki-model">
+            <option value="gemini-2.5-flash">Gemini 2.5 Flash (Fast)</option>
+            <option value="gemini-2.5-pro">Gemini 2.5 Pro (Smart)</option>
+            <option value="gemini-3.1-flash-lite">Gemini 3.1 Flash Lite</option>
+            <option value="gemini-3.1-flash">Gemini 3.1 Flash</option>
+          </select>
+        </div>
+
+        <h2 class="section-title" style="margin-top:28px">Reasoning Mode</h2>
+        <p class="section-sub">How deeply Hekki thinks before responding.</p>
+        <div class="settings-row border-b">
+          <span class="row-label">Mode</span>
+          <select class="settings-select" id="settings-reasoning-mode">
+            <option value="fast">Fast — Quick, direct answers</option>
+            <option value="normal">Normal — Balanced</option>
+            <option value="pro">Pro — Research and deep analysis</option>
+            <option value="thinking">Thinking — Full chain-of-thought</option>
+          </select>
+        </div>
+
+        <h2 class="section-title" style="margin-top:28px">Offline Model (Ollama)</h2>
+        <p class="section-sub">Run Hekki offline using a local Ollama model. No API key needed when enabled.</p>
+        <div class="settings-row border-b">
+          <span class="row-label">Use Ollama</span>
+          <label class="toggle-switch"><input type="checkbox" id="settings-use-ollama"><span class="toggle-track"></span></label>
+        </div>
+        <div class="settings-row border-b">
+          <span class="row-label">Ollama Model</span>
+          <input class="settings-input" id="settings-ollama-model" type="text" placeholder="e.g. qwen, llama3" style="width:160px;">
+        </div>
+        <div class="settings-row border-b">
+          <span class="row-label">Ollama API URL</span>
+          <input class="settings-input" id="settings-ollama-url" type="text" placeholder="http://localhost:11434" style="width:220px;">
+        </div>
+      </section>
+
+      <!-- SKILLS -->
+      <section class="settings-section" id="section-skills">
+        <h2 class="section-title">Active Skills</h2>
+        <p class="section-sub">All skills registered and available to Hekki. Each runs as an isolated module.</p>
+        <div class="skills-grid" id="skills-grid"></div>
+      </section>
+
+    </div><!-- end modal-content -->
+  </div><!-- end modal-box -->
+</div>
+<!-- end settings-modal -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <style>
+    /* Anti-FOUC (Flash of Unstyled Content) */
+    .modal-overlay.hidden { display: none !important; }
+    body { background-color: var(--bg, #111111); margin: 0; overflow: hidden; }
+    #shell { opacity: 0; transition: opacity 0.3s ease-in; }
+  </style>
+
+  <meta charset="UTF-8">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hekki</title>
+  <link class="cache-bust" rel="stylesheet" href="/static/theme.css?v=161">
+  <link class="cache-bust" rel="stylesheet" href="/static/css/debate.css?v=156">
+  <link class="cache-bust" rel="stylesheet" href="/static/css/coder.css?v=141">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined" rel="stylesheet">
+  <script src="/static/js/marked.min.js" defer></script>
+  <script src="/static/js/lucide.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10.2.4/dist/mermaid.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.mermaid) {
+        window.mermaid.initialize({ startOnLoad: false, theme: 'neutral' });
+      }
+    });
+  </script>
+</head>
+<body>
+
+<div id="loader"><div class="loader-ring"></div></div>
+
+<div id="shell">
+
+  <!-- SIDEBAR (Root level inside shell) -->
+  <!-- SIDEBAR DOCK (Narrow far-left vertical icon bar) -->
+  <div id="sidebar-dock">
+    <div class="dock-logo" style="margin-top: 6px; margin-bottom: 12px; display: flex; justify-content: center; align-items: center; width: 100%;">
+      <img src="/static/hekki.png" alt="Logo" style="width: 34px; height: 34px; border-radius: 50%; object-fit: contain; pointer-events: none;" />
+    </div>
+    <div class="dock-items">
+      <button class="dock-item active" id="mode-home" title="Chat Dashboard">
+        <i data-lucide="message-circle"></i>
+      </button>
+      <button class="dock-item" id="mode-playground" title="Debate Playground">
+        <i data-lucide="swords"></i>
+      </button>
+      <button class="dock-item" id="mode-coder" title="Coder IDE" style="position:relative;">
+        <i data-lucide="code-2"></i>
+      </button>
+    </div>
+    <div class="dock-footer">
+      <button class="dock-item" id="btn-open-settings" title="Customize Settings">
+        <i data-lucide="settings"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- SIDEBAR NAV (Second left sub-navigation sidebar panel) -->
+  <div id="sidebar-nav">
+    <div class="nav-header">
+      <div class="nav-header-title" style="font-weight: 600; font-size: 16px; color: var(--text-primary); margin-left: 4px; display: flex; align-items: center; gap: 8px; flex: 1;">
+        Hekki
+      </div>
+      <button class="icon-btn" id="btn-return-chat-nav" title="Return to Chat" style="display: none; border: none; background: transparent; cursor: pointer; margin-right: 4px;">
+        <i data-lucide="chevron-left" style="width: 14px; height: 14px;"></i>
+      </button>
+      <button id="btn-sidebar-collapse" title="Collapse sidebar">
+        <i data-lucide="panel-left-close" style="width:15px;height:15px;"></i>
+      </button>
+    </div>
+    
+    <!-- CHAT VIEW SUBPANE -->
+    <div class="nav-inner" id="nav-inner-chat" style="display:flex; flex-direction:column; justify-content:space-between; height:calc(100% - 48px); padding: 2px 0 12px; position: relative;">
+      <div style="display:flex; flex-direction:column; gap:6px; overflow-y:auto; flex-grow:1; padding:0 8px;">
+
+        <!-- Top Action Items -->
+        <div class="nav-section" style="margin-top: 4px;">
+          <div class="section-hdr" style="display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: var(--text-3); letter-spacing: 0.02em; font-weight: 500; margin-bottom: 2px; padding: 0 4px;">
+            <span>Actions</span>
+          </div>
+          <div class="nav-section-actions" style="display: flex; flex-direction: column; gap: 2px; margin-top: 0;">
+            <button class="sidebar-action-btn" id="btn-new-chat">
+              <i data-lucide="message-circle-plus" style="width:15px; height:15px; margin-right:8px;"></i>
+              <span>New Chat</span>
+            </button>
+            <button class="sidebar-action-btn" id="btn-nav-playground">
+              <i data-lucide="swords" style="width:15px; height:15px; margin-right:8px;"></i>
+              <span>Playground</span>
+            </button>
+            <button class="sidebar-action-btn" id="nav-skills-btn">
+              <i data-lucide="compass" style="width:15px; height:15px; margin-right:8px;"></i>
+              <span>Skills</span>
+            </button>
+            <button class="sidebar-action-btn" id="btn-nav-coder">
+              <i data-lucide="code-2" style="width:15px; height:15px; margin-right:8px;"></i>
+              <span>Coder IDE</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Recent Chats Group -->
+        <div class="nav-section" style="margin-top: 6px;">
+          <div class="section-hdr" style="display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: var(--text-3); letter-spacing: 0.02em; font-weight: 500; margin-bottom: 2px; padding: 0 4px;">
+            <span>Recent Chats</span>
+          </div>
+          <div class="section-list" id="recent-list">
+            <!-- Injected dynamically by chat.js -->
+          </div>
+        </div>
+
+        <!-- Playground Chats Group -->
+        <div class="nav-section" id="nav-section-playground" style="display:none; margin-top: 6px;">
+          <div class="section-hdr" style="display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: var(--text-3); letter-spacing: 0.02em; font-weight: 500; margin-bottom: 2px; padding: 0 4px;">
+            <span>Playground Chats</span>
+          </div>
+          <div class="section-list" id="playground-list">
+            <!-- Injected dynamically by chat.js -->
+          </div>
+        </div>
+
+      </div>
+      <div class="sidebar-bottom-fadeout"></div>
+    </div>
+
+
+    <!-- CODER SUBPANEL (shown when coder dock icon is active) -->
+    <div class="nav-inner" id="nav-inner-coder" style="display:none; flex-direction:column; height:calc(100% - 48px); padding: 2px 0 12px; position:relative;">
+      <!-- 0. Top Global Actions Group -->
+      <div style="display:flex; flex-direction:column; gap:6px; padding:0 8px;">
+        <div class="nav-section" style="margin-top: 4px;">
+          <div class="section-hdr" style="display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: var(--text-3); letter-spacing: 0.02em; font-weight: 500; margin-bottom: 2px; padding: 0 4px;">
+            <span>Actions</span>
+          </div>
+          <div class="nav-section-actions" style="display: flex; flex-direction: column; gap: 2px; margin-top: 0;">
+            <button class="sidebar-action-btn" id="coder-top-btn-new" title="Start a New Chat">
+              <i data-lucide="message-circle-plus" style="width:15px; height:15px; margin-right:8px;"></i>
+              <span>New Chat</span>
+            </button>
+            <button class="sidebar-action-btn" id="coder-top-btn-history" title="Show Past Conversations">
+              <i data-lucide="history" style="width:15px; height:15px; margin-right:8px;"></i>
+              <span>Conversation History</span>
+            </button>
+            <button class="sidebar-action-btn" id="coder-top-btn-scheduled" title="Show Scheduled Tasks">
+              <i data-lucide="clock" style="width:15px; height:15px; margin-right:8px;"></i>
+              <span>Scheduled Tasks</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:none; height:1px;background:var(--border);margin:8px 12px;opacity:0.6;"></div>
+
+      <!-- 1. Filters & Toolbar Row -->
+      <div class="coder-sidebar-toolbar" style="padding: 16px 12px 2px;">
+        <span class="section-hdr" style="font-size: 11px; color: var(--text-3); letter-spacing: 0.02em; font-weight: 500;">Projects</span>
+        <div class="coder-sidebar-toolbar-right">
+          <button class="coder-icon-btn" id="coder-toolbar-btn-filter" title="Filter & Group By">
+            <i data-lucide="sliders-horizontal" style="width:13px;height:13px;"></i>
+          </button>
+          <button class="coder-icon-btn" id="coder-toolbar-btn-new-session" title="New Session">
+            <i data-lucide="folder-plus" style="width:13px;height:13px;"></i>
+          </button>
+          <button class="coder-icon-btn" id="coder-toolbar-btn-sort-dir" title="Sort Order">
+            <i data-lucide="chevron-down" style="width:13px;height:13px;" id="coder-sort-dir-icon"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- 2. Active Project Header -->
+      <div class="coder-sidebar-header" style="border-bottom: none; padding-top: 4px; padding-bottom: 6px;">
+        <div class="coder-sidebar-header-left">
+          <i data-lucide="folder" style="width:14px;height:14px;color:var(--text-3);flex-shrink:0;"></i>
+          <span id="coder-active-project-name" style="font-weight:600;">default</span>
+        </div>
+        <div class="coder-sidebar-header-right">
+          <button class="coder-icon-btn" id="coder-sidebar-btn-settings" title="Manage Projects">
+            <i data-lucide="settings" style="width:14px;height:14px;"></i>
+          </button>
+          <button class="coder-icon-btn" id="coder-sidebar-btn-plus" title="Project Actions">
+            <i data-lucide="plus" style="width:14px;height:14px;"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- 3. Dynamic Session List -->
+      <div style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:1px;padding:0 8px;" id="coder-conv-list">
+        <!-- Rendered by coder_page.js -->
+      </div>
+
+      <!-- 4. WS Connection status dot at the bottom -->
+      <div style="display:none;align-items:center;gap:6px;padding:8px 12px;border-top:1px solid var(--border);background:var(--bg);">
+        <span id="coder-ws-dot" style="width:6px;height:6px;border-radius:50%;background:#6b7280;flex-shrink:0;"></span>
+        <span id="coder-ws-label" style="font-size:9.5px;color:var(--text-3);">Disconnected</span>
+      </div>
+
+
+
+      <!-- 5. Absolute Context Menus -->
+      <!-- Project Plus Menu -->
+      <div id="coder-project-plus-menu" class="coder-context-menu hidden" style="top:165px; right:8px;">
+        <button class="coder-context-menu-item" id="coder-menu-opt-new-project">
+          <i data-lucide="folder-plus" style="width:13px;height:13px;"></i>
+          <span>New Project</span>
+        </button>
+        <button class="coder-context-menu-item" id="coder-menu-opt-quick-start">
+          <i data-lucide="folder-git-2" style="width:13px;height:13px;"></i>
+          <span>Quick Start</span>
+        </button>
+      </div>
+
+      <!-- Toolbar Filter & Group Dropdown -->
+      <div id="coder-filter-dropdown" class="coder-context-menu hidden" style="top:133px; right:8px; width:170px;">
+        <div class="coder-context-menu-header">Group By</div>
+        <button class="coder-context-menu-item" data-group="project">
+          <i data-lucide="check" style="width:12px;height:12px;opacity:0;"></i>
+          <span>Project</span>
+        </button>
+        <button class="coder-context-menu-item" data-group="environment">
+          <i data-lucide="check" style="width:12px;height:12px;opacity:0;"></i>
+          <span>Environment</span>
+        </button>
+        <button class="coder-context-menu-item" data-group="status">
+          <i data-lucide="check" style="width:12px;height:12px;opacity:0;"></i>
+          <span>Status</span>
+        </button>
+        <button class="coder-context-menu-item active" data-group="none">
+          <i data-lucide="check" style="width:12px;height:12px;opacity:1;"></i>
+          <span>None</span>
+        </button>
+
+        <div class="coder-context-menu-separator"></div>
+
+        <div class="coder-context-menu-header">Sort Conversations</div>
+        <button class="coder-context-menu-item active" data-sort="ts">
+          <i data-lucide="check" style="width:12px;height:12px;opacity:1;"></i>
+          <span>Last Updated</span>
+        </button>
+        <button class="coder-context-menu-item" data-sort="alphabetical">
+          <i data-lucide="check" style="width:12px;height:12px;opacity:0;"></i>
+          <span>Alphabetical (A-Z)</span>
+        </button>
+        <button class="coder-context-menu-item" data-sort="date_added">
+          <i data-lucide="check" style="width:12px;height:12px;opacity:0;"></i>
+          <span>Date Added</span>
+        </button>
+
+        <div class="coder-context-menu-separator"></div>
+
+        <div class="coder-context-menu-header">Subtitles</div>
+        <button class="coder-context-menu-item" data-subtitle="worktree">
+          <i data-lucide="check" style="width:12px;height:12px;opacity:0;"></i>
+          <span>Worktree</span>
+        </button>
+        <button class="coder-context-menu-item active" data-subtitle="none">
+          <i data-lucide="check" style="width:12px;height:12px;opacity:1;"></i>
+          <span>No Subtitle</span>
+        </button>
+
+        <div class="coder-context-menu-separator"></div>
+
+        <div class="coder-context-menu-header">Filter</div>
+        <button class="coder-context-menu-item" id="coder-filter-opt-scheduled">
+          <i data-lucide="check" style="width:12px;height:12px;opacity:0;"></i>
+          <span>Scheduled</span>
+        </button>
+      </div>
+
+      <!-- Item Action Dropdown (More Options) -->
+      <div id="coder-item-actions-menu" class="coder-context-menu hidden">
+        <button class="coder-context-menu-item" id="coder-item-opt-unread">
+          <i data-lucide="mail" style="width:12px;height:12px;"></i>
+          <span>Mark as Unread</span>
+        </button>
+        <button class="coder-context-menu-item" id="coder-item-opt-rename">
+          <i data-lucide="pencil" style="width:12px;height:12px;"></i>
+          <span>Rename</span>
+        </button>
+        <button class="coder-context-menu-item delete" id="coder-item-opt-delete">
+          <i data-lucide="trash-2" style="width:12px;height:12px;"></i>
+          <span>Delete</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Global User Profile (Anchored to bottom of sidebar) -->
+    <div style="position: relative; margin-top: auto; border-top: 1px solid var(--border);">
+      <!-- User Menu Dropdown -->
+      <div class="user-menu-dropdown hidden" id="user-menu-dropdown">
+        <div class="user-menu-header">anshu@gmail.com</div>
+        <button class="user-menu-item" id="btn-user-settings">
+          <i data-lucide="settings" style="width:16px; height:16px;"></i>
+          <span>Settings</span>
+          <span class="user-menu-shortcut">Ctrl+⇧+,</span>
+        </button>
+        <button class="user-menu-item" id="btn-user-theme">
+          <i data-lucide="sun" style="width:16px; height:16px;" id="user-menu-theme-icon"></i>
+          <span id="user-menu-theme-text">Toggle Theme</span>
+        </button>
+        <button class="user-menu-item">
+          <i data-lucide="globe" style="width:16px; height:16px;"></i>
+          <span>Language</span>
+          <i data-lucide="chevron-right" class="chevron"></i>
+        </button>
+        <button class="user-menu-item">
+          <i data-lucide="help-circle" style="width:16px; height:16px;"></i>
+          <span>Get help</span>
+        </button>
+        <div class="user-menu-divider"></div>
+        <button class="user-menu-item">
+          <i data-lucide="arrow-up-circle" style="width:16px; height:16px;"></i>
+          <span>Upgrade plan</span>
+        </button>
+        <button class="user-menu-item">
+          <i data-lucide="download" style="width:16px; height:16px;"></i>
+          <span>Get apps and extensions</span>
+        </button>
+        <button class="user-menu-item">
+          <i data-lucide="info" style="width:16px; height:16px;"></i>
+          <span>Learn more</span>
+          <i data-lucide="chevron-right" class="chevron"></i>
+        </button>
+        <div class="user-menu-divider"></div>
+        <button class="user-menu-item" id="btn-user-logout">
+          <i data-lucide="log-out" style="width:16px; height:16px;"></i>
+          <span>Log out</span>
+        </button>
+      </div>
+
+      <!-- User Profile Action -->
+      <div class="sidebar-user-profile" id="btn-sidebar-user-profile" style="border-top: none;">
+        <div class="sidebar-user-avatar" id="sidebar-user-avatar">A</div>
+        <div class="sidebar-user-info">
+          <div class="sidebar-user-name" id="sidebar-user-name">User</div>
+          <div class="sidebar-user-plan">Free plan</div>
+        </div>
+        <button class="user-download-btn" title="Download App" onclick="event.stopPropagation()">
+          <i data-lucide="download" style="width:14px; height:14px;"></i>
+          <span class="notification-dot"></span>
+        </button>
+        <i data-lucide="chevrons-up-down" style="width:14px; height:14px; color:var(--text-3); margin-left:4px;"></i>
+      </div>
+    </div>
+  </div>
+
+    <!-- WORKSPACE (Right area next to sidebar) -->
+    <div id="workspace">
+
+      <!-- TITLEBAR -->
+      <div id="titlebar">
+        <div class="tb-group">
+          <button class="icon-btn" id="btn-sidebar-toggle-main" title="Toggle Sidebar">
+            <i data-lucide="sidebar"></i>
+          </button>
+          <button class="icon-btn" id="btn-main-back" title="Back to Chat" style="display: none; margin-right: 4px;">
+            <i data-lucide="chevron-left" style="width: 16px; height: 16px;"></i>
+          </button>
+          <!-- Breadcrumb: ProjectName / Chat Title -->
+          <div id="titlebar-breadcrumb"></div>
+          <!-- Coder live FSM badge container -->
+          <div id="coder-fsm-badge" style="margin-left: 10px; display: flex; align-items: center;"></div>
+        </div>
+        <div class="tb-group">
+          <button class="icon-btn" id="btn-toggle-sub-sidebar" title="Toggle Sub Sidebar">
+            <i data-lucide="sidebar"></i>
+          </button>
+        </div>
+      </div>
+
+
+      <!-- MAIN -->
+      <div id="main">
+        <div class="main-fadeout-overlay"></div>
+
+        <!-- PLAN TOGGLE BUTTON IN MAIN AREA -->
+        <button class="main-plan-toggle-btn hidden" id="btn-toggle-drawer" title="Toggle Plan Panel">
+          <i data-lucide="sliders-horizontal"></i>
+        </button>
+
+      <!-- CHAT PANE -->
+      <div id="chat-pane" style="display: flex; flex-direction: row; width: 100%; height: 100%;">
+        <div class="chat-main-container" style="flex: 1; display: flex; flex-direction: column; overflow: hidden; height: 100%; position: relative;">
+          <!-- Premium smooth text fadeout overlay under top navigation bar bottom line -->
+          <div class="chat-top-fadeout"></div>
+
+          <!-- Scrollable message area -->
+          <div id="chat-log">
+            <div id="chat-col">
+
+              <!-- Home Screen (shown by default, hidden on first message) -->
+              <div id="home-screen">
+
+                <div class="greeting">
+                  <img src="/static/hekki.png" alt="Hekki" style="width:56px; height:56px; border-radius:14px; margin-bottom:10px; filter: drop-shadow(0 4px 16px rgba(120,80,255,0.3));">
+                  <h1 class="greeting-text" id="greeting-text">Good morning, Anshu</h1>
+                </div>
+
+                <!-- Input capsule (home position) -->
+                <div id="input-capsule" class="home-capsule" style="position: relative; display: flex; flex-direction: row; align-items: center; gap: 10px; padding: 10px 16px;">
+                  <!-- Attachment button (plus) -->
+                  <button class="cap-icon-btn" id="btn-attach-home" title="Attach" style="flex-shrink: 0;">
+                    <i data-lucide="plus"></i>
+                  </button>
+
+                  <textarea id="chat-input" rows="1" placeholder="How can I help you today?" style="flex: 1; resize: none; outline: none; border: none; background: transparent; padding-top: 4px; min-height: 24px; height: 24px;"></textarea>
+
+                  <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
+                    <button class="model-pill">
+                      Hekki
+                      <i class="mi" data-lucide="chevron-down"></i>
+                    </button>
+                    <button class="cap-icon-btn" id="btn-voice" title="Voice">
+                      <i data-lucide="mic"></i>
+                    </button>
+                    <!-- Submit / Send Button -->
+                    <button class="submit-btn hidden" id="btn-submit-home" title="Send Message">
+                      <i data-lucide="arrow-up"></i>
+                    </button>
+                    <button class="submit-btn hidden" id="btn-stop" title="Stop Recording" style="background: rgba(239, 68, 68, 0.08); color: #ef4444; border: none;">
+                      <i data-lucide="square" style="fill: currentColor; width: 10px; height: 10px;"></i>
+                    </button>
+                    <button class="submit-btn hidden" id="btn-stop-gen" title="Stop Generation" style="background: rgba(239, 68, 68, 0.08); color: #ef4444; border: none;">
+                      <i data-lucide="square" style="fill: currentColor; width: 10px; height: 10px;"></i>
+                    </button>
+                  </div>
+                </div>
+                <!-- Shortcuts -->
+                <div class="shortcuts">
+                  <button class="shortcut"><i class="mi" data-lucide="search"></i> Research</button>
+                  <button class="shortcut"><i class="mi" data-lucide="trending-up"></i> Strategize</button>
+                  <button class="shortcut"><i class="mi" data-lucide="palette"></i> Create</button>
+                  <button class="shortcut"><i class="mi" data-lucide="pen"></i> Write</button>
+                  <button class="shortcut"><i class="mi" data-lucide="graduation-cap"></i> Learn</button>
+                </div>
+
+              </div>
+              <!-- end #home-screen -->
+
+            </div>
+            <!-- end #chat-col -->
+          </div>
+          <!-- end #chat-log -->
+
+          <!-- Bottom input bar — pinned to bottom via flex-shrink:0 -->
+          <div id="bottom-input-bar" class="hidden">
+            <div class="chat-bottom-fadeout"></div>
+            <div class="bottom-col">
+              <div id="input-capsule-conv" style="display: flex; flex-direction: row; align-items: center; gap: 10px; padding: 10px 16px;">
+                <!-- Attachment wrapper (left) -->
+                <div class="capsule-left" style="display: flex; align-items: center; flex-shrink: 0; position: relative;">
+                  <button class="cap-icon-btn" id="btn-attach-conv" title="Attach" style="flex-shrink: 0;">
+                    <i data-lucide="plus"></i>
+                  </button>
+                </div>
+
+                <!-- Textarea (middle) -->
+                <textarea id="chat-input-conv" rows="1" placeholder="Write a message..." style="flex: 1; resize: none; outline: none; border: none; background: transparent; padding-top: 4px; min-height: 24px; height: 24px;"></textarea>
+
+                <!-- Actions and Model (right) -->
+                <div class="capsule-right" style="display: flex; align-items: center; gap: 6px; flex-shrink: 0; position: relative;">
+                  <button class="model-pill">
+                    Hekki
+                    <i class="mi" data-lucide="chevron-down"></i>
+                  </button>
+                  <button class="cap-icon-btn" id="btn-voice-conv" title="Voice">
+                    <i data-lucide="mic"></i>
+                  </button>
+                  <!-- Submit / Send Button -->
+                  <button class="submit-btn hidden" id="btn-submit-conv" title="Send Message">
+                    <i data-lucide="arrow-up"></i>
+                  </button>
+                  <button class="submit-btn hidden" id="btn-stop-gen-conv" title="Stop Generation" style="background: rgba(239, 68, 68, 0.08); color: #ef4444; border: none;">
+                    <i data-lucide="square" style="fill: currentColor; width: 10px; height: 10px;"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="bottom-disclaimer">
+                Hekki can make mistakes. Verify important info.
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+
+
+
+
+
+
+      <!-- AGENT PANE (legacy, kept for compatibility) -->
+      <div id="agent-pane"></div>
+
+      <!-- AGENT V2 PANE (PRD-based Agentic IDE) -->
+      <div id="agent-v2-pane"></div>
+
+      <!-- SKILLS PANE (full page skills management) -->
+      <div id="skills-pane"></div>
+
+      <!-- EVOLUTION LEDGER PANE (full page changelogs) -->
+      <div id="changelog-pane"></div>
+
+      <!-- DEBATE PANE (Multi-Agent Debate Playground) — starts hidden, router shows it -->
+      <div id="debate-pane"></div>
+
+      <!-- ═══ CODER PANE ═══ -->
+      <div id="coder-pane" style="display:none;flex-direction:column;width:100%;height:100%;overflow:hidden;background:var(--bg);">
+
+        <!-- WELCOME SCREEN (shown until project selected) -->
+        <div id="coder-welcome-screen" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;overflow-y:auto;">
+          <div style="width:100%;max-width:720px;margin:0 auto;display:flex;flex-direction:column;align-items:center;text-align:center;">
+            
+            <div style="width:52px;height:52px;border-radius:12px;background:var(--hover);display:flex;align-items:center;justify-content:center;margin-bottom:16px;border:1px solid var(--border);">
+              <i data-lucide="code-2" style="width:24px;height:24px;color:var(--text-2);"></i>
+            </div>
+            
+            <h2 style="font-family:var(--font-serif);font-size:26px;font-weight:400;color:var(--text);margin:0 0 8px;letter-spacing:-0.3px;">Hekki Coder</h2>
+            <p style="font-size:13.5px;color:var(--text-3);line-height:1.6;margin:0 0 32px;max-width:480px;">AI-powered transactional code refactoring pipeline with AST-aware verification and atomic fallback checks.</p>
+
+            <!-- Monochromatic Card Options (Expanded BGs, Smaller Icons, Divider) -->
+            <div style="display:flex;align-items:center;gap:16px;width:100%;max-width:540px;margin-bottom:32px;justify-content:center;">
+              <button id="coder-welcome-card-new" style="flex:1;background:transparent;border:none;padding:24px 20px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:12px;transition:all 0.12s;text-align:center;">
+                <div class="welcome-card-icon" style="width:64px;height:64px;border-radius:14px;background:var(--hover);display:flex;align-items:center;justify-content:center;transition:background 0.12s;">
+                  <i data-lucide="folder-plus" style="width:24px;height:24px;color:var(--text-2);"></i>
+                </div>
+                <div>
+                  <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px;">New Workspace</div>
+                  <div style="font-size:11px;color:var(--text-3);line-height:1.4;">Create a fresh project folder from scratch</div>
+                </div>
+              </button>
+
+              <!-- Mini Vertical Divider -->
+              <div style="width:1px;height:50px;background:var(--border);opacity:0.7;flex-shrink:0;"></div>
+
+              <button id="coder-welcome-card-existing" style="flex:1;background:transparent;border:none;padding:24px 20px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:12px;transition:all 0.12s;text-align:center;">
+                <div class="welcome-card-icon" style="width:64px;height:64px;border-radius:14px;background:var(--hover);display:flex;align-items:center;justify-content:center;transition:background 0.12s;">
+                  <i data-lucide="folder-open" style="width:24px;height:24px;color:var(--text-2);"></i>
+                </div>
+                <div>
+                  <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px;">Existing Project</div>
+                  <div style="font-size:11px;color:var(--text-3);line-height:1.4;">Open an existing directory on your disk</div>
+                </div>
+              </button>
+            </div>
+
+
+
+          </div>
+        </div>
+
+        <!-- CHAT AREA (hidden until workspace selected) -->
+        <div id="coder-chat-area" class="hidden" style="flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative;">
+          <!-- Message log with centered col -->
+          <div id="coder-chat-log" style="flex:1;overflow-y:auto;padding:0 24px;display:flex;flex-direction:column;scroll-padding-bottom:20px;">
+            <!-- Coder Chat Welcome Dashboard (shown for new unsaved sessions, sibling of messages container) -->
+            <div id="coder-chat-welcome" style="display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 0;margin:auto 0;flex:1;width:100%;">
+              <div style="width:52px;height:52px;border-radius:12px;background:var(--hover);display:flex;align-items:center;justify-content:center;margin-bottom:16px;border:1px solid var(--border);">
+                <i data-lucide="code-2" style="width:24px;height:24px;color:var(--text-2);"></i>
+              </div>
+              <h1 style="font-family:var(--font-serif);font-size:26px;font-weight:400;color:var(--text);margin:0 0 8px;letter-spacing:-0.3px;">Code Workspace</h1>
+              <p style="font-size:13.5px;color:var(--text-3);line-height:1.6;margin:0 0 32px;max-width:480px;">Ask Hekki Coder to write code, refactor files, add tests, or optimize your active workspace.</p>
+              
+              <!-- Prompt Suggestions Grid (premium styled cards) -->
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;max-width:540px;margin:0 auto;">
+                <button class="coder-suggestion-card" onclick="document.getElementById('coder-input').value='Refactor my codebase';document.getElementById('coder-input').dispatchEvent(new Event('input'));" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:left;cursor:pointer;transition:all 0.12s;">
+                  <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:4px;">Refactor Code</div>
+                  <div style="font-size:10.5px;color:var(--text-3);line-height:1.4;">Improve readability and structure of my files</div>
+                </button>
+                <button class="coder-suggestion-card" onclick="document.getElementById('coder-input').value='Write unit tests for connection.py';document.getElementById('coder-input').dispatchEvent(new Event('input'));" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:left;cursor:pointer;transition:all 0.12s;">
+                  <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:4px;">Write Tests</div>
+                  <div style="font-size:10.5px;color:var(--text-3);line-height:1.4;">Add unit verification coverage to python logic</div>
+                </button>
+                <button class="coder-suggestion-card" onclick="document.getElementById('coder-input').value='Optimize database search queries';document.getElementById('coder-input').dispatchEvent(new Event('input'));" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:left;cursor:pointer;transition:all 0.12s;">
+                  <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:4px;">Optimize Performance</div>
+                  <div style="font-size:10.5px;color:var(--text-3);line-height:1.4;">Speed up query execution times and bottlenecks</div>
+                </button>
+                <button class="coder-suggestion-card" onclick="document.getElementById('coder-input').value='Audit code for security issues';document.getElementById('coder-input').dispatchEvent(new Event('input'));" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:left;cursor:pointer;transition:all 0.12s;">
+                  <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:4px;">Audit Security</div>
+                  <div style="font-size:10.5px;color:var(--text-3);line-height:1.4;">Verify secure inputs and path boundaries check</div>
+                </button>
+              </div>
+            </div>
+
+            <div id="coder-chat-col" style="width:100%;max-width:720px;margin:0 auto;display:flex;flex-direction:column;padding:32px 0 20px;flex:1;">
+              <!-- Messages injected here -->
+            </div>
+          </div>
+
+          <!-- Pinned Bottom Input capsule (matches Hekki Chat exactly) -->
+          <div style="flex-shrink:0;padding:8px 24px 6px;background:var(--bg);">
+            <div style="width:100%;max-width:720px;margin:0 auto;">
+              <div id="coder-input-capsule" style="display: flex; flex-direction: row; align-items: center; gap: 10px; padding: 10px 16px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-xl); box-shadow: var(--shadow); transition: border-color 0.15s, box-shadow 0.15s;">
+                <!-- Attachment button (plus) -->
+                <button class="cap-icon-btn" id="coder-btn-attach" title="Attach Files" style="background: var(--hover); color: var(--text); flex-shrink: 0;">
+                  <i data-lucide="plus"></i>
+                </button>
+
+                <textarea id="coder-input" rows="1" placeholder="Write code, refactor files, or fix bugs..."
+                  style="flex: 1; resize: none; outline: none; border: none; background: transparent; padding-top: 4px; min-height: 24px; height: 24px; color:var(--text); font-family:var(--font); font-size:14px; line-height:1.55; max-height:200px; overflow-y:hidden;"></textarea>
+
+                <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
+                  <!-- Submit / Send Button -->
+                  <button id="coder-btn-send" class="submit-btn hidden" title="Send Message">
+                    <i data-lucide="arrow-up"></i>
+                  </button>
+                  <!-- Stop Button -->
+                  <button id="coder-btn-stop" class="submit-btn hidden" title="Stop Generation" style="background: rgba(239, 68, 68, 0.08); color: #ef4444; border: none;">
+                    <i data-lucide="square" style="fill: currentColor; width: 10px; height: 10px;"></i>
+                  </button>
+                </div>
+              </div>
+              <div style="font-size:10px;color:var(--text-3);text-align:center;margin-top:5px;">Hekki Coder writes changes securely to the active project path.</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <!-- ═══ end CODER PANE ═══ -->
+
+
+
+    </div>
+    <!-- end #main -->
+
+  </div>
+  <!-- end #workspace -->
+
+  <!-- APP PANE (right side, hidden by default) -->
+  <div id="app-pane-resizer" class="pane-resizer hidden-pane"></div>
+  <div id="app-pane" class="hidden-pane">
+    <div class="pane-header" id="pane-tabs"></div>
+    <div id="pane-content"></div>
+  </div>
+
+
+
+
+
+
+
+</div>
+<!-- end #shell -->
+
+<!-- ═══════════════ SETTINGS MODAL ═══════════════ -->
+
+
+
+<!-- Hidden file attachment input -->
+<input type="file" id="attach-file-input" style="display:none" multiple>
+
+<!-- Custom Modal Dialog (Confirm/Prompt) -->
+<div id="custom-dialog-modal" class="modal-overlay hidden" style="z-index: 9999;">
+  <div class="modal-box compact">
+    <div class="modal-header">
+      <h3 id="custom-dialog-title">Confirm Action</h3>
+      <button class="icon-btn" id="custom-dialog-close" title="Close">
+        <i data-lucide="x"></i>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p id="custom-dialog-message">Are you sure?</p>
+      <div id="custom-dialog-input-container" class="hidden" style="margin-top: 12px;">
+        <input type="text" id="custom-dialog-input" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; font-family: var(--font); background: var(--bg); color: var(--text);">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="msg-edit-btn btn-cancel" id="custom-dialog-cancel">Cancel</button>
+      <button class="msg-edit-btn save btn-save" id="custom-dialog-confirm">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- Create Project Modal (webkitdirectory selection flow) -->
+<div id="create-project-modal" class="modal-overlay hidden">
+  <div class="modal-box compact create-project-box">
+    <div class="modal-header" style="display: flex; align-items: center; justify-content: space-between; width: 100%; border-bottom: none; padding-bottom: 12px;">
+      <h3 style="margin: 0; font-size: 16px; font-weight: 600; color: var(--text);">Create Project</h3>
+      <button class="icon-btn" id="btn-close-create-project" title="Close" style="background: transparent; border: none; cursor: pointer; color: var(--text-3); display: flex; align-items: center; justify-content: center; padding: 4px;">
+        <i data-lucide="x" style="width: 16px; height: 16px;"></i>
+      </button>
+    </div>
+    <div class="modal-body" style="padding: 14px 0 0 0; width: 100%;">
+      <div class="select-folder-label" style="font-size: 13px; color: var(--text-2); margin-bottom: 12px; text-align: left;">Select Folder(s)</div>
+      
+      <button class="add-folder-btn" id="btn-trigger-folder-picker" style="width: 100%; border: none; border-radius: 8px; background: var(--hover); color: var(--text); font-family: var(--font); font-size: 13px; font-weight: 500; padding: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; transition: all 0.12s ease;">
+        <i data-lucide="plus" style="width: 16px; height: 16px;"></i>
+        <span>Add Folder</span>
+      </button>
+      
+      <!-- Hidden native directory folder picker -->
+      <input type="file" id="project-folder-picker" webkitdirectory directory style="display:none">
+    </div>
+    <div class="modal-footer" style="justify-content: flex-end; padding: 16px 0 0 0; width: 100%; display: flex; gap: 8px; border-top: none;">
+      <button class="msg-edit-btn btn-cancel" id="btn-skip-create-project" style="padding: 6px 16px; font-size: 12px; background: var(--hover); color: var(--text-2); border: none; border-radius: 6px; cursor: pointer;">Skip</button>
+    </div>
+  </div>
+</div>
+
+<!-- Project Management Modal -->
+<div id="project-management-modal" class="modal-overlay hidden">
+  <div class="modal-box" style="max-width: 720px; width: 90%; height: auto; max-height: 480px; padding: 0; display: flex; flex-direction: column; overflow: hidden; border-radius: 8px; background: var(--card); border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);">
+    
+    <!-- Header -->
+    <div class="modal-header" style="padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--card); flex-shrink: 0;">
+      <h3 style="margin:0; font-size:14px; font-weight:600; display: flex; align-items: center; gap: 8px; color: var(--text-primary);" id="project-modal-title">
+        <i data-lucide="folder" style="width: 16px; height: 16px; color: var(--text-secondary);"></i>
+        <span>Project Workspace</span>
+      </h3>
+      
+      <!-- Topnav Actions (Pills Chip Style) -->
+      <div style="display: flex; gap: 8px; align-items: center; margin-left: auto; margin-right: 12px;">
+        <button id="btn-action-new" class="modal-nav-pill" title="Create a fresh workspace">
+          <i data-lucide="folder-plus" style="width: 14px; height: 14px;"></i>
+          <span>New Workspace</span>
+        </button>
+        <button id="btn-action-exist" class="modal-nav-pill" title="Open an existing local project">
+          <i data-lucide="folder-open" style="width: 14px; height: 14px;"></i>
+          <span>Open Existing</span>
+        </button>
+      </div>
+
+      <button class="icon-btn" id="btn-close-project-modal" title="Close" style="background:transparent; border:none; cursor:pointer; color: var(--text-secondary); display: flex; align-items: center;">
+        <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+      </button>
+    </div>
+
+    <!-- Main Container -->
+    <div style="display: flex; flex: 1; min-height: 0; background: var(--card);">
+
+      <!-- Content Area (Left sidebar removed completely) -->
+      <div style="flex: 1; display: flex; flex-direction: column; padding: 0 24px 24px 24px; min-height: 0; overflow-y: auto;">
+        
+        <!-- View 1: Recent Projects List -->
+        <div id="project-view-list" style="display: flex; flex-direction: column; flex: 1; min-height: 0;">
+          
+          <div id="project-list-container" style="display: flex; flex-direction: column; gap: 0;">
+            <div style="text-align: center; color: var(--text-3); padding: 40px 0; font-size: 12px;">
+              Loading projects...
+            </div>
+          </div>
+        </div>
+
+        <!-- View 2: New Project Form -->
+        <div id="project-view-new" class="hidden" style="display: flex; flex-direction: column; gap: 16px;">
+          <h4 style="margin: 0; font-size: 13px; font-weight: 600; color: var(--text-primary);">New Workspace</h4>
+          
+          <div>
+            <label style="display:block; font-size:11px; color:var(--text-secondary); margin-bottom:6px; text-transform:uppercase; letter-spacing:0.04em;">Workspace Name</label>
+            <input type="text" id="input-new-name" placeholder="e.g. coffee-brand" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; font-size:12px; background: var(--bg); color: var(--text-primary); outline: none;">
+          </div>
+          
+          <div style="font-size:11px; color:var(--text-secondary); line-height:1.5;">
+            <span style="font-weight: 500; color: var(--text-primary);">Path:</span>
+            <div id="preview-new-path" style="margin-top: 4px; font-family: var(--font-mono); background: var(--hover); padding: 6px 10px; border-radius: 4px; color: var(--text-primary);">data/workspace/...</div>
+          </div>
+          
+          <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 10px;">
+            <button class="btn-cancel-outline btn-project-view-back" style="font-size: 11px;">Back</button>
+            <button class="msg-edit-btn save btn-save btn-project-confirm" data-mode="new" style="padding: 6px 16px; font-size: 11px;">Load Workspace</button>
+          </div>
+        </div>
+
+        <!-- View 3: Open Existing Form -->
+        <div id="project-view-exist" class="hidden" style="display: flex; flex-direction: column; gap: 16px;">
+          <h4 style="margin: 0; font-size: 13px; font-weight: 600; color: var(--text-primary);">Open Existing</h4>
+          
+          <div>
+            <label style="display:block; font-size:11px; color:var(--text-secondary); margin-bottom:6px; text-transform:uppercase; letter-spacing:0.04em;">Local Folder Path</label>
+            <div style="display:flex; gap:8px;">
+              <input type="text" id="input-exist-path" placeholder="e.g. C:\Projects\my-site" style="flex:1; padding:8px 12px; border:1px solid var(--border); border-radius:6px; font-size:12px; background:var(--bg); color:var(--text-primary); outline: none;">
+              <button id="btn-browse-folder" style="padding:0 12px; background:var(--hover); color:var(--text-primary); border:1px solid var(--border); border-radius:6px; font-size:11px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:6px;">
+                <i data-lucide="folder" style="width:14px; height:14px; color:var(--text-secondary);"></i>
+                <span>Browse</span>
+              </button>
+            </div>
+          </div>
+          
+          <div style="font-size:11px; color:var(--text-secondary); line-height:1.5;">
+            <span style="font-weight: 500; color: var(--text-primary);">Detected Project Name:</span>
+            <div id="preview-exist-name" style="margin-top: 4px; font-family: var(--font-mono); background: var(--hover); padding: 6px 10px; border-radius: 4px; color: var(--text-primary); font-weight: 600;">None</div>
+          </div>
+          
+          <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 10px;">
+            <button class="btn-cancel-outline btn-project-view-back" style="font-size: 11px;">Back</button>
+            <button class="msg-edit-btn save btn-save btn-project-confirm" data-mode="exist" style="padding: 6px 16px; font-size: 11px;">Load Workspace</button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+  
+  <!-- Hidden browser folder selector -->
+  <input type="file" id="browser-folder-picker" webkitdirectory directory style="display:none">
+</div>
+
+<!-- ═══════════════ CODER WORKSPACE SETUP POPUP ═══════════════ -->
+<div id="coder-workspace-popup" class="modal-overlay hidden" style="z-index:9000;">
+  <div class="modal-box compact" style="width:400px;">
+
+    <!-- STEP 1: Choose -->
+    <div id="coder-popup-step-choose" style="display:flex; flex-direction:column; gap:12px; width:100%;">
+      <div style="display:flex; align-items:center; justify-content:space-between;">
+        <h3 style="margin:0; font-size:15px; font-weight:600; color:var(--text-primary);">Setup Workspace</h3>
+        <button id="coder-popup-close" class="icon-btn" title="Close" style="width:24px; height:24px;">
+          <i data-lucide="x" style="width:14px; height:14px;"></i>
+        </button>
+      </div>
+      <p style="margin:0; font-size:12px; color:var(--text-3); line-height:1.5;">Choose how you want to initialize Hekki Coder</p>
+      
+      <div style="display:flex; flex-direction:column; gap:8px; margin-top:4px;">
+        <button id="coder-card-new" class="coder-popup-choice-btn" style="width:100%; display:flex; align-items:center; gap:10px; padding:10px 12px; background:var(--hover); border:1px solid var(--border); border-radius:8px; cursor:pointer; color:var(--text); font-family:var(--font); font-size:13px; text-align:left; transition:all 0.1s;">
+          <i data-lucide="folder-plus" style="width:15px; height:15px; color:var(--text-3); flex-shrink:0;"></i>
+          <span style="font-weight:500; flex:1;">Create New Workspace</span>
+          <i data-lucide="chevron-right" style="width:13px; height:13px; color:var(--text-3);"></i>
+        </button>
+
+        <button id="coder-card-existing" class="coder-popup-choice-btn" style="width:100%; display:flex; align-items:center; gap:10px; padding:10px 12px; background:var(--hover); border:1px solid var(--border); border-radius:8px; cursor:pointer; color:var(--text); font-family:var(--font); font-size:13px; text-align:left; transition:all 0.1s;">
+          <i data-lucide="folder-open" style="width:15px; height:15px; color:var(--text-3); flex-shrink:0;"></i>
+          <span style="font-weight:500; flex:1;">Open Existing Workspace</span>
+          <i data-lucide="chevron-right" style="width:13px; height:13px; color:var(--text-3);"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- STEP 2: New Project -->
+    <div id="coder-popup-step-new" class="hidden" style="display:flex; flex-direction:column; gap:12px; width:100%;">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <button class="coder-popup-back icon-btn" style="width:24px; height:24px;">
+          <i data-lucide="arrow-left" style="width:14px; height:14px;"></i>
+        </button>
+        <h3 style="margin:0; font-size:15px; font-weight:600; color:var(--text-primary);">New Workspace</h3>
+      </div>
+
+      <div>
+        <label style="display:block; font-size:11px; color:var(--text-3); text-transform:uppercase; letter-spacing:0.04em; margin-bottom:6px;">Project Name</label>
+        <input id="coder-new-project-name" type="text" placeholder="e.g. coffee-brand"
+          style="width:100%; padding:8px 12px; border:1px solid var(--border); border-radius:6px; font-size:13px; background:var(--bg); color:var(--text); outline:none; box-sizing:border-box; font-family:var(--font);">
+      </div>
+
+      <div style="background:var(--hover); border-radius:6px; padding:8px 12px; font-size:11px; line-height:1.4;">
+        <div style="color:var(--text-3); font-size:10px; text-transform:uppercase; margin-bottom:2px;">Target Path</div>
+        <div style="font-family:monospace; color:var(--text-2);">data/workspaces/&lt;name&gt;</div>
+      </div>
+
+      <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:6px;">
+        <button class="coder-popup-back msg-edit-btn btn-cancel" style="font-size:11px;">Back</button>
+        <button id="coder-btn-create-project" class="msg-edit-btn save btn-save" style="padding:6px 16px; font-size:11px;">Create Workspace</button>
+      </div>
+    </div>
+
+    <!-- STEP 3: Existing Project -->
+    <div id="coder-popup-step-existing" class="hidden" style="display:flex; flex-direction:column; gap:12px; width:100%;">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <button class="coder-popup-back icon-btn" style="width:24px; height:24px;">
+          <i data-lucide="arrow-left" style="width:14px; height:14px;"></i>
+        </button>
+        <h3 style="margin:0; font-size:15px; font-weight:600; color:var(--text-primary);">Open Existing</h3>
+      </div>
+
+      <div>
+        <label style="display:block; font-size:11px; color:var(--text-3); text-transform:uppercase; letter-spacing:0.04em; margin-bottom:6px;">Local Folder Path</label>
+        <div style="display:flex; gap:8px;">
+          <input id="coder-exist-path" type="text" placeholder="e.g. D:\\Projects\\my-site"
+            style="flex:1; padding:8px 12px; border:1px solid var(--border); border-radius:6px; font-size:13px; background:var(--bg); color:var(--text); outline:none; font-family:monospace; box-sizing:border-box;">
+          <button id="coder-btn-browse-existing" style="padding:0 12px; background:var(--hover); border:1px solid var(--border); border-radius:6px; cursor:pointer; color:var(--text); font-family:var(--font); font-size:13px; font-weight:600; display:flex; align-items:center; gap:6px; transition:border-color 0.12s, background 0.12s;" onmouseover="this.style.borderColor='var(--text-3)'" onmouseout="this.style.borderColor='var(--border)'">
+            <i data-lucide="folder" style="width:14px; height:14px; color:var(--text-3); flex-shrink:0;"></i>
+            <span>Browse</span>
+          </button>
+        </div>
+      </div>
+
+      <div style="background:var(--hover); border-radius:6px; padding:8px 12px; font-size:11px; line-height:1.4;">
+        <div style="color:var(--text-3); font-size:10px; text-transform:uppercase; margin-bottom:2px;">Selected Path Preview</div>
+        <div id="coder-exist-path-preview" style="font-family:monospace; color:var(--text-2); word-break:break-all;">—</div>
+      </div>
+
+      <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:6px;">
+        <button class="coder-popup-back msg-edit-btn btn-cancel" style="font-size:11px;">Back</button>
+        <button id="coder-btn-load-existing" class="msg-edit-btn save btn-save" style="padding:6px 16px; font-size:11px;">Load Workspace</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+  <!-- IMAGE PREVIEW LIGHTBOX OVERLAY -->
+  <div id="image-lightbox" class="lightbox-overlay hidden">
+    <div class="lightbox-backdrop" id="lightbox-backdrop"></div>
+    <div class="lightbox-header">
+      <span class="lightbox-filename" id="lightbox-filename">Image Preview</span>
+      <div class="lightbox-controls">
+        <button class="lightbox-btn" id="btn-lightbox-zoom-in" title="Zoom In">
+          <i data-lucide="zoom-in"></i>
+        </button>
+        <button class="lightbox-btn" id="btn-lightbox-zoom-out" title="Zoom Out">
+          <i data-lucide="zoom-out"></i>
+        </button>
+        <button class="lightbox-btn" id="btn-lightbox-reset" title="Reset Zoom">
+          <i data-lucide="maximize-2"></i>
+        </button>
+        <button class="lightbox-btn" id="btn-lightbox-download" title="Download Image">
+          <i data-lucide="download"></i>
+        </button>
+        <div class="lightbox-divider" style="width: 1px; height: 16px; background: rgba(255,255,255,0.2); margin: 0 4px;"></div>
+        <button class="lightbox-btn close" id="btn-lightbox-close" title="Close">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+    </div>
+    <div class="lightbox-content" id="lightbox-content" style="cursor: grab;">
+      <img src="" id="lightbox-img" alt="Preview Image" draggable="false" />
+    </div>
+  </div>
+
+<script src="/static/main.js?v=161" type="module"></script>
+</body>
+</html>

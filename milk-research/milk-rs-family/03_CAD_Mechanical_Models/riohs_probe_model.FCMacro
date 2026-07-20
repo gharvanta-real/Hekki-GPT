@@ -1,0 +1,88 @@
+# -*- coding: utf-8 -*-
+# RIOHS Dip-In Milk Quality Analyzer: 3D CAD Modeling Macro
+# Designed for execution in FreeCAD Python Console or Macro Player.
+# Creates the physical casing, sensing shaft, coaxial ring grooves, 
+# and 5-degree tilted sapphire window bezel.
+
+import math
+import FreeCAD as App
+import Part
+
+# 1. Initialize Document
+doc = App.activeDocument()
+if doc is None:
+    doc = App.newDocument("RIOHS_Dip_In_Probe")
+
+print("Generating 3D model for RIOHS Dip-In Wand...")
+
+# --- Design Dimensions ---
+HANDLE_HEIGHT = 95.0
+HANDLE_RADIUS = 14.0   # Diameter = 28mm
+SHAFT_HEIGHT = 70.0
+SHAFT_RADIUS = 6.0     # Diameter = 12mm
+WALL_THICKNESS = 2.0
+WINDOW_RADIUS = 1.5    # Diameter = 3mm
+
+# --- Create 3D Solids ---
+
+# 2. Upper Handle (Outer Body)
+handle_outer = Part.makeCylinder(HANDLE_RADIUS, HANDLE_HEIGHT)
+
+# 3. Upper Handle Cavity (Hollow Pocket for PCB & Battery)
+handle_inner = Part.makeCylinder(HANDLE_RADIUS - WALL_THICKNESS, HANDLE_HEIGHT - WALL_THICKNESS)
+handle_inner.translate(App.Vector(0, 0, WALL_THICKNESS)) # Shift up to keep bottom closed
+
+# Hollow Handle via Boolean Cut
+handle_casing = handle_outer.cut(handle_inner)
+
+# 4. Probe Shaft (Stainless 316 Sleeve)
+shaft_solid = Part.makeCylinder(SHAFT_RADIUS, SHAFT_HEIGHT)
+
+# Translate shaft down so it extends from the bottom of the handle
+shaft_solid.translate(App.Vector(0, 0, -SHAFT_HEIGHT))
+
+# 5. Coaxial EC Ring Slots (4 Grooves, Width 2.0mm, Spacing 5.0mm)
+# We will create cutting discs and cut them out of the shaft.
+shaft_with_grooves = shaft_solid
+for i in range(4):
+    groove_z = -15.0 - (i * (2.0 + 5.0)) # Starts 15mm from tip
+    groove_cutter = Part.makeCylinder(SHAFT_RADIUS + 0.1, 2.0) # slightly wider than shaft
+    groove_cutter.translate(App.Vector(0, 0, groove_z))
+    
+    # Cut groove out of the shaft
+    shaft_with_grooves = shaft_with_grooves.cut(groove_cutter)
+
+# 6. Tilted Bezel at Sensing Tip (Cut tip at 5-degree angle)
+# We create a large cutting box, tilt it by 5 degrees, and cut the shaft tip.
+tilt_angle_rad = math.radians(5.0)
+cutter_box = Part.makeBox(30.0, 30.0, 10.0)
+# Center cutter box
+cutter_box.translate(App.Vector(-15.0, -15.0, -SHAFT_HEIGHT - 5.0))
+# Rotate by 5 degrees around Y-axis to create the tilt angle
+cutter_box.rotate(App.Vector(0, 0, -SHAFT_HEIGHT), App.Vector(0, 1, 0), 5.0)
+
+# Cut the tip of the shaft
+sensing_shaft = shaft_with_grooves.cut(cutter_box)
+
+# 7. Sapphire Window Slot (3mm Hole orthogonal to the 5-degree face)
+window_hole = Part.makeCylinder(WINDOW_RADIUS, 5.0)
+window_hole.translate(App.Vector(0, 0, -SHAFT_HEIGHT - 2.0))
+window_hole.rotate(App.Vector(0, 0, -SHAFT_HEIGHT), App.Vector(0, 1, 0), 5.0)
+
+# Cut window hole
+sensing_shaft_final = sensing_shaft.cut(window_hole)
+
+# 8. Assemble Handle and Sensing Shaft
+# Fuse both parts to form the completed probe wand housing
+completed_wand = handle_casing.fuse(sensing_shaft_final)
+
+# 9. Add Geometry to FreeCAD Document Object Tree
+probe_obj = doc.addObject("Part::Feature", "RIOHS_Probe_Wand")
+probe_obj.Shape = completed_wand
+
+# Apply color styles (Handle = Silver, Shaft = Metal)
+probe_obj.ViewObject.ShapeColor = (0.75, 0.75, 0.75) # Silver gray
+
+# 10. Recompute and Redraw Document View
+doc.recompute()
+print("RIOHS 3D CAD Model successfully generated!")

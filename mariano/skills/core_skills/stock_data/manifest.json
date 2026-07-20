@@ -1,0 +1,1 @@
+{"name": "stock_data", "description": "Live stock data via yfinance", "version": "1.0.0", "author": "mariano-core", "evolved": false, "tags": ["finance", "stocks"]}

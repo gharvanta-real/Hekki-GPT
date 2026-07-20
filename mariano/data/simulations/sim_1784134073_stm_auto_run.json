@@ -1,0 +1,244 @@
+{
+  "simulation_name": "STM Auto Run",
+  "date_run": "2026-07-15",
+  "metadata": {
+    "max_temperature_c": 500.0,
+    "min_temperature_c": 200.0,
+    "thermal_conductivity_w_mk": 25.0,
+    "max_shear_stress_pa": 4.5,
+    "pitting_rate_mm_year": 1.25,
+    "electrolyte_conductivity_s_m": 2.1,
+    "auto_rotate": false
+  },
+  "geometry": {
+    "pipe_diameter_mm": 50.0,
+    "pipe_length_mm": 300.0,
+    "wall_thickness_mm": 10.0
+  },
+  "points": [
+    {
+      "z": 0.0,
+      "angle": 0,
+      "temp_c": 500.0,
+      "stress_pa": 4.95,
+      "pitting_potential_v": -0.522
+    },
+    {
+      "z": 0.0,
+      "angle": 90,
+      "temp_c": 500.0,
+      "stress_pa": 4.5,
+      "pitting_potential_v": -0.52
+    },
+    {
+      "z": 0.0,
+      "angle": 180,
+      "temp_c": 500.0,
+      "stress_pa": 4.05,
+      "pitting_potential_v": -0.518
+    },
+    {
+      "z": 0.0,
+      "angle": 270,
+      "temp_c": 500.0,
+      "stress_pa": 4.5,
+      "pitting_potential_v": -0.52
+    },
+    {
+      "z": 42.9,
+      "angle": 0,
+      "temp_c": 465.7,
+      "stress_pa": 4.82,
+      "pitting_potential_v": -0.518
+    },
+    {
+      "z": 42.9,
+      "angle": 90,
+      "temp_c": 465.7,
+      "stress_pa": 4.37,
+      "pitting_potential_v": -0.516
+    },
+    {
+      "z": 42.9,
+      "angle": 180,
+      "temp_c": 465.7,
+      "stress_pa": 3.92,
+      "pitting_potential_v": -0.514
+    },
+    {
+      "z": 42.9,
+      "angle": 270,
+      "temp_c": 465.7,
+      "stress_pa": 4.37,
+      "pitting_potential_v": -0.516
+    },
+    {
+      "z": 85.7,
+      "angle": 0,
+      "temp_c": 431.4,
+      "stress_pa": 4.69,
+      "pitting_potential_v": -0.514
+    },
+    {
+      "z": 85.7,
+      "angle": 90,
+      "temp_c": 431.4,
+      "stress_pa": 4.24,
+      "pitting_potential_v": -0.512
+    },
+    {
+      "z": 85.7,
+      "angle": 180,
+      "temp_c": 431.4,
+      "stress_pa": 3.79,
+      "pitting_potential_v": -0.51
+    },
+    {
+      "z": 85.7,
+      "angle": 270,
+      "temp_c": 431.4,
+      "stress_pa": 4.24,
+      "pitting_potential_v": -0.512
+    },
+    {
+      "z": 128.6,
+      "angle": 0,
+      "temp_c": 397.1,
+      "stress_pa": 4.56,
+      "pitting_potential_v": -0.51
+    },
+    {
+      "z": 128.6,
+      "angle": 90,
+      "temp_c": 397.1,
+      "stress_pa": 4.11,
+      "pitting_potential_v": -0.508
+    },
+    {
+      "z": 128.6,
+      "angle": 180,
+      "temp_c": 397.1,
+      "stress_pa": 3.66,
+      "pitting_potential_v": -0.506
+    },
+    {
+      "z": 128.6,
+      "angle": 270,
+      "temp_c": 397.1,
+      "stress_pa": 4.11,
+      "pitting_potential_v": -0.508
+    },
+    {
+      "z": 171.4,
+      "angle": 0,
+      "temp_c": 362.9,
+      "stress_pa": 4.44,
+      "pitting_potential_v": -0.506
+    },
+    {
+      "z": 171.4,
+      "angle": 90,
+      "temp_c": 362.9,
+      "stress_pa": 3.99,
+      "pitting_potential_v": -0.504
+    },
+    {
+      "z": 171.4,
+      "angle": 180,
+      "temp_c": 362.9,
+      "stress_pa": 3.54,
+      "pitting_potential_v": -0.502
+    },
+    {
+      "z": 171.4,
+      "angle": 270,
+      "temp_c": 362.9,
+      "stress_pa": 3.99,
+      "pitting_potential_v": -0.504
+    },
+    {
+      "z": 214.3,
+      "angle": 0,
+      "temp_c": 328.6,
+      "stress_pa": 4.31,
+      "pitting_potential_v": -0.502
+    },
+    {
+      "z": 214.3,
+      "angle": 90,
+      "temp_c": 328.6,
+      "stress_pa": 3.86,
+      "pitting_potential_v": -0.5
+    },
+    {
+      "z": 214.3,
+      "angle": 180,
+      "temp_c": 328.6,
+      "stress_pa": 3.41,
+      "pitting_potential_v": -0.498
+    },
+    {
+      "z": 214.3,
+      "angle": 270,
+      "temp_c": 328.6,
+      "stress_pa": 3.86,
+      "pitting_potential_v": -0.5
+    },
+    {
+      "z": 257.1,
+      "angle": 0,
+      "temp_c": 294.3,
+      "stress_pa": 4.18,
+      "pitting_potential_v": -0.498
+    },
+    {
+      "z": 257.1,
+      "angle": 90,
+      "temp_c": 294.3,
+      "stress_pa": 3.73,
+      "pitting_potential_v": -0.496
+    },
+    {
+      "z": 257.1,
+      "angle": 180,
+      "temp_c": 294.3,
+      "stress_pa": 3.28,
+      "pitting_potential_v": -0.494
+    },
+    {
+      "z": 257.1,
+      "angle": 270,
+      "temp_c": 294.3,
+      "stress_pa": 3.73,
+      "pitting_potential_v": -0.496
+    },
+    {
+      "z": 300.0,
+      "angle": 0,
+      "temp_c": 260.0,
+      "stress_pa": 4.05,
+      "pitting_potential_v": -0.494
+    },
+    {
+      "z": 300.0,
+      "angle": 90,
+      "temp_c": 260.0,
+      "stress_pa": 3.6,
+      "pitting_potential_v": -0.492
+    },
+    {
+      "z": 300.0,
+      "angle": 180,
+      "temp_c": 260.0,
+      "stress_pa": 3.15,
+      "pitting_potential_v": -0.49
+    },
+    {
+      "z": 300.0,
+      "angle": 270,
+      "temp_c": 260.0,
+      "stress_pa": 3.6,
+      "pitting_potential_v": -0.492
+    }
+  ]
+}

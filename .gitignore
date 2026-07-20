@@ -1,0 +1,48 @@
+# Node.js dependencies
+node_modules/
+
+# Python virtual environment and cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.venv/
+venv/
+ENV/
+env/
+
+# Build and distribution outputs
+dist/
+build/
+backend_dist/
+*.spec
+
+# Local config, DB, and private files
+.env
+.env.local
+.env.*.local
+*.db
+hekki.db
+
+# App Runtime Data & Workspace files (ignore private user data/workspaces)
+data/workspace/
+data/workspaces/
+data/logs/
+data/simulations/
+data/AF-O60674-*
+data/thalamus_signatures.json
+data/user_feedback_data.csv
+data/user_persona.json
+data/dynamic_settings.json
+data/disabled_skills.json
+
+# Local history extension files (e.g. VS Code local history)
+.history/
+.history
+
+# Assistant files
+.aider*
+
+# OS metadata
+.DS_Store
+Thumbs.db

@@ -1,0 +1,191 @@
+[
+  {
+    "run_id": "run_1784100864",
+    "simulation_name": "STM Auto Run",
+    "timestamp": 1784100864,
+    "date": "2026-07-15 13:04:24",
+    "filename": "sim_1784100864_stm_auto_run.json",
+    "parameters": {
+      "geometry": {
+        "diameter": 50.0,
+        "length": 300.0,
+        "thickness": 10.0
+      },
+      "boundary_conditions": {
+        "inlet_temp_c": 700.0,
+        "wall_cooling_temp_c": 200.0
+      },
+      "fluid_properties": {
+        "enhanced_thermal_conductivity": 25.0,
+        "shear_stress_limit": 4.5,
+        "conductivity_s_m": 2.1
+      },
+      "corrosion_properties": {
+        "pitting_rate_mm_year": 1.25
+      }
+    },
+    "debate_summary": "Autonomous design run generated from synthesis."
+  },
+  {
+    "run_id": "run_1784101552",
+    "simulation_name": "STM Auto Run",
+    "timestamp": 1784101552,
+    "date": "2026-07-15 13:15:52",
+    "filename": "sim_1784101552_stm_auto_run.json",
+    "parameters": {
+      "geometry": {
+        "diameter": 50.0,
+        "length": 300.0,
+        "thickness": 10.0
+      },
+      "boundary_conditions": {
+        "inlet_temp_c": 700.0,
+        "wall_cooling_temp_c": 200.0
+      },
+      "fluid_properties": {
+        "enhanced_thermal_conductivity": 25.0,
+        "shear_stress_limit": 4.5,
+        "conductivity_s_m": 2.1
+      },
+      "corrosion_properties": {
+        "pitting_rate_mm_year": 1.25
+      }
+    },
+    "debate_summary": "Autonomous design run generated from synthesis."
+  },
+  {
+    "run_id": "run_1784133898",
+    "simulation_name": "STM Auto Run",
+    "timestamp": 1784133898,
+    "date": "2026-07-15 22:14:58",
+    "filename": "sim_1784133898_stm_auto_run.json",
+    "parameters": {
+      "geometry": {
+        "diameter": 50.0,
+        "length": 300.0,
+        "thickness": 10.0
+      },
+      "boundary_conditions": {
+        "inlet_temp_c": 700.0,
+        "wall_cooling_temp_c": 200.0
+      },
+      "fluid_properties": {
+        "enhanced_thermal_conductivity": 25.0,
+        "shear_stress_limit": 4.5,
+        "conductivity_s_m": 2.1
+      },
+      "corrosion_properties": {
+        "pitting_rate_mm_year": 1.25
+      }
+    },
+    "debate_summary": "Autonomous design run generated from synthesis."
+  },
+  {
+    "run_id": "run_1784134073",
+    "simulation_name": "STM Auto Run",
+    "timestamp": 1784134073,
+    "date": "2026-07-15 22:17:53",
+    "filename": "sim_1784134073_stm_auto_run.json",
+    "parameters": {
+      "geometry": {
+        "diameter": 50.0,
+        "length": 300.0,
+        "thickness": 10.0
+      },
+      "boundary_conditions": {
+        "inlet_temp_c": 500.0,
+        "wall_cooling_temp_c": 200.0
+      },
+      "fluid_properties": {
+        "enhanced_thermal_conductivity": 25.0,
+        "shear_stress_limit": 4.5,
+        "conductivity_s_m": 2.1
+      },
+      "corrosion_properties": {
+        "pitting_rate_mm_year": 1.25
+      }
+    },
+    "debate_summary": "Autonomous design run generated from synthesis."
+  },
+  {
+    "run_id": "run_1784134433",
+    "simulation_name": "STM Auto Run",
+    "timestamp": 1784134433,
+    "date": "2026-07-15 22:23:53",
+    "filename": "sim_1784134433_stm_auto_run.json",
+    "parameters": {
+      "geometry": {
+        "diameter": 50.0,
+        "length": 12.0,
+        "thickness": 10.0
+      },
+      "boundary_conditions": {
+        "inlet_temp_c": 700.0,
+        "wall_cooling_temp_c": 200.0
+      },
+      "fluid_properties": {
+        "enhanced_thermal_conductivity": 25.0,
+        "shear_stress_limit": 4.5,
+        "conductivity_s_m": 2.1
+      },
+      "corrosion_properties": {
+        "pitting_rate_mm_year": 1.25
+      }
+    },
+    "debate_summary": "Autonomous design run generated from synthesis."
+  },
+  {
+    "run_id": "run_1784134808",
+    "simulation_name": "STM Auto Run",
+    "timestamp": 1784134808,
+    "date": "2026-07-15 22:30:08",
+    "filename": "sim_1784134808_stm_auto_run.json",
+    "parameters": {
+      "geometry": {
+        "diameter": 8.0,
+        "length": 125.0,
+        "thickness": 10.0
+      },
+      "boundary_conditions": {
+        "inlet_temp_c": 700.0,
+        "wall_cooling_temp_c": 200.0
+      },
+      "fluid_properties": {
+        "enhanced_thermal_conductivity": 25.0,
+        "shear_stress_limit": 4.5,
+        "conductivity_s_m": 2.1
+      },
+      "corrosion_properties": {
+        "pitting_rate_mm_year": 1.25
+      }
+    },
+    "debate_summary": "Autonomous design run generated from synthesis."
+  },
+  {
+    "run_id": "run_1784216007",
+    "simulation_name": "STM Auto Run",
+    "timestamp": 1784216007,
+    "date": "2026-07-16 21:03:27",
+    "filename": "sim_1784216007_stm_auto_run.json",
+    "parameters": {
+      "geometry": {
+        "diameter": 10.0,
+        "length": 300.0,
+        "thickness": 10.0
+      },
+      "boundary_conditions": {
+        "inlet_temp_c": 700.0,
+        "wall_cooling_temp_c": 200.0
+      },
+      "fluid_properties": {
+        "enhanced_thermal_conductivity": 25.0,
+        "shear_stress_limit": 4.5,
+        "conductivity_s_m": 2.1
+      },
+      "corrosion_properties": {
+        "pitting_rate_mm_year": 1.25
+      }
+    },
+    "debate_summary": "Autonomous design run generated from synthesis."
+  }
+]

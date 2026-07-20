@@ -1,0 +1,141 @@
+/* MARIANO — Sky Blue Terminal Style Theme */
+
+Screen {
+    background: #0284c7;
+    color: #ffffff;
+}
+
+#header {
+    height: 3;
+    background: #0284c7;
+    border-bottom: solid #ffffff 30%;
+    padding: 0 2;
+    layout: horizontal;
+}
+
+#header-title {
+    color: #ffffff;
+    text-style: bold;
+    width: auto;
+    content-align: left middle;
+}
+
+#header-status {
+    color: #ffffff;
+    text-style: italic;
+    width: 1fr;
+    content-align: right middle;
+    opacity: 0.8;
+}
+
+#main-layout {
+    layout: horizontal;
+    height: 1fr;
+}
+
+#chat-panel {
+    width: 2fr;
+    border-right: solid #ffffff 30%;
+    padding: 1;
+    background: #0284c7;
+}
+
+#side-panel {
+    width: 1fr;
+    layout: vertical;
+    background: #0284c7;
+}
+
+#status-panel {
+    height: auto;
+    border-bottom: solid #ffffff 30%;
+    padding: 1;
+    background: #0284c7;
+}
+
+#tool-trace-panel {
+    height: 1fr;
+    padding: 1;
+    background: #0284c7;
+}
+
+#input-bar {
+    height: 3;
+    border-top: solid #ffffff 30%;
+    background: #0284c7;
+    padding: 0 1;
+}
+
+#user-input {
+    background: transparent;
+    border: none #ffffff;
+    color: #ffffff;
+    height: 3;
+}
+
+#user-input:focus {
+    border: solid #ffffff 30%;
+}
+
+/* Sections & Labels */
+.section-title {
+    color: #ffffff;
+    text-style: bold underline;
+    margin-bottom: 1;
+}
+
+.label-primary {
+    color: #ffffff;
+    text-style: bold;
+}
+
+.label-success {
+    color: #ffffff;
+}
+
+.label-error {
+    color: #ffffff;
+    text-style: underline;
+}
+
+.label-warning {
+    color: #ffffff;
+    text-style: bold;
+}
+
+.label-dim {
+    color: #e0f2fe;
+}
+
+.msg-user {
+    color: #ffffff;
+    padding: 0 0 0 2;
+    margin-top: 1;
+    text-style: bold;
+}
+
+.msg-assistant {
+    color: #f0f9ff;
+    padding: 0 0 0 2;
+    margin-top: 1;
+}
+
+.msg-system {
+    color: #e0f2fe;
+    padding: 0 0 0 2;
+    margin-top: 1;
+}
+
+.msg-header {
+    text-style: bold;
+}
+
+/* Logging & Ticker style */
+#status-notifications {
+    color: #ffffff;
+    opacity: 0.9;
+}
+
+#status-brain-state {
+    color: #ffffff;
+}

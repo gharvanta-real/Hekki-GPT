@@ -1,0 +1,576 @@
+/* === MARIANO MAIN ENTRY POINT === */
+
+import { initWaveCanvas } from '/static/wave_canvas.js';
+import { VoiceProcessor } from '/static/voice_processor.js';
+import { TabManager }     from '/static/tab_manager.js';
+
+import { bindInputs, clearInputs, appendMsg, scrollChat, ChatSessionManager } from '/static/js/chat.js';
+import { initSettings }    from '/static/js/settings.js';
+import { bindNavigation }  from '/static/js/nav.js';
+import { router, initRouterState } from '/static/js/router.js';
+import { SearchModal }     from '/static/js/components/search_modal.js';
+import { SkillsPage }      from '/static/js/pages/skills_page.js';
+import { handleChatAgentEvent } from '/static/js/agent_stream.js';
+
+// Modular UI component imports
+import { showToast } from '/static/js/components/toast.js';
+import { bindModelPills, updateModelPills } from '/static/js/components/model_selector.js';
+import { initAttachDropdowns } from '/static/js/components/attach_dropdown.js';
+import { bindSidebarToggle, bindTitlebarActions, bindThemeToggle, bindImageLightbox } from '/static/js/components/layout_controls.js';
+import { bindVoice, resetVoiceUIInstance } from '/static/js/components/voice_controller.js';
+import { socket, setupSocketEvents, send } from '/static/js/components/socket_manager.js';
+// Debate playground â€” isolated module
+import { initDebatePage, handleDebateEvent } from '/static/js/debate/debate_page.js?v=136';
+// Coder IDE page
+import { initCoderPage, teardownCoderPage } from '/static/js/pages/coder_page.js';
+
+
+window.updateModelPills = updateModelPills;
+window.showToast = showToast;
+window.handleDebateEvent = handleDebateEvent;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// â”€â”€ GLOBALS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+let voice  = null;
+let tabs   = null;
+let stopWave = null;
+
+// Page instances
+let agentPage       = null;
+let skillsPage      = null;
+let changelogPage   = null;
+let projectsSidebar = null;
+
+// Wrap primitive boolean in an object to share mutable state across ES6 modules
+const inConversationState = { val: false };
+window.inConversationState = inConversationState;
+
+// Helper
+const $ = id => document.getElementById(id);
+
+const hasAnyPastProject = () => {
+  const activeProj = localStorage.getItem('mariano_active_project');
+  if (activeProj) return true;
+
+  try {
+    const chats = JSON.parse(localStorage.getItem('mariano_chats') || '[]');
+    if (chats.some(c => c.project)) return true;
+  } catch (e) {}
+
+  try {
+    const sessions = JSON.parse(localStorage.getItem('hekki_agent_sessions') || '[]');
+    if (sessions.some(s => s.project)) return true;
+  } catch (e) {}
+
+  return false;
+};
+
+window.HudLogger = {
+  logs: [
+    { type: 'info', text: 'System initialized.', timestamp: new Date().toLocaleTimeString() }
+  ],
+  append(type, text) {
+    const timestamp = new Date().toLocaleTimeString();
+    const logEntry = { type, text, timestamp };
+    this.logs.push(logEntry);
+    
+    // If the shadow DOM for the tab is active, append it in real time
+    const tab = window.tabs?.map.get('tab-process-hud');
+    if (tab) {
+      const shadow = tab.view.firstChild?.shadowRoot;
+      const container = shadow?.getElementById('hud-log-container');
+      if (container) {
+        const line = document.createElement('div');
+        line.className = 'log-line';
+        line.innerHTML = `
+          <span class="log-time">[${timestamp}]</span>
+          <span class="log-text ${type}">${text}</span>
+        `;
+        container.appendChild(line);
+        
+        // Auto-scroll to bottom
+        const view = tab.view.firstChild;
+        if (view) view.scrollTop = view.scrollHeight;
+      }
+    }
+  },
+  show() {
+    if (!window.tabs) return;
+    
+    const key = 'tab-process-hud';
+    const appPane = document.getElementById('app-pane');
+    const resizer = document.getElementById('app-pane-resizer');
+    
+    if (!window.tabs.map.has(key)) {
+      const html = `
+        <div style="padding: 16px; min-height: 100%; box-sizing: border-box; background: var(--bg); color: var(--text);">
+          <div id="hud-log-container" style="display: flex; flex-direction: column; gap: 6px; font-family: monospace; font-size: 12.5px;"></div>
+        </div>
+      `;
+      const css = `
+        :host {
+          background: var(--bg) !important;
+        }
+        .log-line {
+          display: flex;
+          gap: 8px;
+          line-height: 1.5;
+          font-family: monospace;
+        }
+        .log-time {
+          color: var(--text-3);
+          flex-shrink: 0;
+        }
+        .log-text {
+          word-break: break-all;
+          color: var(--text);
+        }
+        .log-text.exec { color: var(--blue, #2563eb); }
+        .log-text.success { color: var(--green, #16a34a); }
+        .log-text.failed { color: #dc2626; }
+        .log-text.info { color: var(--text-3); }
+
+        :host-context(body.dark) .log-text.exec { color: #60a5fa; }
+        :host-context(body.dark) .log-text.success { color: #34d399; }
+        :host-context(body.dark) .log-text.failed { color: #f87171; }
+      `;
+      window.tabs.createTab('process-hud', 'Process HUD', html, css, '', 'terminal');
+      
+      // Populate with existing logs
+      const tab = window.tabs.map.get(key);
+      const shadow = tab?.view.firstChild?.shadowRoot;
+      const container = shadow?.getElementById('hud-log-container');
+      if (container) {
+        this.logs.forEach(log => {
+          const line = document.createElement('div');
+          line.className = 'log-line';
+          line.innerHTML = `
+            <span class="log-time">[${log.timestamp}]</span>
+            <span class="log-text ${log.type}">${log.text}</span>
+          `;
+          container.appendChild(line);
+        });
+        const view = tab.view.firstChild;
+        if (view) view.scrollTop = view.scrollHeight;
+      }
+    } else {
+      if (appPane && appPane.classList.contains('hidden-pane')) {
+        window.tabs.switchTo(key);
+      } else if (window.tabs.active === key) {
+        appPane?.classList.add('hidden-pane');
+        resizer?.classList.add('hidden-pane');
+      } else {
+        window.tabs.switchTo(key);
+      }
+    }
+  }
+};
+
+// â”€â”€ BOOT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function boot() {
+  console.log("Booting MARIANO dashboard...");
+  window._router = router;   // expose for coder_page.js and other modules
+  initDebatePage();
+  initCoderPage();
+  // Register coder page teardown so navigating away always cleans up DOM
+  router.onLeave('coder', teardownCoderPage);
+  // Enforce initial page state = chat (clears any coder DOM/breadcrumb written at boot)
+  initRouterState();
+  if (window.lucide) {
+    console.log("Lucide detected, compiling icons.");
+    lucide.createIcons();
+  } else {
+    console.warn("Lucide library not found on load!");
+  }
+
+  voice = new VoiceProcessor();
+  tabs  = new TabManager('pane-tabs', 'pane-content', log);
+  window.tabs = tabs;
+
+  // Initialize drag resizer for right panel
+  const resizer = $('app-pane-resizer');
+  const appPane = $('app-pane');
+  if (resizer && appPane) {
+    let isDragging = false;
+    resizer.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      document.body.style.cursor = 'col-resize';
+      resizer.classList.add('dragging');
+      appPane.classList.add('no-transition');
+      e.preventDefault();
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      const width = window.innerWidth - e.clientX;
+      const minWidth = 280;
+      const maxWidth = window.innerWidth * 0.8;
+      if (width >= minWidth && width <= maxWidth) {
+        appPane.style.width = `${width}px`;
+      }
+    });
+
+    document.addEventListener('mouseup', () => {
+      if (isDragging) {
+        isDragging = false;
+        document.body.style.cursor = '';
+        resizer.classList.remove('dragging');
+        appPane.classList.remove('no-transition');
+      }
+    });
+  }
+
+  setGreeting();
+  bindSidebarToggle();
+  bindThemeToggle();
+  bindImageLightbox();
+  bindVoice(voice, socket, inConversationState, log);
+
+  // Bind inputs and send queries through WS
+  bindInputs((text) => send(text, enterConversation, log));
+  window.clearInputs = clearInputs;
+
+  bindShortcuts();
+  initSettings(setGreeting);
+  window.updateModelPills();
+  bindModelPills();
+  const handleStopGen = () => {
+    socket.send(JSON.stringify({ type: 'stop' }));
+    window.setGeneratingState(false);
+  };
+  $('btn-stop-gen')?.addEventListener('click', handleStopGen);
+  $('btn-stop-gen-conv')?.addEventListener('click', handleStopGen);
+  initAttachDropdowns(inConversationState);
+  bindTitlebarActions();
+  new SearchModal(ChatSessionManager);
+
+  // Setup WS events routing and logs reconnect loops
+  setupSocketEvents(
+    enterConversation,
+    log,
+    (p) => {
+      if (!p.text) return;
+      
+      if (resetVoiceUIInstance) resetVoiceUIInstance();
+      
+      const debateInput = document.getElementById('debate-input');
+      const agentInput = document.getElementById('agent-task-input');
+      if (router.currentRoute === 'debate' && debateInput) {
+        debateInput.value = p.text;
+        debateInput.style.height = 'auto';
+        debateInput.style.height = `${debateInput.scrollHeight}px`;
+        debateInput.dispatchEvent(new Event('input'));
+        debateInput.focus();
+      } else if (router.currentRoute === 'agent' && agentInput) {
+        agentInput.value = p.text;
+        agentInput.style.height = 'auto';
+        agentInput.style.height = `${agentInput.scrollHeight}px`;
+        agentInput.dispatchEvent(new Event('input'));
+        agentInput.focus();
+      } else {
+        send(p.text, enterConversation, log);
+      }
+    }
+  );
+
+
+
+
+
+  // ── Register router page callbacks ──────────────────
+  skillsPage      = new SkillsPage(showToast);
+  window.router = router;
+
+
+
+
+
+  router.onNavigate('skills', () => {
+    const pane = $('skills-pane');
+    if (pane) skillsPage.mount(pane);
+  });
+
+  router.onNavigate('chat', () => {
+    ChatSessionManager.ensureNormalChatActive();
+
+    document.querySelectorAll('.agent-welcome-wrapper').forEach(el => el.remove());
+
+    if (inConversationState.val) {
+      $('home-screen')?.classList.add('hidden');
+      $('bottom-input-bar')?.classList.remove('hidden');
+    } else {
+      $('home-screen')?.classList.remove('hidden');
+      $('bottom-input-bar')?.classList.add('hidden');
+    }
+    // Only refresh the dynamic chat session list — never rebuild sidebar HTML,
+    // which would destroy all event listeners (theme, toggle, settings, etc.)
+    ChatSessionManager.renderChatsList();
+  });
+
+  // â”€â”€ Bind dock navigation buttons â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  bindNavigation(tabs, showToast, inConversationState);
+  ChatSessionManager.renderChatsList();
+
+  // Auto-resize textareas
+  ['chat-input', 'chat-input-conv'].forEach(id => {
+    const el = $(id);
+    if (!el) return;
+    el.style.overflowY = 'hidden';
+    el.addEventListener('input', () => {
+      el.style.height = 'auto';
+      el.style.height = el.scrollHeight + 'px';
+      el.style.overflowY = el.scrollHeight > 200 ? 'auto' : 'hidden';
+    });
+  });
+
+  // Restore active chat if stored in localStorage
+  const storedId = localStorage.getItem('mariano_active_chat_id');
+  if (storedId) {
+    const chats = ChatSessionManager.getChats();
+    if (chats.some(c => c.id === storedId)) {
+      ChatSessionManager.loadChat(storedId);
+      enterConversation();
+    }
+  }
+
+  // Global click interceptor for file:/// links
+  document.addEventListener('click', (e) => {
+    const link = e.target.closest('a');
+    if (!link) return;
+    const href = link.getAttribute('href');
+    if (!href) return;
+    
+    if (href.startsWith('file:///')) {
+      e.preventDefault();
+      
+      // Parse file path
+      let decodedPath = decodeURIComponent(href.replace('file:///', ''));
+      decodedPath = decodedPath.replace(/\\/g, '/');
+
+      // Copy path to clipboard
+      navigator.clipboard.writeText(href).then(() => {
+        showToast('Link Copied', 'Browser blocked loading local file. Path copied to clipboard.', 3000);
+      });
+    }
+  });
+
+  // Fade out loader and fade in shell
+  setTimeout(() => {
+    const loader = $('loader');
+    if (loader) { loader.classList.add('out'); }
+    const shell = $('shell');
+    if (shell) { shell.style.opacity = '1'; }
+    const input = inConversationState.val ? $('chat-input-conv') : $('chat-input');
+    input?.focus();
+  }, 900);
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', boot);
+} else {
+  boot();
+}
+
+// ── GREETING & USER PROFILE ──────────────────────────────────────────────────
+function setGreeting(nameOverride) {
+  const el = $('greeting-text');
+  const updateSidebar = (name) => {
+    const sbName = $('sidebar-user-name');
+    const sbAvatar = $('sidebar-user-avatar');
+    if (sbName) sbName.textContent = name || 'User';
+    if (sbAvatar) sbAvatar.textContent = (name || 'U').charAt(0).toUpperCase();
+  };
+
+  const hour = new Date().getHours();
+  const timeGreet = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+  
+  if (nameOverride) {
+    if (el) el.textContent = `${timeGreet}, ${nameOverride}`;
+    updateSidebar(nameOverride);
+    return;
+  }
+  
+  // Load from backend
+  fetch('/api/settings')
+    .then(r => r.json())
+    .then(cfg => {
+      const name = cfg.user_name || localStorage.getItem('hekki_user_name') || '';
+      if (el) el.textContent = name ? `${timeGreet}, ${name}` : `${timeGreet}`;
+      updateSidebar(name);
+    })
+    .catch(() => {
+      if (el) el.textContent = `${timeGreet}`;
+      updateSidebar('');
+    });
+}
+
+window.setGeneratingState = function(isGenerating) {
+  const btnHome = $('btn-stop-gen');
+  const btnConv = $('btn-stop-gen-conv');
+  if (isGenerating) {
+    btnHome?.classList.remove('hidden');
+    btnConv?.classList.remove('hidden');
+  } else {
+    btnHome?.classList.add('hidden');
+    btnConv?.classList.add('hidden');
+  }
+};
+
+// â”€â”€ SHORTCUTS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function bindShortcuts() {
+  document.querySelectorAll('.shortcut').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const label = btn.textContent.trim();
+      $('chat-input')?.focus();
+      $('chat-input').value = label + ': ';
+      $('chat-input').dispatchEvent(new Event('input'));
+    });
+  });
+}
+
+// â”€â”€ CONVERSATION MODE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function enterConversation() {
+  if (inConversationState.val) return;
+  inConversationState.val = true;
+  
+  // Show convo pane, hide welcome pane
+  $('home-screen')?.classList.add('hidden');
+  $('bottom-input-bar')?.classList.remove('hidden');
+  $('chat-input-conv')?.focus();
+}
+
+// â”€â”€ LOG â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function log(text, type = '') {
+  console.log(`[${type || 'log'}] ${text}`);
+}
+
+// â”€â”€ CUSTOM DIALOG MODALS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+window.showCustomConfirm = function(title, message, callback) {
+  const modal = document.getElementById('custom-dialog-modal');
+  const titleEl = document.getElementById('custom-dialog-title');
+  const msgEl = document.getElementById('custom-dialog-message');
+  const inputContainer = document.getElementById('custom-dialog-input-container');
+  const confirmBtn = document.getElementById('custom-dialog-confirm');
+  const cancelBtn = document.getElementById('custom-dialog-cancel');
+  const closeBtn = document.getElementById('custom-dialog-close');
+
+  if (!modal) return;
+
+  titleEl.textContent = title;
+  msgEl.textContent = message;
+  inputContainer.classList.add('hidden');
+  modal.classList.remove('hidden');
+
+  const cleanup = () => {
+    modal.classList.add('hidden');
+    confirmBtn.removeEventListener('click', onConfirm);
+    cancelBtn.removeEventListener('click', onCancel);
+    closeBtn.removeEventListener('click', onCancel);
+  };
+
+  const onConfirm = () => {
+    cleanup();
+    callback(true);
+  };
+
+  const onCancel = () => {
+    cleanup();
+    callback(false);
+  };
+
+  confirmBtn.addEventListener('click', onConfirm);
+  cancelBtn.addEventListener('click', onCancel);
+  closeBtn.addEventListener('click', onCancel);
+};
+
+window.showCustomPrompt = function(title, message, defaultValue, callback) {
+  const modal = document.getElementById('custom-dialog-modal');
+  const titleEl = document.getElementById('custom-dialog-title');
+  const msgEl = document.getElementById('custom-dialog-message');
+  const inputContainer = document.getElementById('custom-dialog-input-container');
+  const inputEl = document.getElementById('custom-dialog-input');
+  const confirmBtn = document.getElementById('custom-dialog-confirm');
+  const cancelBtn = document.getElementById('custom-dialog-cancel');
+  const closeBtn = document.getElementById('custom-dialog-close');
+
+  if (!modal) return;
+
+  titleEl.textContent = title;
+  msgEl.textContent = message;
+  inputContainer.classList.remove('hidden');
+  inputEl.value = defaultValue || '';
+  modal.classList.remove('hidden');
+  setTimeout(() => inputEl.focus(), 50);
+
+  const cleanup = () => {
+    modal.classList.add('hidden');
+    confirmBtn.removeEventListener('click', onConfirm);
+    cancelBtn.removeEventListener('click', onCancel);
+    closeBtn.removeEventListener('click', onCancel);
+  };
+
+  const onConfirm = () => {
+    const val = inputEl.value;
+    cleanup();
+    callback(val);
+  };
+
+  const onCancel = () => {
+    cleanup();
+    callback(null);
+  };
+
+  confirmBtn.addEventListener('click', onConfirm);
+  cancelBtn.addEventListener('click', onCancel);
+  closeBtn.addEventListener('click', onCancel);
+};
+
+// â”€â”€ PROJECT WORKSPACE MANAGEMENT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// (initProjectWorkspace removed)
+
+
+
+

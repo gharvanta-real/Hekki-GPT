@@ -1,0 +1,1 @@
+{"name": "coder_refactor", "description": "Transactional AST-aware code refactoring with automatic rollback", "version": "1.0.0", "author": "mariano-core", "evolved": false, "tags": ["code", "refactor", "edit", "compile", "rollback"]}

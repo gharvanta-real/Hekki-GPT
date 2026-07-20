@@ -1,0 +1,1 @@
+{"name": "generate_image", "description": "Generate a new image based on a detailed text prompt using Imagen 3.", "version": "1.0.0", "author": "mariano-core", "evolved": false, "tags": ["image", "generation", "draw", "imagen", "create"]}

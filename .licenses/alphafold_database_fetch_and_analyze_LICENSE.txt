@@ -1,0 +1,4 @@
+AlphaFold Database Fetch and Analyze License Notification
+=========================================================
+Timestamp: 2026-07-17T16:53:00+05:30
+Notification: User has been notified to check the terms and conditions of the AlphaFold Protein Structure Database at https://alphafold.ebi.ac.uk/ before fetching structural data.

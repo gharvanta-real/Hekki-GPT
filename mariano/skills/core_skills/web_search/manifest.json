@@ -1,0 +1,9 @@
+{
+  "name": "web_search",
+  "description": "Search the internet using DuckDuckGo",
+  "version": "1.0.0",
+  "author": "mariano-core",
+  "evolved": false,
+  "tags": ["web", "search", "research"],
+  "dependencies": ["duckduckgo-search"]
+}
