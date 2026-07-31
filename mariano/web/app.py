@@ -1003,6 +1003,134 @@ async def live_audio_websocket_endpoint(websocket: WebSocket):
             await engine.close_session(session_id)
 
 
+# ── GPT-Grade OpenAI-Compatible SSE Streaming Endpoint ─────────────────────────
+class OpenAIChatMessage(BaseModel):
+    role: str
+    content: str
+
+class OpenAIChatCompletionRequest(BaseModel):
+    model: str | None = "hekki-gpt"
+    messages: list[OpenAIChatMessage]
+    stream: bool | None = True
+    chat_id: str | None = None
+    project: str | None = None
+
+@app.post("/api/v1/chat/completions")
+@app.post("/v1/chat/completions")
+async def openai_chat_completions(req: OpenAIChatCompletionRequest):
+    """GPT-Grade OpenAI-compatible Server-Sent Events (SSE) chat streaming endpoint.
+    Allows standard LLM clients, browser apps, and extensions to stream responses.
+    """
+    from fastapi.responses import StreamingResponse
+    import time
+    import uuid
+    from mariano.core.agent.event import AgentEvent
+
+    if not req.messages:
+        from fastapi import HTTPException
+        raise HTTPException(status_code=400, detail="messages array cannot be empty")
+
+    user_input = req.messages[-1].content
+    chat_id = req.chat_id or f"chat_{uuid.uuid4().hex[:8]}"
+    completion_id = f"chatcmpl-{uuid.uuid4().hex[:12]}"
+    created_ts = int(time.time())
+
+    agent: MarianoAgent = app.state.agent
+
+    async def sse_event_generator():
+        try:
+            async for event in agent.run(
+                user_input=user_input,
+                chat_id=chat_id,
+                project=req.project
+            ):
+                if event.type == "response":
+                    chunk_payload = {
+                        "id": completion_id,
+                        "object": "chat.completion.chunk",
+                        "created": created_ts,
+                        "model": req.model or "hekki-gpt",
+                        "choices": [
+                            {
+                                "index": 0,
+                                "delta": {"content": event.content},
+                                "finish_reason": None
+                            }
+                        ]
+                    }
+                    yield f"data: {json.dumps(chunk_payload)}\n\n"
+
+                elif event.type in ("thinking", "tool_start", "tool_result"):
+                    chunk_payload = {
+                        "id": completion_id,
+                        "object": "chat.completion.chunk",
+                        "created": created_ts,
+                        "model": req.model or "hekki-gpt",
+                        "choices": [
+                            {
+                                "index": 0,
+                                "delta": {"tool_event": {"type": event.type, "data": event.content}},
+                                "finish_reason": None
+                            }
+                        ]
+                    }
+                    yield f"data: {json.dumps(chunk_payload)}\n\n"
+
+            # Final stop chunk
+            stop_payload = {
+                "id": completion_id,
+                "object": "chat.completion.chunk",
+                "created": created_ts,
+                "model": req.model or "hekki-gpt",
+                "choices": [
+                    {
+                        "index": 0,
+                        "delta": {},
+                        "finish_reason": "stop"
+                    }
+                ]
+            }
+            yield f"data: {json.dumps(stop_payload)}\n\n"
+            yield "data: [DONE]\n\n"
+
+        except Exception as e:
+            log.error("web.openai_sse_stream_error", error=str(e))
+            err_payload = {"error": {"message": str(e), "type": "server_error"}}
+            yield f"data: {json.dumps(err_payload)}\n\n"
+
+    if req.stream is not False:
+        return StreamingResponse(
+            sse_event_generator(),
+            media_type="text/event-stream",
+            headers={
+                "Cache-Control": "no-cache",
+                "Connection": "keep-alive",
+                "X-Accel-Buffering": "no"
+            }
+        )
+    else:
+        # Non-streaming response fallback
+        full_text = ""
+        async for event in agent.run(user_input=user_input, chat_id=chat_id, project=req.project):
+            if event.type == "response":
+                full_text += event.content
+
+        return {
+            "id": completion_id,
+            "object": "chat.completion",
+            "created": created_ts,
+            "model": req.model or "hekki-gpt",
+            "choices": [
+                {
+                    "index": 0,
+                    "message": {"role": "assistant", "content": full_text},
+                    "finish_reason": "stop"
+                }
+            ]
+        }
+
+
+
 
 
 
