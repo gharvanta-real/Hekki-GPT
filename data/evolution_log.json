@@ -6749,5 +6749,16 @@
     "files": [
       "mariano/web/static/css/base.css"
     ]
+  },
+  {
+    "timestamp": "2026-07-31T10:55:00.000000",
+    "type": "UI_POLISH",
+    "version": "v10.8",
+    "title": "Removed Topnav Bottom Border Line & Matched Dark Code Block Surface",
+    "description": "Enforced border-bottom: none !important on topnav (#titlebar, #workspace #titlebar) in layout.css. Aligned dark code block container background to #171717 and header background to #212121 with zero bottom borders in chat.css to match reference UI screenshot.",
+    "files": [
+      "mariano/web/static/css/layout.css",
+      "mariano/web/static/css/chat.css"
+    ]
   }
 ]

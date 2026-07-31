@@ -11,7 +11,8 @@
 #titlebar {
   height: 48px;
   background: var(--sidebar-bg);
-  border-bottom: none;
+  border-bottom: none !important;
+  box-shadow: none !important;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -22,6 +23,8 @@
 /* Titlebar under workspace */
 #workspace #titlebar {
   background: var(--bg);
+  border-bottom: none !important;
+  box-shadow: none !important;
 }
 
 .tb-group { 
@@ -568,7 +571,7 @@ body.dark .btn-new-chat-dock:hover {
 }
 
 #workspace[data-page="debate"] #titlebar {
-  border-bottom: 1px solid var(--border);
+  border-bottom: none !important;
 }
 
 #btn-toggle-sub-sidebar,
