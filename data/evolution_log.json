@@ -6697,5 +6697,16 @@
       "mariano/web/static/js/pages/images_page.js",
       "mariano/web/static/css/chat.css"
     ]
+  },
+  {
+    "timestamp": "2026-07-31T10:29:00.000000",
+    "type": "UI_UPGRADE",
+    "version": "v10.3",
+    "title": "Expanded Images Gallery to Full-Width Flat Responsive Layout",
+    "description": "Removed max-width 900px restriction on img-gallery-title-row and img-gallery-grid in chat.css. Configured responsive repeat(auto-fill, minmax(180px, 1fr)) column layout and hid duplicate top titlebar in router.js for a seamless full-width flat view.",
+    "files": [
+      "mariano/web/static/css/chat.css",
+      "mariano/web/static/js/router.js"
+    ]
   }
 ]

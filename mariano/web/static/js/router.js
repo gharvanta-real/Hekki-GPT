@@ -243,6 +243,7 @@ class Router {
 
       case 'images':
         this._showPane('images-pane', 'flex');
+        if (titlebarEl) titlebarEl.style.display = 'none';
         document.getElementById('sidebar-nav')?.classList.remove('collapsed');
         const toggleBtnImages = document.getElementById('btn-sidebar-toggle-main');
         if (toggleBtnImages) toggleBtnImages.style.display = '';
