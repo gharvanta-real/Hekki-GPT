@@ -6739,5 +6739,15 @@
     "files": [
       "mariano/config/system_prompt.py"
     ]
+  },
+  {
+    "timestamp": "2026-07-31T10:45:00.000000",
+    "type": "UI_UPGRADE",
+    "version": "v10.7",
+    "title": "Adopted ChatGPT Official System Font Stack Across Design System",
+    "description": "Updated --font CSS variable in mariano/web/static/css/base.css to ChatGPT's official system font stack (-apple-system-body, ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif).",
+    "files": [
+      "mariano/web/static/css/base.css"
+    ]
   }
 ]
