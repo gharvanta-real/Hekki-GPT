@@ -6672,5 +6672,17 @@
       "mariano/web/static/css/layout.css",
       "mariano/web/static/css/chat.css"
     ]
+  },
+  {
+    "timestamp": "2026-07-31T10:24:00.000000",
+    "type": "UI_CLEANUP",
+    "version": "v10.1",
+    "title": "Cleaned Up User Menu Dropdown & Removed Non-Functional Dummy Items",
+    "description": "Removed non-functional placeholder dropdown items (Upgrade plan, Get apps and extensions, Language, Get help, Learn more) from user profile dropdown in index.html and debate_page.js. Replaced with active functional items: Settings (Ctrl+Shift+,), Toggle Theme, Skills & Capabilities navigation, and Log out.",
+    "files": [
+      "mariano/web/static/index.html",
+      "mariano/web/static/js/debate/debate_page.js",
+      "mariano/web/static/js/nav.js"
+    ]
   }
 ]

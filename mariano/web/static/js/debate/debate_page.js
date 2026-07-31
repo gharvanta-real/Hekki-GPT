@@ -198,28 +198,9 @@ function _buildLayout() {
               <i data-lucide="sun" style="width:16px; height:16px;"></i>
               <span>Toggle Theme</span>
             </button>
-            <button class="user-menu-item">
-              <i data-lucide="globe" style="width:16px; height:16px;"></i>
-              <span>Language</span>
-              <i data-lucide="chevron-right" class="chevron"></i>
-            </button>
-            <button class="user-menu-item">
-              <i data-lucide="help-circle" style="width:16px; height:16px;"></i>
-              <span>Get help</span>
-            </button>
-            <div class="user-menu-divider"></div>
-            <button class="user-menu-item">
-              <i data-lucide="arrow-up-circle" style="width:16px; height:16px;"></i>
-              <span>Upgrade plan</span>
-            </button>
-            <button class="user-menu-item">
-              <i data-lucide="download" style="width:16px; height:16px;"></i>
-              <span>Get apps and extensions</span>
-            </button>
-            <button class="user-menu-item">
-              <i data-lucide="info" style="width:16px; height:16px;"></i>
-              <span>Learn more</span>
-              <i data-lucide="chevron-right" class="chevron"></i>
+            <button class="user-menu-item" id="btn-debate-user-skills">
+              <i data-lucide="zap" style="width:16px; height:16px;"></i>
+              <span>Skills & Capabilities</span>
             </button>
             <div class="user-menu-divider"></div>
             <button class="user-menu-item" id="btn-debate-user-logout">

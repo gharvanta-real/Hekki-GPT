@@ -136,10 +136,17 @@ export function bindNavigation(tabs, showToast, inConversationStateRef) {
       }
     });
     
-    // Also close on any item click (except theme, handled locally if needed, but let's close on theme too)
+    // Bind Skills & Capabilities button
+    const userSkillsBtn = $('btn-user-skills');
+    if (userSkillsBtn) {
+      userSkillsBtn.addEventListener('click', () => {
+        router.navigateTo('skills');
+      });
+    }
+
+    // Also close on any item click
     userMenuDropdown.querySelectorAll('.user-menu-item').forEach(item => {
       item.addEventListener('click', () => {
-        // Keep open for theme toggle? No, standard is to close or keep open. Let's keep open for theme toggle.
         if (item.id !== 'btn-user-theme') {
           userMenuDropdown.classList.add('hidden');
         }
