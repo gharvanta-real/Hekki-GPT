@@ -2794,9 +2794,10 @@ body.dark .voice-recording-active {
 }
 
 /* ── Header ── */
+/* ── Header (Narrow & Compact Topnav) ── */
 .img-gallery-header {
   flex-shrink: 0;
-  padding: 22px 24px 14px;
+  padding: 14px 20px 10px;
   border-bottom: none;
   background: var(--bg);
 }
@@ -2809,49 +2810,50 @@ body.dark .voice-recording-active {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: 12px;
   flex-wrap: wrap;
 }
 
 .img-gallery-title {
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-size: 20px;
-  font-weight: 500;
+  gap: 8px;
+  font-size: 17px;
+  font-weight: 600;
   color: var(--text-primary);
   font-family: var(--font);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
 }
 
 .img-gallery-count {
   font-size: 11px;
-  font-weight: 600;
-  padding: 2px 8px;
-  border-radius: 20px;
+  font-weight: 500;
+  padding: 1px 7px;
+  border-radius: 12px;
   background: var(--hover);
   border: none;
   color: var(--text-secondary);
   letter-spacing: 0;
-  min-width: 24px;
+  min-width: 20px;
   text-align: center;
 }
 
 .img-gallery-controls {
   display: flex;
   align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
+  gap: 6px;
+  flex-wrap: nowrap;
 }
 
 .img-gallery-search-wrap {
   display: flex;
   align-items: center;
-  gap: 7px;
+  gap: 6px;
   background: var(--card);
   border: none;
-  border-radius: 12px;
-  padding: 6px 12px;
+  border-radius: 20px;
+  padding: 4px 10px;
+  height: 28px;
   transition: background 0.15s;
 }
 .img-gallery-search-wrap:focus-within {
@@ -2864,19 +2866,20 @@ body.dark .voice-recording-active {
   border: none;
   outline: none;
   color: var(--text-primary);
-  font-size: 13px;
+  font-size: 12px;
   font-family: var(--font);
-  width: 160px;
+  width: 130px;
 }
 .img-gallery-search::placeholder { color: var(--text-3); }
 
 .img-gallery-sort {
   background: var(--card);
   border: none;
-  border-radius: 12px;
-  padding: 6px 12px;
+  border-radius: 20px;
+  padding: 0 10px;
+  height: 28px;
   color: var(--text-secondary);
-  font-size: 12px;
+  font-size: 11.5px;
   font-family: var(--font);
   outline: none;
   cursor: pointer;
@@ -2891,11 +2894,11 @@ body.dark .voice-recording-active {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   background: var(--card);
   border: none;
-  border-radius: 12px;
+  border-radius: 8px;
   color: var(--text-secondary);
   cursor: pointer;
   transition: background 0.15s, color 0.15s, transform 0.3s;
@@ -2904,10 +2907,6 @@ body.dark .voice-recording-active {
   background: var(--hover);
   color: var(--text-primary);
   border: none;
-}
-.img-gallery-refresh-btn:hover {
-  border-color: var(--text-secondary);
-  color: var(--text-primary);
   transform: rotate(180deg);
 }
 

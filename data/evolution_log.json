@@ -6719,5 +6719,15 @@
       "mariano/web/static/js/pages/images_page.js",
       "mariano/web/static/css/chat.css"
     ]
+  },
+  {
+    "timestamp": "2026-07-31T10:31:00.000000",
+    "type": "UI_POLISH",
+    "version": "v10.5",
+    "title": "Narrowed Topnav Search Input and Control Buttons for Images Gallery Header",
+    "description": "Updated header controls in chat.css for Images Gallery (.img-gallery-search-wrap, .img-gallery-search, .img-gallery-sort, .img-gallery-btn) to a narrow compact 28px height capsule layout while maintaining full edge-to-edge square photo tiles grid.",
+    "files": [
+      "mariano/web/static/css/chat.css"
+    ]
   }
 ]
