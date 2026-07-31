@@ -6729,5 +6729,15 @@
     "files": [
       "mariano/web/static/css/chat.css"
     ]
+  },
+  {
+    "timestamp": "2026-07-31T10:34:00.000000",
+    "type": "PROMPT_UPGRADE",
+    "version": "v10.6",
+    "title": "Integrated ASCII Flow Diagrams and Mermaid Specifications into Master System Prompt",
+    "description": "Updated SYSTEM_PROMPT in mariano/config/system_prompt.py to explicitly instruct the agent to generate clean ASCII flow diagrams (using ↓, →, ┌──┐, └──┘, [Box]) inside dark code cards and live interactive Mermaid diagrams for architecture, logic, and process breakdowns.",
+    "files": [
+      "mariano/config/system_prompt.py"
+    ]
   }
 ]
