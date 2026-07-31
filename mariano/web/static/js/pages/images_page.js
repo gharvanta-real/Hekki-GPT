@@ -73,8 +73,7 @@ export class ImagesPage {
         <div class="img-gallery-header">
           <div class="img-gallery-title-row">
             <div class="img-gallery-title">
-              <i data-lucide="image" style="width:20px;height:20px;opacity:0.8;flex-shrink:0;"></i>
-              <span>Images</span>
+              <span>My images</span>
               <span class="img-gallery-count" id="img-count-badge">0</span>
             </div>
             <div class="img-gallery-controls">
@@ -409,12 +408,6 @@ export class ImagesPage {
               </button>
             </div>
           </div>
-        </div>
-
-        <!-- Image Info on Page Background (No card box or gradient overlay) -->
-        <div class="img-gallery-bg-meta">
-          <span class="img-gallery-card-name" title="${this._escHtml(img.name)}">${this._escHtml(img.name)}</span>
-          <span class="img-gallery-card-info">${sizeStr} · ${dateStr}</span>
         </div>
       `;
 

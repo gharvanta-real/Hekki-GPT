@@ -6708,5 +6708,16 @@
       "mariano/web/static/css/chat.css",
       "mariano/web/static/js/router.js"
     ]
+  },
+  {
+    "timestamp": "2026-07-31T10:30:00.000000",
+    "type": "UI_REFACTOR",
+    "version": "v10.4",
+    "title": "Converted Images Gallery to Edge-to-Edge Square Photo Tiles Grid (My images)",
+    "description": "Updated gallery header title to 'My images' in images_page.js and removed card metadata labels below photo tiles. Set 0px border-radius, 2px grid gap, and full bleed padding in chat.css to match exact reference screenshot.",
+    "files": [
+      "mariano/web/static/js/pages/images_page.js",
+      "mariano/web/static/css/chat.css"
+    ]
   }
 ]
