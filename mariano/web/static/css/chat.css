@@ -1353,7 +1353,7 @@ body.oled .code-block-header,
   color: var(--text-2);
   font-family: var(--font);
   font-size: var(--fs-base);   /* 13px */
-  font-weight: 500;
+  font-weight: 400 !important;
   padding: 0 10px;
   display: flex;
   align-items: center;

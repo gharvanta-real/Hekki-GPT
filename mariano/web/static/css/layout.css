@@ -1252,7 +1252,7 @@ body.dark .modal-nav-pill.active {
   font-size: 12px;
   color: var(--text-3);
   padding: 4px 16px 8px;
-  font-weight: 500;
+  font-weight: 400;
 }
 .user-menu-divider {
   height: 1px;
@@ -1269,7 +1269,7 @@ body.dark .modal-nav-pill.active {
   cursor: pointer;
   color: var(--text-primary);
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 400 !important;
   font-family: inherit;
   transition: background 0.15s;
   width: 100%;

@@ -6661,5 +6661,16 @@
     "files": [
       "mariano/web/app.py"
     ]
+  },
+  {
+    "timestamp": "2026-07-31T10:21:00.000000",
+    "type": "UI_UPGRADE",
+    "version": "v10.0",
+    "title": "Unbolded Dropdown List Items Font Weight to Clean 400 Regular Weight",
+    "description": "Updated font-weight of user menu dropdown items (.user-menu-item, .user-menu-header) and attachment menu dropdown items (.attach-dropdown-item) across layout.css and chat.css to font-weight: 400 !important. Eliminates heavy bold fonts in dropdowns for a clean, sleek corporate look matching reference UI.",
+    "files": [
+      "mariano/web/static/css/layout.css",
+      "mariano/web/static/css/chat.css"
+    ]
   }
 ]
