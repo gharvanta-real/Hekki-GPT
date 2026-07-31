@@ -255,6 +255,14 @@ class Router {
         if (window.updateTitleBreadcrumb) {
           window.updateTitleBreadcrumb('Images', '');
         }
+        if (!window.imagesPageInstance) {
+          import('/static/js/pages/images_page.js').then(({ ImagesPage }) => {
+            window.imagesPageInstance = new ImagesPage(window.showToast);
+            window.imagesPageInstance.mount(document.getElementById('images-pane'));
+          }).catch(err => console.error('Failed to load ImagesPage:', err));
+        } else {
+          window.imagesPageInstance.refresh();
+        }
         break;
 
 

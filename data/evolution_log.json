@@ -6684,5 +6684,18 @@
       "mariano/web/static/js/debate/debate_page.js",
       "mariano/web/static/js/nav.js"
     ]
+  },
+  {
+    "timestamp": "2026-07-31T10:27:00.000000",
+    "type": "UI_UPGRADE",
+    "version": "v10.2",
+    "title": "Aligned Images Gallery View to 100% ChatGPT Reference UI Specification",
+    "description": "Connected images-pane container in index.html, configured router.js lazy-mount handler, and aligned images gallery layout (Images count badge, rounded capsule search input, sort options, 5-column grid with 16px rounded thumbnails, file titles, and size/timestamp subtitles) to match reference Image 2.",
+    "files": [
+      "mariano/web/static/index.html",
+      "mariano/web/static/js/router.js",
+      "mariano/web/static/js/pages/images_page.js",
+      "mariano/web/static/css/chat.css"
+    ]
   }
 ]
