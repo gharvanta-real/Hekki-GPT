@@ -154,6 +154,17 @@ export function initSettings(setGreetingCallback) {
       if (ollamaModel) ollamaModel.value = cfg.ollama_model || '';
       if (ollamaUrl) ollamaUrl.value = cfg.ollama_base_url || 'http://localhost:11434';
 
+      // Quick Voice Overlay toggle
+      const quickVoice = $('settings-quick-voice');
+      if (quickVoice) quickVoice.checked = cfg.quick_voice_enabled !== false;
+
+      // Kaggle GPU
+      const kUser = $('settings-kaggle-user');
+      const kKey = $('settings-kaggle-key');
+      if (kUser) kUser.value = cfg.kaggle_username || '';
+      if (kKey) kKey.value = cfg.kaggle_api_key || '';
+      updateKaggleStatus(cfg.kaggle_username, cfg.kaggle_api_key);
+
     } catch (err) {
       console.error('[Settings] Load failed:', err);
     }
@@ -220,6 +231,74 @@ export function initSettings(setGreetingCallback) {
   });
   $('settings-ollama-url')?.addEventListener('change', e => {
     save({ ollama_base_url: e.target.value.trim() });
+  });
+
+  // ── Quick Voice Overlay toggle ────────────────────────────────────────
+  $('settings-quick-voice')?.addEventListener('change', e => {
+    save({ quick_voice_enabled: e.target.checked });
+  });
+
+  // ── Kaggle GPU Accelerator ────────────────────────────────────────────
+  function updateKaggleStatus(user, key) {
+    const textEl = $('kaggle-status-text');
+    const badgeEl = $('kaggle-status-badge')?.querySelector('span');
+    if (!textEl) return;
+    if (user && key) {
+      textEl.textContent = `Configured (${user})`;
+      textEl.style.color = '#16a34a';
+      if (badgeEl) badgeEl.style.background = '#16a34a';
+    } else {
+      textEl.textContent = 'Not Verified';
+      textEl.style.color = 'var(--text-3)';
+      if (badgeEl) badgeEl.style.background = '#888';
+    }
+  }
+
+  $('btn-toggle-kaggle-visibility')?.addEventListener('click', () => {
+    const inp = $('settings-kaggle-key');
+    if (!inp) return;
+    inp.type = inp.type === 'password' ? 'text' : 'password';
+    const icon = $('btn-toggle-kaggle-visibility').querySelector('[data-lucide]');
+    if (icon) {
+      icon.setAttribute('data-lucide', inp.type === 'password' ? 'eye' : 'eye-off');
+      if (window.lucide) lucide.createIcons();
+    }
+  });
+
+  $('btn-save-kaggle')?.addEventListener('click', () => {
+    const user = $('settings-kaggle-user')?.value.trim() || '';
+    const key = $('settings-kaggle-key')?.value.trim() || '';
+    save({ kaggle_username: user, kaggle_api_key: key });
+    updateKaggleStatus(user, key);
+  });
+
+  $('btn-test-kaggle')?.addEventListener('click', async () => {
+    const user = $('settings-kaggle-user')?.value.trim() || '';
+    const key = $('settings-kaggle-key')?.value.trim() || '';
+    const textEl = $('kaggle-status-text');
+    const badgeEl = $('kaggle-status-badge')?.querySelector('span');
+    if (textEl) { textEl.textContent = 'Testing API Connection...'; textEl.style.color = '#3b82f6'; }
+    if (badgeEl) badgeEl.style.background = '#3b82f6';
+
+    try {
+      const res = await fetch('/api/kaggle/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ kaggle_username: user, kaggle_api_key: key })
+      });
+      const data = await res.json();
+      if (data.success) {
+        if (textEl) { textEl.textContent = data.message; textEl.style.color = '#16a34a'; }
+        if (badgeEl) badgeEl.style.background = '#16a34a';
+        save({ kaggle_username: user, kaggle_api_key: key });
+      } else {
+        if (textEl) { textEl.textContent = data.message || 'Verification Failed'; textEl.style.color = '#dc2626'; }
+        if (badgeEl) badgeEl.style.background = '#dc2626';
+      }
+    } catch (e) {
+      if (textEl) { textEl.textContent = 'Connection error'; textEl.style.color = '#dc2626'; }
+      if (badgeEl) badgeEl.style.background = '#dc2626';
+    }
   });
 
   // ── Skills grid ───────────────────────────────────────────────────────

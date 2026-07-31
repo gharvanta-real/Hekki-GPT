@@ -1,3 +1,5 @@
+import { enhanceMarkdownContent } from '../chat.js';
+
 /**
  * coder_stream_render.js — Hekki Coder AI Stream (Part 2 of 2)
  *
@@ -58,6 +60,7 @@ function _renderMd(text) {
 
 // ─── Code Block Enhancement ───────────────────────────────────────────────────
 function _enhanceCodeBlocks(container) {
+  try { enhanceMarkdownContent(container); } catch(e) {}
   container.querySelectorAll('pre code').forEach((block) => {
     if (block.dataset.enhanced) return;
     block.dataset.enhanced = '1';
@@ -176,6 +179,32 @@ function _ensureAiBubble() {
   const col = _col();
   if (!col) return;
   _editedFiles = [];   // reset per-response tracking
+
+  // Inject the Gemini 3.1 Reasoning Engine header
+  const header = document.createElement('div');
+  header.className = 'cad-ai-stream-header';
+  header.style.marginBottom = '12px';
+  header.style.marginTop = '16px';
+  header.id = 'coder-active-stream-header';
+  header.innerHTML = `
+    <canvas class="cad-ai-orb-avatar" id="coder-active-orb-canvas" width="24" height="24"></canvas>
+    <span class="cad-ai-header-title">Gemini 3.1 Reasoning</span>
+    <div class="cad-typing-dots" id="coder-stream-typing-dots">
+      <span class="cad-dot"></span>
+      <span class="cad-dot"></span>
+      <span class="cad-dot"></span>
+    </div>
+  `;
+  col.appendChild(header);
+
+  // Initialize the ribbon gradient orb animation
+  setTimeout(() => {
+    const canvas = header.querySelector('#coder-active-orb-canvas');
+    if (canvas && window.RibbonGradientOrb) {
+      new window.RibbonGradientOrb(canvas).start();
+    }
+  }, 50);
+
   _streamBubble = document.createElement('div');
   _streamBubble.className = 'coder-msg coder-msg-assistant';
   _streamBubble.setAttribute('data-stream-row', '1');
@@ -262,6 +291,13 @@ function _appendThought(chunk) {
 function _finalizeStream() {
   _removeCursor();
   _sealThoughtBlock();
+
+  const activeHeader = document.getElementById('coder-active-stream-header');
+  if (activeHeader) {
+    const dots = activeHeader.querySelector('#coder-stream-typing-dots');
+    if (dots) dots.remove();
+    activeHeader.removeAttribute('id');
+  }
   if (_streamBubble && _streamText) {
     // Full markdown render on completion
     const finalHtml = _renderMd(_streamText);

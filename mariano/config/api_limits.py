@@ -6,9 +6,12 @@ from __future__ import annotations
 # ==========================================
 # 1. GLOBAL RATE LIMITER (Gemini API Limits)
 # ==========================================
-GLOBAL_MAX_RPM = 15     # Max requests per minute (safe cap, actual Gemini is 15)
-GLOBAL_MAX_TPM = 250000 # Max tokens per minute
-GLOBAL_MAX_RPD = 490    # Max requests per day (with safe buffer limit)
+GLOBAL_MAX_RPM = 1000   # Unlimited / High throughput
+GLOBAL_MAX_TPM = 1000000 # 1 Million Tokens Per Minute (as per Google Live API Quota)
+GLOBAL_MAX_RPD = 100000 # Unlimited / High daily quota
+
+LIVE_AUDIO_MAX_TPM = 1000000 # 1M TPM for Gemini 2.5 Flash Native Audio Dialog
+
 
 # ==========================================
 # 2. CHAT SESSION LIMITS

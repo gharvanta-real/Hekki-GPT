@@ -320,15 +320,19 @@ async def render_file_path(file_path: str):
 
 @router.get("/render")
 async def render_file(path: str = Query(..., description="Path of file to render")):
-    """Dynamically serve files from workspace or host (if authorized) to allow live rendering in iframe."""
+    """Dynamically serve files from workspace or host (if authorized) to allow live rendering in iframe/image previews."""
     try:
-        raw_path = Path(path)
+        raw_path = Path(path).resolve()
+        repo_root = Path(__file__).resolve().parent.parent.parent
+        workspace_base = (repo_root / "data" / "workspace").resolve()
         antigravity_path = Path("C:/Users/anshu/.gemini/antigravity").resolve()
-        if raw_path.is_absolute() and raw_path.resolve().is_relative_to(antigravity_path):
-            resolved_path = raw_path.resolve()
-        else:
-            resolved_path = PathGuard.secure_path(path)
-            
+
+        # Allow serving any valid file inside data/workspace or .gemini/antigravity
+        if raw_path.is_file():
+            if (workspace_base in raw_path.parents or raw_path == workspace_base) or (antigravity_path in raw_path.parents or raw_path == antigravity_path):
+                return FileResponse(raw_path)
+
+        resolved_path = PathGuard.secure_path(path)
         if not resolved_path.is_file():
             raise HTTPException(status_code=400, detail="Path is not a file")
         return FileResponse(resolved_path)

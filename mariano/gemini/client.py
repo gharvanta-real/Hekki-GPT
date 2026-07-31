@@ -143,6 +143,8 @@ class GeminiClient:
             f"- Strict Path Convention: You MUST use Windows path separators (e.g. C:/Users/anshu/Downloads) and never guess Linux paths like /home/user/ or /Users/.\n"
             f"- Core Tools & Valid Actions:\n"
             f"  * file_manager: Use execute(action, path, destination, pattern, content). Valid actions: ['list', 'read', 'write', 'delete', 'copy', 'move', 'create_dir', 'get_size', 'search', 'grep']. NEVER guess actions like 'list_dir' or 'list_directory'.\n"
+            f"  * run_command: Use execute(command, cwd). Executes CMD/PowerShell terminal commands or Python scripts on Windows.\n"
+            f"  * Immediate Execution Rule: When user requests file deletion or cleaning (e.g. 'clean karo', 'delete karo'), DO NOT output plain text explanations. Immediately invoke file_manager(action='delete') or run_command to execute the deletion.\n"
         )
 
         state_inject = (
@@ -344,6 +346,8 @@ class GeminiClient:
             f"- Strict Path Convention: You MUST use Windows path separators (e.g. C:/Users/anshu/Downloads) and never guess Linux paths like /home/user/ or /Users/.\n"
             f"- Core Tools & Valid Actions:\n"
             f"  * file_manager: Use execute(action, path, destination, pattern, content). Valid actions: ['list', 'read', 'write', 'delete', 'copy', 'move', 'create_dir', 'get_size', 'search', 'grep']. NEVER guess actions like 'list_dir' or 'list_directory'.\n"
+            f"  * run_command: Use execute(command, cwd). Executes CMD/PowerShell terminal commands or Python scripts on Windows.\n"
+            f"  * Immediate Execution Rule: When user requests file deletion or cleaning (e.g. 'clean karo', 'delete karo'), DO NOT output plain text explanations. Immediately invoke file_manager(action='delete') or run_command to execute the deletion.\n"
         )
 
         state_inject = (
@@ -354,7 +358,7 @@ class GeminiClient:
             f"Curiosity={ns.curiosity:.2f} (Exploratory drive)\n"
             f"Melatonin={ns.melatonin:.2f} (Fatigue)\n"
             f"Current Directives:\n"
-            f"- If Dopamine is high (>0.7), output highly precise, direct, and concise results.\n"
+            f"- If Dopamine is high (>0.7), output highly precise, thorough, well-structured, and complete analytical results with clear summaries and conclusions.\n"
             f"- If Dopamine is low (<0.35), be creative, offer alternative paradigms, and suggest code/safety audits.\n"
             f"- If Serotonin is low (<0.4), be extremely cautious, double-check compiler constraints, and verify syntax.\n"
             f"- If Curiosity is high (>0.5), detail your search actions and recommend learning ledger updates."
@@ -628,18 +632,48 @@ class GeminiClient:
                 contents.append(types.Content(role="tool", parts=pending_response_parts))
                 pending_response_parts = []
 
+        def build_user_parts(text_str: str) -> list[types.Part]:
+            parts = []
+            import re
+            img_matches = re.findall(r'\[Attached Image:[^\]]*saved at ([^\]\)]+)\)', text_str)
+            if img_matches:
+                for img_path_str in img_matches:
+                    try:
+                        p = Path(img_path_str.strip())
+                        if p.exists() and p.is_file():
+                            img_bytes = p.read_bytes()
+                            ext = p.suffix.lower()
+                            mime = "image/png" if ext == ".png" else ("image/webp" if ext == ".webp" else "image/jpeg")
+                            parts.append(types.Part.from_bytes(data=img_bytes, mime_type=mime))
+                    except Exception as err:
+                        log.warn("gemini.image_part_load_failed", path=img_path_str, error=str(err))
+            parts.append(types.Part(text=text_str))
+            return parts
+
         for t in validated:
             if t["kind"] == "text":
                 flush_pending()
                 r = "model" if t["role"] == "assistant" else "user"
-                contents.append(types.Content(role=r, parts=[types.Part(text=t["content"])]))
+                # Past history turns remain text-only to prevent old images from ghosting into new queries
+                parts = [types.Part(text=t["content"])]
+                
+                # Merge consecutive same-role turns to avoid Gemini 400 turn conflict
+                if contents and contents[-1].role == r:
+                    contents[-1].parts.extend(parts)
+                else:
+                    contents.append(types.Content(role=r, parts=parts))
+
             elif t["kind"] == "call":
                 flush_pending()
                 parts = [
                     types.Part(function_call=types.FunctionCall(name=tc["name"], args=tc["args"]))
                     for tc in t["tool_calls"]
                 ]
-                contents.append(types.Content(role="model", parts=parts))
+                if contents and contents[-1].role == "model":
+                    contents[-1].parts.extend(parts)
+                else:
+                    contents.append(types.Content(role="model", parts=parts))
+
             elif t["kind"] == "resp":
                 tr = t["tool_response"]
                 pending_response_parts.append(
@@ -652,9 +686,13 @@ class GeminiClient:
         # Flush trailing tool responses BEFORE the final user message
         flush_pending()
 
-        contents.append(
-            types.Content(role="user", parts=[types.Part(text=message)])
-        )
+        # Add the final user message, merging if previous turn was also user
+        final_parts = build_user_parts(message)
+        if contents and contents[-1].role == "user":
+            contents[-1].parts.extend(final_parts)
+        else:
+            contents.append(types.Content(role="user", parts=final_parts))
+
         return contents
 
     def _parse_response(self, response) -> dict:

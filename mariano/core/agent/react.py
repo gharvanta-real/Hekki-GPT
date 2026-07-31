@@ -9,7 +9,6 @@ log = structlog.get_logger(__name__)
 
 # ─── Pre-tool reasoning templates (zero-latency, contextual) ─────────────────
 _PRE_TOOL_TEMPLATES: dict[str, str] = {
-    "file_manager":     "Reading `{path}` to understand the current structure before making changes.",
     "code_search":      "Searching the codebase for `{query}` to find relevant locations.",
     "web_search":       "Searching the web for `{query}` to gather up-to-date information.",
     "shell":            "Running shell command to check the environment state.",
@@ -21,12 +20,37 @@ _PRE_TOOL_TEMPLATES: dict[str, str] = {
 
 def _pre_tool_reasoning(name: str, args: dict) -> str:
     """Generate a zero-latency pre-tool commentary based on tool name and args."""
+    path   = args.get("path", args.get("file", args.get("filename", "")))
+    query  = args.get("query", args.get("pattern", args.get("term", "")))
+    action = args.get("action", "").lower()
+
+    if name == "file_manager":
+        if action == "delete":
+            return f"Deleting `{path}` physically from workspace filesystem."
+        elif action == "create_dir":
+            return f"Creating directory `{path}`."
+        elif action == "write":
+            return f"Writing to file `{path}`."
+        elif action == "copy":
+            return f"Copying `{path}`."
+        elif action == "move":
+            return f"Moving `{path}`."
+        elif action == "list":
+            return f"Listing directory `{path}`."
+        elif action == "grep":
+            return f"Grepping pattern in `{path}`."
+        elif action == "search":
+            return f"Searching files matching pattern in `{path}`."
+        else:
+            return f"Reading `{path}` to inspect contents."
+    elif name == "run_command":
+        cmd = args.get("command", args.get("cmd", ""))
+        return f"Executing system command: `{str(cmd)[:60]}`."
+
     template = _PRE_TOOL_TEMPLATES.get(name)
     if template:
-        path  = args.get("path", args.get("file", args.get("filename", "")))
-        query = args.get("query", args.get("pattern", args.get("term", "")))
         return template.format(path=path, query=query)
-    # Generic fallback
+    
     first_val = next(iter(args.values()), "") if args else ""
     return f"Invoking `{name}` with target: `{str(first_val)[:60]}`."
 
@@ -108,10 +132,9 @@ async def run_react_loop(
                 message_to_send = (
                     f"Step {step}/{max_steps_adjusted}. "
                     "Based on the tool results, execute the NEXT required action immediately using the appropriate tool. "
-                    "Do NOT output internal meta-analysis headers like Current State Analysis, Conclusion, "
-                    "Status Summary or Next Step in your response - those are internal reasoning only. "
-                    "Just take the action or give a clean final answer to the user. "
-                    "If all steps are done, provide a concise well-formatted final response."
+                    "If all tool execution steps are complete, provide a comprehensive, fully detailed final response. "
+                    "Provide a clear summary of what was done, a detailed explanation of findings or changes, and a definitive concluding section. "
+                    "NEVER output just 1-2 lines or a bare table without thorough explanatory text and a clear conclusion."
                 )
 
             # Call Gemini with streaming chunks queue

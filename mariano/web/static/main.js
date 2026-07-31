@@ -23,6 +23,8 @@ import { socket, setupSocketEvents, send } from '/static/js/components/socket_ma
 import { initDebatePage, handleDebateEvent } from '/static/js/debate/debate_page.js?v=136';
 // Coder IDE page
 import { initCoderPage, teardownCoderPage } from '/static/js/pages/coder_page.js';
+// Images Gallery page
+import { ImagesPage } from '/static/js/pages/images_page.js';
 
 
 window.updateModelPills = updateModelPills;
@@ -331,6 +333,13 @@ function boot() {
   router.onNavigate('skills', () => {
     const pane = $('skills-pane');
     if (pane) skillsPage.mount(pane);
+  });
+
+  // Images Gallery
+  const imagesPage = new ImagesPage(showToast);
+  router.onNavigate('images', () => {
+    const pane = $('images-pane');
+    if (pane) imagesPage.mount(pane);
   });
 
   router.onNavigate('chat', () => {

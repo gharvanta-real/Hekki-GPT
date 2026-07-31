@@ -1,12 +1,12 @@
-"""file_manager — Lightweight read-only file access skill.
+"""file_manager — File management skill.
 
-Handles: read, list, grep, search.
+Handles: read, write, list, grep, search, delete, copy, move, create_dir, get_size.
 Resolves relative paths against the active project or user home.
-Write operations are intentionally excluded — Aider handles those.
 """
 from __future__ import annotations
 
 import os
+import shutil
 from pathlib import Path
 from typing import Any
 
@@ -16,60 +16,37 @@ from mariano.skills._base.skill_interface import BaseSkill, SkillResult
 class FileManagerSkill(BaseSkill):
     name = "file_manager"
     description = (
-        "Read, list, search, and grep files on the local filesystem. "
-        "Use action='read' to read a file, action='list' to list a directory, "
+        "Read, write, list, search, grep, delete, copy, move, create directories, and inspect sizes of files on the local filesystem. "
+        "Use action='read' to read a file, action='write' to write content, action='list' to list a directory, "
+        "action='delete' to delete a file or directory, action='copy' to copy, action='move' to move/rename, "
+        "action='create_dir' to create a folder, action='get_size' to check total size, "
         "action='grep' to search text inside files, action='search' to find files by name. "
         "Always use absolute paths."
     )
-    version = "2.0.0"
-    tags = ["files", "filesystem", "read", "search"]
+    version = "2.1.0"
+    tags = ["files", "filesystem", "read", "write", "delete", "copy", "move", "search"]
 
     async def execute(self, **kwargs: Any) -> SkillResult:
-        action  = kwargs.get("action", "list")
-        path    = kwargs.get("path", kwargs.get("file", kwargs.get("filename", "")))
-        pattern = kwargs.get("pattern", kwargs.get("query", ""))
-        start   = kwargs.get("start_line")
-        end     = kwargs.get("end_line")
+        action      = kwargs.get("action", "list")
+        path        = kwargs.get("path", kwargs.get("file", kwargs.get("filename", "")))
+        destination = kwargs.get("destination", kwargs.get("dst", kwargs.get("target", "")))
+        pattern     = kwargs.get("pattern", kwargs.get("query", ""))
+        start       = kwargs.get("start_line")
+        end         = kwargs.get("end_line")
 
-        # Resolve path — absolute preferred, fallback to active project or user home
+        # Resolve primary path — absolute preferred, fallback to active project or user home
         try:
             from mariano.core.workspace import PathGuard
             active_proj_path = PathGuard.get_active_project_path()
 
-            if path:
-                path_str = str(path).replace("\\", "/")
-                if active_proj_path:
-                    proj_root = Path(active_proj_path).resolve()
-                    proj_name = proj_root.name.lower()
-                    
-                    clean_path = path_str.strip("./").strip("/")
-                    clean_parts = clean_path.split("/")
-                    
-                    if clean_path.lower() == proj_name:
-                        resolved = proj_root
-                    elif clean_parts and clean_parts[0].lower() == proj_name:
-                        sub_path = "/".join(clean_parts[1:])
-                        resolved = (proj_root / sub_path).resolve()
-                    else:
-                        resolved = Path(path).expanduser()
-                        if not resolved.is_absolute():
-                            resolved = (proj_root / resolved).resolve()
-                        else:
-                            resolved = resolved.resolve()
-                else:
-                    resolved = Path(path).expanduser()
-                    if not resolved.is_absolute():
-                        resolved = (Path.home() / resolved).resolve()
-                    else:
-                        resolved = resolved.resolve()
-            else:
-                if active_proj_path:
-                    resolved = Path(active_proj_path).resolve()
-                else:
-                    resolved = Path.cwd().resolve()
-
-            # Enforce path isolation and project scoping
+            resolved = self._resolve_single_path(path, active_proj_path)
             resolved = PathGuard.secure_path(resolved)
+
+            resolved_dst = None
+            if destination:
+                resolved_dst = self._resolve_single_path(destination, active_proj_path)
+                resolved_dst = PathGuard.secure_path(resolved_dst)
+
         except PermissionError as pe:
             return SkillResult(success=False, data=None, error=str(pe))
         except Exception as e:
@@ -80,6 +57,20 @@ class FileManagerSkill(BaseSkill):
         elif action == "write":
             content = kwargs.get("content", kwargs.get("code", kwargs.get("text", "")))
             return self._write(resolved, content)
+        elif action == "delete":
+            return self._delete(resolved)
+        elif action == "create_dir":
+            return self._create_dir(resolved)
+        elif action == "copy":
+            if not resolved_dst:
+                return SkillResult(success=False, data=None, error="Action 'copy' requires a 'destination' path parameter")
+            return self._copy(resolved, resolved_dst)
+        elif action == "move":
+            if not resolved_dst:
+                return SkillResult(success=False, data=None, error="Action 'move' requires a 'destination' path parameter")
+            return self._move(resolved, resolved_dst)
+        elif action == "get_size":
+            return self._get_size(resolved)
         elif action == "list":
             return self._list(resolved)
         elif action == "grep":
@@ -87,11 +78,126 @@ class FileManagerSkill(BaseSkill):
         elif action == "search":
             return self._search(resolved, pattern)
         else:
-            return SkillResult(success=False, data=None, error=f"Unknown action '{action}'. Use: read, write, list, grep, search")
+            return SkillResult(
+                success=False,
+                data=None,
+                error=f"Unknown action '{action}'. Use: read, write, delete, create_dir, copy, move, get_size, list, grep, search"
+            )
+
+    def _resolve_single_path(self, raw_path: Any, active_proj_path: str | None) -> Path:
+        if raw_path:
+            path_str = str(raw_path).replace("\\", "/")
+            if active_proj_path:
+                proj_root = Path(active_proj_path).resolve()
+                proj_name = proj_root.name.lower()
+                
+                clean_path = path_str.strip("./").strip("/")
+                clean_parts = clean_path.split("/")
+                
+                if clean_path.lower() == proj_name:
+                    return proj_root
+                elif clean_parts and clean_parts[0].lower() == proj_name:
+                    sub_path = "/".join(clean_parts[1:])
+                    return (proj_root / sub_path).resolve()
+                else:
+                    resolved = Path(raw_path).expanduser()
+                    if not resolved.is_absolute():
+                        return (proj_root / resolved).resolve()
+                    else:
+                        return resolved.resolve()
+            else:
+                resolved = Path(raw_path).expanduser()
+                if not resolved.is_absolute():
+                    return (Path.home() / resolved).resolve()
+                else:
+                    return resolved.resolve()
+        else:
+            if active_proj_path:
+                return Path(active_proj_path).resolve()
+            else:
+                return Path.cwd().resolve()
+
+    def _delete(self, path: Path) -> SkillResult:
+        try:
+            if not path.exists():
+                return SkillResult(success=False, data=None, error=f"Path not found for deletion: {path}")
+            if path.is_dir():
+                shutil.rmtree(path)
+                return SkillResult(
+                    success=True,
+                    data=f"Successfully deleted directory '{path.name}'",
+                    metadata={"path": str(path), "action": "delete"}
+                )
+            else:
+                path.unlink()
+                return SkillResult(
+                    success=True,
+                    data=f"Successfully deleted file '{path.name}'",
+                    metadata={"path": str(path), "action": "delete"}
+                )
+        except Exception as e:
+            return SkillResult(success=False, data=None, error=f"Failed to delete '{path}': {e}")
+
+    def _create_dir(self, path: Path) -> SkillResult:
+        try:
+            path.mkdir(parents=True, exist_ok=True)
+            return SkillResult(
+                success=True,
+                data=f"Successfully created directory '{path.name}'",
+                metadata={"path": str(path), "action": "create_dir"}
+            )
+        except Exception as e:
+            return SkillResult(success=False, data=None, error=f"Failed to create directory '{path}': {e}")
+
+    def _copy(self, path: Path, destination: Path) -> SkillResult:
+        try:
+            if not path.exists():
+                return SkillResult(success=False, data=None, error=f"Source path not found: {path}")
+            if path.is_dir():
+                shutil.copytree(path, destination, dirs_exist_ok=True)
+            else:
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(path, destination)
+            return SkillResult(
+                success=True,
+                data=f"Successfully copied '{path.name}' to '{destination.name}'",
+                metadata={"src": str(path), "dst": str(destination), "action": "copy"}
+            )
+        except Exception as e:
+            return SkillResult(success=False, data=None, error=f"Failed to copy '{path}' to '{destination}': {e}")
+
+    def _move(self, path: Path, destination: Path) -> SkillResult:
+        try:
+            if not path.exists():
+                return SkillResult(success=False, data=None, error=f"Source path not found: {path}")
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            shutil.move(str(path), str(destination))
+            return SkillResult(
+                success=True,
+                data=f"Successfully moved '{path.name}' to '{destination.name}'",
+                metadata={"src": str(path), "dst": str(destination), "action": "move"}
+            )
+        except Exception as e:
+            return SkillResult(success=False, data=None, error=f"Failed to move '{path}' to '{destination}': {e}")
+
+    def _get_size(self, path: Path) -> SkillResult:
+        try:
+            if not path.exists():
+                return SkillResult(success=False, data=None, error=f"Path not found: {path}")
+            if path.is_file():
+                size = path.stat().st_size
+            else:
+                size = sum(f.stat().st_size for f in path.rglob("*") if f.is_file())
+            return SkillResult(
+                success=True,
+                data=f"Total size of '{path.name}': {size:,} bytes",
+                metadata={"path": str(path), "size_bytes": size, "action": "get_size"}
+            )
+        except Exception as e:
+            return SkillResult(success=False, data=None, error=f"Failed to calculate size for '{path}': {e}")
 
     def _write(self, path: Path, content: str) -> SkillResult:
         try:
-            # Enforce path isolation safety
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(content, encoding="utf-8")
             return SkillResult(
@@ -185,12 +291,16 @@ class FileManagerSkill(BaseSkill):
             "properties": {
                 "action": {
                     "type": "string",
-                    "enum": ["read", "write", "list", "grep", "search"],
-                    "description": "Operation: read (file contents), write (file contents), list (directory), grep (search inside files), search (find files by name pattern)",
+                    "enum": ["read", "write", "delete", "copy", "move", "create_dir", "get_size", "list", "grep", "search"],
+                    "description": "Operation: read, write, delete (file/folder), copy, move, create_dir, get_size, list, grep, search.",
                 },
                 "path": {
                     "type": "string",
-                    "description": "Absolute path to file or directory. Example: C:/Users/anshu/Desktop/my-project/index.html",
+                    "description": "Absolute path or relative project path to target file or directory.",
+                },
+                "destination": {
+                    "type": "string",
+                    "description": "Destination path required for copy or move actions.",
                 },
                 "content": {
                     "type": "string",
@@ -205,3 +315,4 @@ class FileManagerSkill(BaseSkill):
             },
             "required": ["action", "path"],
         }
+

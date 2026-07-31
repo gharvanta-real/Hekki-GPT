@@ -196,17 +196,29 @@
   flex-shrink: 0;
   border-right: 1px solid var(--border);
   background: var(--bg);
-  padding: 2px 8px 10px 8px; /* match main chat sidebar */
+  padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  overflow-y: auto;
-  transition: width 0.25s ease, opacity 0.25s ease, padding 0.25s ease, border-right-width 0.25s ease;
+  height: 100%;
+  overflow: hidden;
+  transition: width 0.25s ease, opacity 0.25s ease, border-right-width 0.25s ease;
 }
 .debate-layout.collapsed-sidebar .debate-sidebar {
   width: 52px !important;
-  padding: 2px 6px 10px 6px !important;
+  padding: 0 !important;
   overflow: hidden !important;
+}
+.debate-sidebar-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  overflow-y: auto;
+  flex-grow: 1;
+  padding: 2px 8px 0 8px;
+}
+.debate-layout.collapsed-sidebar .debate-sidebar-inner {
+  padding: 4px 6px !important;
+  align-items: center;
 }
 .debate-layout.collapsed-sidebar .debate-sidebar-section-label,
 .debate-layout.collapsed-sidebar .debate-sidebar-divider,
@@ -542,9 +554,9 @@
 .debate-bubble,
 .debate-summary-body {
   font-family: -apple-system-body, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  font-size: 14.5px; /* slightly smaller for premium look */
-  line-height: 1.6;
-  font-weight: 300;  /* lighter weight */
+  font-size: 14.5px;
+  line-height: 1.75;
+  font-weight: 400;
   color: var(--text);
 }
 .debate-bubble em,
@@ -559,11 +571,12 @@
 .debate-summary-body b {
   font-weight: 600;
   color: var(--text-primary);
+  font-size: 14.5px;
 }
 .debate-bubble p,
 .debate-summary-body p {
-  margin: 0 0 10px 0;
-  line-height: 1.6;
+  margin: 0 0 14px 0;
+  line-height: 1.75;
 }
 .debate-bubble p:last-child,
 .debate-summary-body p:last-child {
@@ -579,7 +592,7 @@
 .debate-summary-body h4 {
   font-weight: 600;
   color: var(--text-primary);
-  margin: 16px 0 8px 0;
+  margin: 24px 0 10px 0;
   line-height: 1.3;
 }
 .debate-bubble h1, .debate-summary-body h1 { font-size: 1.45em; }
@@ -630,7 +643,8 @@
   color: var(--text-primary);
   padding: 2px 6px;
   border-radius: 4px;
-  border: 1px solid var(--border); /* outline highlighting */
+  border: none !important;
+  outline: none !important;
   font-family: monospace;
   font-size: 0.9em;
   font-weight: 500;
@@ -699,6 +713,8 @@
 .user-bubble {
   color: var(--text-2);
   font-style: normal; /* forced normal style, no italics */
+  font-size: 14.5px;
+  font-weight: 400; /* Same regular weight matching AI response body */
 }
 .system-bubble {
   background: transparent !important;
@@ -765,6 +781,8 @@
   background: var(--bg);
   border-top: none;
   position: relative;
+  width: 100% !important;
+  box-sizing: border-box !important;
 }
 .debate-input-area::before {
   content: '';
@@ -778,18 +796,27 @@
   z-index: 10;
 }
 .debate-input-wrapper {
-  max-width: 720px;
-  width: 100%;
-  margin: 0 auto;
+  max-width: 720px !important;
+  width: 100% !important;
+  margin: 0 auto !important;
+  box-sizing: border-box !important;
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: 24px;
+  border-radius: var(--radius-xl);
   box-shadow: var(--shadow);
-  padding: 14px 18px 12px 18px;
+  padding: 10px 16px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  align-items: stretch;
+  gap: 0;
   transition: border-color 0.15s, box-shadow 0.15s;
+}
+.debate-active-progress-card,
+.debate-active-search-card {
+  width: 100% !important;
+  max-width: 720px !important;
+  box-sizing: border-box !important;
+  margin: 0 auto -12px auto !important;
 }
 .debate-input-wrapper:focus-within {
   border-color: #b5b4b0;
@@ -830,6 +857,32 @@ body.dark .debate-input-wrapper:focus-within {
   align-items: center;
   gap: 6px;
 }
+.debate-rounds-select {
+  cursor: pointer;
+  background: var(--hover);
+  border: 1px solid var(--border) !important;
+  border-radius: 14px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  padding: 0 10px;
+  font-family: var(--font);
+  outline: none;
+  height: 26px;
+  line-height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  box-sizing: border-box;
+  margin: 0;
+  transition: border-color 0.15s, background 0.15s;
+}
+.debate-rounds-select:hover {
+  border-color: var(--text-3) !important;
+  color: var(--text-primary);
+}
+
 .input-action-btn {
   background: none;
   border: none !important;
@@ -951,67 +1004,7 @@ body.dark .debate-input-wrapper:focus-within {
   color: var(--text);
 }
 
-/* === CHAT IMAGE PREVIEW CARD === */
-.chat-image-preview-card {
-  margin: 12px 0;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  background: var(--card);
-  overflow: hidden;
-  max-width: 450px;
-  width: 100%;
-  box-shadow: var(--shadow);
-  transition: transform 0.15s, box-shadow 0.15s;
-}
 
-.chat-image-preview-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-}
-
-.chat-image-preview-header {
-  display: flex;
-  align-items: center;
-  padding: 6px 12px;
-  background: var(--sidebar-bg);
-  border-bottom: 1px solid var(--border);
-  font-size: 11px;
-  color: var(--text-2);
-  gap: 4px;
-}
-
-.chat-image-preview-header span {
-  flex-grow: 1;
-  font-weight: 500;
-  font-family: var(--font);
-}
-
-.chat-image-preview-open {
-  color: var(--text-3);
-  display: flex;
-  align-items: center;
-  transition: color 0.15s;
-}
-
-.chat-image-preview-open:hover {
-  color: var(--text);
-}
-
-.chat-image-preview-body {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--bg);
-  max-height: 300px;
-  overflow: hidden;
-}
-
-.chat-image-preview-body img {
-  max-width: 100%;
-  max-height: 300px;
-  object-fit: contain;
-  transition: filter 0.2s;
-}
 
 /* === COLLAPSIBLE SIDEBAR DETAILS === */
 .debate-sidebar-details {
@@ -1104,7 +1097,7 @@ body.dark .debate-input-wrapper:focus-within {
 }
 
 .debate-doc-item-title {
-  font-size: var(--fs-sm); /* 13px matching sidebar */
+  font-size: 14px;
   font-weight: 400; /* unbold normal weight */
   color: var(--text-2);
   white-space: nowrap;
@@ -1362,7 +1355,7 @@ body.dark .debate-input-wrapper:focus-within {
   box-shadow: none !important;
 }
 .directory-topic-btn .dir-topic-title {
-  font-size: var(--fs-sm); /* 13px matching sidebar */
+  font-size: 14px;
   font-weight: 400; /* unbold normal weight */
   color: var(--text-2);
   white-space: nowrap;

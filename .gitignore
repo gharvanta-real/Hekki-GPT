@@ -29,12 +29,20 @@ data/workspace/
 data/workspaces/
 data/logs/
 data/simulations/
+data/cad_output/
 data/AF-O60674-*
 data/thalamus_signatures.json
 data/user_feedback_data.csv
 data/user_persona.json
 data/dynamic_settings.json
 data/disabled_skills.json
+
+# Logs and Binaries
+*.log
+*.exe
+*.dll
+*.so
+*.dylib
 
 # Local history extension files (e.g. VS Code local history)
 .history/

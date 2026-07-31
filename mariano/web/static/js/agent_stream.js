@@ -1,4 +1,4 @@
-import { scrollChat, enhanceCodeBlocks, enhanceTables, enhanceImagePreviews, escapeHtml, ChatSessionManager } from './chat.js';
+import { scrollChat, enhanceCodeBlocks, enhanceTables, enhanceImagePreviews, enhanceMarkdownContent, escapeHtml, ChatSessionManager } from './chat.js';
 const appendHudLog = (msg) => { console.log("[HUD LOG]", msg); };
 
 let _streamThoughtCard  = null;
@@ -70,15 +70,32 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
         _aiderActive = true;
       }
       appendHudLog(`[INFO] ${e.data}`);
-      col.querySelectorAll('.think-label-temp').forEach(el => el.remove());
-      const el = document.createElement('div');
-      el.className = 'think-label think-label-temp';
-      el.style.color = 'var(--text-3)';
-      el.style.fontSize = '12px';
-      el.style.fontFamily = 'var(--font)';
-      el.style.margin = '4px 0 12px 0';
-      el.innerHTML = `▸ ${escapeHtml(e.data)}`;
-      col.appendChild(el);
+
+      // ── Inject Gemini 3.1 Reasoning Engine orb header (same as HekkiCAD) ──
+      col.querySelectorAll('.chat-ai-stream-header').forEach(el => el.remove());
+
+      const headerEl = document.createElement('div');
+      headerEl.className = 'cad-ai-stream-header chat-ai-stream-header';
+      headerEl.style.marginTop = '20px';
+      headerEl.style.marginBottom = '8px';
+      headerEl.innerHTML = `
+        <canvas class="cad-ai-orb-avatar" id="chat-active-orb-canvas" width="24" height="24"></canvas>
+        <span class="cad-ai-header-title">Gemini 3.1 Reasoning</span>
+        <div class="cad-typing-dots" id="chat-stream-typing-dots">
+          <span class="cad-dot"></span>
+          <span class="cad-dot"></span>
+          <span class="cad-dot"></span>
+        </div>
+      `;
+      col.appendChild(headerEl);
+
+      setTimeout(() => {
+        const canvas = headerEl.querySelector('#chat-active-orb-canvas');
+        if (canvas && window.RibbonGradientOrb) {
+          new window.RibbonGradientOrb(canvas).start();
+        }
+      }, 50);
+
       scrollChat();
       break;
     }
@@ -145,6 +162,9 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
 
     case 'response_chunk': {
       col.querySelectorAll('.think-label-temp').forEach(el => el.remove());
+      // Remove typing dots once AI starts writing (orb stays, dots go)
+      const activeOrb = document.querySelector('.chat-ai-stream-header #chat-stream-typing-dots');
+      if (activeOrb) activeOrb.remove();
       _finalizeToolContainer(true);
       
       if (_aiderActive) {
@@ -155,7 +175,7 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
           _aiderConsoleLogArea.innerHTML = window.marked 
             ? marked.parse(_aiderConsoleRawText) 
             : escapeHtml(_aiderConsoleRawText);
-          enhanceCodeBlocks(_aiderConsoleLogArea);
+          enhanceMarkdownContent(_aiderConsoleLogArea);
           _aiderConsoleLogArea.scrollTop = _aiderConsoleLogArea.scrollHeight;
           
           const addActivityStep = (text, isDone = false) => {
@@ -293,7 +313,7 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
           _streamResponseEl.innerHTML = window.marked 
             ? marked.parse(displayText) 
             : escapeHtml(displayText);
-          enhanceCodeBlocks(_streamResponseEl);
+          enhanceMarkdownContent(_streamResponseEl);
         }
         if (_streamResponseText.includes('```')) {
           if (window.showWebPreviewIcon) window.showWebPreviewIcon();
@@ -639,6 +659,13 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
                   }
                 }
 
+                // ── PERSIST image path so it survives page refresh ────────────
+                // Store the raw path in the last tool run entry. loadChat() will
+                // read this and re-render the image card without needing a re-run.
+                if (_currentMessageToolRuns.length > 0) {
+                  _currentMessageToolRuns[_currentMessageToolRuns.length - 1].image_path = relativeOrAbsolute;
+                }
+
                 if (window.lucide) lucide.createIcons({ parent: imgCard });
               } else {
                 imgCard.remove();
@@ -875,7 +902,7 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
         const summaryEl = document.createElement('div');
         summaryEl.className = 'msg ai';
         summaryEl.innerHTML = window.marked ? marked.parse(historyMsg) : escapeHtml(historyMsg);
-        enhanceCodeBlocks(summaryEl);
+        enhanceMarkdownContent(summaryEl);
         col.appendChild(summaryEl);
         scrollChat();
 
@@ -899,20 +926,7 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
             _streamResponseEl.innerHTML = window.marked
               ? marked.parse(displayText)
               : escapeHtml(displayText);
-            enhanceCodeBlocks(_streamResponseEl);
-            enhanceTables(_streamResponseEl);
-            enhanceImagePreviews(_streamResponseEl);
-            if (window.renderMathInElement) {
-              renderMathInElement(_streamResponseEl, {
-                delimiters: [
-                  {left: '$$', right: '$$', display: true},
-                  {left: '$', right: '$', display: false},
-                  {left: '\\(', right: '\\)', display: false},
-                  {left: '\\[', right: '\\]', display: true}
-                ],
-                throwOnError: false
-              });
-            }
+            enhanceMarkdownContent(_streamResponseEl);
           }
           _finalizeStreamResponse();
         } else if (e.data && e.data.trim()) {
@@ -923,20 +937,7 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
           summaryEl.innerHTML = window.marked
             ? marked.parse(displayText || e.data)
             : escapeHtml(displayText || e.data);
-          enhanceCodeBlocks(summaryEl);
-          enhanceTables(summaryEl);
-          enhanceImagePreviews(summaryEl);
-          if (window.renderMathInElement) {
-            renderMathInElement(summaryEl, {
-              delimiters: [
-                {left: '$$', right: '$$', display: true},
-                {left: '$', right: '$', display: false},
-                {left: '\\(', right: '\\)', display: false},
-                {left: '\\[', right: '\\]', display: true}
-              ],
-              throwOnError: false
-            });
-          }
+          enhanceMarkdownContent(summaryEl);
           col.appendChild(summaryEl);
           scrollChat();
           ChatSessionManager.appendMessage('assistant', e.data, _consumeToolRuns());
@@ -947,6 +948,9 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
       _finalizeStreamThought();
       _finalizeReasoning();
       _finalizeToolContainer(true);
+      // Remove typing dots from orb header
+      const doneHeader = document.querySelector('.chat-ai-stream-header');
+      if (doneHeader) { const d = doneHeader.querySelector('#chat-stream-typing-dots'); if (d) d.remove(); doneHeader.classList.remove('chat-ai-stream-header'); }
       _currentMessageActive = false;
       if (window.setGeneratingState) window.setGeneratingState(false);
       // Auto-refresh drawer tabs (plan / tasks / walkthrough) silently
@@ -956,6 +960,9 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
 
     case 'error': {
       col.querySelectorAll('.think-label-temp, .tool-block-temp, .thought-container, .reasoning-inline-temp, .ai-reasoning-card').forEach(el => el.remove());
+      // Remove typing dots from orb header on error
+      const errHeader = document.querySelector('.chat-ai-stream-header');
+      if (errHeader) { const d = errHeader.querySelector('#chat-stream-typing-dots'); if (d) d.remove(); errHeader.classList.remove('chat-ai-stream-header'); }
       _finalizeReasoning();
       _finalizeToolContainer(false);
       
@@ -989,6 +996,7 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
           _streamResponseEl.innerHTML = window.marked 
             ? marked.parse(_streamResponseText) 
             : escapeHtml(_streamResponseText);
+          enhanceMarkdownContent(_streamResponseEl);
         }
         _finalizeStreamResponse();
       }

@@ -15,6 +15,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
    */
   setTheme: (theme) => ipcRenderer.send('set-theme', theme),
 
+  /** Open external URLs safely in default system browser */
+  openExternal: (url) => ipcRenderer.send('open-external', url),
+
   /** Check if we are running inside Electron (vs plain browser). */
   isElectron: true,
 });

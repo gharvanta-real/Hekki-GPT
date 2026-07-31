@@ -11,7 +11,8 @@ from mariano.skills._registry.loader import SkillLoader
 log = structlog.get_logger(__name__)
 
 CORE_SKILL_MODULES = [
-    "mariano.skills.core_skills.file_manager.skill",  # Lightweight read-only file access
+    "mariano.skills.core_skills.file_manager.skill",  # Lightweight read-only & management file access
+    "mariano.skills.core_skills.run_command.skill",   # Terminal CMD & PowerShell command execution
     "mariano.skills.core_skills.web_search.skill",
     "mariano.skills.core_skills.web_scraper.skill",
     "mariano.skills.core_skills.stock_data.skill",

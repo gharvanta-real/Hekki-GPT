@@ -18,9 +18,10 @@ from typing import Any
 
 import uvicorn
 import structlog
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, UploadFile
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, FileResponse
+from pydantic import BaseModel
 
 from mariano.config import get_settings
 from mariano.core.voice_control import VoiceController
@@ -195,7 +196,14 @@ async def get_index():
     """Serves the main Stark-HUD Bloomberg template page."""
     index_file = STATIC_DIR / "index.html"
     if index_file.exists():
-        return HTMLResponse(content=index_file.read_text(encoding="utf-8"))
+        return HTMLResponse(
+            content=index_file.read_text(encoding="utf-8"),
+            headers={
+                "Cache-Control": "no-cache, no-store, must-revalidate",
+                "Pragma": "no-cache",
+                "Expires": "0"
+            }
+        )
     return HTMLResponse(content="<h1>MARIANO index.html not found.</h1>", status_code=404)
 
 
@@ -221,6 +229,9 @@ class SettingsUpdateRequest(BaseModel):
     user_name: str | None = None
     user_instructions: str | None = None
     theme: str | None = None
+    quick_voice_enabled: bool | None = None
+    kaggle_username: str | None = None
+    kaggle_api_key: str | None = None
 
 @app.get("/api/models")
 async def get_available_models():
@@ -240,6 +251,7 @@ async def get_available_models():
 async def get_api_settings():
     """Returns all dynamic configurations."""
     settings = get_settings()
+    import os
     return {
         "gemini_api_key": settings.active_gemini_api_key,
         "use_ollama": settings.active_use_ollama,
@@ -250,12 +262,16 @@ async def get_api_settings():
         "user_name": settings.dynamic_config.get("user_name", ""),
         "user_instructions": settings.dynamic_config.get("user_instructions", ""),
         "theme": settings.dynamic_config.get("theme", "dark"),
+        "quick_voice_enabled": settings.dynamic_config.get("quick_voice_enabled", True),
+        "kaggle_username": settings.dynamic_config.get("kaggle_username", os.environ.get("KAGGLE_USERNAME", "")),
+        "kaggle_api_key": settings.dynamic_config.get("kaggle_api_key", os.environ.get("KAGGLE_KEY", "")),
     }
 
 @app.post("/api/settings")
 async def update_api_settings(req: SettingsUpdateRequest):
     """Saves dynamic configurations to persistent settings file."""
     settings = get_settings()
+    import os
     update_dict = {}
     if req.gemini_api_key is not None:
         update_dict["gemini_api_key"] = req.gemini_api_key
@@ -275,8 +291,57 @@ async def update_api_settings(req: SettingsUpdateRequest):
         update_dict["user_instructions"] = req.user_instructions
     if req.theme is not None:
         update_dict["theme"] = req.theme
+    if req.quick_voice_enabled is not None:
+        update_dict["quick_voice_enabled"] = req.quick_voice_enabled
+    if req.kaggle_username is not None:
+        update_dict["kaggle_username"] = req.kaggle_username
+        os.environ["KAGGLE_USERNAME"] = req.kaggle_username
+    if req.kaggle_api_key is not None:
+        update_dict["kaggle_api_key"] = req.kaggle_api_key
+        os.environ["KAGGLE_KEY"] = req.kaggle_api_key
     settings.save_dynamic_config(update_dict)
     return {"success": True}
+
+@app.post("/api/kaggle/verify")
+async def verify_kaggle_connection(payload: dict):
+    """Verifies Kaggle API credentials and configures ~/.kaggle/kaggle.json and access_token."""
+    import os, json, subprocess
+    from pathlib import Path
+    username = payload.get("kaggle_username") or os.environ.get("KAGGLE_USERNAME", "")
+    key = payload.get("kaggle_api_key") or os.environ.get("KAGGLE_KEY", "") or os.environ.get("KAGGLE_API_TOKEN", "")
+
+    if not key:
+        return {"success": False, "message": "Kaggle API Key/Token is required."}
+
+    kaggle_dir = Path("~/.kaggle").expanduser()
+    kaggle_dir.mkdir(parents=True, exist_ok=True)
+
+    if key.startswith("KGAT_"):
+        # New Kaggle Bearer API Token
+        os.environ["KAGGLE_API_TOKEN"] = key
+        if username:
+            os.environ["KAGGLE_USERNAME"] = username
+        token_file = kaggle_dir / "access_token"
+        token_file.write_text(key, encoding="utf-8")
+        try: os.chmod(token_file, 0o600)
+        except Exception: pass
+    else:
+        # Legacy Username + Key format
+        os.environ["KAGGLE_USERNAME"] = username
+        os.environ["KAGGLE_KEY"] = key
+        kaggle_file = kaggle_dir / "kaggle.json"
+        kaggle_file.write_text(json.dumps({"username": username, "key": key}), encoding="utf-8")
+        try: os.chmod(kaggle_file, 0o600)
+        except Exception: pass
+
+    try:
+        res = subprocess.run(["kaggle", "competitions", "list"], capture_output=True, text=True, timeout=8)
+        if res.returncode == 0 or "title" in res.stdout.lower() or "ref" in res.stdout.lower():
+            return {"success": True, "message": f"Kaggle API Token Verified!"}
+        else:
+            return {"success": True, "message": f"Kaggle Token Saved (~/.kaggle/access_token written)"}
+    except Exception:
+        return {"success": True, "message": f"Kaggle Token Saved (~/.kaggle/access_token written)"}
 
 @app.get("/api/chats")
 async def get_chats():
@@ -362,6 +427,236 @@ async def add_evolution_log(req: EvolutionLogRequest):
     )
     return {"success": True}
 
+# ── Quick Voice Overlay Routes ────────────────────────────────────────────────
+@app.get("/overlay")
+@app.get("/overlay.html")
+async def serve_overlay_page():
+    """Serves the overlay interface directly in the browser for instant testing."""
+    overlay_path = Path(__file__).resolve().parent.parent.parent / "overlay.html"
+    return FileResponse(overlay_path)
+
+class QuickVoiceRequest(BaseModel):
+    text: str
+
+@app.post("/api/quick-voice")
+async def quick_voice(req: QuickVoiceRequest):
+    """Processes a short voice/text query from the mini overlay.
+    Routes to system control, app launcher, terminal, or Gemini AI.
+    """
+    from mariano.core.rate_limiter import GeminiRateLimiter
+    from google import genai as genai_sdk
+
+    try:
+        settings_obj = get_settings()
+
+        # ── System Control + App Launcher + Terminal (ComputerUseEngine) ──
+        from mariano.core.computer_use import ComputerUseEngine
+        cu_result = await ComputerUseEngine.execute_intent(req.text.strip())
+        if cu_result.get("success"):
+            return {"response_text": cu_result.get("message", "Done!")}
+
+        # ── Fallback: Gemini AI conversational response ────────────────────
+        system_prompt = (
+            "You are Hekki, a warm, intelligent AI assistant. "
+            "Answer the user's question in 1-2 short, warm, human-like conversational sentences, "
+            "exactly like a friend or colleague answering directly in a quick conversation. "
+            "Do NOT use markdown formatting, bullet points, numbered lists, or headers. "
+            "Just plain natural language."
+        )
+
+        client_sdk = genai_sdk.Client(api_key=settings_obj.active_gemini_api_key)
+        loop = asyncio.get_event_loop()
+        await GeminiRateLimiter.get_instance().acquire(token_count=500)
+
+        response = await loop.run_in_executor(
+            None,
+            lambda: client_sdk.models.generate_content(
+                model=settings_obj.active_model,
+                contents=[{"role": "user", "parts": [{"text": f"{system_prompt}\n\nUser: {req.text.strip()}"}]}]
+            )
+        )
+
+        answer = response.text.strip() if response.text else "I'm not sure. Try asking in the main Hekki window."
+        return {"response_text": answer}
+
+    except Exception as e:
+        log.error("web.quick_voice_failed", error=str(e))
+        return {"response_text": "Something went wrong. Please try again."}
+
+
+@app.post("/api/screen-capture")
+async def screen_capture():
+    """Captures the primary monitor and analyzes active screen content with Gemini Vision.
+    Reads visible text, activities, notes, reminders, errors from any open application.
+    """
+    import io
+    from PIL import Image
+    from mariano.core.rate_limiter import GeminiRateLimiter
+    from google import genai as genai_sdk
+    from google.genai import types as genai_types
+
+    try:
+        settings_obj = get_settings()
+        client_sdk = genai_sdk.Client(api_key=settings_obj.active_gemini_api_key)
+
+        # ── Step 1: Capture screen (mss primary → pyautogui fallback) ─────
+        img: Image.Image | None = None
+        capture_error: str = ""
+
+        try:
+            import mss
+            with mss.mss() as sct:
+                mon = sct.monitors[1] if len(sct.monitors) > 1 else sct.monitors[0]
+                sct_img = sct.grab(mon)
+                # mss returns BGRA raw bytes — use RGBA mode + convert to avoid BGRX issues
+                img = Image.frombytes(
+                    mode="RGBA",
+                    size=(sct_img.width, sct_img.height),
+                    data=bytes(sct_img.raw),
+                    decoder_name="raw",
+                    args=["BGRA"]
+                ).convert("RGB")
+        except Exception as mss_err:
+            capture_error = str(mss_err)
+            try:
+                import pyautogui
+                img = pyautogui.screenshot().convert("RGB")
+                capture_error = ""
+            except Exception as pg_err:
+                return {
+                    "success": False,
+                    "analysis": f"Screen capture unavailable. mss: {capture_error} | pyautogui: {pg_err}"
+                }
+
+        # ── Step 2: Resize & encode for Gemini Vision ──────────────────────
+        img.thumbnail((1280, 800), Image.LANCZOS)
+        buf = io.BytesIO()
+        img.save(buf, format="JPEG", quality=88)
+        img_bytes = buf.getvalue()
+
+        # ── Step 3: Focused vision prompt — extract on-screen content ──────
+        vision_prompt = (
+            "You are Hekki, an intelligent desktop assistant. "
+            "Analyze this screenshot of the user's active screen. "
+            "Extract and summarize in plain conversational language (no markdown):\n"
+            "1. What application or window is open and what the user is currently doing.\n"
+            "2. Any visible text — notes, documents, code, messages, tasks, reminders, calendar events, or to-do items.\n"
+            "3. Any errors, warnings, or important notifications visible on screen.\n"
+            "4. One helpful observation or reminder based on what is visible (e.g. unsaved work, a pending task, or useful insight).\n"
+            "Keep total response under 4 conversational sentences. Be warm and direct."
+        )
+
+        loop = asyncio.get_event_loop()
+        await GeminiRateLimiter.get_instance().acquire(token_count=1200)
+
+        # ── Step 4: Send to Gemini Vision (correct Content/Part format) ────
+        response = await loop.run_in_executor(
+            None,
+            lambda: client_sdk.models.generate_content(
+                model=settings_obj.active_model,
+                contents=[
+                    genai_types.Content(
+                        role="user",
+                        parts=[
+                            genai_types.Part.from_bytes(data=img_bytes, mime_type="image/jpeg"),
+                            genai_types.Part.from_text(text=vision_prompt),
+                        ]
+                    )
+                ]
+            )
+        )
+
+        analysis = response.text.strip() if (response and response.text) else "Screen captured but Gemini returned no analysis."
+        return {"success": True, "analysis": analysis}
+
+    except Exception as e:
+        log.error("web.screen_capture_failed", error=str(e))
+        return {"success": False, "analysis": f"Vision analysis failed: {str(e)[:300]}"}
+
+
+@app.get("/api/images")
+async def list_images():
+    """Scan workspace and data directories for all generated/downloaded image files."""
+    import urllib.parse
+    from datetime import datetime
+
+    image_extensions = {'.png', '.jpg', '.jpeg', '.webp', '.gif'}
+    base_dir = Path(__file__).resolve().parent.parent.parent  # repo root
+
+    # Search these directories recursively
+    search_dirs = [
+        base_dir / "data" / "workspace",
+        Path("C:/Users/anshu/.gemini/antigravity/brain"),
+    ]
+
+    images = []
+    for search_dir in search_dirs:
+        if not search_dir.exists():
+            continue
+        try:
+            for img_path in search_dir.rglob("*"):
+                if img_path.suffix.lower() in image_extensions and img_path.is_file():
+                    try:
+                        stat = img_path.stat()
+                        abs_path = str(img_path).replace("\\", "/")
+                        images.append({
+                            "path": abs_path,
+                            "name": img_path.name,
+                            "size": stat.st_size,
+                            "modified": stat.st_mtime,
+                            "modified_iso": datetime.fromtimestamp(stat.st_mtime).isoformat(),
+                            "render_url": f"/api/workspace/render?path={urllib.parse.quote(abs_path)}",
+                        })
+                    except Exception:
+                        pass
+        except Exception:
+            pass
+
+    # Sort newest first
+    images.sort(key=lambda x: x["modified"], reverse=True)
+    return {"images": images, "count": len(images)}
+
+
+class DeleteImagesPayload(BaseModel):
+    paths: list[str] = []
+    delete_all: bool = False
+
+@app.post("/api/images/delete")
+async def delete_images(payload: DeleteImagesPayload):
+    """Deletes selected or all image files from workspace and brain directories."""
+    import os
+    deleted_count = 0
+    errors = []
+
+    if payload.delete_all:
+        image_extensions = {'.png', '.jpg', '.jpeg', '.webp', '.gif'}
+        base_dir = Path(__file__).resolve().parent.parent.parent
+        search_dirs = [
+            base_dir / "data" / "workspace",
+            Path("C:/Users/anshu/.gemini/antigravity/brain"),
+        ]
+        for sdir in search_dirs:
+            if not sdir.exists():
+                continue
+            for img_path in sdir.rglob("*"):
+                if img_path.suffix.lower() in image_extensions and img_path.is_file():
+                    try:
+                        os.remove(img_path)
+                        deleted_count += 1
+                    except Exception as e:
+                        errors.append(f"{img_path.name}: {str(e)}")
+    else:
+        for path_str in payload.paths:
+            try:
+                p = Path(path_str)
+                if p.exists() and p.is_file():
+                    os.remove(p)
+                    deleted_count += 1
+            except Exception as e:
+                errors.append(f"{path_str}: {str(e)}")
+
+    return {"success": True, "deleted_count": deleted_count, "errors": errors}
+
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
@@ -431,12 +726,59 @@ async def websocket_endpoint(websocket: WebSocket):
             
             if action_type == "query":
                 text = payload.get("text", "")
+                attachments = payload.get("attachments", [])
                 project = payload.get("project")
                 project_path = payload.get("project_path")
                 chat_id = payload.get("chat_id")
                 permission_policy = payload.get("permission_policy")
                 aider_enabled = payload.get("aider_enabled", False)
-                log.info("web.query_received", text=text, project=project, project_path=project_path, chat_id=chat_id, permission_policy=permission_policy, aider_enabled=aider_enabled)
+
+                # Process attachments if present
+                if attachments:
+                    try:
+                        attach_dir = Path(__file__).resolve().parent.parent.parent / "data" / "workspace" / "attachments"
+                        attach_dir.mkdir(parents=True, exist_ok=True)
+                        extra_context = []
+
+                        for att in attachments:
+                            name = att.get("name", "file")
+                            is_img = att.get("is_image", False)
+                            ext = att.get("ext", "bin")
+
+                            if is_img and att.get("base64"):
+                                try:
+                                    img_bytes = base64.b64decode(att["base64"])
+                                    import time
+                                    safe_name = f"{int(time.time()*1000)}_{name}"
+                                    img_path = attach_dir / safe_name
+                                    img_path.write_bytes(img_bytes)
+                                    extra_context.append(f"\n\n[Attached Image: {name} (saved at {img_path.as_posix()})]")
+                                except Exception as err:
+                                    extra_context.append(f"\n\n[Attached Image: {name} (Error: {err})]")
+
+                            elif att.get("text"):
+                                extra_context.append(f"\n\n--- Attached Document: {name} ---\n{att['text']}\n--- End Document ---")
+
+                            elif att.get("base64"):
+                                try:
+                                    doc_bytes = base64.b64decode(att["base64"])
+                                    import time
+                                    safe_name = f"{int(time.time()*1000)}_{name}"
+                                    doc_path = attach_dir / safe_name
+                                    doc_path.write_bytes(doc_bytes)
+                                    extra_context.append(f"\n\n[Attached File: {name} (saved at {doc_path.as_posix()})]")
+                                except Exception as err:
+                                    extra_context.append(f"\n\n[Attached File: {name} (Error: {err})]")
+
+                        has_image = any(a.get("is_image") for a in attachments)
+                        if has_image:
+                            extra_context.append("\n\n[DIRECT VISION DIRECTIVE: A NEW image has been attached directly to your vision context. Please inspect and analyze the visual contents of this NEW image directly, and answer the user's prompt directly.]")
+
+                        text = text + "".join(extra_context)
+                    except Exception as exc:
+                        log.error("web.attachment_processing_failed", error=str(exc))
+
+                log.info("web.query_received", text=text, attachments_count=len(attachments), project=project, project_path=project_path, chat_id=chat_id, permission_policy=permission_policy, aider_enabled=aider_enabled)
                 if query_task and not query_task.done():
                     query_task.cancel()
                 query_task = asyncio.create_task(run_query(text, project=project, project_path=project_path, chat_id=chat_id, permission_policy=permission_policy, aider_enabled=aider_enabled))
@@ -550,3 +892,119 @@ async def websocket_endpoint(websocket: WebSocket):
     finally:
         if websocket in active_connections:
             active_connections.remove(websocket)
+
+
+# ════════════════════════════════════════════════════════════════════════════
+# Gemini 2.5 Flash Native Audio Dialog — Zero Latency Live Audio WebSocket Endpoint
+# ════════════════════════════════════════════════════════════════════════════
+
+@app.get("/api/live-audio/stats")
+async def get_live_audio_stats():
+    """Returns real-time session statistics for Gemini Live Audio engine."""
+    from mariano.core.live_audio import LiveAudioEngine
+    return LiveAudioEngine.get_instance().get_stats()
+
+
+@app.websocket("/ws/live-audio")
+async def live_audio_websocket_endpoint(websocket: WebSocket):
+    """Zero-latency bi-directional WebSocket audio pipeline using Gemini 2.5 Flash Native Audio Dialog.
+    Streams PCM 16kHz audio between client browser/overlay and Gemini Live API.
+    """
+    import uuid
+    from mariano.core.live_audio import LiveAudioEngine
+
+    await websocket.accept()
+    session_id = f"live_ws_{uuid.uuid4().hex[:8]}"
+    engine = LiveAudioEngine.get_instance()
+    session = None
+
+    try:
+        session = await engine.create_session(session_id)
+        await websocket.send_json({
+            "type": "connected",
+            "session_id": session_id,
+            "model": session.model_name
+        })
+
+        async def send_to_client():
+            """Streams Gemini response audio/text chunks to the client WebSocket."""
+            try:
+                async for chunk in session.receive_stream():
+                    if chunk["type"] == "audio":
+                        b64_pcm = base64.b64encode(chunk["data"]).decode("utf-8")
+                        await websocket.send_json({
+                            "type": "audio",
+                            "data": b64_pcm,
+                            "mime_type": chunk.get("mime_type", "audio/pcm")
+                        })
+                    elif chunk["type"] == "text":
+                        await websocket.send_json({
+                            "type": "text",
+                            "text": chunk["text"]
+                        })
+                    elif chunk["type"] == "turn_complete":
+                        await websocket.send_json({"type": "turn_complete"})
+                    elif chunk["type"] == "error":
+                        await websocket.send_json({
+                            "type": "error",
+                            "message": chunk.get("message", "Stream error")
+                        })
+            except Exception as e:
+                log.error("web.live_audio_send_to_client_failed", error=str(e))
+
+        send_task = asyncio.create_task(send_to_client())
+
+        # Receive loop from client
+        while session.is_active:
+            raw_msg = await websocket.receive()
+            if "text" in raw_msg and raw_msg["text"]:
+                try:
+                    payload = json.loads(raw_msg["text"])
+                    msg_type = payload.get("type", "audio")
+                    
+                    if msg_type == "text":
+                        text_val = payload.get("text", "").strip()
+                        if text_val:
+                            await session.send_text(text_val)
+                    elif msg_type == "audio":
+                        b64_pcm = payload.get("data", "")
+                        if b64_pcm:
+                            pcm_bytes = base64.b64decode(b64_pcm)
+                            mime = payload.get("mime_type", "audio/pcm;rate=16000")
+                            await session.send_audio_chunk(pcm_bytes, mime_type=mime)
+                    elif msg_type == "ping":
+                        await websocket.send_json({"type": "pong"})
+                except json.JSONDecodeError:
+                    pass
+            elif "bytes" in raw_msg and raw_msg["bytes"]:
+                # Raw binary PCM bytes
+                await session.send_audio_chunk(raw_msg["bytes"])
+
+    except WebSocketDisconnect:
+        log.info("web.live_audio_client_disconnected", session_id=session_id)
+    except Exception as e:
+        err_str = str(e)
+        if "1000" in err_str or "OK" in err_str or "closed" in err_str.lower():
+            log.info("web.live_audio_session_completed_normally", session_id=session_id)
+        else:
+            log.error("web.live_audio_websocket_failed", error=err_str)
+            try:
+                await websocket.send_json({
+                    "type": "error",
+                    "message": f"Live API Notice: {err_str}"
+                })
+                await asyncio.sleep(0.5)
+            except Exception:
+                pass
+    finally:
+        if send_task and not send_task.done():
+            send_task.cancel()
+        if session:
+            await engine.close_session(session_id)
+
+
+
+
+
+
+

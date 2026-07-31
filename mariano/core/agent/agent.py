@@ -127,12 +127,25 @@ class MarianoAgent:
             yield AgentEvent("thinking", "Context window saturated. Compressing older turns to preserve memory...")
             await ctx.compress_history(self._gemini)
 
+        prefix_context = []
+
         # 7b. Inject task log summary if first message in this session context
         if ctx.count == 0 and chat_id:
             session_summary = await self._memory.get_session_summary(chat_id)
             if session_summary:
-                ctx.add("assistant", "[TASK LOG - READ TO UNDERSTAND PREVIOUS WORK]\n" + session_summary)
+                prefix_context.append("[TASK LOG - READ TO UNDERSTAND PREVIOUS WORK]\n" + session_summary)
                 log.info("agent.task_log_injected", chat_id=chat_id)
+
+        # 8. Auto Memory Selection & Retrieval
+        memories = await self._memory.search(user_input, limit=3)
+        if memories:
+            memory_list = "\n".join([f"- [{m.get('category', 'general')}] {m.get('content', '')}" for m in memories])
+            log.info("agent.memory_auto_retrieved", count=len(memories))
+            prefix_context.append(f"[RECALLED PAST CONTEXT - USE FOR CONTINUITY]\n{memory_list}")
+            yield AgentEvent(
+                "thinking",
+                f"Memory Engine: Auto-selected {len(memories)} relevant long-term memories."
+            )
 
         if project and not aider_enabled:
             if project_path and Path(project_path).is_absolute():
@@ -149,23 +162,14 @@ class MarianoAgent:
                 pass
                 
             summary = _get_project_files_summary(proj_dir)
-            user_input = f"[Active Workspace Context: {proj_dir.name} | Absolute Path: {proj_dir.resolve().as_posix()}]\n{summary}\n\nUser Request: {user_input}"
+            prefix_context.append(f"[Active Workspace Context: {proj_dir.name} | Absolute Path: {proj_dir.resolve().as_posix()}]\n{summary}")
 
-        ctx.add("user", user_input)
+        if prefix_context:
+            full_user_input = "\n\n".join(prefix_context) + f"\n\nUser Request: {user_input}"
+        else:
+            full_user_input = user_input
 
-        # 8. Auto Memory Selection & Retrieval
-        memories = await self._memory.search(user_input, limit=3)
-        if memories:
-            memory_list = "\n".join([f"- [{m.get('category', 'general')}] {m.get('content', '')}" for m in memories])
-            log.info("agent.memory_auto_retrieved", count=len(memories))
-            yield AgentEvent(
-                "thinking",
-                f"Memory Engine: Auto-selected {len(memories)} relevant long-term memories."
-            )
-            ctx.add(
-                "assistant",
-                f"[RECALLED PAST CONTEXT - USE FOR CONTINUITY]\n{memory_list}"
-            )
+        ctx.add("user", full_user_input)
 
         # 10. Execute core ReAct loop
         reasoning_mode = self._settings.active_reasoning_mode

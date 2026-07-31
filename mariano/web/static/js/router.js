@@ -9,7 +9,7 @@
  * Pages: 'chat' | 'workspace' | 'skills' | 'changelog' | 'debate'
  */
 
-const PAGES = ['chat', 'workspace', 'skills', 'changelog', 'debate', 'coder'];
+const PAGES = ['chat', 'workspace', 'skills', 'changelog', 'debate', 'coder', 'images'];
 
 class Router {
   constructor() {
@@ -67,6 +67,8 @@ class Router {
       'skills-pane',
       'debate-pane',
       'coder-pane',
+      'images-pane',
+      'hekkicad-pane',
     ];
     panesUsingVisible.forEach(id => {
       const el = document.getElementById(id);
@@ -76,6 +78,7 @@ class Router {
       }
     });
 
+
     // Force-hide the coder inner nav panel completely (prevents DOM bleed)
     const innerCoder = document.getElementById('nav-inner-coder');
     if (innerCoder) {
@@ -83,6 +86,10 @@ class Router {
       innerCoder.style.visibility = 'hidden';
       innerCoder.style.pointerEvents = 'none';
     }
+
+    const cadActions = document.getElementById('cad-titlebar-actions');
+    if (cadActions) cadActions.style.display = 'none';
+
 
     // Always collapse shared right-side chrome
     document.getElementById('app-pane')?.classList.add('hidden-pane');
@@ -233,6 +240,25 @@ class Router {
           window.updateTitleBreadcrumb(activeProjName, '');
         }
         break;
+
+      case 'images':
+        this._showPane('images-pane', 'flex');
+        document.getElementById('sidebar-nav')?.classList.remove('collapsed');
+        const toggleBtnImages = document.getElementById('btn-sidebar-toggle-main');
+        if (toggleBtnImages) toggleBtnImages.style.display = '';
+        if (innerChat) innerChat.style.display = 'flex';
+        if (innerCoder) {
+          innerCoder.style.display = 'none';
+          innerCoder.style.visibility = 'hidden';
+          innerCoder.style.pointerEvents = 'none';
+        }
+        if (window.updateTitleBreadcrumb) {
+          window.updateTitleBreadcrumb('Images', '');
+        }
+        break;
+
+
+
 
       default:
         // Fallback: show chat

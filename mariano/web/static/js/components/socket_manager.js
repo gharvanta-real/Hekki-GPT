@@ -1,6 +1,7 @@
 import { handleChatAgentEvent } from '../agent_stream.js';
 import { appendMsg, clearInputs, scrollChat } from '../chat.js';
 import { showToast } from './toast.js';
+import { attachmentManager } from './attachment_manager.js';
 
 const wsScheme = location.protocol === 'https:' ? 'wss:' : 'ws';
 export let socket = new WebSocket(`${wsScheme}://${location.host}/ws`);
@@ -64,9 +65,32 @@ export function send(text, enterConversation, log) {
   const activeProj = localStorage.getItem('mariano_active_project');
   const activePath = localStorage.getItem('mariano_active_project_path');
   const activeChatId = localStorage.getItem('mariano_active_chat_id');
+
+  const files = attachmentManager.getFiles();
+  const attachments = files.map(f => ({
+    name: f.name,
+    type: f.type,
+    ext: f.ext,
+    is_image: f.isImage,
+    base64: f.base64 || null,
+    text: f.text || null,
+  }));
+
+  // Build full message text containing attached image tags for user bubble rendering & persistence
+  let fullMessageText = text;
+  files.forEach(f => {
+    if (f.isImage && (f.dataUrl || f.base64)) {
+      const src = f.dataUrl || `data:${f.type};base64,${f.base64}`;
+      fullMessageText += `\n[Attached Image: ${f.name} (saved at ${src})]`;
+    } else if (f.name) {
+      fullMessageText += `\n[Attached File: ${f.name}]`;
+    }
+  });
+
   socket.send(JSON.stringify({ 
     type: 'query', 
     text,
+    attachments,
     project: activeProj || null,
     project_path: activePath || null,
     chat_id: activeChatId || null,
@@ -75,9 +99,10 @@ export function send(text, enterConversation, log) {
   }));
   
   window.setGeneratingState(true);
-  appendMsg('user', text, enterConversation, scrollChat);
+  appendMsg('user', fullMessageText, enterConversation, scrollChat);
+  attachmentManager.clear();
   clearInputs();
-  log(`Sent: "${text}" with project context: ${activeProj} (${activePath})`, 'ok');
+  log(`Sent: "${text}" with ${files.length} attachment(s)`, 'ok');
 }
 
 export function setupSocketEvents(enterConversation, log, handleTranscriptCallback) {

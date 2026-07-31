@@ -1,4 +1,4 @@
-import { ChatSessionManager, enhanceCodeBlocks } from '../chat.js';
+import { ChatSessionManager, enhanceCodeBlocks, enhanceMarkdownContent } from '../chat.js';
 const appendHudLog = (msg) => { console.log("[DEBATE HUD LOG]", msg); };
 import { router } from '../router.js';
 import { showToast } from '../components/toast.js';
@@ -47,142 +47,145 @@ function _buildLayout() {
           </div>
         </div>
 
-        <!-- Section Header -->
-        <div class="debate-sidebar-section-label" style="margin-top: 4px;">Actions</div>
+        <!-- Scrollable Inner Content Area -->
+        <div class="debate-sidebar-inner">
+          <!-- Section Header -->
+          <div class="debate-sidebar-section-label" style="margin-top: 4px;">Actions</div>
 
-        <!-- Sidebar Controls List -->
-        <div class="debate-sidebar-controls-list">
-          <button class="debate-list-btn" id="btn-sidebar-new-debate" title="New Debate">
-            <i data-lucide="plus" style="width:15px; height:15px; margin-right:8px;"></i>
-            <span>New Debate</span>
-          </button>
-          <button class="debate-list-btn" id="btn-sidebar-research-directory" title="Research Directory">
-            <i data-lucide="book-open" style="width:15px; height:15px; margin-right:8px;"></i>
-            <span>Research Directory</span>
-          </button>
-          <button class="debate-list-btn" id="btn-sidebar-voice" title="Toggle Voice Speak">
-            <span id="btn-sidebar-voice-icon-wrap" style="display:inline-flex; align-items:center; margin-right:8px;">
-              <i data-lucide="volume-x" style="width:15px; height:15px;"></i>
-            </span>
-            <span id="lbl-sidebar-voice">Voice: Off</span>
-          </button>
-          <button class="debate-list-btn" id="btn-sidebar-reset" title="Reset Debate Room">
-            <i data-lucide="rotate-ccw" style="width:15px; height:15px; margin-right:8px;"></i>
-            <span>Reset Room</span>
-          </button>
+          <!-- Sidebar Controls List -->
+          <div class="debate-sidebar-controls-list">
+            <button class="debate-list-btn" id="btn-sidebar-new-debate" title="New Debate">
+              <i data-lucide="plus" style="width:15px; height:15px; margin-right:8px;"></i>
+              <span>New Debate</span>
+            </button>
+            <button class="debate-list-btn" id="btn-sidebar-research-directory" title="Research Directory">
+              <i data-lucide="book-open" style="width:15px; height:15px; margin-right:8px;"></i>
+              <span>Research Directory</span>
+            </button>
+            <button class="debate-list-btn" id="btn-sidebar-voice" title="Toggle Voice Speak">
+              <span id="btn-sidebar-voice-icon-wrap" style="display:inline-flex; align-items:center; margin-right:8px;">
+                <i data-lucide="volume-x" style="width:15px; height:15px;"></i>
+              </span>
+              <span id="lbl-sidebar-voice">Voice: Off</span>
+            </button>
+            <button class="debate-list-btn" id="btn-sidebar-reset" title="Reset Debate Room">
+              <i data-lucide="rotate-ccw" style="width:15px; height:15px; margin-right:8px;"></i>
+              <span>Reset Room</span>
+            </button>
+          </div>
+
+          <div class="debate-sidebar-divider" style="margin: 0 0 2px 0;"></div>
+
+          <!-- Participants Section -->
+          <details class="debate-sidebar-details">
+            <summary class="debate-sidebar-summary">
+              <span class="summary-title">Participants</span>
+              <i data-lucide="chevron-right" class="accordion-chevron"></i>
+            </summary>
+            <div class="details-content">
+              <div class="debate-participants-list" style="display:flex; flex-direction:column; gap:4px;">
+                
+                <!-- Participant 1 -->
+                <div class="debate-participant-card" id="dp-alpha" style="display:flex; align-items:center; justify-content:space-between; padding:4px 6px 4px 2px; background:transparent; border:none; border-bottom: 1px solid var(--border);">
+                  <div class="dp-avatar dp-alpha" style="width:24px; height:24px; border-radius:50%; background:var(--hover); color:var(--text-primary); display:flex; align-items:center; justify-content:center; font-weight:400; font-size:11.5px;">T</div>
+                  <div class="dp-info" style="flex-grow:1; min-width:0; margin-left:8px; display:flex; flex-direction:column; gap:1px;">
+                    <div class="dp-name" style="font-size:12px; font-weight:600; color:var(--text-secondary); line-height: 1.1;">Tony Stark</div>
+                    <select class="debate-model-select" id="select-alpha-model" style="width:100%; cursor:pointer;">
+                      <option value="gemini-3.1-flash-lite">Gemini 3.1 Flash</option>
+                      <option value="qwen">Qwen (Optional)</option>
+                    </select>
+                    <div class="dp-status" id="dp-alpha-status" style="font-size:10px; color:var(--text-3); line-height: 1.1; margin-top: 1px;">Idle</div>
+                  </div>
+                  <div class="dp-indicator" id="dp-alpha-dot" style="width:6px; height:6px; border-radius:50%; background:transparent; margin-left:6px;"></div>
+                </div>
+
+                <!-- Participant 2 -->
+                <div class="debate-participant-card" id="dp-beta" style="display:flex; align-items:center; justify-content:space-between; padding:4px 6px 4px 2px; background:transparent; border:none; border-bottom: 1px solid var(--border);">
+                  <div class="dp-avatar dp-beta" style="width:24px; height:24px; border-radius:50%; background:var(--hover); color:var(--text-primary); display:flex; align-items:center; justify-content:center; font-weight:400; font-size:11.5px;">B</div>
+                  <div class="dp-info" style="flex-grow:1; min-width:0; margin-left:8px; display:flex; flex-direction:column; gap:1px;">
+                    <div class="dp-name" style="font-size:12px; font-weight:600; color:var(--text-secondary); line-height: 1.1;">Bruce Banner</div>
+                    <select class="debate-model-select" id="select-beta-model" style="width:100%; cursor:pointer;">
+                      <option value="gemini-3.1-flash-lite">Gemini 3.1 Flash</option>
+                      <option value="qwen">Qwen (Optional)</option>
+                    </select>
+                    <div class="dp-status" id="dp-beta-status" style="font-size:10px; color:var(--text-3); line-height: 1.1; margin-top: 1px;">Idle</div>
+                  </div>
+                  <div class="dp-indicator" id="dp-beta-dot" style="width:6px; height:6px; border-radius:50%; background:transparent; margin-left:6px;"></div>
+                </div>
+
+                <!-- Participant 3 (User / Observer) -->
+                <div class="debate-participant-card" id="dp-user" style="display:flex; align-items:center; justify-content:space-between; padding:4px 6px 4px 2px; background:transparent; border:none;">
+                  <div class="dp-avatar dp-user" style="width:24px; height:24px; border-radius:50%; background:var(--hover); color:var(--text-primary); display:flex; align-items:center; justify-content:center; font-weight:400; font-size:11.5px;">U</div>
+                  <div class="dp-info" style="flex-grow:1; min-width:0; margin-left:8px; display:flex; flex-direction:column; gap:1px;">
+                    <div class="dp-name" style="font-size:12px; font-weight:600; color:var(--text-secondary); line-height: 1.1;">You</div>
+                    <div class="dp-model" style="font-size:10px; color:var(--text-3); margin-top:1px; line-height: 1.1;">Observer</div>
+                    <div class="dp-status" id="dp-user-status" style="font-size:10px; color:var(--text-3); line-height: 1.1; margin-top: 1px;">Active</div>
+                  </div>
+                  <div class="dp-indicator active" id="dp-user-dot" style="width:6px; height:6px; border-radius:50%; background:var(--green); margin-left:6px;"></div>
+                </div>
+
+              </div>
+            </div>
+          </details>
+
+          <div class="debate-sidebar-divider"></div>
+
+          <!-- Flow Section -->
+          <details class="debate-sidebar-details">
+            <summary class="debate-sidebar-summary">
+              <span class="summary-title">Flow</span>
+              <i data-lucide="chevron-right" class="accordion-chevron"></i>
+            </summary>
+            <div class="details-content">
+              <div class="debate-flow-steps" id="debate-flow-steps">
+                <div class="dfs dfs-idle" id="dfs-1">Round 1</div>
+                <div class="dfs dfs-idle" id="dfs-2">Round 2</div>
+                <div class="dfs dfs-idle" id="dfs-3">Round 3</div>
+                <div class="dfs dfs-idle" id="dfs-s">Summary</div>
+              </div>
+            </div>
+          </details>
+
+          <div class="debate-sidebar-divider"></div>
+
+          <!-- Documents Section (Persistent Saved Documentaries) -->
+          <details class="debate-sidebar-details" id="debate-documents-details" style="position: relative;">
+            <summary class="debate-sidebar-summary">
+              <span class="summary-title">Documents</span>
+              <i data-lucide="chevron-right" class="accordion-chevron"></i>
+            </summary>
+            <!-- Documents Options Dropdown -->
+            <div class="doc-dropdown" style="position: absolute; right: 10px; top: 2px; z-index: 115;">
+              <button class="debate-docs-menu-btn" id="btn-debate-docs-menu" style="background: transparent; border: none; padding: 4px; cursor: pointer; color: var(--text-secondary); display: flex; align-items: center; justify-content: center; border-radius: 4px; transition: background 0.12s, color 0.12s;" title="Document Options">
+                <i data-lucide="more-vertical" style="width: 14px; height: 14px;"></i>
+              </button>
+              <div class="doc-dropdown-menu" id="debate-docs-dropdown-menu" style="top: 24px;">
+                <button class="dropdown-item btn-upload-doc" id="btn-debate-upload-doc" style="display: flex; align-items: center; gap: 8px;">
+                  <i data-lucide="upload" style="width: 12px; height: 12px;"></i>
+                  <span>Upload Document</span>
+                </button>
+                <button class="dropdown-item btn-export-docs" id="btn-debate-export-docs" style="display: flex; align-items: center; gap: 8px;">
+                  <i data-lucide="download" style="width: 12px; height: 12px;"></i>
+                  <span>Export All</span>
+                </button>
+                <div style="border-top: 1px solid var(--border); margin: 4px 0;"></div>
+                <button class="dropdown-item btn-clear-docs" id="btn-debate-clear-docs" style="display: flex; align-items: center; gap: 8px; color: #ef4444;">
+                  <i data-lucide="trash-2" style="width: 12px; height: 12px;"></i>
+                  <span>Clean All</span>
+                </button>
+              </div>
+              <input type="file" id="debate-doc-upload-input" accept=".txt,.md,.json" style="display: none;" />
+            </div>
+            <div class="details-content">
+              <div class="debate-docs-list" id="debate-docs-list">
+                <div class="debate-doc-empty">No saved documents yet.</div>
+              </div>
+            </div>
+          </details>
         </div>
 
-        <div class="debate-sidebar-divider" style="margin: 0 0 2px 0;"></div>
-
-        <!-- Participants Section -->
-        <details class="debate-sidebar-details">
-          <summary class="debate-sidebar-summary">
-            <span class="summary-title">Participants</span>
-            <i data-lucide="chevron-right" class="accordion-chevron"></i>
-          </summary>
-          <div class="details-content">
-            <div class="debate-participants-list" style="display:flex; flex-direction:column; gap:4px;">
-              
-              <!-- Participant 1 -->
-              <div class="debate-participant-card" id="dp-alpha" style="display:flex; align-items:center; justify-content:space-between; padding:4px 6px 4px 2px; background:transparent; border:none; border-bottom: 1px solid var(--border);">
-                <div class="dp-avatar dp-alpha" style="width:24px; height:24px; border-radius:50%; background:var(--hover); color:var(--text-primary); display:flex; align-items:center; justify-content:center; font-weight:400; font-size:11.5px;">T</div>
-                <div class="dp-info" style="flex-grow:1; min-width:0; margin-left:8px; display:flex; flex-direction:column; gap:1px;">
-                  <div class="dp-name" style="font-size:12px; font-weight:600; color:var(--text-secondary); line-height: 1.1;">Tony Stark</div>
-                  <select class="debate-model-select" id="select-alpha-model" style="width:100%; cursor:pointer;">
-                    <option value="gemini-3.1-flash-lite">Gemini 3.1 Flash</option>
-                    <option value="qwen">Qwen (Optional)</option>
-                  </select>
-                  <div class="dp-status" id="dp-alpha-status" style="font-size:10px; color:var(--text-3); line-height: 1.1; margin-top: 1px;">Idle</div>
-                </div>
-                <div class="dp-indicator" id="dp-alpha-dot" style="width:6px; height:6px; border-radius:50%; background:transparent; margin-left:6px;"></div>
-              </div>
-
-              <!-- Participant 2 -->
-              <div class="debate-participant-card" id="dp-beta" style="display:flex; align-items:center; justify-content:space-between; padding:4px 6px 4px 2px; background:transparent; border:none; border-bottom: 1px solid var(--border);">
-                <div class="dp-avatar dp-beta" style="width:24px; height:24px; border-radius:50%; background:var(--hover); color:var(--text-primary); display:flex; align-items:center; justify-content:center; font-weight:400; font-size:11.5px;">B</div>
-                <div class="dp-info" style="flex-grow:1; min-width:0; margin-left:8px; display:flex; flex-direction:column; gap:1px;">
-                  <div class="dp-name" style="font-size:12px; font-weight:600; color:var(--text-secondary); line-height: 1.1;">Bruce Banner</div>
-                  <select class="debate-model-select" id="select-beta-model" style="width:100%; cursor:pointer;">
-                    <option value="gemini-3.1-flash-lite">Gemini 3.1 Flash</option>
-                    <option value="qwen">Qwen (Optional)</option>
-                  </select>
-                  <div class="dp-status" id="dp-beta-status" style="font-size:10px; color:var(--text-3); line-height: 1.1; margin-top: 1px;">Idle</div>
-                </div>
-                <div class="dp-indicator" id="dp-beta-dot" style="width:6px; height:6px; border-radius:50%; background:transparent; margin-left:6px;"></div>
-              </div>
-
-              <!-- Participant 3 (User / Observer) -->
-              <div class="debate-participant-card" id="dp-user" style="display:flex; align-items:center; justify-content:space-between; padding:4px 6px 4px 2px; background:transparent; border:none;">
-                <div class="dp-avatar dp-user" style="width:24px; height:24px; border-radius:50%; background:var(--hover); color:var(--text-primary); display:flex; align-items:center; justify-content:center; font-weight:400; font-size:11.5px;">U</div>
-                <div class="dp-info" style="flex-grow:1; min-width:0; margin-left:8px; display:flex; flex-direction:column; gap:1px;">
-                  <div class="dp-name" style="font-size:12px; font-weight:600; color:var(--text-secondary); line-height: 1.1;">You</div>
-                  <div class="dp-model" style="font-size:10px; color:var(--text-3); margin-top:1px; line-height: 1.1;">Observer</div>
-                  <div class="dp-status" id="dp-user-status" style="font-size:10px; color:var(--text-3); line-height: 1.1; margin-top: 1px;">Active</div>
-                </div>
-                <div class="dp-indicator active" id="dp-user-dot" style="width:6px; height:6px; border-radius:50%; background:var(--green); margin-left:6px;"></div>
-              </div>
-
-            </div>
-          </div>
-        </details>
-
-        <div class="debate-sidebar-divider"></div>
-
-        <!-- Flow Section -->
-        <details class="debate-sidebar-details">
-          <summary class="debate-sidebar-summary">
-            <span class="summary-title">Flow</span>
-            <i data-lucide="chevron-right" class="accordion-chevron"></i>
-          </summary>
-          <div class="details-content">
-            <div class="debate-flow-steps" id="debate-flow-steps">
-              <div class="dfs dfs-idle" id="dfs-1">Round 1</div>
-              <div class="dfs dfs-idle" id="dfs-2">Round 2</div>
-              <div class="dfs dfs-idle" id="dfs-3">Round 3</div>
-              <div class="dfs dfs-idle" id="dfs-s">Summary</div>
-            </div>
-          </div>
-        </details>
-
-        <div class="debate-sidebar-divider"></div>
-
-        <!-- Documents Section (Persistent Saved Documentaries) -->
-        <details class="debate-sidebar-details" id="debate-documents-details" style="position: relative;">
-          <summary class="debate-sidebar-summary">
-            <span class="summary-title">Documents</span>
-            <i data-lucide="chevron-right" class="accordion-chevron"></i>
-          </summary>
-          <!-- Documents Options Dropdown -->
-          <div class="doc-dropdown" style="position: absolute; right: 10px; top: 2px; z-index: 115;">
-            <button class="debate-docs-menu-btn" id="btn-debate-docs-menu" style="background: transparent; border: none; padding: 4px; cursor: pointer; color: var(--text-secondary); display: flex; align-items: center; justify-content: center; border-radius: 4px; transition: background 0.12s, color 0.12s;" title="Document Options">
-              <i data-lucide="more-vertical" style="width: 14px; height: 14px;"></i>
-            </button>
-            <div class="doc-dropdown-menu" id="debate-docs-dropdown-menu" style="top: 24px;">
-              <button class="dropdown-item btn-upload-doc" id="btn-debate-upload-doc" style="display: flex; align-items: center; gap: 8px;">
-                <i data-lucide="upload" style="width: 12px; height: 12px;"></i>
-                <span>Upload Document</span>
-              </button>
-              <button class="dropdown-item btn-export-docs" id="btn-debate-export-docs" style="display: flex; align-items: center; gap: 8px;">
-                <i data-lucide="download" style="width: 12px; height: 12px;"></i>
-                <span>Export All</span>
-              </button>
-              <div style="border-top: 1px solid var(--border); margin: 4px 0;"></div>
-              <button class="dropdown-item btn-clear-docs" id="btn-debate-clear-docs" style="display: flex; align-items: center; gap: 8px; color: #ef4444;">
-                <i data-lucide="trash-2" style="width: 12px; height: 12px;"></i>
-                <span>Clean All</span>
-              </button>
-            </div>
-            <input type="file" id="debate-doc-upload-input" accept=".txt,.md,.json" style="display: none;" />
-          </div>
-          <div class="details-content">
-            <div class="debate-docs-list" id="debate-docs-list">
-              <div class="debate-doc-empty">No saved documents yet.</div>
-            </div>
-          </div>
-        </details>
-
         <!-- Global User Profile (Anchored to bottom of sidebar) -->
-        <div style="position: relative; margin-top: auto; border-top: 1px solid var(--border); margin-left: -8px; margin-right: -8px;">
+        <div style="position: relative; margin-top: auto; border-top: 1px solid var(--border);">
           <!-- User Menu Dropdown (Debate Specific) -->
           <div class="user-menu-dropdown hidden" id="debate-user-menu-dropdown" style="bottom: 50px; left: 8px;">
             <div class="user-menu-header">anshu@gmail.com</div>
@@ -232,10 +235,6 @@ function _buildLayout() {
               <div class="sidebar-user-name">User</div>
               <div class="sidebar-user-plan">Free plan</div>
             </div>
-            <button class="user-download-btn" title="Download App" onclick="event.stopPropagation()">
-              <i data-lucide="download" style="width:14px; height:14px;"></i>
-              <span class="notification-dot"></span>
-            </button>
             <i data-lucide="chevrons-up-down" style="width:14px; height:14px; color:var(--text-3); margin-left:4px;"></i>
           </div>
         </div>
@@ -382,7 +381,7 @@ function _buildLayout() {
             <!-- Input area -->
             <div class="debate-input-area" id="debate-input-area">
               <!-- Active status indicator card (attached to input area, floats above it) -->
-              <div class="debate-active-search-card" id="debate-active-search-card" style="display: none; align-items: center; justify-content: space-between; max-width: 720px; margin: 0 auto -12px auto; padding: 10px 16px 20px 16px; background: var(--bg); border: 1px solid var(--border); border-bottom: none; border-radius: var(--radius-lg) var(--radius-lg) 0 0; box-shadow: var(--shadow); font-size: 11.5px; opacity: 0; transform: translateY(15px); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); position: relative; z-index: 1;">
+              <div class="debate-active-search-card" id="debate-active-search-card" style="display: none; align-items: center; justify-content: space-between; width: 100%; max-width: 720px; box-sizing: border-box; margin: 0 auto -12px auto; padding: 10px 16px 20px 16px; background: var(--bg); border: 1px solid var(--border); border-bottom: none; border-radius: var(--radius-lg) var(--radius-lg) 0 0; box-shadow: var(--shadow); font-size: 11.5px; opacity: 0; transform: translateY(15px); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); position: relative; z-index: 1;">
                 <div style="display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1;">
                   <span class="status-spinner-wrap" style="display: inline-flex; align-items: center; justify-content: center; color: var(--text-secondary); animation: spin 1.2s linear infinite;">
                     <i data-lucide="loader-2" style="width: 14px; height: 14px;"></i>
@@ -396,7 +395,7 @@ function _buildLayout() {
               </div>
 
               <!-- Active progress indicator card (attached to input area, floats above it) -->
-              <div class="debate-active-progress-card" id="debate-active-progress-card" style="display: none; align-items: center; justify-content: space-between; max-width: 720px; margin: 0 auto -12px auto; padding: 10px 16px 20px 16px; background: var(--sidebar-bg); border: 1px solid var(--border); border-bottom: none; border-radius: var(--radius-lg) var(--radius-lg) 0 0; box-shadow: var(--shadow); font-size: 11.5px; opacity: 0; transform: translateY(15px); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); position: relative; z-index: 1;">
+              <div class="debate-active-progress-card" id="debate-active-progress-card" style="display: none; align-items: center; justify-content: space-between; width: 100%; max-width: 720px; box-sizing: border-box; margin: 0 auto -12px auto; padding: 10px 16px 20px 16px; background: var(--sidebar-bg); border: 1px solid var(--border); border-bottom: none; border-radius: var(--radius-lg) var(--radius-lg) 0 0; box-shadow: var(--shadow); font-size: 11.5px; opacity: 0; transform: translateY(15px); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); position: relative; z-index: 1;">
                 <div style="display: flex; align-items: center; gap: 12px; min-width: 0; flex: 1;">
                   <!-- Left side: Monochromatic progress bar line container -->
                   <div style="width: 80px; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; position: relative; flex-shrink: 0;">
@@ -412,38 +411,50 @@ function _buildLayout() {
                 <div id="debate-progress-avatar" style="width: 20px; height: 20px; border-radius: 50%; background: var(--text-primary); color: var(--bg); display: flex; align-items: center; justify-content: center; font-weight: 400; font-size: 9.5px; flex-shrink: 0; text-transform: uppercase;">T</div>
               </div>
 
-              <div class="debate-input-wrapper" style="position: relative; z-index: 2; display: flex; flex-direction: row; align-items: center; gap: 10px; padding: 12px 20px; border-radius: 36px;">
-                <textarea
-                  class="debate-textarea"
-                  id="debate-input"
-                  rows="1"
-                  placeholder="Enter a topic to debate… e.g. 'Is AI replacing human creativity?'"
-                  style="flex: 1; resize: none; outline: none; border: none; background: transparent; padding-top: 6px; min-height: 28px; width: 0; min-width: 0;"
-                ></textarea>
-                
-                <div style="display: flex; align-items: center; gap: 10px; flex-shrink: 0;">
-                  <!-- Rounds Dropdown -->
-                  <select class="debate-rounds-select" id="select-debate-rounds" style="cursor: pointer; background: var(--sidebar-bg); border: none !important; border-radius: 20px; font-size: 11px; font-weight: 500; color: var(--text-2); padding: 0 12px; font-family: var(--font); outline: none; height: 28px; line-height: 28px;">
-                    <option value="2">2 Rounds</option>
-                    <option value="3" selected>3 Rounds</option>
-                    <option value="4">4 Rounds</option>
-                    <option value="5">5 Rounds</option>
-                  </select>
-                  
-                  <!-- Stop Button -->
-                  <button class="input-action-btn" id="btn-debate-stop" title="Stop Generation" style="display: none; color: #ef4444;">
-                    <i data-lucide="square" style="width: 13px; height: 13px; fill: currentColor;"></i>
+              <div class="debate-input-wrapper" id="debate-input-capsule" style="position: relative; z-index: 2; display: flex; flex-direction: column; align-items: stretch; gap: 0; padding: 8px 14px;">
+                <div class="input-preview-area hidden" id="preview-area-debate"></div>
+                <div class="input-capsule-row" style="display: flex; flex-direction: row; align-items: center; gap: 8px; width: 100%;">
+                  <!-- Attachment button (plus) -->
+                  <button class="cap-icon-btn" id="btn-attach-debate" title="Attach" style="flex-shrink: 0;">
+                    <i data-lucide="plus"></i>
                   </button>
+
+                  <textarea
+                    class="debate-textarea"
+                    id="debate-input"
+                    rows="1"
+                    placeholder="Enter a topic to debate… e.g. 'Is AI replacing human creativity?'"
+                    style="flex: 1; resize: none; outline: none; border: none; background: transparent; padding: 3px 0; min-height: 24px; height: 24px; color:var(--text); font-family:var(--font); font-size:14px; line-height:1.45; max-height:200px; overflow-y:hidden; display:block;"
+                  ></textarea>
                   
-                  <!-- Intervene Button -->
-                  <button class="submit-btn" id="btn-debate-intervene" title="Send Message" style="display: none;">
-                    <i data-lucide="arrow-up" style="width: 14px; height: 14px; stroke-width: 2.5;"></i>
-                  </button>
-                  
-                  <!-- Start Button -->
-                  <button class="submit-btn" id="btn-debate-start" title="Start Debate">
-                    <i data-lucide="arrow-up" style="width: 14px; height: 14px; stroke-width: 2.5;"></i>
-                  </button>
+                  <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
+                    <!-- Rounds Dropdown -->
+                    <select class="debate-rounds-select" id="select-debate-rounds">
+                      <option value="2">2 Rounds</option>
+                      <option value="3" selected>3 Rounds</option>
+                      <option value="4">4 Rounds</option>
+                      <option value="5">5 Rounds</option>
+                    </select>
+                    
+                    <button class="cap-icon-btn" id="btn-input-voice" title="Voice">
+                      <i data-lucide="mic"></i>
+                    </button>
+                    
+                    <!-- Stop Button -->
+                    <button class="input-action-btn" id="btn-debate-stop" title="Stop Generation" style="display: none; color: #ef4444;">
+                      <i data-lucide="square" style="width: 13px; height: 13px; fill: currentColor;"></i>
+                    </button>
+                    
+                    <!-- Intervene Button -->
+                    <button class="submit-btn" id="btn-debate-intervene" title="Send Message" style="display: none;">
+                      <i data-lucide="arrow-up" style="width: 14px; height: 14px; stroke-width: 2.5;"></i>
+                    </button>
+                    
+                    <!-- Start Button -->
+                    <button class="submit-btn" id="btn-debate-start" title="Start Debate">
+                      <i data-lucide="arrow-up" style="width: 14px; height: 14px; stroke-width: 2.5;"></i>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1186,19 +1197,7 @@ export function handleDebateEvent(event) {
           body.innerHTML = window.marked 
             ? marked.parse(window._currentStreamingText) 
             : _escape(window._currentStreamingText);
-          if (window.marked) {
-            enhanceCodeBlocks(body);
-          }
-          if (window.renderMathInElement) {
-            renderMathInElement(body, {
-              delimiters: [
-                {left: '$$', right: '$$', display: true},
-                {left: '\\(', right: '\\)', display: false},
-                {left: '\\[', right: '\\]', display: true}
-              ],
-              throwOnError: false
-            });
-          }
+          enhanceMarkdownContent(body);
         }
         _scrollThread();
         ChatSessionManager.updateLastPlaygroundMessage(window._currentStreamingText);
@@ -1318,31 +1317,11 @@ function _appendStreamBubble(sender, [from, to], round) {
         }
         text += chunk;
         bubble.innerHTML = window.marked ? marked.parse(text) : _escape(text);
-        if (window.marked) enhanceCodeBlocks(bubble);
-        if (window.renderMathInElement) {
-          renderMathInElement(bubble, {
-            delimiters: [
-              {left: '$$', right: '$$', display: true},
-              {left: '\\(', right: '\\)', display: false},
-              {left: '\\[', right: '\\]', display: true}
-            ],
-            throwOnError: false
-          });
-        }
+        enhanceMarkdownContent(bubble);
       },
       finalize() {
         bubble.innerHTML = window.marked ? marked.parse(text) : _escape(text);
-        if (window.marked) enhanceCodeBlocks(bubble);
-        if (window.renderMathInElement) {
-          renderMathInElement(bubble, {
-            delimiters: [
-              {left: '$$', right: '$$', display: true},
-              {left: '\\(', right: '\\)', display: false},
-              {left: '\\[', right: '\\]', display: true}
-            ],
-            throwOnError: false
-          });
-        }
+        enhanceMarkdownContent(bubble);
         _makeBubbleCollapsibleAndCopyable(bubble, text);
       },
       getText() { return text; }
@@ -1385,19 +1364,7 @@ function _appendStreamBubble(sender, [from, to], round) {
       }
       text += chunk;
       bubble.innerHTML = window.marked ? marked.parse(text) : _escape(text);
-      if (window.marked) {
-        enhanceCodeBlocks(bubble);
-      }
-      if (window.renderMathInElement) {
-        renderMathInElement(bubble, {
-          delimiters: [
-            {left: '$$', right: '$$', display: true},
-            {left: '\\(', right: '\\)', display: false},
-            {left: '\\[', right: '\\]', display: true}
-          ],
-          throwOnError: false
-        });
-      }
+      enhanceMarkdownContent(bubble);
     },
     finalize() {
       bubble.innerHTML = window.marked ? marked.parse(text) : _escape(text);
@@ -1675,9 +1642,7 @@ window.loadDebateHistory = function(chat) {
       const body = card.querySelector('.debate-summary-body');
       if (body) {
         body.innerHTML = window.marked ? marked.parse(msg.text) : _escape(msg.text);
-        if (window.marked) {
-          enhanceCodeBlocks(body);
-        }
+        enhanceMarkdownContent(body);
       }
       _setFlowStep('s', 'done');
     }

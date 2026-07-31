@@ -10,6 +10,7 @@ from mariano.web.app import app
 # Explicitly import all core skills so PyInstaller can trace and package them
 import mariano.skills.core_skills.deep_research.skill
 import mariano.skills.core_skills.file_manager.skill
+import mariano.skills.core_skills.run_command.skill
 import mariano.skills.core_skills.generate_image.skill
 import mariano.skills.core_skills.image_analysis.skill
 import mariano.skills.core_skills.memory_ops.skill

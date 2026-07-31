@@ -7,7 +7,7 @@
  */
 import { initCoderStream, sendCoderChat, setCoderStreamContext, sendCoderCommand, stopCoderChat } from './coder_stream_core.js';
 import { CoderStreamRenderer } from './coder_stream_render.js';
-import { showCustomConfirm, showCustomPrompt } from '../chat.js';
+import { showCustomConfirm, showCustomPrompt, enhanceMarkdownContent } from '../chat.js';
 
 // ─── State ───────────────────────────────────────────────────────────────────
 let _activeProject = null;   // { name, path, type: 'new'|'existing' }
@@ -210,7 +210,7 @@ function appendCoderMessageToDOM(mdText, role = 'assistant') {
 
   col.appendChild(bubble);
   if (window.marked && role !== 'user') {
-    enhanceCodeBlocksForElement(bubble);
+    enhanceMarkdownContent(bubble);
   }
   log.scrollTop = log.scrollHeight;
 }

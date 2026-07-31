@@ -24,6 +24,9 @@
       <button class="modal-nav-item" data-section="account">
         <i class="mi" data-lucide="key"></i> API &amp; Model
       </button>
+      <button class="modal-nav-item" data-section="kaggle">
+        <i class="mi" data-lucide="cpu"></i> Kaggle GPU
+      </button>
       <div class="nav-group-label">Tools</div>
       <button class="modal-nav-item" data-section="skills">
         <i class="mi" data-lucide="compass"></i> Skills
@@ -66,6 +69,19 @@
             <button class="theme-opt" data-theme="dark" title="Dark Mode"><i data-lucide="moon"></i></button>
             <button class="theme-opt" data-theme="oled" title="OLED Black"><i data-lucide="zap"></i></button>
           </div>
+        </div>
+        <div class="settings-row border-b">
+          <div style="display:flex;flex-direction:column;gap:2px;">
+            <span class="row-label" style="display:flex;align-items:center;gap:7px;">
+              <i data-lucide="mic" style="width:14px;height:14px;color:var(--text-3);"></i>
+              Quick Voice Overlay
+            </span>
+            <span style="font-size:12px;color:var(--text-3);">Ctrl+Shift+Space to open a mini voice assistant anywhere on your desktop</span>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="settings-quick-voice" checked>
+            <span class="toggle-track"></span>
+          </label>
         </div>
       </section>
 
@@ -123,6 +139,40 @@
         </div>
       </section>
 
+      <!-- KAGGLE GPU ACCELERATOR -->
+      <section class="settings-section" id="section-kaggle">
+        <h2 class="section-title">Kaggle GPU Cloud Accelerator</h2>
+        <p class="section-sub">Connect your Kaggle account to offload heavy Neural Implicit SDF &amp; B-Rep CAD synthesis to Kaggle Tesla T4/P100 GPUs.</p>
+        
+        <div class="settings-row border-b">
+          <span class="row-label">Kaggle Username</span>
+          <input class="settings-input" type="text" id="settings-kaggle-user" placeholder="e.g. anshu_mariano" style="width:200px;">
+        </div>
+
+        <div class="settings-row border-b">
+          <span class="row-label">Kaggle API Key</span>
+          <div style="display:flex;gap:8px;align-items:center;flex:1;justify-content:flex-end;">
+            <input class="settings-input" type="password" id="settings-kaggle-key" placeholder="e.g. 5f8a..." style="width:220px;font-family:monospace;">
+            <button id="btn-toggle-kaggle-visibility" style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text-2);cursor:pointer;font-size:12px;">
+              <i data-lucide="eye" style="width:14px;height:14px;pointer-events:none;"></i>
+            </button>
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:18px;">
+          <div id="kaggle-status-badge" style="font-size:12px;color:var(--text-3);display:flex;align-items:center;gap:6px;">
+            <span style="width:8px;height:8px;border-radius:50%;background:#888;display:inline-block;"></span>
+            <span id="kaggle-status-text">Not Verified</span>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <button id="btn-test-kaggle" style="padding:7px 16px;background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border);border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;">
+              <i data-lucide="activity" style="width:14px;height:14px;"></i> Test Connection
+            </button>
+            <button id="btn-save-kaggle" style="padding:7px 18px;background:var(--text-primary);color:var(--bg);border:none;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;">Save</button>
+          </div>
+        </div>
+      </section>
+
       <!-- SKILLS -->
       <section class="settings-section" id="section-skills">
         <h2 class="section-title">Active Skills</h2>
@@ -151,11 +201,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hekki</title>
   <link class="cache-bust" rel="stylesheet" href="/static/theme.css?v=161">
+  <link class="cache-bust" rel="stylesheet" href="/static/css/chat.css?v=163">
   <link class="cache-bust" rel="stylesheet" href="/static/css/debate.css?v=156">
   <link class="cache-bust" rel="stylesheet" href="/static/css/coder.css?v=141">
-
-
-
 
 
 
@@ -210,6 +258,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" defer></script>
+  <script src="/static/js/ribbon_orb.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mermaid@10.2.4/dist/mermaid.min.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -289,8 +338,13 @@
               <i data-lucide="code-2" style="width:15px; height:15px; margin-right:8px;"></i>
               <span>Coder IDE</span>
             </button>
+            <button class="sidebar-action-btn" id="btn-nav-images">
+              <i data-lucide="image" style="width:15px; height:15px; margin-right:8px;"></i>
+              <span>Images</span>
+            </button>
           </div>
         </div>
+
 
         <!-- Recent Chats Group -->
         <div class="nav-section" style="margin-top: 6px;">
@@ -527,10 +581,6 @@
           <div class="sidebar-user-name" id="sidebar-user-name">User</div>
           <div class="sidebar-user-plan">Free plan</div>
         </div>
-        <button class="user-download-btn" title="Download App" onclick="event.stopPropagation()">
-          <i data-lucide="download" style="width:14px; height:14px;"></i>
-          <span class="notification-dot"></span>
-        </button>
         <i data-lucide="chevrons-up-down" style="width:14px; height:14px; color:var(--text-3); margin-left:4px;"></i>
       </div>
     </div>
@@ -553,7 +603,10 @@
           <!-- Coder live FSM badge container -->
           <div id="coder-fsm-badge" style="margin-left: 10px; display: flex; align-items: center;"></div>
         </div>
-        <div class="tb-group">
+        <div class="tb-group" style="gap: 8px; display: flex; align-items: center;">
+          <button class="icon-btn" id="btn-search-nav" title="Search Chat History">
+            <i data-lucide="search"></i>
+          </button>
           <button class="icon-btn" id="btn-toggle-sub-sidebar" title="Toggle Sub Sidebar">
             <i data-lucide="sidebar"></i>
           </button>
@@ -589,32 +642,35 @@
                 </div>
 
                 <!-- Input capsule (home position) -->
-                <div id="input-capsule" class="home-capsule" style="position: relative; display: flex; flex-direction: row; align-items: center; gap: 10px; padding: 10px 16px;">
-                  <!-- Attachment button (plus) -->
-                  <button class="cap-icon-btn" id="btn-attach-home" title="Attach" style="flex-shrink: 0;">
-                    <i data-lucide="plus"></i>
-                  </button>
+                <div id="input-capsule" class="home-capsule" style="position: relative; display: flex; flex-direction: column; align-items: stretch; gap: 0; padding: 10px 16px;">
+                  <div class="input-preview-area hidden" id="preview-area-home"></div>
+                  <div class="input-capsule-row" style="display: flex; flex-direction: row; align-items: center; gap: 10px;">
+                    <!-- Attachment button (plus) -->
+                    <button class="cap-icon-btn" id="btn-attach-home" title="Attach" style="flex-shrink: 0;">
+                      <i data-lucide="plus"></i>
+                    </button>
 
-                  <textarea id="chat-input" rows="1" placeholder="How can I help you today?" style="flex: 1; resize: none; outline: none; border: none; background: transparent; padding-top: 4px; min-height: 24px; height: 24px;"></textarea>
+                    <textarea id="chat-input" rows="1" placeholder="How can I help you today?" style="flex: 1; resize: none; outline: none; border: none; background: transparent; padding-top: 4px; min-height: 24px; height: 24px;"></textarea>
 
-                  <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
-                    <button class="model-pill">
-                      Hekki
-                      <i class="mi" data-lucide="chevron-down"></i>
-                    </button>
-                    <button class="cap-icon-btn" id="btn-voice" title="Voice">
-                      <i data-lucide="mic"></i>
-                    </button>
-                    <!-- Submit / Send Button -->
-                    <button class="submit-btn hidden" id="btn-submit-home" title="Send Message">
-                      <i data-lucide="arrow-up"></i>
-                    </button>
-                    <button class="submit-btn hidden" id="btn-stop" title="Stop Recording" style="background: rgba(239, 68, 68, 0.08); color: #ef4444; border: none;">
-                      <i data-lucide="square" style="fill: currentColor; width: 10px; height: 10px;"></i>
-                    </button>
-                    <button class="submit-btn hidden" id="btn-stop-gen" title="Stop Generation" style="background: rgba(239, 68, 68, 0.08); color: #ef4444; border: none;">
-                      <i data-lucide="square" style="fill: currentColor; width: 10px; height: 10px;"></i>
-                    </button>
+                    <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
+                      <button class="model-pill">
+                        Hekki
+                        <i class="mi" data-lucide="chevron-down"></i>
+                      </button>
+                      <button class="cap-icon-btn" id="btn-voice" title="Voice">
+                        <i data-lucide="mic"></i>
+                      </button>
+                      <!-- Submit / Send Button -->
+                      <button class="submit-btn hidden" id="btn-submit-home" title="Send Message">
+                        <i data-lucide="arrow-up"></i>
+                      </button>
+                      <button class="submit-btn hidden" id="btn-stop" title="Stop Recording" style="background: rgba(239, 68, 68, 0.08); color: #ef4444; border: none;">
+                        <i data-lucide="square" style="fill: currentColor; width: 10px; height: 10px;"></i>
+                      </button>
+                      <button class="submit-btn hidden" id="btn-stop-gen" title="Stop Generation" style="background: rgba(239, 68, 68, 0.08); color: #ef4444; border: none;">
+                        <i data-lucide="square" style="fill: currentColor; width: 10px; height: 10px;"></i>
+                      </button>
+                    </div>
                   </div>
                 </div>
                 <!-- Shortcuts -->
@@ -638,33 +694,36 @@
           <div id="bottom-input-bar" class="hidden">
             <div class="chat-bottom-fadeout"></div>
             <div class="bottom-col">
-              <div id="input-capsule-conv" style="display: flex; flex-direction: row; align-items: center; gap: 10px; padding: 10px 16px;">
-                <!-- Attachment wrapper (left) -->
-                <div class="capsule-left" style="display: flex; align-items: center; flex-shrink: 0; position: relative;">
-                  <button class="cap-icon-btn" id="btn-attach-conv" title="Attach" style="flex-shrink: 0;">
-                    <i data-lucide="plus"></i>
-                  </button>
-                </div>
+              <div id="input-capsule-conv" style="display: flex; flex-direction: column; align-items: stretch; gap: 0; padding: 10px 16px;">
+                <div class="input-preview-area hidden" id="preview-area-conv"></div>
+                <div class="input-capsule-row" style="display: flex; flex-direction: row; align-items: center; gap: 10px;">
+                  <!-- Attachment wrapper (left) -->
+                  <div class="capsule-left" style="display: flex; align-items: center; flex-shrink: 0; position: relative;">
+                    <button class="cap-icon-btn" id="btn-attach-conv" title="Attach" style="flex-shrink: 0;">
+                      <i data-lucide="plus"></i>
+                    </button>
+                  </div>
 
-                <!-- Textarea (middle) -->
-                <textarea id="chat-input-conv" rows="1" placeholder="Write a message..." style="flex: 1; resize: none; outline: none; border: none; background: transparent; padding-top: 4px; min-height: 24px; height: 24px;"></textarea>
+                  <!-- Textarea (middle) -->
+                  <textarea id="chat-input-conv" rows="1" placeholder="Write a message..." style="flex: 1; resize: none; outline: none; border: none; background: transparent; padding-top: 4px; min-height: 24px; height: 24px;"></textarea>
 
-                <!-- Actions and Model (right) -->
-                <div class="capsule-right" style="display: flex; align-items: center; gap: 6px; flex-shrink: 0; position: relative;">
-                  <button class="model-pill">
-                    Hekki
-                    <i class="mi" data-lucide="chevron-down"></i>
-                  </button>
-                  <button class="cap-icon-btn" id="btn-voice-conv" title="Voice">
-                    <i data-lucide="mic"></i>
-                  </button>
-                  <!-- Submit / Send Button -->
-                  <button class="submit-btn hidden" id="btn-submit-conv" title="Send Message">
-                    <i data-lucide="arrow-up"></i>
-                  </button>
-                  <button class="submit-btn hidden" id="btn-stop-gen-conv" title="Stop Generation" style="background: rgba(239, 68, 68, 0.08); color: #ef4444; border: none;">
-                    <i data-lucide="square" style="fill: currentColor; width: 10px; height: 10px;"></i>
-                  </button>
+                  <!-- Actions and Model (right) -->
+                  <div class="capsule-right" style="display: flex; align-items: center; gap: 6px; flex-shrink: 0; position: relative;">
+                    <button class="model-pill">
+                      Hekki
+                      <i class="mi" data-lucide="chevron-down"></i>
+                    </button>
+                    <button class="cap-icon-btn" id="btn-voice-conv" title="Voice">
+                      <i data-lucide="mic"></i>
+                    </button>
+                    <!-- Submit / Send Button -->
+                    <button class="submit-btn hidden" id="btn-submit-conv" title="Send Message">
+                      <i data-lucide="arrow-up"></i>
+                    </button>
+                    <button class="submit-btn hidden" id="btn-stop-gen-conv" title="Stop Generation" style="background: rgba(239, 68, 68, 0.08); color: #ef4444; border: none;">
+                      <i data-lucide="square" style="fill: currentColor; width: 10px; height: 10px;"></i>
+                    </button>
+                  </div>
                 </div>
               </div>
               <div class="bottom-disclaimer">
@@ -696,6 +755,9 @@
 
       <!-- DEBATE PANE (Multi-Agent Debate Playground) — starts hidden, router shows it -->
       <div id="debate-pane"></div>
+
+      <!-- ═══ IMAGES GALLERY PANE ═══ -->
+      <div id="images-pane"></div>
 
       <!-- ═══ CODER PANE ═══ -->
       <div id="coder-pane" style="display:none;flex-direction:column;width:100%;height:100%;overflow:hidden;background:var(--bg);">
@@ -783,24 +845,30 @@
           <!-- Pinned Bottom Input capsule (matches Hekki Chat exactly) -->
           <div style="flex-shrink:0;padding:8px 24px 6px;background:var(--bg);">
             <div style="width:100%;max-width:720px;margin:0 auto;">
-              <div id="coder-input-capsule" style="display: flex; flex-direction: row; align-items: center; gap: 10px; padding: 10px 16px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-xl); box-shadow: var(--shadow); transition: border-color 0.15s, box-shadow 0.15s;">
-                <!-- Attachment button (plus) -->
-                <button class="cap-icon-btn" id="coder-btn-attach" title="Attach Files" style="background: var(--hover); color: var(--text); flex-shrink: 0;">
-                  <i data-lucide="plus"></i>
-                </button>
-
-                <textarea id="coder-input" rows="1" placeholder="Write code, refactor files, or fix bugs..."
-                  style="flex: 1; resize: none; outline: none; border: none; background: transparent; padding-top: 4px; min-height: 24px; height: 24px; color:var(--text); font-family:var(--font); font-size:14px; line-height:1.55; max-height:200px; overflow-y:hidden;"></textarea>
-
-                <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
-                  <!-- Submit / Send Button -->
-                  <button id="coder-btn-send" class="submit-btn hidden" title="Send Message">
-                    <i data-lucide="arrow-up"></i>
+              <div id="coder-input-capsule" style="display: flex; flex-direction: column; align-items: stretch; gap: 0; padding: 10px 16px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-xl); box-shadow: var(--shadow); transition: border-color 0.15s, box-shadow 0.15s;">
+                <div class="input-preview-area hidden" id="preview-area-coder"></div>
+                <div class="input-capsule-row" style="display: flex; flex-direction: row; align-items: center; gap: 10px;">
+                  <!-- Attachment button (plus) -->
+                  <button class="cap-icon-btn" id="coder-btn-attach" title="Attach Files" style="background: var(--hover); color: var(--text); flex-shrink: 0;">
+                    <i data-lucide="plus"></i>
                   </button>
-                  <!-- Stop Button -->
-                  <button id="coder-btn-stop" class="submit-btn hidden" title="Stop Generation" style="background: rgba(239, 68, 68, 0.08); color: #ef4444; border: none;">
-                    <i data-lucide="square" style="fill: currentColor; width: 10px; height: 10px;"></i>
-                  </button>
+
+                  <textarea id="coder-input" rows="1" placeholder="Write code, refactor files, or fix bugs..."
+                    style="flex: 1; resize: none; outline: none; border: none; background: transparent; padding-top: 4px; min-height: 24px; height: 24px; color:var(--text); font-family:var(--font); font-size:14px; line-height:1.55; max-height:200px; overflow-y:hidden;"></textarea>
+
+                  <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
+                    <button class="cap-icon-btn" id="coder-btn-voice" title="Voice">
+                      <i data-lucide="mic"></i>
+                    </button>
+                    <!-- Submit / Send Button -->
+                    <button id="coder-btn-send" class="submit-btn hidden" title="Send Message">
+                      <i data-lucide="arrow-up"></i>
+                    </button>
+                    <!-- Stop Button -->
+                    <button id="coder-btn-stop" class="submit-btn hidden" title="Stop Generation" style="background: rgba(239, 68, 68, 0.08); color: #ef4444; border: none;">
+                      <i data-lucide="square" style="fill: currentColor; width: 10px; height: 10px;"></i>
+                    </button>
+                  </div>
                 </div>
               </div>
               <div style="font-size:10px;color:var(--text-3);text-align:center;margin-top:5px;">Hekki Coder writes changes securely to the active project path.</div>
@@ -1067,6 +1135,108 @@
 
       <div style="background:var(--hover); border-radius:6px; padding:8px 12px; font-size:11px; line-height:1.4;">
         <div style="color:var(--text-3); font-size:10px; text-transform:uppercase; margin-bottom:2px;">Selected Path Preview</div>
+    </div>
+    <div class="modal-body" style="padding: 14px 0 0 0; width: 100%;">
+      <div class="select-folder-label" style="font-size: 13px; color: var(--text-2); margin-bottom: 12px; text-align: left;">Select Folder(s)</div>
+      
+      <button class="add-folder-btn" id="btn-trigger-folder-picker" style="width: 100%; border: none; border-radius: 8px; background: var(--hover); color: var(--text); font-family: var(--font); font-size: 13px; font-weight: 500; padding: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; transition: all 0.12s ease;">
+        <i data-lucide="plus" style="width: 16px; height: 16px;"></i>
+        <span>Add Folder</span>
+      </button>
+      
+      <!-- Hidden native directory folder picker -->
+      <input type="file" id="project-folder-picker" webkitdirectory directory style="display:none">
+    </div>
+    <div class="modal-footer" style="justify-content: flex-end; padding: 16px 0 0 0; width: 100%; display: flex; gap: 8px; border-top: none;">
+      <button class="msg-edit-btn btn-cancel" id="btn-skip-create-project" style="padding: 6px 16px; font-size: 12px; background: var(--hover); color: var(--text-2); border: none; border-radius: 6px; cursor: pointer;">Skip</button>
+    </div>
+  </div>
+</div>
+
+
+  
+  <!-- Hidden browser folder selector -->
+  <input type="file" id="browser-folder-picker" webkitdirectory directory style="display:none">
+</div>
+
+<!-- ═══════════════ CODER WORKSPACE SETUP POPUP ═══════════════ -->
+<div id="coder-workspace-popup" class="modal-overlay hidden" style="z-index:9000;">
+  <div class="modal-box compact" style="width:400px;">
+
+    <!-- STEP 1: Choose -->
+    <div id="coder-popup-step-choose" style="display:flex; flex-direction:column; gap:12px; width:100%;">
+      <div style="display:flex; align-items:center; justify-content:space-between;">
+        <h3 style="margin:0; font-size:15px; font-weight:600; color:var(--text-primary);">Setup Workspace</h3>
+        <button id="coder-popup-close" class="icon-btn" title="Close" style="width:24px; height:24px;">
+          <i data-lucide="x" style="width:14px; height:14px;"></i>
+        </button>
+      </div>
+      <p style="margin:0; font-size:12px; color:var(--text-3); line-height:1.5;">Choose how you want to initialize Hekki Coder</p>
+      
+      <div style="display:flex; flex-direction:column; gap:8px; margin-top:4px;">
+        <button id="coder-card-new" class="coder-popup-choice-btn" style="width:100%; display:flex; align-items:center; gap:10px; padding:10px 12px; background:var(--hover); border:1px solid var(--border); border-radius:8px; cursor:pointer; color:var(--text); font-family:var(--font); font-size:13px; text-align:left; transition:all 0.1s;">
+          <i data-lucide="folder-plus" style="width:15px; height:15px; color:var(--text-3); flex-shrink:0;"></i>
+          <span style="font-weight:500; flex:1;">Create New Workspace</span>
+          <i data-lucide="chevron-right" style="width:13px; height:13px; color:var(--text-3);"></i>
+        </button>
+
+        <button id="coder-card-existing" class="coder-popup-choice-btn" style="width:100%; display:flex; align-items:center; gap:10px; padding:10px 12px; background:var(--hover); border:1px solid var(--border); border-radius:8px; cursor:pointer; color:var(--text); font-family:var(--font); font-size:13px; text-align:left; transition:all 0.1s;">
+          <i data-lucide="folder-open" style="width:15px; height:15px; color:var(--text-3); flex-shrink:0;"></i>
+          <span style="font-weight:500; flex:1;">Open Existing Workspace</span>
+          <i data-lucide="chevron-right" style="width:13px; height:13px; color:var(--text-3);"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- STEP 2: New Project -->
+    <div id="coder-popup-step-new" class="hidden" style="display:flex; flex-direction:column; gap:12px; width:100%;">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <button class="coder-popup-back icon-btn" style="width:24px; height:24px;">
+          <i data-lucide="arrow-left" style="width:14px; height:14px;"></i>
+        </button>
+        <h3 style="margin:0; font-size:15px; font-weight:600; color:var(--text-primary);">New Workspace</h3>
+      </div>
+
+      <div>
+        <label style="display:block; font-size:11px; color:var(--text-3); text-transform:uppercase; letter-spacing:0.04em; margin-bottom:6px;">Project Name</label>
+        <input id="coder-new-project-name" type="text" placeholder="e.g. coffee-brand"
+          style="width:100%; padding:8px 12px; border:1px solid var(--border); border-radius:6px; font-size:13px; background:var(--bg); color:var(--text); outline:none; box-sizing:border-box; font-family:var(--font);">
+      </div>
+
+      <div style="background:var(--hover); border-radius:6px; padding:8px 12px; font-size:11px; line-height:1.4;">
+        <div style="color:var(--text-3); font-size:10px; text-transform:uppercase; margin-bottom:2px;">Target Path</div>
+        <div style="font-family:monospace; color:var(--text-2);">data/workspaces/&lt;name&gt;</div>
+      </div>
+
+      <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:6px;">
+        <button class="coder-popup-back msg-edit-btn btn-cancel" style="font-size:11px;">Back</button>
+        <button id="coder-btn-create-project" class="msg-edit-btn save btn-save" style="padding:6px 16px; font-size:11px;">Create Workspace</button>
+      </div>
+    </div>
+
+    <!-- STEP 3: Existing Project -->
+    <div id="coder-popup-step-existing" class="hidden" style="display:flex; flex-direction:column; gap:12px; width:100%;">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <button class="coder-popup-back icon-btn" style="width:24px; height:24px;">
+          <i data-lucide="arrow-left" style="width:14px; height:14px;"></i>
+        </button>
+        <h3 style="margin:0; font-size:15px; font-weight:600; color:var(--text-primary);">Open Existing</h3>
+      </div>
+
+      <div>
+        <label style="display:block; font-size:11px; color:var(--text-3); text-transform:uppercase; letter-spacing:0.04em; margin-bottom:6px;">Local Folder Path</label>
+        <div style="display:flex; gap:8px;">
+          <input id="coder-exist-path" type="text" placeholder="e.g. D:\\Projects\\my-site"
+            style="flex:1; padding:8px 12px; border:1px solid var(--border); border-radius:6px; font-size:13px; background:var(--bg); color:var(--text); outline:none; font-family:monospace; box-sizing:border-box;">
+          <button id="coder-btn-browse-existing" style="padding:0 12px; background:var(--hover); border:1px solid var(--border); border-radius:6px; cursor:pointer; color:var(--text); font-family:var(--font); font-size:13px; font-weight:600; display:flex; align-items:center; gap:6px; transition:border-color 0.12s, background 0.12s;" onmouseover="this.style.borderColor='var(--text-3)'" onmouseout="this.style.borderColor='var(--border)'">
+            <i data-lucide="folder" style="width:14px; height:14px; color:var(--text-3); flex-shrink:0;"></i>
+            <span>Browse</span>
+          </button>
+        </div>
+      </div>
+
+      <div style="background:var(--hover); border-radius:6px; padding:8px 12px; font-size:11px; line-height:1.4;">
+        <div style="color:var(--text-3); font-size:10px; text-transform:uppercase; margin-bottom:2px;">Selected Path Preview</div>
         <div id="coder-exist-path-preview" style="font-family:monospace; color:var(--text-2); word-break:break-all;">—</div>
       </div>
 
@@ -1108,6 +1278,17 @@
     </div>
   </div>
 
-<script src="/static/main.js?v=161" type="module"></script>
+  <script src="/static/main.js?v=201" type="module"></script>
+
+
+
+
+
+
+
+
+
+
+
 </body>
 </html>

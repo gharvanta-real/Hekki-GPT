@@ -1,4 +1,39 @@
 /* === CHAT MODULE === */
+import { attachmentManager } from './components/attachment_manager.js';
+
+// Configure marked parser options and custom link renderer
+if (window.marked) {
+  try {
+    window.marked.use({
+      gfm: true,
+      breaks: true,
+      renderer: {
+        link({ href, title, text }) {
+          if (!href) return text || '';
+          const titleAttr = title ? ` title="${escapeHtml(title)}"` : '';
+          const isExternal = /^https?:\/\//i.test(href) || /^www\./i.test(href);
+          const isFile = /^file:\/\/\//i.test(href);
+          const fullHref = /^www\./i.test(href) ? `https://${href}` : href;
+          const target = (isExternal || isFile) ? ' target="_blank" rel="noopener noreferrer"' : '';
+          
+          let linkClass = 'chat-link';
+          let iconMarkup = '';
+          if (isExternal) {
+            linkClass += ' external-link';
+            iconMarkup = `<i data-lucide="external-link" class="chat-link-icon"></i>`;
+          } else if (isFile) {
+            linkClass += ' file-link';
+            iconMarkup = `<i data-lucide="file-text" class="chat-link-icon"></i>`;
+          }
+          
+          return `<a href="${escapeHtml(fullHref)}"${titleAttr}${target} class="${linkClass}">${text || href}${iconMarkup}</a>`;
+        }
+      }
+    });
+  } catch (e) {
+    console.warn('Failed to set custom marked options:', e);
+  }
+}
 
 let activeChatId = localStorage.getItem('hekki_active_chat_id') || null;
 let globalSendCallback = null;
@@ -317,6 +352,39 @@ export const ChatSessionManager = {
             }
           });
         }
+
+        // ── Restore generated image cards that survived serialisation ─────────
+        // Any tool run with an image_path was a successful generate_image call.
+        // Re-render the preview card so images appear after page refresh,
+        // matching how ChatGPT persists media in conversation history.
+        runs.forEach(r => {
+          if (r.image_path) {
+            const renderUrl = `/api/workspace/render?path=${encodeURIComponent(r.image_path)}`;
+            const restoredCard = document.createElement('div');
+            restoredCard.className = 'chat-image-preview-card';
+            restoredCard.innerHTML = `
+              <div class="chat-image-preview-body">
+                <img src="${renderUrl}" alt="Generated Image" loading="lazy" />
+              </div>
+              <div class="chat-image-preview-header">
+                <i data-lucide="image" style="width:12px;height:12px;flex-shrink:0;"></i>
+                <span>Generated Image</span>
+                <a href="${renderUrl}" target="_blank" class="chat-image-preview-open" title="Open original image">
+                  <i data-lucide="external-link" style="width:12px;height:12px;"></i>
+                </a>
+              </div>
+            `;
+            const imgEl = restoredCard.querySelector('img');
+            if (imgEl) {
+              imgEl.onload = () => {
+                if (imgEl.clientWidth > 0) restoredCard.style.width = imgEl.clientWidth + 'px';
+              };
+              imgEl.onerror = () => restoredCard.remove();
+            }
+            if (col) col.appendChild(restoredCard);
+            if (window.lucide) lucide.createIcons({ parent: restoredCard });
+          }
+        });
       }
 
       const el = createMessageElement(msg.role === 'user' ? 'user' : 'ai', msg.text, msg.timestamp, idx);
@@ -380,7 +448,7 @@ export const ChatSessionManager = {
           if (c.id === activeChatId) item.classList.add('active');
           item.title = c.title;
           
-          const badgeText = c.pinned ? 'ðŸ“Œ' : c.title.substring(0, 1).toUpperCase();
+          const badgeText = c.pinned ? '📌' : c.title.substring(0, 1).toUpperCase();
           item.innerHTML = `
             <span class="badge" style="${c.pinned ? 'font-size:11px;' : ''}">${badgeText}</span>
             <span class="lbl">${c.title}</span>
@@ -563,11 +631,42 @@ function createMessageElement(type, text, timestamp, index) {
     group.className = 'msg-group user';
     group.dataset.index = index;
 
-    // Bubble
-    const bubble = document.createElement('div');
-    bubble.className = 'msg user';
-    bubble.innerHTML = escapeHtml(text);
-    group.appendChild(bubble);
+    // Parse image attachments if present
+    const imgRegex = /\[Attached Image:\s*([^\(]+)\s*\(saved at ([^\]]+)\)\]/g;
+    let match;
+    const imageCards = [];
+
+    while ((match = imgRegex.exec(text)) !== null) {
+      const fileName = match[1].trim();
+      const rawPath = match[2].trim();
+      const renderUrl = (rawPath.startsWith('data:') || rawPath.startsWith('http'))
+        ? rawPath
+        : `/api/workspace/render?path=${encodeURIComponent(rawPath)}`;
+
+      imageCards.push(`
+        <div style="align-self: flex-end; margin-bottom: 4px; border-radius: 12px; overflow: hidden; width: 120px; height: 120px; border: 1px solid var(--border); flex-shrink: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.12);">
+          <img src="${renderUrl}" alt="${escapeHtml(fileName)}" style="width: 120px; height: 120px; object-fit: cover; display: block;" />
+        </div>
+      `);
+    }
+
+    if (imageCards.length > 0) {
+      const imgContainer = document.createElement('div');
+      imgContainer.style.display = 'flex';
+      imgContainer.style.flexDirection = 'column';
+      imgContainer.style.alignItems = 'flex-end';
+      imgContainer.style.gap = '4px';
+      imgContainer.innerHTML = imageCards.join('');
+      group.appendChild(imgContainer);
+    }
+
+    let cleanText = text.replace(/\[Attached Image:[^\]]+\]/g, '').replace(/\[Attached File:[^\]]+\]/g, '').replace(/\[Active Workspace Context:[^\]]+\]/g, '').trim();
+    if (cleanText) {
+      const bubble = document.createElement('div');
+      bubble.className = 'msg user';
+      bubble.innerHTML = escapeHtml(cleanText);
+      group.appendChild(bubble);
+    }
 
     // Actions bar below bubble
     const actions = document.createElement('div');
@@ -648,20 +747,7 @@ function createMessageElement(type, text, timestamp, index) {
       }
       
       el.innerHTML = thoughtHtml + (window.marked ? marked.parse(finalText) : escapeHtml(finalText));
-      enhanceCodeBlocks(el);
-      enhanceTables(el);
-      enhanceImagePreviews(el);
-      if (window.renderMathInElement) {
-        renderMathInElement(el, {
-          delimiters: [
-            {left: '$$', right: '$$', display: true},
-            {left: '$', right: '$', display: false},
-            {left: '\\(', right: '\\)', display: false},
-            {left: '\\[', right: '\\]', display: true}
-          ],
-          throwOnError: false
-        });
-      }
+      enhanceMarkdownContent(el);
       
       const header = el.querySelector('.thought-header');
       const body = el.querySelector('.thought-body');
@@ -802,8 +888,7 @@ export function enhanceCodeBlocks(container) {
 
     const langSpan = document.createElement('span');
     langSpan.className = 'code-block-lang';
-    const capLang = lang.charAt(0).toUpperCase() + lang.slice(1).toLowerCase();
-    langSpan.innerText = capLang;
+    langSpan.innerText = (lang || 'code').toLowerCase();
 
     const actions = document.createElement('div');
     actions.className = 'code-block-actions';
@@ -1059,6 +1144,231 @@ export function enhanceImagePreviews(container) {
   });
 }
 
+/** Automatically scan text nodes for raw URLs and convert them into interactive links */
+export function autoLinkTextNodes(container) {
+  if (!container) return;
+  const urlRegex = /(https?:\/\/[^\s<]+[^<.,:;"')\]\s]|www\.[^\s<]+[^<.,:;"')\]\s])/gi;
+  
+  function walk(node) {
+    if (!node) return;
+    const tag = node.nodeName ? node.nodeName.toLowerCase() : '';
+    if (['pre', 'code', 'a', 'script', 'style', 'textarea', 'input', 'iframe', 'svg'].includes(tag)) {
+      return;
+    }
+    if (node.classList && (node.classList.contains('thought-header') || node.classList.contains('code-block-wrapper') || node.classList.contains('mermaid'))) {
+      return;
+    }
+    
+    if (node.nodeType === 3) { // TEXT_NODE
+      const text = node.nodeValue;
+      if (!text || !urlRegex.test(text)) return;
+      urlRegex.lastIndex = 0;
+      
+      const fragment = document.createDocumentFragment();
+      let lastIdx = 0;
+      let match;
+      
+      while ((match = urlRegex.exec(text)) !== null) {
+        const urlText = match[0];
+        const matchIdx = match.index;
+        
+        if (matchIdx > lastIdx) {
+          fragment.appendChild(document.createTextNode(text.substring(lastIdx, matchIdx)));
+        }
+        
+        const fullHref = urlText.toLowerCase().startsWith('www.') ? `https://${urlText}` : urlText;
+        const a = document.createElement('a');
+        a.href = fullHref;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.className = 'chat-link external-link';
+        a.textContent = urlText;
+        
+        const icon = document.createElement('i');
+        icon.setAttribute('data-lucide', 'external-link');
+        icon.className = 'chat-link-icon';
+        a.appendChild(icon);
+        
+        fragment.appendChild(a);
+        lastIdx = matchIdx + urlText.length;
+      }
+      
+      if (lastIdx < text.length) {
+        fragment.appendChild(document.createTextNode(text.substring(lastIdx)));
+      }
+      
+      if (node.parentNode) {
+        node.parentNode.replaceChild(fragment, node);
+      }
+    } else if (node.nodeType === 1) { // ELEMENT_NODE
+      const children = Array.from(node.childNodes);
+      for (const child of children) {
+        walk(child);
+      }
+    }
+  }
+  
+  walk(container);
+}
+
+/** Enhances all <a> tags and auto-links raw URLs with icons and Desktop handlers */
+export function enhanceLinks(container) {
+  if (!container) return;
+  
+  const links = container.querySelectorAll('a');
+  links.forEach((a) => {
+    const href = a.getAttribute('href') || '';
+    if (!href) return;
+    
+    const isExternal = /^https?:\/\//i.test(href) || /^www\./i.test(href);
+    const isFile = /^file:\/\/\//i.test(href);
+    
+    if (isExternal || isFile) {
+      a.setAttribute('target', '_blank');
+      a.setAttribute('rel', 'noopener noreferrer');
+      
+      if (!a.classList.contains('chat-link')) {
+        a.classList.add('chat-link');
+      }
+      
+      if (isExternal && !a.classList.contains('external-link')) {
+        a.classList.add('external-link');
+      } else if (isFile && !a.classList.contains('file-link')) {
+        a.classList.add('file-link');
+      }
+      
+      if (!a.querySelector('.chat-link-icon') && !a.querySelector('i[data-lucide]')) {
+        const icon = document.createElement('i');
+        icon.setAttribute('data-lucide', isFile ? 'file-text' : 'external-link');
+        icon.className = 'chat-link-icon';
+        a.appendChild(icon);
+      }
+      
+      a.onclick = (e) => {
+        if (window.electronAPI && window.electronAPI.openExternal) {
+          e.preventDefault();
+          window.electronAPI.openExternal(a.href);
+        } else if (window.overlayAPI && window.overlayAPI.openExternal) {
+          e.preventDefault();
+          window.overlayAPI.openExternal(a.href);
+        }
+      };
+    }
+  });
+  
+  autoLinkTextNodes(container);
+}
+
+/** Transforms GitHub GFM callout blockquotes ([!NOTE], [!TIP], [!IMPORTANT], [!WARNING], [!CAUTION]) into styled cards */
+export function enhanceCallouts(container) {
+  if (!container) return;
+  const blockquotes = container.querySelectorAll('blockquote');
+  blockquotes.forEach((bq) => {
+    if (bq.classList.contains('chat-callout')) return;
+    
+    const text = bq.innerText.trim();
+    const match = text.match(/^\[\!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]/i);
+    if (!match) return;
+    
+    const type = match[1].toUpperCase();
+    let iconName = 'info';
+    let titleText = 'Note';
+    let typeClass = 'callout-note';
+    
+    switch (type) {
+      case 'TIP':
+        iconName = 'sparkles';
+        titleText = 'Tip';
+        typeClass = 'callout-tip';
+        break;
+      case 'IMPORTANT':
+        iconName = 'alert-circle';
+        titleText = 'Important';
+        typeClass = 'callout-important';
+        break;
+      case 'WARNING':
+        iconName = 'triangle-alert';
+        titleText = 'Warning';
+        typeClass = 'callout-warning';
+        break;
+      case 'CAUTION':
+        iconName = 'shield-alert';
+        titleText = 'Caution';
+        typeClass = 'callout-caution';
+        break;
+      default:
+        iconName = 'info';
+        titleText = 'Note';
+        typeClass = 'callout-note';
+        break;
+    }
+    
+    const callout = document.createElement('div');
+    callout.className = `chat-callout ${typeClass}`;
+    
+    const header = document.createElement('div');
+    header.className = 'callout-header';
+    header.innerHTML = `<i data-lucide="${iconName}" class="callout-icon"></i><span>${titleText}</span>`;
+    
+    const body = document.createElement('div');
+    body.className = 'callout-body';
+    
+    let innerHTML = bq.innerHTML;
+    innerHTML = innerHTML.replace(/\[\!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]/gi, '').trim();
+    innerHTML = innerHTML.replace(/^<p>\s*<\/p>/i, '').trim();
+    body.innerHTML = innerHTML;
+    
+    callout.appendChild(header);
+    callout.appendChild(body);
+    
+    if (bq.parentNode) {
+      bq.parentNode.replaceChild(callout, bq);
+    }
+  });
+}
+
+/** Enhances GFM task checkboxes with custom styling */
+export function enhanceTaskLists(container) {
+  if (!container) return;
+  const checkboxes = container.querySelectorAll('li > input[type="checkbox"]');
+  checkboxes.forEach((cb) => {
+    const li = cb.parentElement;
+    if (li) {
+      li.classList.add('chat-task-item');
+      if (cb.checked) {
+        li.classList.add('task-completed');
+      }
+    }
+  });
+}
+
+/** Complete markdown response enhancement pipeline for links, callouts, code blocks, tables, images & math */
+export function enhanceMarkdownContent(container) {
+  if (!container) return;
+  try { enhanceLinks(container); } catch (e) { console.error(e); }
+  try { enhanceCallouts(container); } catch (e) { console.error(e); }
+  try { enhanceCodeBlocks(container); } catch (e) { console.error(e); }
+  try { enhanceTables(container); } catch (e) { console.error(e); }
+  try { enhanceImagePreviews(container); } catch (e) { console.error(e); }
+  try { enhanceTaskLists(container); } catch (e) { console.error(e); }
+  if (window.renderMathInElement) {
+    try {
+      renderMathInElement(container, {
+        delimiters: [
+          {left: '$$', right: '$$', display: true},
+          {left: '$', right: '$', display: false},
+          {left: '\\(', right: '\\)', display: false},
+          {left: '\\[', right: '\\]', display: true}
+        ],
+        throwOnError: false
+      });
+    } catch (e) {}
+  }
+  if (window.lucide) {
+    try { lucide.createIcons({ parent: container }); } catch (e) {}
+  }
+}
+
 /** Converts user bubble to edit textarea form in place */
 function makeUserMessageEditable(groupEl, originalText, index) {
   const bubble = groupEl.querySelector('.msg.user');
@@ -1167,7 +1477,7 @@ export function bindInputs(sendCallback) {
   const handleInputToggle = (textarea, submitBtnId) => {
     adjustHeight(textarea);
     const submitBtn = $(submitBtnId);
-    if (textarea.value.trim() !== '') {
+    if (textarea.value.trim() !== '' || attachmentManager.hasFiles()) {
       submitBtn?.classList.remove('hidden');
     } else {
       submitBtn?.classList.add('hidden');
@@ -1177,8 +1487,9 @@ export function bindInputs(sendCallback) {
   $('chat-input')?.addEventListener('keydown', e => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      const text = $('chat-input').value.trim();
-      if (!text) return;
+      let text = $('chat-input').value.trim();
+      if (!text && !attachmentManager.hasFiles()) return;
+      if (!text && attachmentManager.hasFiles()) text = "Analyze attached file(s)";
       sendCallback(text);
     }
   });
@@ -1186,8 +1497,9 @@ export function bindInputs(sendCallback) {
   $('chat-input-conv')?.addEventListener('keydown', e => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      const text = $('chat-input-conv').value.trim();
-      if (!text) return;
+      let text = $('chat-input-conv').value.trim();
+      if (!text && !attachmentManager.hasFiles()) return;
+      if (!text && attachmentManager.hasFiles()) text = "Analyze attached file(s)";
       sendCallback(text);
     }
   });
@@ -1196,14 +1508,16 @@ export function bindInputs(sendCallback) {
   $('chat-input-conv')?.addEventListener('input', () => handleInputToggle($('chat-input-conv'), 'btn-submit-conv'));
 
   $('btn-submit-home')?.addEventListener('click', () => {
-    const text = $('chat-input').value.trim();
-    if (!text) return;
+    let text = $('chat-input').value.trim();
+    if (!text && !attachmentManager.hasFiles()) return;
+    if (!text && attachmentManager.hasFiles()) text = "Analyze attached file(s)";
     sendCallback(text);
   });
 
   $('btn-submit-conv')?.addEventListener('click', () => {
-    const text = $('chat-input-conv').value.trim();
-    if (!text) return;
+    let text = $('chat-input-conv').value.trim();
+    if (!text && !attachmentManager.hasFiles()) return;
+    if (!text && attachmentManager.hasFiles()) text = "Analyze attached file(s)";
     sendCallback(text);
   });
   

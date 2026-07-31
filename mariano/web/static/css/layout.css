@@ -398,7 +398,7 @@ body.dark .dock-profile {
   border: none;
   border-radius: 8px;
   font-family: var(--font);
-  font-size: var(--fs-base);   /* 13px */
+  font-size: 14px;
   font-weight: 500;
   cursor: pointer;
   display: flex;
@@ -480,7 +480,7 @@ body.dark .btn-new-chat-dock:hover {
   background: var(--hover);
 }
 .section-item .lbl {
-  font-size: var(--fs-sm);     /* 12px */
+  font-size: 14px;
   color: var(--text-2);
   white-space: nowrap;
   overflow: hidden;
@@ -587,6 +587,7 @@ body.dark .btn-new-chat-dock:hover {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  min-width: 0 !important;
   background: var(--bg);
   position: relative;
 }
@@ -602,6 +603,7 @@ body.dark .btn-new-chat-dock:hover {
   flex: 1;
   flex-direction: column;
   overflow: hidden;
+  min-width: 0 !important;
   background: var(--bg);
   height: 100%;
 }
@@ -781,40 +783,47 @@ body.dark .chat-dropdown-item.delete:hover {
   background: rgba(220, 38, 38, 0.15);
 }
 
-/* Lucide Icons Styling */
-.lucide {
+/* Lucide Icons Styling — Full Theme Dependent, 100% Visible, Crisp 2.2px Stroke Weight */
+.lucide, svg.lucide {
   width: 16px;
   height: 16px;
-  stroke-width: 1.75px;
+  stroke-width: 2.2px;
   stroke: currentColor;
   fill: none;
   display: inline-block;
   vertical-align: middle;
+  opacity: 1 !important;
+  transition: color 0.15s ease, stroke-width 0.15s ease;
 }
 .dock-item .lucide {
   width: 20px;
   height: 20px;
-  stroke-width: 1.75px;
+  stroke-width: 2.2px;
+  color: var(--text-2);
 }
 .btn-new-chat-dock .lucide {
   width: 15px;
   height: 15px;
-  stroke-width: 1.75px;
+  stroke-width: 2.2px;
+  color: var(--text-2);
 }
 .icon-btn .lucide {
   width: 16px;
   height: 16px;
-  stroke-width: 1.75px;
+  stroke-width: 2.2px;
+  color: var(--text-2);
 }
-.recent-item .lucide, .section-item .lucide {
+.recent-item .lucide, .section-item .lucide, #sidebar-nav .lucide {
   width: 15px;
   height: 15px;
-  stroke-width: 1.75px;
+  stroke-width: 2.2px;
+  color: var(--text-2);
+  opacity: 1 !important;
 }
 .upgrade-btn .lucide {
   width: 14px;
   height: 14px;
-  stroke-width: 1.75px;
+  stroke-width: 2.2px;
 }
 
 /* Tab Manager Buttons styling - Chip-like tabs */
@@ -984,7 +993,7 @@ body.dark .tab-btn.active {
   border: none;
   border-radius: 8px;
   font-family: inherit;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 400;
   cursor: pointer;
   display: flex;
@@ -1002,12 +1011,23 @@ body.dark .tab-btn.active {
   background: var(--hover);
   color: var(--text-primary);
 }
-.sidebar-action-btn i {
+.sidebar-action-btn i,
+.sidebar-action-btn svg,
+.sidebar-action-btn .lucide {
   color: var(--text-2);
-  transition: color 0.12s ease;
+  stroke-width: 2.2px;
+  opacity: 1 !important;
+  transition: color 0.12s ease, stroke-width 0.12s ease;
 }
-.sidebar-action-btn:hover i, .sidebar-action-btn.active i {
-  color: var(--text);
+.sidebar-action-btn:hover i,
+.sidebar-action-btn:hover svg,
+.sidebar-action-btn:hover .lucide,
+.sidebar-action-btn.active i,
+.sidebar-action-btn.active svg,
+.sidebar-action-btn.active .lucide {
+  color: var(--text-primary, var(--text));
+  stroke-width: 2.4px;
+  opacity: 1 !important;
 }
 
 /* === APP PANE FULL WIDTH MODE === */
@@ -1272,18 +1292,7 @@ body.dark .modal-nav-pill.active {
   font-family: monospace;
 }
 .user-download-btn {
-  background: transparent;
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  width: 20px;
-  height: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-2);
-  cursor: pointer;
-  position: relative;
-  transition: background 0.15s, border-color 0.15s;
+  display: none !important;
 }
 .user-download-btn i {
   width: 12px !important;

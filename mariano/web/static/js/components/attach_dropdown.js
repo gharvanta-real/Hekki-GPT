@@ -1,5 +1,6 @@
 import { showToast } from './toast.js';
 import { router } from '../router.js';
+import { attachmentManager } from './attachment_manager.js';
 
 let webSearchEnabled = true;
 
@@ -7,15 +8,12 @@ export function initAttachDropdowns(inConversationState) {
   const $ = (id) => document.getElementById(id);
   const fileInput = $('attach-file-input');
   
-  fileInput?.addEventListener('change', (e) => {
+  fileInput?.addEventListener('change', async (e) => {
     const files = Array.from(e.target.files);
     if (files.length > 0) {
+      await attachmentManager.addFiles(files);
       showToast('File Attached', `Selected ${files.length} file(s) for upload.`, 2500);
-      const textarea = inConversationState.val ? $('chat-input-conv') : $('chat-input');
-      if (textarea) {
-        textarea.value += ' [Attached: ' + files.map(f => f.name).join(', ') + '] ';
-        textarea.dispatchEvent(new Event('input'));
-      }
+      fileInput.value = ''; // Reset input so same file can be selected again
     }
   });
 

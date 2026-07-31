@@ -16,17 +16,32 @@ export class SearchModal {
     const modalHTML = `
       <div id="search-history-modal" class="modal-overlay hidden">
         <div class="modal-box search-modal-box">
-          <div class="modal-header">
-            <h3>Search Conversations</h3>
-            <button class="icon-btn" id="search-modal-close" title="Close">
-              <i data-lucide="x"></i>
-            </button>
+          <div class="modal-header search-header-container">
+            <div class="search-title-view">
+              <h3>Search Conversations</h3>
+            </div>
+            <div class="search-input-view">
+              <button class="icon-btn" id="search-input-back" title="Back to title">
+                <i data-lucide="arrow-left"></i>
+              </button>
+              <div class="search-field-wrapper">
+                <i data-lucide="search" class="search-field-icon"></i>
+                <input type="text" id="search-modal-input" placeholder="Search chats by title or messages..." autocomplete="off">
+                <button class="icon-btn" id="search-input-clear" title="Clear text">
+                  <i data-lucide="x"></i>
+                </button>
+              </div>
+            </div>
+            <div class="search-actions-view">
+              <button class="icon-btn" id="search-trigger-btn" title="Open search">
+                <i data-lucide="search"></i>
+              </button>
+              <button class="icon-btn" id="search-modal-close" title="Close modal">
+                <i data-lucide="x"></i>
+              </button>
+            </div>
           </div>
           <div class="modal-body search-modal-body">
-            <div class="search-input-wrapper">
-              <i data-lucide="search" class="search-input-icon"></i>
-              <input type="text" id="search-modal-input" placeholder="Search chats by title or message content..." autocomplete="off">
-            </div>
             <div id="search-results-list" class="search-results-container"></div>
           </div>
         </div>
@@ -38,24 +53,36 @@ export class SearchModal {
     this.modal = container.firstChild;
     document.body.appendChild(this.modal);
 
+    this.headerContainer = this.modal.querySelector('.search-header-container');
     this.input = document.getElementById('search-modal-input');
     this.list = document.getElementById('search-results-list');
     this.btnClose = document.getElementById('search-modal-close');
     this.btnOpen = document.getElementById('btn-search-nav');
+    
+    this.btnTrigger = document.getElementById('search-trigger-btn');
+    this.btnBack = document.getElementById('search-input-back');
+    this.btnClear = document.getElementById('search-input-clear');
 
     this.bindEvents();
+    if (window.lucide) {
+      lucide.createIcons({ parent: this.modal });
+    }
   }
 
   bindEvents() {
     const openModal = () => {
       this.modal.classList.remove('hidden');
+      this.headerContainer.classList.remove('search-active');
       this.input.value = '';
+      if (this.btnClear) this.btnClear.style.display = 'none';
       this.renderSearchResults('');
-      setTimeout(() => this.input.focus(), 120);
     };
 
     const closeModal = () => {
       this.modal.classList.add('hidden');
+      this.headerContainer.classList.remove('search-active');
+      this.input.value = '';
+      if (this.btnClear) this.btnClear.style.display = 'none';
     };
 
     if (this.btnOpen) {
@@ -71,8 +98,43 @@ export class SearchModal {
       if (e.target === this.modal) closeModal();
     });
 
+    // Expand search input field on trigger click
+    if (this.btnTrigger) {
+      this.btnTrigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.headerContainer.classList.add('search-active');
+        setTimeout(() => this.input.focus(), 150);
+      });
+    }
+
+    // Collapse search input field on back click
+    if (this.btnBack) {
+      this.btnBack.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.headerContainer.classList.remove('search-active');
+        this.input.value = '';
+        if (this.btnClear) this.btnClear.style.display = 'none';
+        this.renderSearchResults('');
+      });
+    }
+
+    // Clear input field on clear click
+    if (this.btnClear) {
+      this.btnClear.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.input.value = '';
+        this.btnClear.style.display = 'none';
+        this.renderSearchResults('');
+        this.input.focus();
+      });
+    }
+
     this.input.addEventListener('input', () => {
-      this.renderSearchResults(this.input.value);
+      const val = this.input.value;
+      if (this.btnClear) {
+        this.btnClear.style.display = val ? 'flex' : 'none';
+      }
+      this.renderSearchResults(val);
     });
   }
 

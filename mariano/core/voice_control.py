@@ -111,7 +111,8 @@ class VoiceController:
 
             # Generate transcript from multimodal context
             prompt = (
-                "Transcribe this audio recording accurately. Output ONLY the transcribed text. "
+                "Transcribe this audio recording accurately. The speech is spoken in Indian English, Hinglish, or Hindi. "
+                "Output ONLY the transcribed text in Roman script or Devanagari as spoken. "
                 "Do not add introductions, explanations, punctuation, or formatting. "
                 "If no clear words are spoken, reply with an empty string."
             )

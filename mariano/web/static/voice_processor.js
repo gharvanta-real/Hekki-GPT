@@ -9,6 +9,7 @@ export class VoiceProcessor {
         if (!this.isRecording) {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                this.stream = stream;
                 this.audioChunks = [];
                 this.mediaRecorder = new MediaRecorder(stream);
                 

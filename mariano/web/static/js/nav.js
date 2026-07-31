@@ -110,10 +110,16 @@ export function bindNavigation(tabs, showToast, inConversationStateRef) {
     router.navigateTo('coder');
   });
 
+  // ── Images Gallery ───────────────────────────────────
+  $('btn-nav-images')?.addEventListener('click', () => {
+    router.navigateTo('images');
+  });
+
   // ── Main Topnav Back Button ──────────────────────────
   $('btn-main-back')?.addEventListener('click', () => {
     router.navigateTo('chat');
   });
+
 
   // ── User Profile Dropdown ──────────────────────────────
   const userProfileBtn = $('btn-sidebar-user-profile');
@@ -137,6 +143,28 @@ export function bindNavigation(tabs, showToast, inConversationStateRef) {
         if (item.id !== 'btn-user-theme') {
           userMenuDropdown.classList.add('hidden');
         }
+      });
+    });
+  }
+
+  // ── CAD Grid Menu Dropdown ─────────────────────────────
+  const gridMenuBtn = $('cad-grid-menu-btn');
+  const gridDropdownMenu = $('cad-grid-dropdown-menu');
+  if (gridMenuBtn && gridDropdownMenu) {
+    gridMenuBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      gridDropdownMenu.classList.toggle('hidden');
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!gridDropdownMenu.contains(e.target)) {
+        gridDropdownMenu.classList.add('hidden');
+      }
+    });
+
+    gridDropdownMenu.querySelectorAll('.cad-dropdown-item').forEach(item => {
+      item.addEventListener('click', () => {
+        gridDropdownMenu.classList.add('hidden');
       });
     });
   }

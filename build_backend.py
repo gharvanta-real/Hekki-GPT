@@ -6,14 +6,10 @@ from pathlib import Path
 
 def run_command(cmd, shell=True):
     print(f"Running command: {cmd}")
-    result = subprocess.run(cmd, shell=shell, capture_output=True, text=True)
+    result = subprocess.run(cmd, shell=shell)
     if result.returncode != 0:
         print(f"Error executing command: {cmd}")
-        print(f"Stdout:\n{result.stdout}")
-        print(f"Stderr:\n{result.stderr}")
         sys.exit(result.returncode)
-    else:
-        print(result.stdout)
 
 def main():
     project_root = Path(__file__).resolve().parent
@@ -69,24 +65,32 @@ def main():
         "--hidden-import=fastapi",
         "--hidden-import=aiosqlite",
         "--hidden-import=pydantic_settings",
-        # Real simulation engine — scipy/numpy scientific solvers
-        "--hidden-import=numpy",
-        "--hidden-import=numpy.core",
-        "--hidden-import=scipy",
-        "--hidden-import=scipy.sparse",
-        "--hidden-import=scipy.sparse.linalg",
-        "--hidden-import=scipy.linalg",
-        "--hidden-import=scipy.integrate",
-        "--hidden-import=scipy.optimize",
-        # Academic search — httpx async HTTP client
         "--hidden-import=httpx",
         "--hidden-import=httpx._client",
-        # New core skills
-        "--hidden-import=mariano.skills.core_skills.academic_search",
-        "--hidden-import=mariano.skills.core_skills.academic_search.skill",
-        "--hidden-import=mariano.skills.core_skills.real_simulation",
-        "--hidden-import=mariano.skills.core_skills.real_simulation.skill",
-        
+        # Essential computer-use and vision dependencies
+        "--hidden-import=pyautogui",
+        "--hidden-import=pynput",
+        "--hidden-import=mss",
+        "--hidden-import=PIL",
+        "--hidden-import=PIL.Image",
+        "--hidden-import=google.genai",
+        "--hidden-import=google.genai.types",
+        # Exclude heavy unused machine learning and data science frameworks to speed up compilation
+        "--exclude-module=transformers",
+        "--exclude-module=torch",
+        "--exclude-module=tensorflow",
+        "--exclude-module=scipy",
+        "--exclude-module=matplotlib",
+        "--exclude-module=pandas",
+        "--exclude-module=pyarrow",
+        "--exclude-module=numba",
+        "--exclude-module=llvmlite",
+        "--exclude-module=gevent",
+        "--exclude-module=pytest",
+        "--exclude-module=tkinter",
+        "--exclude-module=IPython",
+        "--exclude-module=notebook",
+
         "run_web.py"
     ]
 
