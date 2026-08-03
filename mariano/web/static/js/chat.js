@@ -690,17 +690,20 @@ function createMessageElement(type, text, timestamp, index) {
         const expandBtn = document.createElement('button');
         expandBtn.className = 'msg-expand-btn';
         expandBtn.type = 'button';
-        expandBtn.innerHTML = '<i data-lucide="chevron-down" style="width:12px;height:12px;"></i> Show more';
+        expandBtn.title = 'Show more';
+        expandBtn.innerHTML = '<i data-lucide="chevron-down" style="width:14px;height:14px;"></i>';
 
         expandBtn.addEventListener('click', (e) => {
           e.stopPropagation();
           const isExpanded = bubble.classList.contains('expanded');
           if (isExpanded) {
             bubble.classList.remove('expanded');
-            expandBtn.innerHTML = '<i data-lucide="chevron-down" style="width:12px;height:12px;"></i> Show more';
+            expandBtn.title = 'Show more';
+            expandBtn.innerHTML = '<i data-lucide="chevron-down" style="width:14px;height:14px;"></i>';
           } else {
             bubble.classList.add('expanded');
-            expandBtn.innerHTML = '<i data-lucide="chevron-up" style="width:12px;height:12px;"></i> Show less';
+            expandBtn.title = 'Show less';
+            expandBtn.innerHTML = '<i data-lucide="chevron-up" style="width:14px;height:14px;"></i>';
           }
           if (window.lucide) lucide.createIcons();
         });

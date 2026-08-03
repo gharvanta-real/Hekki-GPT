@@ -7265,5 +7265,16 @@
     "description": "Refined collapsible prompt toggle button: Positioned at bottom-right corner of user message bubble with theme-adaptive background (var(--bg-surface)) and subtle outline border (1px solid var(--border)) instead of hardcoded white fill.",
     "type": "UI_REFINEMENT",
     "title": "Bottom-Right Theme-Adaptive Collapsible Toggle Button"
+  },
+  {
+    "version": "v12.8",
+    "files": [
+      "mariano/web/static/css/chat.css",
+      "mariano/web/static/js/chat.js"
+    ],
+    "timestamp": "2026-08-03T18:26:08.874035",
+    "description": "Converted collapsible prompt toggle into a clean 24x24px circular icon button containing ONLY chevron-down / chevron-up icons (no text), styled with bubble/theme-matched surface background color.",
+    "type": "UI_REFINEMENT",
+    "title": "Circular Icon-Only Collapsible Toggle Button"
   }
 ]

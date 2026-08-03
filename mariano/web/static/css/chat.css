@@ -435,11 +435,11 @@ body.dark .shortcut:hover {
   pointer-events: none;
 }
 
-/* Bottom Right Pill Button for Collapsible Toggle */
+/* Bottom Right Circular Icon Button for Collapsible Toggle */
 .msg-expand-pill-wrapper {
   position: absolute;
   bottom: 6px;
-  right: 12px;
+  right: 10px;
   left: auto;
   transform: none;
   z-index: 5;
@@ -451,26 +451,33 @@ body.dark .shortcut:hover {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
   background: var(--bg-surface, #ffffff);
-  color: var(--text-secondary, #475569);
-  font-family: var(--font);
-  font-size: 11px;
-  font-weight: 500;
-  padding: 3px 10px;
-  border-radius: 12px;
-  border: 1px solid var(--border, #e2e8f0) !important;
+  color: var(--text-primary, #1e293b);
+  border: none !important;
   box-shadow: none !important;
   cursor: pointer;
   user-select: none;
+  padding: 0;
   transition: all 0.2s ease;
 }
 
+[data-theme="dark"] .msg-expand-btn {
+  background: var(--hover, #262626);
+  color: var(--text-primary, #f8fafc);
+}
+
 .msg-expand-btn:hover {
-  background: var(--hover, #f1f5f9);
-  border-color: var(--primary, #2563eb) !important;
+  background: var(--bg-surface-hover, #e2e8f0);
   color: var(--primary, #2563eb);
-  transform: translateY(-1px);
+  transform: scale(1.08);
+}
+
+[data-theme="dark"] .msg-expand-btn:hover {
+  background: #333333;
+  color: #60a5fa;
 }
 
 /* User & AI Message Group Containers (Bubble + Actions Bar below it) */
