@@ -1,4 +1,5 @@
 /* === chat/media.js — Rich Media Preview System (YouTube, Images, Grid) === */
+import { openImageLightbox } from './dialogs.js';
 
 /** Extract YouTube video ID from any YouTube URL format */
 function _getYoutubeId(url) {
@@ -72,7 +73,10 @@ function _renderImageCard(a, srcUrl, href) {
   `;
 
   const imgEl = card.querySelector('img');
-  imgEl.addEventListener('click', (e) => { e.stopPropagation(); window.open(href, '_blank'); });
+  imgEl.addEventListener('click', (e) => {
+    e.stopPropagation();
+    openImageLightbox(imgEl.src || displaySrc, href);
+  });
 
   imgEl.onerror = () => {
     // 1. Try direct raw src without proxy first if proxied
@@ -258,7 +262,10 @@ export function enhanceImagePreviews(container) {
     `;
 
     const newImg = card.querySelector('img');
-    newImg.addEventListener('click', (e) => { e.stopPropagation(); window.open(targetUrl, '_blank'); });
+    newImg.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openImageLightbox(newImg.src || displaySrc, targetUrl);
+    });
 
     newImg.onerror = () => {
       // 1. Try direct raw src if proxy failed

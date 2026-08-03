@@ -1,5 +1,5 @@
-﻿/* === chat/session.js — ChatSessionManager: CRUD, load, render list, dropdown === */
-import { showCustomConfirm, showCustomPrompt } from './dialogs.js';
+/* === chat/session.js — ChatSessionManager: CRUD, load, render list, dropdown === */
+import { showCustomConfirm, showCustomPrompt, openImageLightbox } from './dialogs.js';
 import { scrollChat, clearChatLogs, setActiveChatId as _setActive } from './input.js';
 import { createMessageElement, createToolGroupCard } from './messages.js';
 import { enhanceImagePreviews } from './media.js';
@@ -238,7 +238,10 @@ export const ChatSessionManager = {
               </div>
             `;
             const imgEl = restoredCard.querySelector('img');
-            if (imgEl) imgEl.onerror = () => restoredCard.remove();
+            if (imgEl) {
+              imgEl.onclick = (e) => { e.stopPropagation(); openImageLightbox(renderUrl); };
+              imgEl.onerror = () => restoredCard.remove();
+            }
             if (col) col.appendChild(restoredCard);
             if (window.lucide) lucide.createIcons({ parent: restoredCard });
           }

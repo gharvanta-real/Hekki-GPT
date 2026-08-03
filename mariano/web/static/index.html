@@ -608,6 +608,38 @@
 <!-- Hidden file attachment input -->
 <input type="file" id="attach-file-input" style="display:none" multiple>
 
+<!-- Full-Screen Image Lightbox Modal -->
+<div id="image-lightbox-modal" class="modal-overlay hidden" style="z-index: 10000; background: rgba(0, 0, 0, 0.88); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; position: fixed; inset: 0;">
+  <div class="lightbox-container" style="position: relative; max-width: 92vw; max-height: 92vh; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+    
+    <!-- Floating Toolbar ON Image / Top-Right of Modal -->
+    <div class="lightbox-toolbar" style="position: absolute; top: -48px; right: 0; display: flex; align-items: center; gap: 6px; background: rgba(24, 24, 27, 0.85); backdrop-filter: blur(12px); padding: 5px 12px; border-radius: 30px; z-index: 10001; box-shadow: 0 4px 20px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1);">
+      <button id="lightbox-btn-download" class="lightbox-tool-btn" title="Download Image" style="background: transparent; border: none; color: #e4e4e7; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; transition: background 0.15s;">
+        <i data-lucide="download" style="width: 15px; height: 15px;"></i>
+      </button>
+      <button id="lightbox-btn-copy" class="lightbox-tool-btn" title="Copy Image Link" style="background: transparent; border: none; color: #e4e4e7; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; transition: background 0.15s;">
+        <i data-lucide="copy" style="width: 15px; height: 15px;"></i>
+      </button>
+      <a id="lightbox-btn-external" target="_blank" rel="noopener noreferrer" class="lightbox-tool-btn" title="Open Source Link" style="background: transparent; border: none; color: #e4e4e7; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; transition: background 0.15s; text-decoration: none;">
+        <i data-lucide="external-link" style="width: 15px; height: 15px;"></i>
+      </a>
+      <button id="lightbox-btn-zoom" class="lightbox-tool-btn" title="Toggle Zoom" style="background: transparent; border: none; color: #e4e4e7; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; transition: background 0.15s;">
+        <i data-lucide="maximize-2" style="width: 15px; height: 15px;"></i>
+      </button>
+      <div style="width: 1px; height: 16px; background: rgba(255,255,255,0.2); margin: 0 2px;"></div>
+      <button id="lightbox-btn-close" class="lightbox-tool-btn" title="Close (Esc)" style="background: transparent; border: none; color: #ef4444; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; transition: background 0.15s;">
+        <i data-lucide="x" style="width: 16px; height: 16px;"></i>
+      </button>
+    </div>
+
+    <!-- Image Display Box -->
+    <div class="lightbox-img-wrapper" style="position: relative; max-width: 90vw; max-height: 85vh; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; box-shadow: 0 25px 60px rgba(0,0,0,0.7);">
+      <img id="lightbox-img" src="" alt="Full preview" style="max-width: 100%; max-height: 85vh; object-fit: contain; display: block; border-radius: 12px; user-select: none; transition: transform 0.2s ease-out; cursor: zoom-in;" />
+    </div>
+
+  </div>
+</div>
+
 <!-- Custom Modal Dialog (Confirm/Prompt) -->
 <div id="custom-dialog-modal" class="modal-overlay hidden" style="z-index: 9999;">
   <div class="modal-box compact">

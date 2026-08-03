@@ -1,4 +1,4 @@
-﻿/* === chat.js — Barrel Entry Point ===
+/* === chat.js — Barrel Entry Point ===
  * Re-exports every public symbol from the modular chat/ sub-package.
  * All other files (main.js, agent_stream.js, nav.js) import from here unchanged.
  */
@@ -11,16 +11,17 @@ import {
 import { createMessageElement } from './chat/messages.js';
 import { enhanceMarkdownContent } from './chat/markdown.js';
 import { enhanceImagePreviews } from './chat/media.js';
-import { showCustomConfirm, showCustomPrompt } from './chat/dialogs.js';
+import { showCustomConfirm, showCustomPrompt, openImageLightbox } from './chat/dialogs.js';
 
 // Expose ChatSessionManager globally for legacy inline references
 window.ChatSessionManager = ChatSessionManager;
+window.openImageLightbox = openImageLightbox;
 
 // Re-export passthrough symbols
 export {
   ChatSessionManager,
   escapeHtml, scrollChat, clearInputs, clearChatLogs, formatTime,
-  showCustomConfirm, showCustomPrompt
+  showCustomConfirm, showCustomPrompt, openImageLightbox
 };
 
 // Re-export markdown enhancements

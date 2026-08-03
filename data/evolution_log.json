@@ -1,5 +1,13 @@
 [
   {
+    "timestamp": "2026-08-03T22:04:19.012523",
+    "type": "ui_feature_addition",
+    "title": "Full-Screen Lightbox Modal for All Image Previews with Integrated Overlay Tools",
+    "description": "Added #image-lightbox-modal full-screen dark backdrop overlay. Clicking any image (chat photo, generated image, attachment, grid media) opens a clean lightbox modal instead of navigating to a new tab/full page. Controls (Download, Copy Link, Open External Source, Toggle Zoom, Close) float directly ON the image modal overlay.",
+    "reason": "Fulfilled user request: image click should show a clean lightbox popup modal with all tool buttons on the image overlay and zero topnav/page clutter.",
+    "impact": "100% immersive, tool-rich image preview experience without leaving the chat interface."
+  },
+  {
     "timestamp": "2026-08-03T21:36:41.806205",
     "type": "feature_addition",
     "title": "CORS-Bypassing Image Proxy & Live Image Search Auto-Recovery System",
