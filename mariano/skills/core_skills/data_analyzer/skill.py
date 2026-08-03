@@ -52,15 +52,44 @@ class DataAnalyzerSkill(BaseSkill):
 
     async def execute(self, action: str, file_path: str, x_col: str | None = None, y_col: str | None = None, chart_type: str = "line", title: str | None = None, **kwargs: Any) -> SkillResult:
         try:
+            from mariano.core.workspace import PathGuard
+
             settings = get_settings()
             workspace_root = settings.mariano_data_dir.parent
-            target_path = (workspace_root / file_path).resolve()
 
-            if not target_path.exists():
-                # Fallback to direct absolute path check if within workspace
-                target_path = Path(file_path).resolve()
-                if not target_path.exists():
-                    return SkillResult(success=False, data=None, error=f"File not found: {file_path}")
+            # Robust multi-location file resolution across active project sandbox and workspace root
+            target_path = None
+            try:
+                sp = PathGuard.secure_path(file_path)
+                if sp.exists():
+                    target_path = sp
+            except Exception:
+                pass
+
+            if not target_path or not target_path.exists():
+                candidates = [
+                    (workspace_root / file_path).resolve(),
+                    (settings.mariano_data_dir / file_path).resolve(),
+                    (settings.mariano_data_dir / "workspace" / file_path).resolve(),
+                    (settings.mariano_data_dir / "workspace" / "default" / file_path).resolve(),
+                    Path(file_path).resolve(),
+                ]
+                for cand in candidates:
+                    if cand.exists():
+                        target_path = cand
+                        break
+
+            if not target_path or not target_path.exists():
+                # Recursive search fallback by filename across workspace
+                fname = Path(file_path).name
+                if fname:
+                    for match in workspace_root.rglob(fname):
+                        if match.is_file():
+                            target_path = match.resolve()
+                            break
+
+            if not target_path or not target_path.exists():
+                return SkillResult(success=False, data=None, error=f"File not found: '{file_path}'. Searched across workspace roots.")
 
             if action == "analyze":
                 if target_path.suffix.lower() == ".csv":
