@@ -48,6 +48,10 @@
   padding: 40px 0 32px;
 }
 
+#home-screen.hidden {
+  display: none !important;
+}
+
 .greeting {
   display: flex;
   align-items: center;

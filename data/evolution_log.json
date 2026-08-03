@@ -7317,5 +7317,15 @@
     "description": "Fixed Javascript syntax error in agent_stream.js by restoring const _toolMeta declaration.",
     "type": "FIX",
     "title": "Fixed JS Syntax Error in agent_stream.js"
+  },
+  {
+    "version": "v13.3",
+    "files": [
+      "mariano/web/static/css/chat.css"
+    ],
+    "timestamp": "2026-08-03T18:34:28.286198",
+    "description": "Fixed CSS specificity bug where #home-screen ID selector (specificity 1-0-0) overrode .hidden class rule (0-1-0), causing the welcome header to remain visible above active chat messages. Added explicit #home-screen.hidden { display: none !important; }.",
+    "type": "BUG_FIX",
+    "title": "Fixed #home-screen Overlap Bug on Active Chat Messages"
   }
 ]
