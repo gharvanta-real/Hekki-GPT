@@ -1431,7 +1431,7 @@ body.dark .sidebar-user-avatar {
 #sidebar-nav span {
   color: var(--text-primary, var(--text, #ffffff)) !important;
   opacity: 1 !important;
-  font-weight: 500;
+  font-weight: 400 !important;
 }
 
 #sidebar-dock .dock-item .lucide,

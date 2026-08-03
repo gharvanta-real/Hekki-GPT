@@ -1,5 +1,13 @@
 [
   {
+    "timestamp": "2026-08-03T22:30:19.044266",
+    "type": "ui_redesign",
+    "title": "Unbolded Left Sidebar Links with Full Opacity Highlight",
+    "description": "Updated layout.css to set font-weight: 400 !important (regular/unbold) on all left sidebar links while preserving 100% full opacity and bright color highlight.",
+    "reason": "Fulfilled user request: keep left bar links unbold (regular weight) and only apply full opacity highlight.",
+    "impact": "100% clean, unbolded, high-contrast left sidebar navigation links."
+  },
+  {
     "timestamp": "2026-08-03T22:29:54.194313",
     "type": "ui_redesign",
     "title": "Full Opacity & High Contrast Highlight for All Left Sidebar Links",
