@@ -1683,8 +1683,10 @@ body.dark .debate-stop-btn i, body.dark .debate-stop-btn svg {
   opacity: 1 !important;
 }
 
-/* Section Label ("Actions") */
-.debate-sidebar .debate-sidebar-section-label {
+/* Section Header & Badges (Matching Main Chat Left Sidebar) */
+.debate-sidebar .debate-sidebar-section-label,
+.debate-sidebar .badge,
+.debate-sidebar-section-label {
   color: var(--text-secondary, #d4d4d8) !important;
   opacity: 0.8 !important;
   font-size: 11px !important;

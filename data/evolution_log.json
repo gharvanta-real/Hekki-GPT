@@ -1,5 +1,13 @@
 [
   {
+    "timestamp": "2026-08-03T22:40:30.392161",
+    "type": "ui_redesign",
+    "title": "Identical Badge & Section Header Styling across Main Chat & Debate Sidebars",
+    "description": "Updated layout.css and debate.css to ensure section headers (.section-hdr, .debate-sidebar-section-label) and sidebar badges (.badge, .img-gallery-count) in Debate Playground match the main chat sidebar 100% identically with 80% opacity and var(--text-secondary).",
+    "reason": "Fulfilled user request: make Debate Playground sidebar category headers and badges match the main chat left bar.",
+    "impact": "100% consistent typography and badge hierarchy across all sidebars."
+  },
+  {
     "timestamp": "2026-08-03T22:39:28.989191",
     "type": "ui_redesign",
     "title": "Targeted Exact Debate Sidebar Button & Summary Selectors in debate.css",

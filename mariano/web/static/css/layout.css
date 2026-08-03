@@ -1452,11 +1452,14 @@ body.dark .sidebar-user-avatar {
   opacity: 1 !important;
 }
 
-/* === BALANCED HIGHLIGHT FOR CATEGORY HEADERS & BADGES === */
+/* === BALANCED HIGHLIGHT FOR CATEGORY HEADERS & BADGES (MAIN CHAT & DEBATE SIDEBARS) === */
 #sidebar-nav .section-hdr,
 #sidebar-nav .section-hdr span,
 #sidebar-nav .badge,
-#sidebar-nav .img-gallery-count {
+#sidebar-nav .img-gallery-count,
+.debate-sidebar .debate-sidebar-section-label,
+.debate-sidebar .badge,
+.debate-sidebar-section-label {
   color: var(--text-secondary, #d4d4d8) !important;
   opacity: 0.8 !important;
   font-size: 11px !important;
