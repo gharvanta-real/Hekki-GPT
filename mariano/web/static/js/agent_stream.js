@@ -480,7 +480,9 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
       const lineRange = (startLine && endLine) ? `L${startLine}–${endLine}` : (startLine ? `L${startLine}+` : '');
 
       // Icon and label mapping — expanded to cover all tool names
-      const _toolMeta = {
+        'file_manager:replace':       { icon: '<i data-lucide="file-diff" style="width:13px;height:13px;vertical-align:middle;display:inline-block;"></i>', label: 'Replacing',       detail: fileName },
+        'file_manager:multi_replace': { icon: '<i data-lucide="file-diff" style="width:13px;height:13px;vertical-align:middle;display:inline-block;"></i>', label: 'Multi-replacing', detail: fileName },
+        'run_command':                { icon: '<i data-lucide="terminal" style="width:13px;height:13px;vertical-align:middle;display:inline-block;"></i>', label: 'Ran command',    detail: escapeHtml(String(args.CommandLine||args.command||'').slice(0,55)) },
         'generate_image':       { icon: '<i data-lucide="image" style="width:13px;height:13px;vertical-align:middle;display:inline-block;"></i>', label: 'generate_image', detail: escapeHtml(String(args.Prompt || args.prompt || Object.values(args)[0] || '').slice(0, 55)) },
         'image_analysis':       { icon: '<i data-lucide="scan-eye" style="width:13px;height:13px;vertical-align:middle;display:inline-block;"></i>', label: 'image_analysis', detail: escapeHtml(String(args.prompt || Object.values(args)[0] || '').slice(0, 55)) },
         'file_manager:read':    { icon: '<i data-lucide="file-text" style="width:13px;height:13px;vertical-align:middle;display:inline-block;"></i>', label: 'Reading',        detail: lineRange ? `${fileName}  <span style="opacity:0.45;font-size:10.5px;">${lineRange}</span>` : fileName },
@@ -500,13 +502,13 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
         'reminder':             { icon: '<i data-lucide="bell" style="width:13px;height:13px;vertical-align:middle;display:inline-block;"></i>', label: 'Reminder', detail: escapeHtml(String(args.message||'').slice(0,55)) },
         'memory_ops':           { icon: '<i data-lucide="database" style="width:13px;height:13px;vertical-align:middle;display:inline-block;"></i>', label: 'Memory', detail: escapeHtml(String(args.action||'').slice(0,55)) },
         'code_search':          { icon: '<i data-lucide="code" style="width:13px;height:13px;vertical-align:middle;display:inline-block;"></i>', label: 'Code search',    detail: escapeHtml(String(args.query||'').slice(0,55)) },
-        'shell':                { icon: '<i data-lucide="terminal" style="width:13px;height:13px;vertical-align:middle;display:inline-block;"></i>', label: 'Shell',          detail: escapeHtml(String(args.command||'').slice(0,55)) },
+        'shell':                { icon: '<i data-lucide="terminal" style="width:13px;height:13px;vertical-align:middle;display:inline-block;"></i>', label: 'Ran command',    detail: escapeHtml(String(args.command||'').slice(0,55)) },
         'git':                  { icon: '<i data-lucide="git-branch" style="width:13px;height:13px;vertical-align:middle;display:inline-block;"></i>', label: 'Git',            detail: escapeHtml(String(args.command||args.action||'').slice(0,40)) },
         'run_tests':            { icon: '<i data-lucide="check-circle-2" style="width:13px;height:13px;vertical-align:middle;display:inline-block;"></i>', label: 'Tests',          detail: '' },
         'aider':                { icon: '<i data-lucide="sparkles" style="width:13px;height:13px;vertical-align:middle;display:inline-block;"></i>', label: 'Aider',          detail: escapeHtml(String(args.user_input||args.message||'').slice(0,55)) },
         'system_control':       {
           icon: '<i data-lucide="cog" style="width:13px;height:13px;vertical-align:middle;display:inline-block;"></i>',
-          label: action === 'run_command' ? 'Command' : action === 'copy_files' ? 'Copying' : action === 'open_app' ? 'Opening' : 'System',
+          label: action === 'run_command' ? 'Ran command' : action === 'copy_files' ? 'Copying' : action === 'open_app' ? 'Opening' : 'System',
           detail: escapeHtml(String(args.command || args.source || args.app_name || '').slice(0,55))
         },
       };
@@ -516,6 +518,10 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
         label: toolName,
         detail: escapeHtml(String(Object.values(args)[0] || '').slice(0, 55))
       };
+
+      const slashContent = meta.detail
+        ? `<span style="font-weight:500;color:var(--text-secondary);white-space:nowrap;">${meta.label}</span><span style="color:var(--text-3);opacity:0.55;margin:0 1px;">/</span><span class="tool-detail" style="color:var(--text-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:340px;">${meta.detail}</span>`
+        : `<span style="font-weight:500;color:var(--text-secondary);white-space:nowrap;">${meta.label}</span>`;
 
       const card = document.createElement('div');
       card.className = 'tool-block-temp tool-log-card';
@@ -534,10 +540,9 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
       ].join(';');
 
       card.innerHTML = `
-        <div style="display:flex;align-items:center;gap:8px;overflow:hidden;">
+        <div style="display:flex;align-items:center;gap:6px;overflow:hidden;">
           <span style="flex-shrink:0;opacity:0.75;display:inline-flex;align-items:center;">${meta.icon}</span>
-          <span style="font-weight:500;color:var(--text-secondary);white-space:nowrap;">${meta.label}</span>
-          <span class="tool-detail" style="color:var(--text-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:340px;">${meta.detail}</span>
+          ${slashContent}
         </div>
         <span class="tool-status" style="flex-shrink:0;font-size:11px;color:var(--text-3);white-space:nowrap;opacity:0.6;">running<span class="dots">.</span></span>
       `;
@@ -555,10 +560,11 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
 
       _ensureToolContainer(col, enterConversationCallback);
       _streamToolCount++;
-      
+
+      const elapsedSec = Math.max(1, Math.round((Date.now() - (_streamToolStartTime || Date.now())) / 1000));
       const titleEl = _streamToolContainer.querySelector('.tool-group-title');
       if (titleEl) {
-        titleEl.textContent = 'Actions';
+        titleEl.textContent = `Worked for ${elapsedSec}s`;
       }
       
       const bodyEl = _streamToolContainer.querySelector('.tool-group-body');
@@ -1200,9 +1206,10 @@ function _finalizeToolContainer(isSuccess = true) {
       : '<span style="color: #ef4444;">✖ failed</span>';
   }
 
+  const elapsedSec = Math.max(1, Math.round((Date.now() - (_streamToolStartTime || Date.now())) / 1000));
   const titleEl = _streamToolContainer.querySelector('.tool-group-title');
   if (titleEl) {
-    titleEl.textContent = 'Actions';
+    titleEl.textContent = `Worked for ${elapsedSec}s`;
   }
 
   // Smoothly collapse the body after 2 seconds unless terminal output / open details are present

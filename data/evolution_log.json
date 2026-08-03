@@ -7296,5 +7296,16 @@
     "description": "Replaced colorful rainbow text gradient with a clean Monochromatic High & Low Flash Shimmer animation (@keyframes monoFlashyShimmer) for Hekki Reasoning header title text.",
     "type": "UI_REFINEMENT",
     "title": "Monochromatic High & Low Flash Text Animation for Reasoning Header"
+  },
+  {
+    "version": "v13.1",
+    "files": [
+      "mariano/web/static/js/agent_stream.js",
+      "mariano/web/static/js/chat.js"
+    ],
+    "timestamp": "2026-08-03T18:32:30.723424",
+    "description": "Updated tool execution UI: Changed group title from static Actions to dynamic elapsed execution time (e.g. Worked for 6s), and formatted tool log entries with clean slash separation (e.g. Created dir/test_folder_hekki, Writing/test_file.txt, Ran command/git status).",
+    "type": "UI_REFINEMENT",
+    "title": "Worked for Xs Tool Header & Slash-Separated Tool Log Entries"
   }
 ]

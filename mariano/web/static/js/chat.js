@@ -295,8 +295,8 @@ export const ChatSessionManager = {
         toolCard.className = 'tool-group-card';
         toolCard.style.cssText = 'margin: 6px 0; display: flex; flex-direction: column; font-family: var(--font); font-size: 12px; color: var(--text-3);';
         
-        const count = msg.metadata.tool_runs.length;
-        const runs = msg.metadata.tool_runs;
+        const durationSec = msg.metadata?.duration_sec || msg.metadata?.tool_runs_duration_sec || Math.max(1, (runs.length * 2));
+        const titleText = `Worked for ${durationSec}s`;
         const hasFailed = runs.some(r => r.status === 'failed');
         const statusHtml = hasFailed 
           ? '<span style="color: #ef4444;">✖ failed</span>' 
@@ -306,7 +306,7 @@ export const ChatSessionManager = {
           <div class="tool-group-header" style="display: flex; align-items: center; justify-content: space-between; padding: 4px 0; cursor: pointer; user-select: none;">
             <div style="display: flex; align-items: center; gap: 8px;">
               <span class="chevron-icon" style="transition: transform 0.15s; font-size: 10px; opacity: 0.5;">▸</span>
-              <span class="tool-group-title" style="font-weight: 500; color: var(--text-secondary);">Actions</span>
+              <span class="tool-group-title" style="font-weight: 500; color: var(--text-secondary);">${titleText}</span>
             </div>
             <span class="tool-group-status" style="font-size: 11px; opacity: 0.6;">${statusHtml}</span>
           </div>
@@ -333,13 +333,14 @@ export const ChatSessionManager = {
                 : '';
 
               const iconToUse = r.icon || '▸';
+              const rLabel = escapeHtml(r.label || '');
+              const rSlashDetail = r.detail ? `<span style="font-weight:500;color:var(--text-secondary);white-space:nowrap;">${rLabel}</span><span style="color:var(--text-3);opacity:0.55;margin:0 1px;">/</span><span class="tool-detail" style="color:var(--text-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:340px;">${r.detail}</span>` : `<span style="font-weight:500;color:var(--text-secondary);white-space:nowrap;">${rLabel}</span>`;
 
               return `
                 <div class="tool-log-card" style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; margin:3px 0 4px 0; padding:4px 0; background:transparent; font-size:12px; font-family:var(--font); color:var(--text-3); gap:10px;">
-                  <div style="display:flex; align-items:center; gap:8px; overflow:hidden;">
+                  <div style="display:flex; align-items:center; gap:6px; overflow:hidden;">
                     <span style="flex-shrink:0; opacity:0.75;">${iconToUse}</span>
-                    <span style="font-weight:500; color:var(--text-secondary); white-space:nowrap;">${escapeHtml(r.label || '')}</span>
-                    <span class="tool-detail" style="color:var(--text-3); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:340px;">${r.detail || ''}</span>
+                    ${rSlashDetail}
                   </div>
                   <span class="tool-status" style="flex-shrink:0; font-size:11px; color:var(--text-3); white-space:nowrap; opacity:0.6;">${statusSpan}</span>
                   ${outputHtml}
