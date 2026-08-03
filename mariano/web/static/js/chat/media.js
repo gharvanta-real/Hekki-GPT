@@ -68,26 +68,45 @@ function _renderImageCard(a, srcUrl, href) {
   const imgEl = card.querySelector('img');
   imgEl.addEventListener('click', (e) => { e.stopPropagation(); window.open(href, '_blank'); });
   imgEl.onerror = () => {
-    // Show fallback placeholder instead of hiding the card entirely
-    const box = card.querySelector('.img-preview-box');
-    if (box) {
-      box.innerHTML = `
-        <div style="width:100%; height:130px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; background:var(--hover); border-radius:10px; color:var(--text-3); font-size:11px;">
-          <i data-lucide="image-off" style="width:20px;height:20px;opacity:0.4;"></i>
-          <span style="opacity:0.5;">Preview unavailable</span>
-        </div>
-        <a href="${href}" target="_blank" rel="noopener noreferrer" class="img-redirect-btn" style="position:absolute; bottom:6px; right:6px; background:rgba(0,0,0,0.5); backdrop-filter:blur(4px); color:#fff; width:22px; height:22px; border-radius:5px; display:flex; align-items:center; justify-content:center; text-decoration:none; z-index:5;" title="Open source">
-          <i data-lucide="external-link" style="width:11px; height:11px;"></i>
-        </a>
-      `;
-      if (window.lucide) lucide.createIcons({ parent: box });
+    // Attempt OpenGraph og:image extraction via /api/link-preview if direct src failed
+    if (!imgEl.dataset.ogAttempted && href && href.startsWith('http')) {
+      imgEl.dataset.ogAttempted = 'true';
+      fetch(`/api/link-preview?url=${encodeURIComponent(href)}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.image) {
+            imgEl.src = data.image;
+          } else {
+            _showCardFallback(card, href);
+          }
+        })
+        .catch(() => _showCardFallback(card, href));
+      return;
     }
+    _showCardFallback(card, href);
   };
 
   if (a.parentNode) {
     a.parentNode.replaceChild(card, a);
   }
   if (window.lucide) lucide.createIcons({ parent: card });
+}
+
+/** Helper to render clean fallback box when image load fails completely */
+function _showCardFallback(card, targetUrl) {
+  const box = card.querySelector('.img-preview-box');
+  if (box) {
+    box.innerHTML = `
+      <div style="width:100%; height:130px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; background:var(--hover); border-radius:10px; color:var(--text-3); font-size:11px;">
+        <i data-lucide="image-off" style="width:20px;height:20px;opacity:0.4;"></i>
+        <span style="opacity:0.5;">Preview unavailable</span>
+      </div>
+      <a href="${targetUrl}" target="_blank" rel="noopener noreferrer" class="img-redirect-btn" style="position:absolute; bottom:6px; right:6px; background:rgba(0,0,0,0.5); backdrop-filter:blur(4px); color:#fff; width:22px; height:22px; border-radius:5px; display:flex; align-items:center; justify-content:center; text-decoration:none; z-index:5;" title="Open source">
+        <i data-lucide="external-link" style="width:11px; height:11px;"></i>
+      </a>
+    `;
+    if (window.lucide) lucide.createIcons({ parent: box });
+  }
 }
 
 /** Post-pass: Group ONLY Visual Media Cards (Photos & YouTube Videos) in 1 single horizontal row (max 4 cards)
@@ -203,19 +222,21 @@ export function enhanceImagePreviews(container) {
     const newImg = card.querySelector('img');
     newImg.addEventListener('click', (e) => { e.stopPropagation(); window.open(targetUrl, '_blank'); });
     newImg.onerror = () => {
-      const box = card.querySelector('.img-preview-box');
-      if (box) {
-        box.innerHTML = `
-          <div style="width:100%; height:130px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; background:var(--hover); border-radius:10px; color:var(--text-3); font-size:11px;">
-            <i data-lucide="image-off" style="width:20px;height:20px;opacity:0.4;"></i>
-            <span style="opacity:0.5;">Preview unavailable</span>
-          </div>
-          <a href="${targetUrl}" target="_blank" rel="noopener noreferrer" class="img-redirect-btn" style="position:absolute; bottom:6px; right:6px; background:rgba(0,0,0,0.5); backdrop-filter:blur(4px); color:#fff; width:22px; height:22px; border-radius:5px; display:flex; align-items:center; justify-content:center; text-decoration:none; z-index:5;" title="Open source">
-            <i data-lucide="external-link" style="width:11px; height:11px;"></i>
-          </a>
-        `;
-        if (window.lucide) lucide.createIcons({ parent: box });
+      if (!newImg.dataset.ogAttempted && targetUrl && targetUrl.startsWith('http')) {
+        newImg.dataset.ogAttempted = 'true';
+        fetch(`/api/link-preview?url=${encodeURIComponent(targetUrl)}`)
+          .then(res => res.json())
+          .then(data => {
+            if (data && data.image) {
+              newImg.src = data.image;
+            } else {
+              _showCardFallback(card, targetUrl);
+            }
+          })
+          .catch(() => _showCardFallback(card, targetUrl));
+        return;
       }
+      _showCardFallback(card, targetUrl);
     };
 
     // Replace the img's closest block parent (p tag usually)
