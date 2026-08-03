@@ -99,6 +99,9 @@ async def watch_ui_events(connections: list[WebSocket]):
             continue
         try:
             current_size = events_path.stat().st_size
+            # Handle file truncation/rotation: reset position if file shrank
+            if current_size < last_pos:
+                last_pos = 0
             if current_size <= last_pos:
                 continue
             with events_path.open("r", encoding="utf-8") as f:
@@ -414,6 +417,82 @@ async def get_evolution_log():
     from mariano.core.evolution_ledger import EvolutionLedger
     return EvolutionLedger.get_all()
 
+
+# In-memory cache for link previews: { url: (timestamp, preview_dict) }
+_link_preview_cache: dict = {}
+_LINK_PREVIEW_CACHE_TTL = 600  # 10 minutes
+
+@app.get("/api/link-preview")
+async def get_link_preview(url: str):
+    """Fetch Open Graph metadata for a URL to display rich link preview cards in chat.
+    Returns: { title, description, image, favicon, domain, url }
+    Results are cached for 10 minutes per URL.
+    """
+    import re, time
+    import httpx
+    from mariano.core.anonymizer import NetworkAnonymizer
+
+    if not url or not url.startswith(("http://", "https://")):
+        return {"error": "Invalid URL"}
+
+    # Check cache
+    now = time.time()
+    if url in _link_preview_cache:
+        ts, cached = _link_preview_cache[url]
+        if now - ts < _LINK_PREVIEW_CACHE_TTL:
+            return cached
+
+    try:
+        headers = NetworkAnonymizer.get_headers()
+        headers["Accept"] = "text/html,application/xhtml+xml"
+        async with httpx.AsyncClient(timeout=4.0, follow_redirects=True) as client:
+            resp = await client.get(url, headers=headers)
+            html = resp.text[:80000]  # Cap at 80KB to avoid huge pages
+
+        def _og(prop: str) -> str:
+            m = re.search(rf'<meta[^>]+(?:property|name)=["\']og:{prop}["\'][^>]+content=["\']([^"\']+)["\']', html, re.IGNORECASE)
+            if not m:
+                m = re.search(rf'<meta[^>]+content=["\']([^"\']+)["\'][^>]+(?:property|name)=["\']og:{prop}["\']', html, re.IGNORECASE)
+            return m.group(1).strip() if m else ""
+
+        def _meta(name: str) -> str:
+            m = re.search(rf'<meta[^>]+name=["\']{name}["\'][^>]+content=["\']([^"\']+)["\']', html, re.IGNORECASE)
+            if not m:
+                m = re.search(rf'<meta[^>]+content=["\']([^"\']+)["\'][^>]+name=["\']{name}["\']', html, re.IGNORECASE)
+            return m.group(1).strip() if m else ""
+
+        def _title() -> str:
+            m = re.search(r'<title[^>]*>(.*?)</title>', html, re.IGNORECASE | re.DOTALL)
+            return re.sub(r'\s+', ' ', m.group(1)).strip() if m else ""
+
+        from urllib.parse import urlparse
+        parsed = urlparse(url)
+        domain = parsed.netloc.replace("www.", "")
+        favicon = f"https://www.google.com/s2/favicons?sz=32&domain={domain}"
+
+        preview = {
+            "url": url,
+            "title": _og("title") or _title() or domain,
+            "description": _og("description") or _meta("description") or "",
+            "image": _og("image") or "",
+            "domain": domain,
+            "favicon": favicon,
+        }
+        # Truncate description
+        if len(preview["description"]) > 200:
+            preview["description"] = preview["description"][:197] + "..."
+
+        _link_preview_cache[url] = (now, preview)
+        return preview
+
+    except Exception as exc:
+        log.warning("link_preview.fetch_failed", url=url, error=str(exc))
+        from urllib.parse import urlparse
+        domain = urlparse(url).netloc.replace("www.", "")
+        return {"url": url, "title": domain, "description": "", "image": "", "domain": domain, "favicon": f"https://www.google.com/s2/favicons?sz=32&domain={domain}"}
+
+
+
 @app.post("/api/evolution-log")
 async def add_evolution_log(req: EvolutionLogRequest):
     """Adds a new AI-written changelog entry."""
@@ -643,9 +722,15 @@ async def delete_images(payload: DeleteImagesPayload):
                     except Exception as e:
                         errors.append(f"{img_path.name}: {str(e)}")
     else:
+        base_dir = Path(__file__).resolve().parent.parent.parent
+        gen_dir = base_dir / "data" / "generated_images"
         for path_str in payload.paths:
             try:
-                p = Path(path_str)
+                p = Path(path_str).resolve()
+                # SECURITY: Only allow deletion inside generated_images directory
+                if not p.is_relative_to(gen_dir):
+                    errors.append(f"{path_str}: Access denied — path outside allowed directory")
+                    continue
                 if p.exists() and p.is_file():
                     os.remove(p)
                     deleted_count += 1

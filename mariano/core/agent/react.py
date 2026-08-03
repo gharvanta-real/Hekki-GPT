@@ -279,7 +279,7 @@ async def run_react_loop(
 
                     # Log task to persistent task_log
                     try:
-                        files = list(args.get("files", args.get("paths", [])))
+                        files = list(args.get("files") or args.get("paths") or [])
                         if isinstance(files, str):
                             files = [files]
                         await agent._memory.log_task(

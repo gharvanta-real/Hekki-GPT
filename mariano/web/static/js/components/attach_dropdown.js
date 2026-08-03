@@ -13,7 +13,7 @@ export function initAttachDropdowns(inConversationState) {
     if (files.length > 0) {
       await attachmentManager.addFiles(files);
       showToast('File Attached', `Selected ${files.length} file(s) for upload.`, 2500);
-      fileInput.value = ''; // Reset input so same file can be selected again
+      fileInput.value = '';
     }
   });
 
@@ -24,22 +24,17 @@ export function initAttachDropdowns(inConversationState) {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
       
-      // Remove any existing dropdowns
-      document.querySelectorAll('.attach-dropdown').forEach(d => d.remove());
+      // Remove existing dropdowns
+      document.querySelectorAll('.attach-dropdown, .attach-sub-dropdown').forEach(d => d.remove());
       
       const dropdown = document.createElement('div');
       dropdown.className = 'attach-dropdown';
-      
+
       dropdown.innerHTML = `
         <button class="attach-dropdown-item btn-add-files">
           <i data-lucide="paperclip"></i>
           <span>Add files or photos</span>
           <span class="shortcut-hint">Ctrl+U</span>
-        </button>
-        <button class="attach-dropdown-item btn-to-project">
-          <i data-lucide="folder-open"></i>
-          <span>Add to project</span>
-          <i data-lucide="chevron-right" class="submenu-arrow"></i>
         </button>
         <button class="attach-dropdown-item btn-skills-menu">
           <i data-lucide="book-open"></i>
@@ -47,37 +42,89 @@ export function initAttachDropdowns(inConversationState) {
           <i data-lucide="chevron-right" class="submenu-arrow"></i>
         </button>
         <div class="attach-dropdown-sep"></div>
+        <button class="attach-dropdown-item btn-permission-menu">
+          <i data-lucide="shield-check"></i>
+          <span>Permission mode</span>
+          <i data-lucide="chevron-right" class="submenu-arrow"></i>
+        </button>
         <button class="attach-dropdown-item btn-web-search">
           <i data-lucide="globe"></i>
           <span>Web search</span>
         </button>
-        <div class="attach-dropdown-sep"></div>
-        <button class="attach-dropdown-item btn-debate-mode">
-          <i data-lucide="swords"></i>
-          <span>Debate Playground</span>
-          <span style="font-size:10px; color:var(--text-3); margin-left:auto;">Alpha vs Beta</span>
-        </button>
       `;
       
-      // Bind item clicks
-      dropdown.querySelector('.btn-add-files').addEventListener('click', () => {
+      // Add files
+      dropdown.querySelector('.btn-add-files')?.addEventListener('click', () => {
         fileInput?.click();
-        dropdown.remove();
+        document.querySelectorAll('.attach-dropdown, .attach-sub-dropdown').forEach(d => d.remove());
       });
       
-      dropdown.querySelector('.btn-to-project').addEventListener('click', () => {
-        dropdown.remove();
-        router.navigateTo('workspace');
-        showToast('Workspace', 'Navigated to Code Workspace.', 2000);
+      const removeSubmenus = () => dropdown.querySelectorAll('.attach-sub-dropdown').forEach(s => s.remove());
+
+      // ── Sub-menu 1: Skills > ──────────────────────────────────────────
+      const skillsBtn = dropdown.querySelector('.btn-skills-menu');
+      skillsBtn?.addEventListener('click', (ev) => {
+        ev.stopPropagation();
+        removeSubmenus();
+
+        const sub = document.createElement('div');
+        sub.className = 'attach-sub-dropdown';
+        sub.innerHTML = `
+          <div class="sub-dropdown-header" style="font-size:10px; color:var(--text-3); padding:4px 10px 4px; font-weight:600; letter-spacing:0.04em;">REGISTERED SKILLS</div>
+          <div class="attach-dropdown-item"><i data-lucide="globe"></i><span>Web Search</span></div>
+          <div class="attach-dropdown-item"><i data-lucide="file-text"></i><span>File Manager</span></div>
+          <div class="attach-dropdown-item"><i data-lucide="terminal"></i><span>Terminal CMD</span></div>
+          <div class="attach-dropdown-item"><i data-lucide="bar-chart-3"></i><span>Data Analyzer</span></div>
+          <div class="attach-dropdown-item"><i data-lucide="cloud"></i><span>Weather & News</span></div>
+        `;
+        skillsBtn.appendChild(sub);
+        if (window.lucide) lucide.createIcons({ parent: sub });
       });
-      
-      dropdown.querySelector('.btn-skills-menu').addEventListener('click', () => {
-        dropdown.remove();
-        showToast('Active Skills', 'Registered tools: Web Search, Run Code, Excel Ops, Weather, System Info.', 3000);
+
+      // ── Sub-menu 2: Permission mode > ─────────────────────────────────
+      const permBtn = dropdown.querySelector('.btn-permission-menu');
+      permBtn?.addEventListener('click', (ev) => {
+        ev.stopPropagation();
+        removeSubmenus();
+
+        const policy = localStorage.getItem('mariano_permission_policy') || 'ask';
+        const sub = document.createElement('div');
+        sub.className = 'attach-sub-dropdown permission-sub-menu';
+        sub.innerHTML = `
+          <div class="sub-dropdown-header" style="font-size:10px; color:var(--text-3); padding:4px 10px 4px; font-weight:600; letter-spacing:0.04em;">PERMISSION POLICY</div>
+          <button class="attach-dropdown-item btn-opt-ask ${policy === 'ask' ? 'active' : ''}">
+            <i data-lucide="shield-check"></i>
+            <span>Ask First (Safe)</span>
+            ${policy === 'ask' ? '<i data-lucide="check" class="lucide-check-icon"></i>' : ''}
+          </button>
+          <button class="attach-dropdown-item btn-opt-auto ${policy === 'auto' ? 'active' : ''}">
+            <i data-lucide="zap"></i>
+            <span>Auto-Approve</span>
+            ${policy === 'auto' ? '<i data-lucide="check" class="lucide-check-icon"></i>' : ''}
+          </button>
+        `;
+
+        sub.querySelector('.btn-opt-ask')?.addEventListener('click', (e) => {
+          e.stopPropagation();
+          localStorage.setItem('mariano_permission_policy', 'ask');
+          showToast('Permission Mode', 'Safe Mode: AI will ask for permission before running actions.', 2500);
+          document.querySelectorAll('.attach-dropdown, .attach-sub-dropdown').forEach(d => d.remove());
+        });
+
+        sub.querySelector('.btn-opt-auto')?.addEventListener('click', (e) => {
+          e.stopPropagation();
+          localStorage.setItem('mariano_permission_policy', 'auto');
+          showToast('Permission Mode', 'Unrestricted Mode: Everything auto-approved.', 2500);
+          document.querySelectorAll('.attach-dropdown, .attach-sub-dropdown').forEach(d => d.remove());
+        });
+
+        permBtn.appendChild(sub);
+        if (window.lucide) lucide.createIcons({ parent: sub });
       });
-      
+
+      // Web search toggle
       const searchBtn = dropdown.querySelector('.btn-web-search');
-      if (webSearchEnabled) {
+      if (searchBtn && webSearchEnabled) {
         searchBtn.classList.add('active');
         const check = document.createElement('i');
         check.setAttribute('data-lucide', 'check');
@@ -85,25 +132,19 @@ export function initAttachDropdowns(inConversationState) {
         searchBtn.appendChild(check);
       }
       
-      searchBtn.addEventListener('click', () => {
+      searchBtn?.addEventListener('click', () => {
         webSearchEnabled = !webSearchEnabled;
         showToast('Web Search', `Search capability ${webSearchEnabled ? 'enabled' : 'disabled'}.`, 2000);
-        dropdown.remove();
+        document.querySelectorAll('.attach-dropdown, .attach-sub-dropdown').forEach(d => d.remove());
       });
       
-      dropdown.querySelector('.btn-debate-mode').addEventListener('click', () => {
-        dropdown.remove();
-        router.navigateTo('debate');
-      });
-      // Append to the button's parent capsule-left container
       btn.parentNode.appendChild(dropdown);
+      if (window.lucide) lucide.createIcons({ parent: dropdown });
       
-      if (window.lucide) lucide.createIcons();
-      
-      // Click outside to dismiss handler
+      // Dismiss on outside click
       const dismissDropdown = (ev) => {
-        if (!dropdown.contains(ev.target) && ev.target !== btn) {
-          dropdown.remove();
+        if (!dropdown.contains(ev.target) && !btn.contains(ev.target)) {
+          document.querySelectorAll('.attach-dropdown, .attach-sub-dropdown').forEach(d => d.remove());
           document.removeEventListener('click', dismissDropdown);
         }
       };

@@ -42,20 +42,38 @@ class SkillDiscovery:
         self._evolved_dir = evolved_dir
 
     async def discover_all(self) -> dict:
-        """Load all core skills + all evolved skills. Returns summary."""
+        """Load all core skills + all evolved skills. Returns summary.
+        Each skill is loaded inside an individual try/except so a single
+        ImportError or SyntaxError cannot crash the entire application startup.
+        """
         loaded, failed = [], []
 
-        # Core skills
+        # Core skills — each wrapped independently so one bad skill can't halt boot
         for module_path in CORE_SKILL_MODULES:
-            ok = await self._loader.load_from_module(module_path)
-            (loaded if ok else failed).append(module_path.split(".")[-2])
+            skill_name = module_path.split(".")[-2] if "." in module_path else module_path
+            try:
+                ok = await self._loader.load_from_module(module_path)
+                (loaded if ok else failed).append(skill_name)
+            except Exception as exc:
+                log.error("discovery.core_skill_load_failed", module=module_path, error=str(exc))
+                failed.append(skill_name)
 
-        # Evolved skills
-        if self._evolved_dir.exists():
-            for skill_dir in self._evolved_dir.iterdir():
+        # Evolved skills — guard both iterdir() and individual skill loading
+        if self._evolved_dir.exists() and self._evolved_dir.is_dir():
+            try:
+                skill_dirs = list(self._evolved_dir.iterdir())
+            except PermissionError as exc:
+                log.error("discovery.evolved_dir_unreadable", path=str(self._evolved_dir), error=str(exc))
+                skill_dirs = []
+
+            for skill_dir in skill_dirs:
                 if skill_dir.is_dir() and (skill_dir / "skill.py").exists():
-                    ok = await self._loader.load_from_path(skill_dir)
-                    (loaded if ok else failed).append(f"evolved:{skill_dir.name}")
+                    try:
+                        ok = await self._loader.load_from_path(skill_dir)
+                        (loaded if ok else failed).append(f"evolved:{skill_dir.name}")
+                    except Exception as exc:
+                        log.error("discovery.evolved_skill_load_failed", skill=skill_dir.name, error=str(exc))
+                        failed.append(f"evolved:{skill_dir.name}")
 
         log.info(
             "discovery.complete",

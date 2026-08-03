@@ -115,7 +115,11 @@ class FileManagerSkill(BaseSkill):
                 proj_root = Path(active_proj_path).resolve()
                 proj_name = proj_root.name.lower()
                 
-                clean_path = path_str.strip("./").strip("/")
+                # Safely strip only leading ./ or / prefix without corrupting dotfiles like .env
+                clean_path = path_str
+                if clean_path.startswith("./"):
+                    clean_path = clean_path[2:]
+                clean_path = clean_path.lstrip("/")
                 clean_parts = clean_path.split("/")
                 
                 if clean_path.lower() == proj_name:
@@ -255,9 +259,10 @@ class FileManagerSkill(BaseSkill):
             for item in replacements:
                 target = item.get("target_content", item.get("target", ""))
                 replacement = item.get("replacement_content", item.get("replacement", ""))
-                if target and target in text:
-                    text = text.replace(target, replacement, 1)
-                    applied += 1
+                if not target or target not in text:
+                    continue
+                text = text.replace(target, replacement, 1)
+                applied += 1
 
             path.write_text(text, encoding="utf-8")
 

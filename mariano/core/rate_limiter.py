@@ -28,6 +28,7 @@ class GeminiRateLimiter:
         self._timestamps: deque[float] = deque()                    # RPM window (60s)
         self._token_timestamps: deque[tuple[float, int]] = deque()  # TPM window (60s)
         self._day_timestamps: deque[float] = deque()                # RPD window (24h / 86400s)
+        self._lock = asyncio.Lock()  # Prevent concurrent acquire() race conditions
 
     @classmethod
     def get_instance(cls) -> GeminiRateLimiter:
@@ -36,68 +37,84 @@ class GeminiRateLimiter:
         return cls._instance
 
     async def acquire(self, token_count: int = 1000) -> None:
-        """Blocks execution if request metrics approach RPM, TPM, or RPD limits."""
-        current_time = time.time()
-        nc = NotificationCenter.get_instance()
+        """Blocks execution if request metrics approach RPM, TPM, or RPD limits.
+        Uses asyncio.Lock to prevent race conditions when multiple concurrent tasks
+        check and append timestamps simultaneously.
+        """
+        async with self._lock:
+            current_time = time.time()
+            nc = NotificationCenter.get_instance()
 
-        # 1. Housekeeping: Remove old timestamps
-        while self._timestamps and self._timestamps[0] < current_time - 60.0:
-            self._timestamps.popleft()
+            # 1. Housekeeping: Remove old timestamps
+            while self._timestamps and self._timestamps[0] < current_time - 60.0:
+                self._timestamps.popleft()
 
-        while self._token_timestamps and self._token_timestamps[0][0] < current_time - 60.0:
-            self._token_timestamps.popleft()
+            while self._token_timestamps and self._token_timestamps[0][0] < current_time - 60.0:
+                self._token_timestamps.popleft()
 
-        while self._day_timestamps and self._day_timestamps[0] < current_time - 86400.0:
-            self._day_timestamps.popleft()
+            while self._day_timestamps and self._day_timestamps[0] < current_time - 86400.0:
+                self._day_timestamps.popleft()
 
-        # 2. Check Daily Limit (RPD)
-        if len(self._day_timestamps) >= self.max_rpd:
-            msg = f"Daily API Quota Exhausted ({len(self._day_timestamps)}/{self.max_rpd} RPD). Standby."
-            log.error("rate_limiter.rpd_limit_exceeded", active_rpd=len(self._day_timestamps))
-            nc.push_notification("Quota Guard", msg, "critical")
-            raise RuntimeError(msg)
+            # 2. Check Daily Limit (RPD)
+            if len(self._day_timestamps) >= self.max_rpd:
+                msg = f"Daily API Quota Exhausted ({len(self._day_timestamps)}/{self.max_rpd} RPD). Standby."
+                log.error("rate_limiter.rpd_limit_exceeded", active_rpd=len(self._day_timestamps))
+                nc.push_notification("Quota Guard", msg, "critical")
+                raise RuntimeError(msg)
 
-        # 3. Check Requests Per Minute (RPM)
-        if len(self._timestamps) >= self.max_rpm:
-            oldest_ts = self._timestamps[0]
-            wait_time = max(0.1, 60.0 - (current_time - oldest_ts))
-            
-            log.warning("rate_limiter.rpm_limit_approaching", active_rpm=len(self._timestamps), wait_secs=round(wait_time, 2))
-            nc.push_notification(
-                title="Rate Limit Guard",
-                message=f"RPM Limit approaching ({len(self._timestamps)}/{self.max_rpm} RPM). Pausing for {wait_time:.1f}s.",
-                severity="warning"
-            )
+            # 3. Check Requests Per Minute (RPM)
+            if len(self._timestamps) >= self.max_rpm:
+                oldest_ts = self._timestamps[0]
+                wait_time = max(0.1, 60.0 - (current_time - oldest_ts))
+
+                log.warning("rate_limiter.rpm_limit_approaching", active_rpm=len(self._timestamps), wait_secs=round(wait_time, 2))
+                nc.push_notification(
+                    title="Rate Limit Guard",
+                    message=f"RPM Limit approaching ({len(self._timestamps)}/{self.max_rpm} RPM). Pausing for {wait_time:.1f}s.",
+                    severity="warning"
+                )
+                # Release lock while sleeping, then re-acquire
+            else:
+                wait_time = 0.0
+
+            # 4. Check Tokens Per Minute (TPM)
+            active_tokens = sum(tokens for _, tokens in self._token_timestamps)
+            if active_tokens + token_count > self.max_tpm:
+                oldest_token_ts = self._token_timestamps[0][0] if self._token_timestamps else current_time
+                tpm_wait = max(0.1, 60.0 - (current_time - oldest_token_ts))
+                wait_time = max(wait_time, tpm_wait)
+
+                log.warning(
+                    "rate_limiter.tpm_limit_approaching",
+                    active_tpm=active_tokens,
+                    incoming=token_count,
+                    wait_secs=round(tpm_wait, 2)
+                )
+                nc.push_notification(
+                    title="Rate Limit Guard",
+                    message=f"TPM Limit approaching ({active_tokens + token_count}/{self.max_tpm} TPM). Pausing for {tpm_wait:.1f}s.",
+                    severity="warning"
+                )
+
+            # 5. If waiting needed, sleep outside lock to avoid blocking other tasks
+            if wait_time > 0:
+                # Release lock during sleep so other tasks don't deadlock
+                pass
+
+        # Sleep outside the lock so other coroutines can proceed
+        if wait_time > 0:
             await asyncio.sleep(wait_time)
-            # Recheck after waiting
+            # After sleep, re-run acquire (recursive retry)
             await self.acquire(token_count)
             return
 
-        # 4. Check Tokens Per Minute (TPM)
-        active_tokens = sum(tokens for _, tokens in self._token_timestamps)
-        if active_tokens + token_count > self.max_tpm:
-            oldest_token_ts = self._token_timestamps[0][0]
-            wait_time = max(0.1, 60.0 - (current_time - oldest_token_ts))
-            
-            log.warning(
-                "rate_limiter.tpm_limit_approaching", 
-                active_tpm=active_tokens, 
-                incoming=token_count, 
-                wait_secs=round(wait_time, 2)
-            )
-            nc.push_notification(
-                title="Rate Limit Guard",
-                message=f"TPM Limit approaching ({active_tokens + token_count}/{self.max_tpm} TPM). Pausing for {wait_time:.1f}s.",
-                severity="warning"
-            )
-            await asyncio.sleep(wait_time)
-            # Recheck after waiting
-            await self.acquire(token_count)
-            return
+        # Re-acquire lock to safely append timestamps
+        async with self._lock:
+            current_time = time.time()
+            active_tokens = sum(tokens for _, tokens in self._token_timestamps)
+            # 5. Acquire resource slot
+            self._timestamps.append(current_time)
+            self._token_timestamps.append((current_time, token_count))
+            self._day_timestamps.append(current_time)
 
-        # 5. Acquire resource lock
-        self._timestamps.append(current_time)
-        self._token_timestamps.append((current_time, token_count))
-        self._day_timestamps.append(current_time)
-        
-        log.debug("rate_limiter.acquired", active_rpm=len(self._timestamps), active_tpm=active_tokens + token_count)
+            log.debug("rate_limiter.acquired", active_rpm=len(self._timestamps), active_tpm=active_tokens + token_count)

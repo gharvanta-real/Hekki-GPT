@@ -19,7 +19,7 @@ import { initAttachDropdowns } from '/static/js/components/attach_dropdown.js';
 import { bindSidebarToggle, bindTitlebarActions, bindThemeToggle, bindImageLightbox } from '/static/js/components/layout_controls.js';
 import { bindVoice, resetVoiceUIInstance } from '/static/js/components/voice_controller.js';
 import { socket, setupSocketEvents, send } from '/static/js/components/socket_manager.js';
-// Debate playground â€” isolated module
+// Debate playground  isolated module
 import { initDebatePage, handleDebateEvent } from '/static/js/debate/debate_page.js?v=136';
 // Coder IDE page
 import { initCoderPage, teardownCoderPage } from '/static/js/pages/coder_page.js';
@@ -75,7 +75,7 @@ window.handleDebateEvent = handleDebateEvent;
 
 
 
-// â”€â”€ GLOBALS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+//  GLOBALS 
 let voice  = null;
 let tabs   = null;
 let stopWave = null;
@@ -211,7 +211,7 @@ window.HudLogger = {
   }
 };
 
-// â”€â”€ BOOT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+//  BOOT 
 function boot() {
   console.log("Booting MARIANO dashboard...");
   window._router = router;   // expose for coder_page.js and other modules
@@ -322,7 +322,7 @@ function boot() {
 
 
 
-  // ── Register router page callbacks ──────────────────
+  //  Register router page callbacks 
   skillsPage      = new SkillsPage(showToast);
   window.router = router;
 
@@ -354,12 +354,12 @@ function boot() {
       $('home-screen')?.classList.remove('hidden');
       $('bottom-input-bar')?.classList.add('hidden');
     }
-    // Only refresh the dynamic chat session list — never rebuild sidebar HTML,
+    // Only refresh the dynamic chat session list  never rebuild sidebar HTML,
     // which would destroy all event listeners (theme, toggle, settings, etc.)
     ChatSessionManager.renderChatsList();
   });
 
-  // â”€â”€ Bind dock navigation buttons â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  //  Bind dock navigation buttons 
   bindNavigation(tabs, showToast, inConversationState);
   ChatSessionManager.renderChatsList();
 
@@ -423,7 +423,7 @@ if (document.readyState === 'loading') {
   boot();
 }
 
-// ── GREETING & USER PROFILE & 3D AVATAR CYCLER ──────────────────────────────
+//  GREETING & USER PROFILE & 3D AVATAR CYCLER 
 function setup3DAvatar() {
   let curIdx = parseInt(localStorage.getItem('hekki_3d_avatar_idx') || '0', 10);
   if (curIdx === 0) {
@@ -496,7 +496,7 @@ window.setGeneratingState = function(isGenerating) {
   }
 };
 
-// â”€â”€ SHORTCUTS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+//  SHORTCUTS 
 function bindShortcuts() {
   document.querySelectorAll('.shortcut').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -508,7 +508,7 @@ function bindShortcuts() {
   });
 }
 
-// â”€â”€ CONVERSATION MODE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+//  CONVERSATION MODE 
 function enterConversation() {
   if (inConversationState.val) return;
   inConversationState.val = true;
@@ -519,12 +519,12 @@ function enterConversation() {
   $('chat-input-conv')?.focus();
 }
 
-// â”€â”€ LOG â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+//  LOG 
 function log(text, type = '') {
   console.log(`[${type || 'log'}] ${text}`);
 }
 
-// â”€â”€ CUSTOM DIALOG MODALS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+//  CUSTOM DIALOG MODALS 
 window.showCustomConfirm = function(title, message, callback) {
   const modal = document.getElementById('custom-dialog-modal');
   const titleEl = document.getElementById('custom-dialog-title');
@@ -605,7 +605,7 @@ window.showCustomPrompt = function(title, message, defaultValue, callback) {
   closeBtn.addEventListener('click', onCancel);
 };
 
-// â”€â”€ PROJECT WORKSPACE MANAGEMENT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+//  PROJECT WORKSPACE MANAGEMENT 
 // (initProjectWorkspace removed)
 
 

@@ -1045,9 +1045,9 @@ export function handleDebateEvent(event) {
     }
 
     case 'search_done': {
-      _setParticipantStatus(sender, `✓ Ready`);
+      _setParticipantStatus(sender, `completed Ready`);
       _setDot(sender, false);
-      appendHudLog(`✓ Success: ${_nameOf(sender)} web search completed (${data})`);
+      appendHudLog(`completed Success: ${_nameOf(sender)} web search completed (${data})`);
       _hideActiveSearch();
       break;
     }
@@ -1114,7 +1114,7 @@ export function handleDebateEvent(event) {
       _setDot(sender, false);
       _setFlowStep(_roundNum, 'done');
       _scrollThread();
-      appendHudLog(`✓ Success: ${_nameOf(sender)} round ${_roundNum} turn end`);
+      appendHudLog(`completed Success: ${_nameOf(sender)} round ${_roundNum} turn end`);
       break;
     }
 
@@ -1142,7 +1142,7 @@ export function handleDebateEvent(event) {
       if (window.showToast) {
         window.showToast("Autonomous Simulation Complete", `AI solved and loaded ${data.name} in 3D.`, 4000);
       }
-      appendHudLog(`✓ Success: AI autonomously ran Modulus simulation: ${data.name}`);
+      appendHudLog(`completed Success: AI autonomously ran Modulus simulation: ${data.name}`);
       break;
     }
 
@@ -1190,7 +1190,7 @@ export function handleDebateEvent(event) {
       _setDot('user', true);
       _setFlowStep('s', 'done');
       _scrollThread();
-      appendHudLog(`✓ Success: Debate summary completed`);
+      appendHudLog(`completed Success: Debate summary completed`);
       break;
     }
 
@@ -1208,7 +1208,7 @@ export function handleDebateEvent(event) {
         _refreshSavedDocsList();
         _refreshDirectoryTopics();
         _openDocumentary(payload);
-        appendHudLog(`✓ Success: Research documentary compiled: "${payload.title}"`);
+        appendHudLog(`completed Success: Research documentary compiled: "${payload.title}"`);
       } else {
         appendHudLog(`✕ Failed: Received empty documentary payload`);
       }

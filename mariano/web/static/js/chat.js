@@ -295,26 +295,27 @@ export const ChatSessionManager = {
         toolCard.className = 'tool-group-card';
         toolCard.style.cssText = 'margin: 6px 0; display: flex; flex-direction: column; font-family: var(--font); font-size: 12px; color: var(--text-3);';
         
+        const runs = msg.metadata.tool_runs;
         const durationSec = msg.metadata?.duration_sec || msg.metadata?.tool_runs_duration_sec || Math.max(1, (runs.length * 2));
         const titleText = `Worked for ${durationSec}s`;
         const hasFailed = runs.some(r => r.status === 'failed');
         const statusHtml = hasFailed 
-          ? '<span style="color: #ef4444;">✖ failed</span>' 
-          : '<span style="color: var(--text-3);">✓ completed</span>';
+          ? '<span style="color: #ef4444;">&#10006; failed</span>' 
+          : '<span style="color: var(--text-3);">&#10003; completed</span>';
           
         toolCard.innerHTML = `
           <div class="tool-group-header" style="display: flex; align-items: center; justify-content: space-between; padding: 4px 0; cursor: pointer; user-select: none;">
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <span class="chevron-icon" style="transition: transform 0.15s; font-size: 10px; opacity: 0.5;">▸</span>
-              <span class="tool-group-title" style="font-weight: 500; color: var(--text-secondary);">${titleText}</span>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <i data-lucide="chevron-right" class="chevron-icon" style="width:13px;height:13px;opacity:0.6;transition:transform 0.15s;display:inline-block;vertical-align:middle;"></i>
+              <span class="tool-group-title" style="font-weight: 400; color: var(--text-secondary);">${titleText}</span>
             </div>
-            <span class="tool-group-status" style="font-size: 11px; opacity: 0.6;">${statusHtml}</span>
+            <span class="tool-group-status" style="font-size: 11px; opacity: 0.6; font-weight: 400;">${statusHtml}</span>
           </div>
           <div class="tool-group-body" style="display: none; flex-direction: column; padding-left: 14px; border-left: 1px dashed var(--border); margin-left: 4px; margin-top: 2px; gap: 3px;">
             ${runs.map(r => {
               const statusSpan = r.status === 'done'
-                ? '<span style="color: var(--text-3);">✓ done</span>'
-                : '<span style="color: #ef4444;">✖ failed</span>';
+                ? '<span style="color: var(--text-3);">&#10003; done</span>'
+                : '<span style="color: #ef4444;">&#10006; failed</span>';
               
               const reasoningHtml = r.reasoning
                 ? `<div class="ai-reasoning-card" style="margin: 3px 0 6px 14px; padding: 3px 0 3px 10px; border-left: 1px dashed var(--border); background: transparent; font-size: 11.5px; font-family: var(--font); color: var(--text-3); line-height: 1.55; opacity: 0.9;"><div style="white-space:pre-wrap;word-break:break-word;"><span>${escapeHtml(r.reasoning)}</span></div></div>`
@@ -325,14 +326,14 @@ export const ChatSessionManager = {
                 ? `<div style="width: 100%; margin-top: 4px; padding-left: 21px; box-sizing: border-box;">
                     <details style="margin: 0; opacity: 0.95; width: 100%;">
                       <summary style="cursor:pointer; color:var(--text-3); font-size:11px; font-weight:500; outline:none; user-select:none; display:inline-flex; align-items:center; gap:4px; padding: 2px 0;">
-                        <span>${isTerminal ? '▸ Terminal Output' : '▸ View output details'}</span>
+                        <span>${isTerminal ? '&#9654; Terminal Output' : '&#9654; View output details'}</span>
                       </summary>
                       <pre style="margin:6px 0 2px 0; padding:10px 12px; background:var(--card); color:var(--text-primary); border-radius:8px; font-size:11px; font-family:var(--font-mono); line-height:1.55; overflow-x:auto; border:none !important; box-shadow:none !important; max-height:220px; width:100%; box-sizing:border-box; white-space:pre-wrap; word-break:break-all;">${escapeHtml(r.output)}</pre>
                     </details>
                   </div>`
                 : '';
 
-              const iconToUse = r.icon || '▸';
+              const iconToUse = r.icon || '&#9654;';
               const rLabel = escapeHtml(r.label || '');
               const rSlashDetail = r.detail ? `<span style="font-weight:500;color:var(--text-secondary);white-space:nowrap;">${rLabel}</span><span style="color:var(--text-3);opacity:0.55;margin:0 1px;">/</span><span class="tool-detail" style="color:var(--text-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:340px;">${r.detail}</span>` : `<span style="font-weight:500;color:var(--text-secondary);white-space:nowrap;">${rLabel}</span>`;
 
@@ -362,12 +363,11 @@ export const ChatSessionManager = {
             body.style.display = isHidden ? 'flex' : 'none';
             if (chevron) {
               chevron.style.transform = isHidden ? 'rotate(90deg)' : 'rotate(0deg)';
-              chevron.textContent = isHidden ? '▼' : '▸';
             }
           });
         }
 
-        // ── Restore generated image cards that survived serialisation ─────────
+        //  Restore generated image cards that survived serialisation 
         // Any tool run with an image_path was a successful generate_image call.
         // Re-render the preview card so images appear after page refresh,
         // matching how ChatGPT persists media in conversation history.
@@ -462,7 +462,7 @@ export const ChatSessionManager = {
           if (c.id === activeChatId) item.classList.add('active');
           item.title = c.title;
           
-          const badgeText = c.pinned ? '📌' : c.title.substring(0, 1).toUpperCase();
+          const badgeText = c.pinned ? '' : c.title.substring(0, 1).toUpperCase();
           item.innerHTML = `
             <span class="badge" style="${c.pinned ? 'font-size:11px;' : ''}">${badgeText}</span>
             <span class="lbl">${c.title}</span>
@@ -505,7 +505,7 @@ export const ChatSessionManager = {
           if (c.id === activeChatId) item.classList.add('active');
           item.title = c.title;
           
-          const badgeText = c.pinned ? '📌' : '⚔';
+          const badgeText = c.pinned ? '' : '';
           item.innerHTML = `
             <span class="badge" style="font-size:10px; background:var(--border); display:flex; align-items:center; justify-content:center">${badgeText}</span>
             <span class="lbl">${c.title}</span>
@@ -891,7 +891,7 @@ export function enhanceCodeBlocks(container) {
       }
     }
 
-    // ── Mermaid Flowchart Rendering ──
+    //  Mermaid Flowchart Rendering 
     if (lang === 'mermaid') {
       if (window.mermaid) {
         const mDiv = document.createElement('div');
@@ -1105,94 +1105,261 @@ export function enhanceTables(container) {
   });
 }
 
-/** Scan container for image URLs/links and render a visual preview card card for each */
-export function enhanceImagePreviews(container) {
-  if (!container) return;
 
-  // Translate any inline img tags with file:/// src (e.g. from markdown parsed images)
-  const imgs = container.querySelectorAll('img');
-  imgs.forEach((img) => {
-    const src = img.getAttribute('src');
-    if (src && src.startsWith('file:///')) {
-      const decoded = decodeURIComponent(src.replace('file:///', ''));
-      img.src = `/api/workspace/render?path=${encodeURIComponent(decoded)}`;
+/** 
+ *  Rich Media Preview System
+ *  Handles: YouTube thumbnails, direct image previews, link preview cards
+ *   */
+
+/** Extract YouTube video ID from any YouTube URL format */
+function _getYoutubeId(url) {
+  const patterns = [
+    /youtu\.be\/([a-zA-Z0-9_-]{11})/,
+    /youtube\.com\/watch\?(?:.*&)?v=([a-zA-Z0-9_-]{11})/,
+    /youtube\.com\/embed\/([a-zA-Z0-9_-]{11})/,
+    /youtube\.com\/shorts\/([a-zA-Z0-9_-]{11})/,
+    /youtube\.com\/v\/([a-zA-Z0-9_-]{11})/,
+  ];
+  for (const re of patterns) {
+    const m = url.match(re);
+    if (m) return m[1];
+  }
+  return null;
+}
+
+/** Render YouTube thumbnail card for a link element */
+function _renderYoutubeCard(a, videoId) {
+  if (a.dataset.hasPreview) return;
+  a.dataset.hasPreview = 'yt';
+
+  const thumbUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+  const ytUrl = `https://www.youtube.com/watch?v=${videoId}`;
+
+  const card = document.createElement('div');
+  card.className = 'yt-preview-card';
+  card.setAttribute('data-video-id', videoId);
+  card.innerHTML = `
+    <a href="${ytUrl}" target="_blank" rel="noopener noreferrer" class="yt-preview-link">
+      <div class="yt-preview-thumb-wrap">
+        <img src="${thumbUrl}" class="yt-preview-thumb" alt="YouTube thumbnail" loading="lazy" />
+        <div class="yt-preview-play-btn">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="32" height="32"><path d="M8 5v14l11-7z"/></svg>
+        </div>
+        <div class="yt-preview-badge">YouTube</div>
+      </div>
+      <div class="yt-preview-meta">
+        <div class="yt-preview-title">${a.textContent || 'Watch on YouTube'}</div>
+        <div class="yt-preview-domain">youtube.com</div>
+      </div>
+    </a>
+  `;
+
+  // Handle thumbnail load error  fall back to lower quality
+  const img = card.querySelector('img');
+  img.onerror = () => { img.src = `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`; };
+
+  const parent = a.closest('p') || a.parentNode;
+  if (parent && parent.parentNode) {
+    parent.parentNode.insertBefore(card, parent.nextSibling);
+  } else {
+    container.appendChild(card);
+  }
+}
+
+/** Render inline image preview card for image URL links */
+function _renderImageCard(a, srcUrl, href) {
+  if (a.dataset.hasPreview) return;
+  a.dataset.hasPreview = 'img';
+
+  const card = document.createElement('div');
+  card.className = 'chat-image-preview-card';
+  const targetUrl = href || (a.getAttribute ? a.getAttribute('href') : srcUrl);
+
+  card.innerHTML = `
+    <div class="img-preview-box" style="position:relative; width:100%; border-radius:10px; overflow:hidden; cursor:pointer; background:var(--hover);">
+      <img src="${srcUrl}" loading="lazy" style="width:100%; height:130px; object-fit:cover; display:block; border-radius:10px;" />
+      <a href="${targetUrl}" target="_blank" rel="noopener noreferrer" class="img-redirect-btn" style="position:absolute; bottom:6px; right:6px; background:rgba(0,0,0,0.65); backdrop-filter:blur(4px); color:#fff; width:24px; height:24px; border-radius:6px; display:flex; align-items:center; justify-content:center; text-decoration:none; z-index:5;" title="Open original source">
+        <i data-lucide="external-link" style="width:12px; height:12px;"></i>
+      </a>
+    </div>
+  `;
+
+  const imgEl = card.querySelector('img');
+  imgEl.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (window.openImageModal) {
+      window.openImageModal(srcUrl);
+    } else {
+      window.open(srcUrl, '_blank');
     }
   });
 
-  // Scan links to render image preview cards
-  const links = container.querySelectorAll('a');
-  links.forEach((a) => {
-    const href = a.getAttribute('href');
-    if (!href) return;
+  imgEl.onerror = () => card.remove();
 
-    let isFileImage = false;
-    let fileImagePath = '';
-    if (href.startsWith('file:///')) {
-      const decoded = decodeURIComponent(href.replace('file:///', ''));
-      if (decoded.match(/\.(jpeg|jpg|gif|png|webp|svg)(?:\?.*)?$/i)) {
-        isFileImage = true;
-        fileImagePath = decoded;
+  if (a.parentNode) {
+    a.parentNode.replaceChild(card, a);
+  }
+  if (window.lucide) lucide.createIcons({ parent: card });
+}
+
+/** Post-pass: Group ONLY Visual Media Cards (Photos & YouTube Videos) in 1 single horizontal row (max 4 cards) */
+function _groupPreviewCardsIntoGrid(container) {
+  const cards = Array.from(container.querySelectorAll('.yt-preview-card, .chat-image-preview-card'))
+    .filter(c => !c.closest('.media-preview-grid'));
+  if (cards.length === 0) return;
+
+  const msgBubbles = new Map();
+  cards.forEach(card => {
+    const msgEl = card.closest('.msg') || card.closest('.chat-col') || container;
+    if (!msgBubbles.has(msgEl)) msgBubbles.set(msgEl, []);
+    msgBubbles.get(msgEl).push(card);
+  });
+
+  msgBubbles.forEach((cardList, msgEl) => {
+    if (cardList.length === 0) return;
+
+    let grid = msgEl.querySelector('.media-preview-grid');
+    if (!grid) {
+      grid = document.createElement('div');
+      grid.className = 'media-preview-grid';
+
+      // POSITIONING: Place in the middle — BEFORE table or BEFORE tip/callout or after intro paragraph
+      const table = msgEl.querySelector('table') || msgEl.querySelector('.table-wrapper');
+      const tipCallout = msgEl.querySelector('.chat-callout') || msgEl.querySelector('blockquote');
+
+      if (table) {
+        const target = table.closest('.table-wrapper') || table.closest('div') || table;
+        target.parentNode.insertBefore(grid, target);
+      } else if (tipCallout) {
+        tipCallout.parentNode.insertBefore(grid, tipCallout);
+      } else {
+        const firstP = msgEl.querySelector('p, ul, ol');
+        if (firstP && firstP.nextSibling) {
+          firstP.parentNode.insertBefore(grid, firstP.nextSibling);
+        } else {
+          msgEl.appendChild(grid);
+        }
       }
     }
 
-    if (isFileImage || href.match(/\.(jpeg|jpg|gif|png|webp|svg)(?:\?.*)?$/i) ||
-      href.includes('unsplash.com/photo-') ||
-      href.includes('images.unsplash.com/') ||
-      href.includes('imgur.com/') ||
-      href.includes('media.giphy.com/')
-    ) {
-      if (a.dataset.hasPreview) return;
-      a.dataset.hasPreview = "true";
+    // STRICT LIMIT: Max 4 visual media cards in 1 single horizontal grid row per message
+    cardList.slice(0, 4).forEach(card => grid.appendChild(card));
+  });
+}
 
-      let srcUrl = href;
-      if (isFileImage) {
-        srcUrl = `/api/workspace/render?path=${encodeURIComponent(fileImagePath)}`;
-      }
-      
-      const imgContainer = document.createElement('div');
-      imgContainer.className = 'chat-image-preview-card';
-      imgContainer.innerHTML = `
-        <div class="chat-image-preview-body">
-          <img src="${srcUrl}" alt="Preview" loading="lazy" />
-        </div>
-        <div class="chat-image-preview-header">
-          <i data-lucide="image" style="width:12px;height:12px;flex-shrink:0;"></i>
-          <span>Image Preview</span>
-          <a href="${srcUrl}" target="_blank" class="chat-image-preview-open" title="Open original image">
-            <i data-lucide="external-link" style="width:12px;height:12px;"></i>
-          </a>
-        </div>
-      `;
-      
-      const img = imgContainer.querySelector('img');
-      if (img) {
-        img.onload = () => {
-          if (img.clientWidth > 0) {
-            imgContainer.style.width = img.clientWidth + 'px';
-          }
-        };
-        if (img.complete && img.clientWidth > 0) {
-          imgContainer.style.width = img.clientWidth + 'px';
-        }
-        img.onerror = () => {
-          imgContainer.remove();
-        };
-      }
+/** Post-pass: Move Tip callouts and Tip paragraphs to the VERY LAST/BOTTOM of the message bubble intact */
+function _moveTipsToBottom(container) {
+  if (!container) return;
 
-      const parent = a.closest('p') || a.parentNode;
-      if (parent) {
-        parent.parentNode.insertBefore(imgContainer, parent.nextSibling);
-      } else {
-        container.appendChild(imgContainer);
-      }
-      if (window.lucide) {
-        lucide.createIcons({ parent: imgContainer });
-      }
+  // 1. Move enhanced callout cards intact
+  const callouts = Array.from(container.querySelectorAll('.chat-callout, blockquote'));
+  callouts.forEach(card => {
+    const text = card.textContent.trim();
+    if (text.includes('Tip:') || card.classList.contains('callout-tip')) {
+      const msgEl = card.closest('.msg') || card.closest('.chat-col') || container;
+      msgEl.appendChild(card);
+    }
+  });
+
+  // 2. Move standalone Tip paragraphs (not inside callouts) intact
+  const ps = Array.from(container.querySelectorAll('p')).filter(p => !p.closest('.chat-callout'));
+  ps.forEach(p => {
+    const text = p.textContent.trim();
+    if (text.startsWith('💡 Tip:') || text.startsWith('Tip:')) {
+      const msgEl = p.closest('.msg') || p.closest('.chat-col') || container;
+      msgEl.appendChild(p);
     }
   });
 }
 
-/** Automatically scan text nodes for raw URLs and convert them into interactive links */
+/** Main: scan container and enhance visual media (photos & videos) with rich previews */
+export function enhanceImagePreviews(container) {
+  if (!container) return;
+
+  // 1. Convert markdown inline images (![alt](url)) rendered as <img> tags into flat image cards
+  container.querySelectorAll('img').forEach(img => {
+    if (img.dataset.hasPreview || img.closest('.chat-image-preview-card') || img.closest('.yt-preview-card')) return;
+    let src = img.getAttribute('src') || '';
+    if (!src) return;
+
+    // Fix file:/// paths
+    if (src.startsWith('file:///')) {
+      src = `/api/workspace/render?path=${encodeURIComponent(decodeURIComponent(src.replace('file:///', '')))}`;
+    }
+
+    // Only process external http images (not UI icons)
+    if (!src.startsWith('http') && !src.startsWith('/api/')) return;
+
+    img.dataset.hasPreview = 'img';
+
+    const targetUrl = img.closest('a')?.getAttribute('href') || src;
+    const card = document.createElement('div');
+    card.className = 'chat-image-preview-card';
+    card.innerHTML = `
+      <div class="img-preview-box" style="position:relative; width:100%; border-radius:10px; overflow:hidden; cursor:pointer; background:var(--hover);">
+        <img src="${src}" loading="lazy" style="width:100%; height:130px; object-fit:cover; display:block; border-radius:10px;" />
+        <a href="${targetUrl}" target="_blank" rel="noopener noreferrer" class="img-redirect-btn" style="position:absolute; bottom:6px; right:6px; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); color:#fff; width:22px; height:22px; border-radius:5px; display:flex; align-items:center; justify-content:center; text-decoration:none; z-index:5;" title="Open source">
+          <i data-lucide="external-link" style="width:11px; height:11px;"></i>
+        </a>
+      </div>
+    `;
+
+    const newImg = card.querySelector('img');
+    newImg.addEventListener('click', (e) => { e.stopPropagation(); window.open(src, '_blank'); });
+    newImg.onerror = () => card.remove();
+
+    // Replace the img's closest block parent (p tag usually)
+    const parent = img.closest('p') || img.parentNode;
+    if (parent && parent.parentNode && parent !== container) {
+      parent.parentNode.replaceChild(card, parent);
+    } else if (img.parentNode) {
+      img.parentNode.replaceChild(card, img);
+    }
+    if (window.lucide) lucide.createIcons({ parent: card });
+  });
+
+  // 2. Scan all links for YouTube and image URLs
+  const links = container.querySelectorAll('a[href]');
+  links.forEach(a => {
+    const href = a.getAttribute('href');
+    if (!href || a.dataset.hasPreview) return;
+
+    // Skip internal / fragment links / tables / headers
+    if (href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('javascript:')) return;
+    if (a.closest('table') || a.closest('.table-wrapper') || a.closest('h1,h2,h3,h4,h5,h6')) return;
+    if (a.closest('.chat-image-preview-card') || a.closest('.yt-preview-card')) return;
+
+    //  YouTube 
+    const ytId = _getYoutubeId(href);
+    if (ytId) {
+      _renderYoutubeCard(a, ytId);
+      return;
+    }
+
+    //  Direct image file or image link 
+    let srcUrl = href;
+    if (href.startsWith('file:///')) {
+      const decoded = decodeURIComponent(href.replace('file:///', ''));
+      if (!decoded.match(/\.(jpeg|jpg|gif|png|webp|svg)(?:\?.*)?$/i)) return;
+      srcUrl = `/api/workspace/render?path=${encodeURIComponent(decoded)}`;
+    }
+
+    if (srcUrl.match(/\.(jpeg|jpg|gif|png|webp|svg)(?:\?.*)?$/i) ||
+        srcUrl.includes('images.unsplash.com/') ||
+        srcUrl.includes('imgur.com/') ||
+        srcUrl.includes('media.giphy.com/') ||
+        srcUrl.includes('upload.wikimedia.org/')) {
+      _renderImageCard(a, srcUrl, href);
+      return;
+    }
+  });
+
+  // 3. Post-pass: Group visual media cards into horizontal grid rows
+  _groupPreviewCardsIntoGrid(container);
+}
+
+
+
 export function autoLinkTextNodes(container) {
   if (!container) return;
   const urlRegex = /(https?:\/\/[^\s<]+[^<.,:;"')\]\s]|www\.[^\s<]+[^<.,:;"')\]\s])/gi;
@@ -1307,22 +1474,35 @@ export function enhanceLinks(container) {
   autoLinkTextNodes(container);
 }
 
-/** Transforms GitHub GFM callout blockquotes ([!NOTE], [!TIP], [!IMPORTANT], [!WARNING], [!CAUTION]) into styled cards */
+/** Transforms GitHub GFM callouts ([!NOTE], [!TIP]) and "💡 Tip:" paragraphs/blockquotes into styled callout cards */
 export function enhanceCallouts(container) {
   if (!container) return;
+
+  // 1. Transform blockquotes into styled callout cards
   const blockquotes = container.querySelectorAll('blockquote');
   blockquotes.forEach((bq) => {
     if (bq.classList.contains('chat-callout')) return;
-    
-    const text = bq.innerText.trim();
-    const match = text.match(/^\[\!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]/i);
-    if (!match) return;
-    
-    const type = match[1].toUpperCase();
-    let iconName = 'info';
-    let titleText = 'Note';
-    let typeClass = 'callout-note';
-    
+
+    let text = bq.innerText.trim();
+    let type = null;
+    const gfmMatch = text.match(/^\[\!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]/i);
+
+    if (gfmMatch) {
+      type = gfmMatch[1].toUpperCase();
+    } else if (text.startsWith('💡 Tip:') || text.startsWith('Tip:') || text.toLowerCase().includes('tip:')) {
+      type = 'TIP';
+    } else if (text.toLowerCase().startsWith('note:')) {
+      type = 'NOTE';
+    } else if (text.toLowerCase().startsWith('warning:')) {
+      type = 'WARNING';
+    }
+
+    if (!type) return;
+
+    let iconName = 'sparkles';
+    let titleText = 'Tip';
+    let typeClass = 'callout-tip';
+
     switch (type) {
       case 'TIP':
         iconName = 'sparkles';
@@ -1350,27 +1530,42 @@ export function enhanceCallouts(container) {
         typeClass = 'callout-note';
         break;
     }
-    
+
     const callout = document.createElement('div');
     callout.className = `chat-callout ${typeClass}`;
-    
-    const header = document.createElement('div');
-    header.className = 'callout-header';
-    header.innerHTML = `<i data-lucide="${iconName}" class="callout-icon"></i><span>${titleText}</span>`;
-    
+
     const body = document.createElement('div');
     body.className = 'callout-body';
-    
-    let innerHTML = bq.innerHTML;
-    innerHTML = innerHTML.replace(/\[\!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]/gi, '').trim();
-    innerHTML = innerHTML.replace(/^<p>\s*<\/p>/i, '').trim();
-    body.innerHTML = innerHTML;
-    
-    callout.appendChild(header);
+    body.innerHTML = bq.innerHTML;
+
+    if (typeClass !== 'callout-tip') {
+      const header = document.createElement('div');
+      header.className = 'callout-header';
+      header.innerHTML = `<i data-lucide="${iconName}" class="callout-icon"></i><span>${titleText}</span>`;
+      callout.appendChild(header);
+    }
+
     callout.appendChild(body);
-    
+
     if (bq.parentNode) {
       bq.parentNode.replaceChild(callout, bq);
+    }
+  });
+
+  // 2. Transform standalone paragraphs starting with "💡 Tip:" or "Tip:" into styled .chat-callout cards without duplicate headers
+  const standalonePs = Array.from(container.querySelectorAll('p')).filter(p => !p.closest('.chat-callout') && !p.closest('blockquote'));
+  standalonePs.forEach(p => {
+    const text = p.innerText.trim();
+    if (text.startsWith('💡 Tip:') || text.startsWith('Tip:')) {
+      const callout = document.createElement('div');
+      callout.className = 'chat-callout callout-tip';
+
+      const body = document.createElement('div');
+      body.className = 'callout-body';
+      body.innerHTML = p.innerHTML;
+
+      callout.appendChild(body);
+      p.parentNode.replaceChild(callout, p);
     }
   });
 }
@@ -1398,6 +1593,7 @@ export function enhanceMarkdownContent(container) {
   try { enhanceCodeBlocks(container); } catch (e) { console.error(e); }
   try { enhanceTables(container); } catch (e) { console.error(e); }
   try { enhanceImagePreviews(container); } catch (e) { console.error(e); }
+  try { _moveTipsToBottom(container); } catch (e) { console.error(e); }
   try { enhanceTaskLists(container); } catch (e) { console.error(e); }
   if (window.renderMathInElement) {
     try {
@@ -1427,19 +1623,27 @@ function makeUserMessageEditable(groupEl, originalText, index) {
   bubble.style.display = 'none';
   if (actions) actions.style.display = 'none';
 
-  // Create edit form container
+  // Create edit form using safe DOM API  prevents XSS from user-typed prompt content
   const editContainer = document.createElement('div');
   editContainer.className = 'msg-edit-container';
-  editContainer.innerHTML = `
-    <textarea class="msg-edit-textarea">${originalText}</textarea>
-    <div class="msg-edit-buttons">
-      <button class="msg-edit-btn btn-cancel">Cancel</button>
-      <button class="msg-edit-btn save btn-save">Save & Submit</button>
-    </div>
-  `;
+  const _editTa = document.createElement('textarea');
+  _editTa.className = 'msg-edit-textarea';
+  _editTa.value = originalText; // Safe: .value never executes HTML
+  const _editBtnRow = document.createElement('div');
+  _editBtnRow.className = 'msg-edit-buttons';
+  const _cancelBtn = document.createElement('button');
+  _cancelBtn.className = 'msg-edit-btn btn-cancel';
+  _cancelBtn.textContent = 'Cancel';
+  const _saveBtn = document.createElement('button');
+  _saveBtn.className = 'msg-edit-btn save btn-save';
+  _saveBtn.textContent = 'Save & Submit';
+  _editBtnRow.appendChild(_cancelBtn);
+  _editBtnRow.appendChild(_saveBtn);
+  editContainer.appendChild(_editTa);
+  editContainer.appendChild(_editBtnRow);
   groupEl.appendChild(editContainer);
 
-  const textarea = editContainer.querySelector('.msg-edit-textarea');
+  const textarea = _editTa;
   textarea.focus();
   // Set cursor to end of text
   textarea.selectionStart = textarea.selectionEnd = textarea.value.length;
@@ -1775,3 +1979,4 @@ export function showCustomPrompt(title, message, defaultValue = '') {
     modal.classList.remove('hidden');
   });
 }
+

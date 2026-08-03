@@ -1,5 +1,5 @@
 /**
- * nav.js â€” Dock button event bindings ONLY.
+ * nav.js  Dock button event bindings ONLY.
  *
  * Does NOT control pane visibility directly.
  * All navigation goes through router.js.
@@ -80,7 +80,7 @@ export function bindNavigation(tabs, showToast, inConversationStateRef) {
 
   $('btn-new-chat')?.addEventListener('click', () => handleNewChat());
 
-  // ── Chat (Home) ───────────────────────────────────────
+  //  Chat (Home) 
   $('mode-home')?.addEventListener('click', () => {
     router.navigateTo('chat');
   });
@@ -95,29 +95,29 @@ export function bindNavigation(tabs, showToast, inConversationStateRef) {
 
 
 
-  // ── Expert Skills ────────────────────────────────────
+  //  Expert Skills 
   $('nav-skills-btn')?.addEventListener('click', () => {
     router.navigateTo('skills');
   });
 
-  // ── Debate Playground ─────────────────────────────────
+  //  Debate Playground 
   $('btn-nav-playground')?.addEventListener('click', () => {
     router.navigateTo('debate');
   });
 
 
-  // ── Images Gallery ───────────────────────────────────
+  //  Images Gallery 
   $('btn-nav-images')?.addEventListener('click', () => {
     router.navigateTo('images');
   });
 
-  // ── Main Topnav Back Button ──────────────────────────
+  //  Main Topnav Back Button 
   $('btn-main-back')?.addEventListener('click', () => {
     router.navigateTo('chat');
   });
 
 
-  // ── User Profile Dropdown ──────────────────────────────
+  //  User Profile Dropdown 
   const userProfileBtn = $('btn-sidebar-user-profile');
   const userMenuDropdown = $('user-menu-dropdown');
   if (userProfileBtn && userMenuDropdown) {
@@ -150,7 +150,7 @@ export function bindNavigation(tabs, showToast, inConversationStateRef) {
     });
   }
 
-  // ── CAD Grid Menu Dropdown ─────────────────────────────
+  //  CAD Grid Menu Dropdown 
   const gridMenuBtn = $('cad-grid-menu-btn');
   const gridDropdownMenu = $('cad-grid-dropdown-menu');
   if (gridMenuBtn && gridDropdownMenu) {

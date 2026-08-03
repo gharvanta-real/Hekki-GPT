@@ -87,6 +87,12 @@ export function send(text, enterConversation, log) {
     }
   });
 
+  // Guard: only send if socket is open — prevents DOMException and silent message loss
+  if (socket.readyState !== WebSocket.OPEN) {
+    log('Socket not open (readyState=' + socket.readyState + '). Message dropped.', 'err');
+    return;
+  }
+
   socket.send(JSON.stringify({ 
     type: 'query', 
     text,

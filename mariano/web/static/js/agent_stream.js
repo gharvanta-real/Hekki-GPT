@@ -29,6 +29,7 @@ let _aiderConsoleRawText = "";
 let _streamToolContainer = null;
 let _streamToolBody      = null;
 let _streamToolCount     = 0;
+let _streamToolStartTime = 0;     // Timestamp when tool group started (for "Worked for Xs")
 let _currentMessageToolRuns = [];
 
 // ─── Planner metadata line filter ─────────────────────────────────────────────
@@ -416,7 +417,7 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
 
       card.querySelector('.deny-btn').addEventListener('click', () => {
         card.remove();
-        ChatSessionManager.appendMessage('assistant', '✖ **Permission Denied** — Action blocked by user.');
+        ChatSessionManager.appendMessage('assistant', 'failed **Permission Denied** — Action blocked by user.');
         if (window.setGeneratingState) window.setGeneratingState(false);
       });
       
@@ -438,6 +439,7 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
         const imgCard = document.createElement('div');
         imgCard.className = 'image-generation-card';
         imgCard.id = 'active-image-gen-card';
+        imgCard.setAttribute('data-img-card', '1'); // For interval cleanup on error
         
         imgCard.innerHTML = `
           <div class="image-generation-header">
@@ -521,8 +523,8 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
       };
 
       const slashContent = meta.detail
-        ? `<span style="font-weight:500;color:var(--text-secondary);white-space:nowrap;">${meta.label}</span><span style="color:var(--text-3);opacity:0.55;margin:0 1px;">/</span><span class="tool-detail" style="color:var(--text-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:340px;">${meta.detail}</span>`
-        : `<span style="font-weight:500;color:var(--text-secondary);white-space:nowrap;">${meta.label}</span>`;
+        ? `<span style="font-weight:400;color:var(--text-secondary);white-space:nowrap;">${meta.label}</span><span style="color:var(--text-3);opacity:0.55;margin:0 1px;">/</span><span class="tool-detail" style="font-weight:400;color:var(--text-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:340px;">${meta.detail}</span>`
+        : `<span style="font-weight:400;color:var(--text-secondary);white-space:nowrap;">${meta.label}</span>`;
 
       const card = document.createElement('div');
       card.className = 'tool-block-temp tool-log-card';
@@ -606,7 +608,7 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
     case 'tool_result': {
       if (_lastToolBlock) {
         const isSuccess = e.metadata?.success !== false;
-        appendHudLog(`[RESULT] ${isSuccess ? '✓ Success' : '✖ Failed'}`);
+        appendHudLog(`[RESULT] ${isSuccess ? 'completed Success' : 'failed Failed'}`);
 
         // Stop animated dots
         if (_lastToolBlock._dotsInterval) {
@@ -617,9 +619,9 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
         const statusEl = _lastToolBlock.querySelector('.tool-status');
         if (statusEl) {
           if (isSuccess) {
-            statusEl.innerHTML = '<span style="color:var(--text-3);">✓ done</span>';
+            statusEl.innerHTML = '<span style="color:var(--text-3);">completed done</span>';
           } else {
-            statusEl.innerHTML = '<span style="color:#ef4444;">✖ failed</span>';
+            statusEl.innerHTML = '<span style="color:#ef4444;">failed failed</span>';
           }
         }
 
@@ -757,7 +759,7 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
         const badge = _aiderConsoleCard.querySelector('#aider-status-badge');
         
         if (spinner) {
-          spinner.outerHTML = '<span style="color:var(--text-secondary); font-weight:bold; font-size:12px; margin-right:6px;">✓</span>';
+          spinner.outerHTML = '<span style="color:var(--text-secondary); font-weight:bold; font-size:12px; margin-right:6px;">completed</span>';
         }
         if (title) {
           title.textContent = 'Aider Task Completed';
@@ -931,7 +933,7 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
         }
 
         // Save structured commit details to history
-        let historyMsg = `✓ **Aider Task Completed** — Workspace updated successfully.`;
+        let historyMsg = `completed **Aider Task Completed** — Workspace updated successfully.`;
         if (files.length > 0) {
           historyMsg += `\n\n* ${files.length} ${fileWord} changed:`;
           files.forEach(f => {
@@ -1006,6 +1008,11 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
       _finalizeReasoning();
       _finalizeToolContainer(false);
       
+      // Clear any dangling image-generation loading interval to prevent memory leak
+      col.querySelectorAll('[data-img-card]').forEach(card => {
+        if (card._textInterval) { clearInterval(card._textInterval); card._textInterval = null; }
+      });
+
       if (_aiderActive && _aiderConsoleCard) {
         if (_aiderConsoleCard._diffInterval) {
           clearInterval(_aiderConsoleCard._diffInterval);
@@ -1017,7 +1024,7 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
         const badge = _aiderConsoleCard.querySelector('#aider-status-badge');
         
         if (spinner) {
-          spinner.outerHTML = '<span style="color:var(--text-secondary); font-weight:bold; font-size:12px; margin-right:6px;">✖</span>';
+          spinner.outerHTML = '<span style="color:var(--text-secondary); font-weight:bold; font-size:12px; margin-right:6px;">failed</span>';
         }
         if (title) {
           title.textContent = 'Aider Task Failed';
@@ -1025,13 +1032,13 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
         if (badge) {
           badge.textContent = '[failed]';
         }
-        ChatSessionManager.appendMessage('assistant', `✖ **Aider Coding Task Failed**: ${e.data}`, _consumeToolRuns());
+        ChatSessionManager.appendMessage('assistant', `failed **Aider Coding Task Failed**: ${e.data}`, _consumeToolRuns());
         _aiderConsoleCard = null;
         _aiderConsoleLogArea = null;
         _aiderActive = false;
       } else {
         _ensureResponseMsg(enterConversationCallback);
-        _streamResponseText += `\n\n✖ **Error**: ${e.data}`;
+        _streamResponseText += `\n\nfailed **Error**: ${e.data}`;
         if (_streamResponseEl) {
           _streamResponseEl.innerHTML = window.marked 
             ? marked.parse(_streamResponseText) 
@@ -1136,6 +1143,7 @@ function _ensureToolContainer(col, enterConversationCallback) {
   enterConversationCallback();
 
   _streamToolContainer = document.createElement('div');
+  _streamToolStartTime = Date.now(); // Track start time for "Worked for Xs" header
   _streamToolContainer.className = 'tool-group-card';
   _streamToolContainer.style.cssText = [
     'margin: 6px 0',
@@ -1203,8 +1211,8 @@ function _finalizeToolContainer(isSuccess = true) {
   const statusEl = _streamToolContainer.querySelector('.tool-group-status');
   if (statusEl) {
     statusEl.innerHTML = isSuccess 
-      ? '<span style="color: var(--text-3);">✓ completed</span>' 
-      : '<span style="color: #ef4444;">✖ failed</span>';
+      ? '<span style="color: var(--text-3);">&#10003; completed</span>' 
+      : '<span style="color: #ef4444;">&#10006; failed</span>';
   }
 
   const elapsedSec = Math.max(1, Math.round((Date.now() - (_streamToolStartTime || Date.now())) / 1000));

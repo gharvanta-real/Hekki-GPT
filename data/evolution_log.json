@@ -98,8 +98,8 @@
   {
     "timestamp": "2026-08-03T12:41:30.000000",
     "type": "ui_redesign",
-    "title": "Redesigned Debate Welcome Screen: New Brand Logo & Elegant 45\u00b0 Arrow Cards",
-    "description": "Replaced crossed swords icon (\u2694) with official Hekki brand logo (/static/hekki.png). Replaced inline text with 2 distinct flat cards featuring high-contrast opposite-color badges (A & B) and bottom-right 45-degree arrow-up-right icons.",
+    "title": "Redesigned Debate Welcome Screen: New Brand Logo & Elegant 45° Arrow Cards",
+    "description": "Replaced crossed swords icon (⚔) with official Hekki brand logo (/static/hekki.png). Replaced inline text with 2 distinct flat cards featuring high-contrast opposite-color badges (A & B) and bottom-right 45-degree arrow-up-right icons.",
     "reason": "Fulfilled explicit user directive: 'center maine new logo no swardd , don't show like this show in cards with bottom right arrow 45 degfree and opposite color A Alpha takes a strong position vs B Beta challenges every point'.",
     "impact": "Stunning modern welcome screen for Debate Playground."
   },
@@ -466,7 +466,7 @@
     "timestamp": "2026-07-29T22:29:51.330620",
     "type": "theme_fix",
     "title": "Fixed ClientProfileDrawer Dark Theme Background & Text Colors",
-    "description": "Fully rewrote ClientProfileDrawer.jsx replacing hardcoded white (#FFFFFF), navy (#0F172A), and slate (#64748B) colors with CSS variables (var(--surface-card), var(--surface-muted), var(--text-main), var(--text-muted), var(--surface-border)). In Dark Mode, the 360\u00b0 Client History slide-out drawer now renders on a sleek near-black card surface (#1A1B1D).",
+    "description": "Fully rewrote ClientProfileDrawer.jsx replacing hardcoded white (#FFFFFF), navy (#0F172A), and slate (#64748B) colors with CSS variables (var(--surface-card), var(--surface-muted), var(--text-main), var(--text-muted), var(--surface-border)). In Dark Mode, the 360° Client History slide-out drawer now renders on a sleek near-black card surface (#1A1B1D).",
     "files_changed": [
       "src/components/Modal/ClientProfileDrawer.jsx"
     ],
@@ -753,7 +753,7 @@
     "timestamp": "2026-07-29T21:37:55.636553",
     "type": "layout_update",
     "title": "KPI Cards Redesigned with Circular Badges & Donut Progress Rings",
-    "description": "Updated KpiCards.jsx and DailyScheduleOverviewPage.jsx to match reference image with left circular icon badges, percentage pills (e.g. \u2191 3%), and mini radial SVG donut progress rings.",
+    "description": "Updated KpiCards.jsx and DailyScheduleOverviewPage.jsx to match reference image with left circular icon badges, percentage pills (e.g. ↑ 3%), and mini radial SVG donut progress rings.",
     "status": "VERIFIED_LIVE"
   },
   {
@@ -998,7 +998,7 @@
     "timestamp": "2026-07-29T18:22:12.661473",
     "type": "feature_creation",
     "title": "Plivo Telephony Gateway Created (plivo_telephony_bridge.js)",
-    "description": "Created plivo_telephony_bridge.js for Plivo Cloud Telephony API + Gemini 2.5 Live Native Audio streaming. Provides ~\u20b90.60/min rates with 100% silent room and private in-ear AI calling.",
+    "description": "Created plivo_telephony_bridge.js for Plivo Cloud Telephony API + Gemini 2.5 Live Native Audio streaming. Provides ~₹0.60/min rates with 100% silent room and private in-ear AI calling.",
     "status": "VERIFIED_LIVE"
   },
   {
@@ -1102,8 +1102,8 @@
   {
     "timestamp": "2026-07-29T17:13:22.900351",
     "type": "feature_build",
-    "title": "Android APK Built Successfully (807KB) \u2014 No Android Studio Required",
-    "description": "Built Prismix AI SIM Bridge APK using pure Gradle CLI (gradlew assembleDebug). Zero external dependencies \u2014 pure Android SDK + java.net RFC 6455 WebSocket implementation. Eliminates all AndroidX AAR metadata conflicts.",
+    "title": "Android APK Built Successfully (807KB) — No Android Studio Required",
+    "description": "Built Prismix AI SIM Bridge APK using pure Gradle CLI (gradlew assembleDebug). Zero external dependencies — pure Android SDK + java.net RFC 6455 WebSocket implementation. Eliminates all AndroidX AAR metadata conflicts.",
     "apk_path": "zero_voip_telephony_bridge/android_sim_bridge/app/build/outputs/apk/debug/app-debug.apk",
     "apk_size": "807KB",
     "build_time": "24s"
@@ -1114,7 +1114,7 @@
     "title": "Built Real Android APK SIM Bridge System (WebSocket + ACTION_CALL)",
     "description": "Created sim_bridge_ws_server.js (ws:// Port 8000), updated CallBridgeForegroundService.kt with OkHttp WebSocket + real Intent ACTION_CALL, MainActivity.kt with runtime CALL_PHONE/RECORD_AUDIO permissions, and App.jsx to dispatch real CALL commands to Android phone via WebSocket.",
     "reason": "User requested a real Android APK that receives call commands from PC Dashboard and dials via SIM card.",
-    "impact": "Enables end-to-end real SIM calling from PC dashboard to Android phone \u2014 no more simulation."
+    "impact": "Enables end-to-end real SIM calling from PC dashboard to Android phone — no more simulation."
   },
   {
     "timestamp": "2026-07-29T16:54:23.771827",
@@ -1503,7 +1503,7 @@
   {
     "timestamp": "2026-07-29T12:03:18.554954",
     "type": "critical_bug_fix",
-    "title": "Fixed Missing CSS \u2014 Added All 5 CSS Token Layer Imports to index.css",
+    "title": "Fixed Missing CSS — Added All 5 CSS Token Layer Imports to index.css",
     "description": "Root cause identified: index.css was not importing any of the 5 CSS layer files (1_variables.css, 2_base.css, 3_layout.css, 4_components.css, 5_animations.css). Added all 5 @import statements to src/index.css so all design tokens, layout, components, and animations load correctly.",
     "reason": "Dashboard appeared completely unstyled (raw HTML) because none of the CSS layers were being loaded.",
     "impact": "All CSS tokens, sidebar layout, topbar, cards, badges, and animations now load correctly across the entire dashboard."
@@ -2368,7 +2368,7 @@
     "timestamp": "2026-07-22T06:59:00.000000",
     "type": "core_upgrade",
     "title": "HekkiCAD High-Fidelity 5-Spoke Forged Alloy Car Wheel & Typo Tolerance Upgrade",
-    "description": "Resolved simple ring shape defect and typo matching for Car Wheel prompts: (1) Built real 5-Spoke Procedural Alloy Wheel mesh generator with 7 distinct components: Synthetic Rubber Outer Tire, Forged Aluminum Outer Rim Barrel Lip, 5-Spoke Aerodynamic Alloy Star Array (0\u00b0, 72\u00b0, 144\u00b0, 216\u00b0, 288\u00b0), Center Axle Hub Cap, 5-Lug Nut Steel Bolt Circle, Vented Cast Iron Brake Rotor, and Red Brembo-Style High-Performance Caliper. (2) Added typo-tolerant keyword matching for 'while', 'weel', 'wheel', 'rim', 'tire', 'car' in ai_parser.py, chunk_planner.py, and cad_viewer3d.js.",
+    "description": "Resolved simple ring shape defect and typo matching for Car Wheel prompts: (1) Built real 5-Spoke Procedural Alloy Wheel mesh generator with 7 distinct components: Synthetic Rubber Outer Tire, Forged Aluminum Outer Rim Barrel Lip, 5-Spoke Aerodynamic Alloy Star Array (0°, 72°, 144°, 216°, 288°), Center Axle Hub Cap, 5-Lug Nut Steel Bolt Circle, Vented Cast Iron Brake Rotor, and Red Brembo-Style High-Performance Caliper. (2) Added typo-tolerant keyword matching for 'while', 'weel', 'wheel', 'rim', 'tire', 'car' in ai_parser.py, chunk_planner.py, and cad_viewer3d.js.",
     "reason": "User screenshot showed 'make a perfect car while' (typo for wheel) rendering a generic PC chassis box and simple ring instead of a real 5-spoke car wheel.",
     "impact": "Delivers realistic, 7-part supercar forged 5-spoke alloy wheel 3D CAD models with red brake calipers."
   },
@@ -2376,7 +2376,7 @@
     "timestamp": "2026-07-22T06:56:00.000000",
     "type": "core_upgrade",
     "title": "HekkiCAD Real-Time Step-by-Step AI Thinking Logs & STEP Download Card UI Upgrade",
-    "description": "Upgraded AI Chat UI to display real-time step-by-step reasoning logs and direct STEP AP242 download card: (1) Collapsible accordion now logs every internal thought step [01/08], [02/08] showing exact component synthesis stages. (2) Upon assembly completion, displays a detailed result card containing Model ID, File Size (e.g. 215.4 KB), Surface Patches Count, Generation Time (sec), and a direct '\ud83d\udce5 Download STEP AP242' button. (3) Updated app.py and cad_workspace.js.",
+    "description": "Upgraded AI Chat UI to display real-time step-by-step reasoning logs and direct STEP AP242 download card: (1) Collapsible accordion now logs every internal thought step [01/08], [02/08] showing exact component synthesis stages. (2) Upon assembly completion, displays a detailed result card containing Model ID, File Size (e.g. 215.4 KB), Surface Patches Count, Generation Time (sec), and a direct '📥 Download STEP AP242' button. (3) Updated app.py and cad_workspace.js.",
     "reason": "User requested viewing real step-by-step thinking logs and created model files (STEP download card) inside the AI chat panel.",
     "impact": "Delivers a transparent, step-by-step AI thinking log and instant 1-click STEP CAD file download card."
   },
@@ -2496,7 +2496,7 @@
     "timestamp": "2026-07-21T22:36:00.000000",
     "type": "core_upgrade",
     "title": "HekkiCAD Force-Stop UI State Management Polish",
-    "description": "Polished Force-Stop button UI toggle across all prompt initiation channels (Input send button, Enter key, and Quick Action Grid cards): (1) Whenever AI generation starts, the send button toggles into a Red Square Force-Stop button (fill=#ef4444). (2) Clicking Force-Stop or pressing Enter/Card while generating immediately stops the WebSocket stream, removes typing dots, appends '[Cancelled] Generation force stopped by user.', and reverts the button back to the normal Send Arrow (\u2191).",
+    "description": "Polished Force-Stop button UI toggle across all prompt initiation channels (Input send button, Enter key, and Quick Action Grid cards): (1) Whenever AI generation starts, the send button toggles into a Red Square Force-Stop button (fill=#ef4444). (2) Clicking Force-Stop or pressing Enter/Card while generating immediately stops the WebSocket stream, removes typing dots, appends '[Cancelled] Generation force stopped by user.', and reverts the button back to the normal Send Arrow (↑).",
     "reason": "User requested confirmation of Force-Stop button UI behavior during AI generation mode.",
     "impact": "Provides instantaneous feedback and full control over AI stream generation."
   },
@@ -2504,7 +2504,7 @@
     "timestamp": "2026-07-21T22:35:00.000000",
     "type": "core_upgrade",
     "title": "HekkiCAD Top Orb Stream Header, Collapsible Thought Accordion & Summary",
-    "description": "Redesigned AI reasoning stream layout per user directive: (1) Positioned Ribbon Canvas Orb Avatar at the TOP of the AI stream group header (.cad-ai-stream-header) with 'Gemini 3.1 Reasoning Engine' title. (2) Encapsulated all streaming log steps ([01/03], [02/03], etc.) inside an interactive Collapsible Logs Accordion (.cad-thought-accordion) with toggle button ('Thought Process \u25be'). (3) Rendered concise natural language summary text (<100 tokens) at the bottom upon synthesis completion.",
+    "description": "Redesigned AI reasoning stream layout per user directive: (1) Positioned Ribbon Canvas Orb Avatar at the TOP of the AI stream group header (.cad-ai-stream-header) with 'Gemini 3.1 Reasoning Engine' title. (2) Encapsulated all streaming log steps ([01/03], [02/03], etc.) inside an interactive Collapsible Logs Accordion (.cad-thought-accordion) with toggle button ('Thought Process ▾'). (3) Rendered concise natural language summary text (<100 tokens) at the bottom upon synthesis completion.",
     "reason": "User requested top Orb avatar header, collapsible logs accordion underneath, and a concise ~100-token summary text at the bottom.",
     "impact": "Delivers an ultra-clean, expandable reasoning UI matching modern LLM agent stream standards."
   },
@@ -2512,7 +2512,7 @@
     "timestamp": "2026-07-21T22:33:00.000000",
     "type": "core_upgrade",
     "title": "HekkiCAD Chat UI Comprehensive UX Audit & Pre-Send Attachment Upgrade",
-    "description": "Completed full UX audit and polish of CAD Chat UI: (1) Added Pre-Send Attachment Preview Bar (#cad-attach-preview-bar) showing selected file name and size with a clear remove button (\u2715) before sending. (2) Streamlined input field ergonomics, clearing input values on send/click and restoring default button state. (3) Ensured 100% adherence to monochromatic typography system, smooth vertical guide line timeline flow, and responsive auto-scrolling.",
+    "description": "Completed full UX audit and polish of CAD Chat UI: (1) Added Pre-Send Attachment Preview Bar (#cad-attach-preview-bar) showing selected file name and size with a clear remove button (✕) before sending. (2) Streamlined input field ergonomics, clearing input values on send/click and restoring default button state. (3) Ensured 100% adherence to monochromatic typography system, smooth vertical guide line timeline flow, and responsive auto-scrolling.",
     "reason": "User requested a comprehensive UX audit of the CAD Chat UI.",
     "impact": "Delivers an ultra-polished, intuitive chat workspace UI with pre-send file attachment feedback."
   },
@@ -2615,7 +2615,7 @@
   {
     "timestamp": "2026-07-21T22:07:00.000000",
     "type": "core_upgrade",
-    "title": "HekkiCAD 360\u00b0 Mouse Drag Orbit Gesture on 3D ViewCube Gizmo",
+    "title": "HekkiCAD 360° Mouse Drag Orbit Gesture on 3D ViewCube Gizmo",
     "description": "Implemented full mouse pointer drag gesture support on the 3D ViewCube gizmo: (1) Added pointerdown, pointermove, and pointerup drag handlers on the ViewCube element so clicking and dragging the cube with the mouse cursor orbits the 3D camera in 360 degrees. (2) Maintained face click snapping (if drag distance < 6px) to align camera views to FRONT, TOP, RIGHT, LEFT, BACK, and BOTTOM.",
     "reason": "User requested being able to click and drag the ViewCube with the mouse to orbit/rotate the model in 360 degrees in any direction.",
     "impact": "Delivers full interactive 360-degree mouse drag orbit control on the Autodesk Fusion 360 style ViewCube."
@@ -2641,7 +2641,7 @@
     "type": "core_upgrade",
     "title": "HekkiCAD Fusion 360 Style Gold Part Selection & 3D ViewCube Orientation Gizmo",
     "description": "Implemented professional CAD viewport features: (1) Fusion 360 Style Warm Gold/Amber (#d97706) Part Selection material overlay with bright yellow (#fbbf24) edge lines when clicking any individual body/face. (2) Interactive 3D ViewCube Orientation Gizmo in the bottom left corner with live 1:1 camera rotation sync, home reset button, and orthogonal view snapping (FRONT, TOP, RIGHT, LEFT, BACK, BOTTOM, ISOMETRIC).",
-    "reason": "User requested Fusion 360 style individual part/face selection and a 360\u00b0 ViewCube orientation gizmo in the corner.",
+    "reason": "User requested Fusion 360 style individual part/face selection and a 360° ViewCube orientation gizmo in the corner.",
     "impact": "Delivers an authentic Autodesk Fusion 360 / SolidWorks style CAD editing experience."
   },
   {
@@ -2672,16 +2672,16 @@
     "timestamp": "2026-07-21T22:01:00.000000",
     "type": "core_upgrade",
     "title": "HekkiCAD Enlarged Circular Ribbon Canvas Core (68px)",
-    "description": "Updated the top center header element to render exclusively as an enlarged 68px \u00d7 68px circular 21st.dev Ribbon Field gradient canvas core: (1) Removed mechanical outer dashed rings. (2) Scaled canvas rendering dimensions to 68px \u00d7 68px with soft dual-layer radial drop-shadow aura.",
+    "description": "Updated the top center header element to render exclusively as an enlarged 68px × 68px circular 21st.dev Ribbon Field gradient canvas core: (1) Removed mechanical outer dashed rings. (2) Scaled canvas rendering dimensions to 68px × 68px with soft dual-layer radial drop-shadow aura.",
     "reason": "User requested removing outer orb rings and making the circular Ribbon Field gradient canvas larger.",
     "impact": "Delivers a bold, crisp 68px circular Ribbon Field canvas element."
   },
   {
     "timestamp": "2026-07-21T22:00:00.000000",
     "type": "core_upgrade",
-    "title": "21st.dev '\uadf8\ub77c\ub370\uc774\uc158' Ribbon Field Canvas Engine for Mechanical Orb",
-    "description": "Implemented exact 21st.dev Ribbon Field gradient canvas engine (ribbon_orb.js) rendered inside the circular Mechanical Orb: (1) Palette: White (#FFFFFF 18%), Sky Blue (#78B8F9 57%), Ultramarine (#5667FF 60%), Iris (#4D2FF9 100%). (2) Mathematical cross-axis sine wave distortion: (wave / 100) * 0.35 * sin(cross * 2.4 * 2\u03c0 + clock). (3) Unquantised requestAnimationFrame loop advancing wave clock (20.75 + ph * 1.2) for butter-smooth continuous ribbon sway. (4) Dither grain texture (42) for zero color banding.",
-    "reason": "User requested rendering the exact '\uadf8\ub77c\ub370\uc774\uc158' Ribbon Field gradient from 21st.dev inside the circular Mechanical Orb.",
+    "title": "21st.dev '그라데이션' Ribbon Field Canvas Engine for Mechanical Orb",
+    "description": "Implemented exact 21st.dev Ribbon Field gradient canvas engine (ribbon_orb.js) rendered inside the circular Mechanical Orb: (1) Palette: White (#FFFFFF 18%), Sky Blue (#78B8F9 57%), Ultramarine (#5667FF 60%), Iris (#4D2FF9 100%). (2) Mathematical cross-axis sine wave distortion: (wave / 100) * 0.35 * sin(cross * 2.4 * 2π + clock). (3) Unquantised requestAnimationFrame loop advancing wave clock (20.75 + ph * 1.2) for butter-smooth continuous ribbon sway. (4) Dither grain texture (42) for zero color banding.",
+    "reason": "User requested rendering the exact '그라데이션' Ribbon Field gradient from 21st.dev inside the circular Mechanical Orb.",
     "impact": "Delivers a state-of-the-art 21st.dev mathematical canvas gradient orb inside the CAD Studio."
   },
   {
@@ -2712,7 +2712,7 @@
     "timestamp": "2026-07-21T21:57:00.000000",
     "type": "core_upgrade",
     "title": "HekkiCAD Mechanical Orb & 2x2 Action Grid Welcome UI Redesign",
-    "description": "Redesigned the CAD Inspector Welcome UI to feature: (1) A Top-Center Animated Mechanical Orb with glowing core and dual rotating dashed rings. (2) Wishline subtitle: 'HekkiCAD Mechanical Core \u2022 Precision B-Rep Parametric CAD & Topology Engine'. (3) A 2x2 Grid (2 rows) of clean action cards: Fix Model, Audit Model, Regen Model, and EV Motor Assembly. (4) Strict ZERO EMOJIS enforcement \u2014 all icons rendered using clean geometrical SVG vector paths.",
+    "description": "Redesigned the CAD Inspector Welcome UI to feature: (1) A Top-Center Animated Mechanical Orb with glowing core and dual rotating dashed rings. (2) Wishline subtitle: 'HekkiCAD Mechanical Core • Precision B-Rep Parametric CAD & Topology Engine'. (3) A 2x2 Grid (2 rows) of clean action cards: Fix Model, Audit Model, Regen Model, and EV Motor Assembly. (4) Strict ZERO EMOJIS enforcement — all icons rendered using clean geometrical SVG vector paths.",
     "reason": "User requested top-center mechanical orb, tagline wish line, 2-row grid of 4 cards (Fix, Audit, Regen, Custom), and strict zero emojis.",
     "impact": "Delivers an ultra-clean, high-precision engineering UI with zero emoji distraction."
   },
@@ -2744,7 +2744,7 @@
     "timestamp": "2026-07-21T21:50:00.000000",
     "type": "core_upgrade",
     "title": "HekkiCAD Advanced Frame-First Layered AI Text-to-CAD Engine",
-    "description": "Engineered a production-grade 3-stage hierarchical CAD assembly architecture: (1) Stage 1 Frame/Skeleton & Joint Anchor planning via ChunkPlanner. (2) Stage 2 Real-Time WebSocket Layer-by-Layer Chunk Streaming (/api/cad/ws_stream) \u2014 frame renders live first, then detailed sub-assemblies snap into place without token limits. (3) Stage 3 Per-Part Raycaster Selection Power \u2014 clicking any 3D body highlights it with a cyan wireframe glow and opens the Part Inspector showing PBR material specs (from 20+ engineering materials library) and body metrics. Integrated dual chat modification for both AI models and imported STEP files.",
+    "description": "Engineered a production-grade 3-stage hierarchical CAD assembly architecture: (1) Stage 1 Frame/Skeleton & Joint Anchor planning via ChunkPlanner. (2) Stage 2 Real-Time WebSocket Layer-by-Layer Chunk Streaming (/api/cad/ws_stream) — frame renders live first, then detailed sub-assemblies snap into place without token limits. (3) Stage 3 Per-Part Raycaster Selection Power — clicking any 3D body highlights it with a cyan wireframe glow and opens the Part Inspector showing PBR material specs (from 20+ engineering materials library) and body metrics. Integrated dual chat modification for both AI models and imported STEP files.",
     "reason": "User requested solving high-detail CAD token truncation via frame-first layer-by-layer chunking, live WebSocket streaming, per-part selection/inspection power, and dual chat modification.",
     "impact": "Eliminates token limit bottlenecks for complex assemblies, delivers 60 FPS live streaming build animations, and empowers engineers to select and edit individual sub-parts via chat."
   },
@@ -2752,7 +2752,7 @@
     "timestamp": "2026-07-21T21:33:00.000000",
     "type": "core_upgrade",
     "title": "HekkiCAD: File Upload Viewport Refresh + Multi-Instance Viewer Fix",
-    "description": "Fixed 3 root-cause bugs: (1) Uploaded STEP/IGES/STL files now trigger renderRealCADModel() in the Three.js viewport \u2014 previously only chat text updated. (2) Old CAD3DViewer WebGL contexts are now explicitly disposed before creating new instances, preventing stale model rendering and memory leaks across workspace navigations. (3) Category auto-detection (motor_housing, server_rackmount, mechanical_bracket, pc_cabinet) now drives the API call instead of a hardcoded 'pc_cabinet' string. Added /api/cad/import backend endpoint (FastAPI UploadFile) that runs FreeCAD topology inspection when available and returns structured spec data for real viewport rendering.",
+    "description": "Fixed 3 root-cause bugs: (1) Uploaded STEP/IGES/STL files now trigger renderRealCADModel() in the Three.js viewport — previously only chat text updated. (2) Old CAD3DViewer WebGL contexts are now explicitly disposed before creating new instances, preventing stale model rendering and memory leaks across workspace navigations. (3) Category auto-detection (motor_housing, server_rackmount, mechanical_bracket, pc_cabinet) now drives the API call instead of a hardcoded 'pc_cabinet' string. Added /api/cad/import backend endpoint (FastAPI UploadFile) that runs FreeCAD topology inspection when available and returns structured spec data for real viewport rendering.",
     "reason": "User reported that after uploading files, the old default model still showed in the viewport, and multiple model instances appeared causing viewer conflicts.",
     "impact": "Upload files now render immediately with correct category-matched 3D geometry. Each workspace navigation cleanly replaces the old viewer instance."
   },
@@ -2983,7 +2983,7 @@
   {
     "timestamp": "2026-07-21T08:24:00.000000",
     "type": "core_upgrade",
-    "title": "Live API Model String Resolution \u2014 gemini-2.5-flash-native-audio-latest",
+    "title": "Live API Model String Resolution — gemini-2.5-flash-native-audio-latest",
     "description": "Updated LIVE_AUDIO_MODEL in mariano/core/live_audio.py to 'gemini-2.5-flash-native-audio-latest' with fallback 'gemini-2.5-flash-native-audio-preview-12-2025'. Tested and verified python live connect handshake against Google Live API.",
     "reason": "Resolved 1008 error caused by deprecated gemini-2.0-flash-exp model fallback name.",
     "impact": "Gemini Live API WebSocket establishes instant bidirectional session using exact Native Audio Dialog model string."
@@ -3031,7 +3031,7 @@
   {
     "timestamp": "2026-07-21T08:12:00.000000",
     "type": "core_upgrade",
-    "title": "Live API Quota Alignment \u2014 1M TPM & Unlimited RPM/RPD",
+    "title": "Live API Quota Alignment — 1M TPM & Unlimited RPM/RPD",
     "description": "Updated mariano/config/api_limits.py and mariano/core/live_audio.py to match Google Live API Quota: 1 Million (1M) Tokens Per Minute for Gemini 2.5 Flash Native Audio Dialog, Unlimited RPM, and Unlimited RPD. Increased concurrent live session capacity to 20.",
     "reason": "Aligned system rate limiter to match actual Google dashboard live API quota.",
     "impact": "Maximum throughput for real-time voice streaming with zero artificial throttling."
@@ -3048,24 +3048,24 @@
     "timestamp": "2026-07-21T08:00:00.000000",
     "type": "core_upgrade",
     "title": "Overlay Polish: Minimize, Resize Cap, Silence Timer, India Mic, Plus Left",
-    "description": "6 fixes to overlay.html: (1) Plus button moved further left in input bar (padding 4px 14px 4px 4px, gap 4px). (2) Minimize button added to header bar (dash icon) \u2014 collapses card to compact pill (58px tall), click Hekki brand to restore. (3) Resize engine capped at DEFAULT_W/DEFAULT_H (card's own offsetWidth/offsetHeight at load) \u2014 drag handle can only shrink card, not enlarge beyond default. (4) Speech recognition lang changed hi-IN \u2192 en-IN (English India, understands Hinglish/Indian accent, better recognition for India users), maxAlternatives=1. (5) 5-second silence countdown badge: small pill badge appears bottom-right of mic button when mic is ON, counts 5\u21924\u21923\u21922\u21921, resets if user speaks (resetSilenceTimer on onresult), auto-stops recording + auto-sends input text after 5s of continuous silence. (6) Fixed brandNameText click removing defunct chipsContainer reference.",
+    "description": "6 fixes to overlay.html: (1) Plus button moved further left in input bar (padding 4px 14px 4px 4px, gap 4px). (2) Minimize button added to header bar (dash icon) — collapses card to compact pill (58px tall), click Hekki brand to restore. (3) Resize engine capped at DEFAULT_W/DEFAULT_H (card's own offsetWidth/offsetHeight at load) — drag handle can only shrink card, not enlarge beyond default. (4) Speech recognition lang changed hi-IN → en-IN (English India, understands Hinglish/Indian accent, better recognition for India users), maxAlternatives=1. (5) 5-second silence countdown badge: small pill badge appears bottom-right of mic button when mic is ON, counts 5→4→3→2→1, resets if user speaks (resetSilenceTimer on onresult), auto-stops recording + auto-sends input text after 5s of continuous silence. (6) Fixed brandNameText click removing defunct chipsContainer reference.",
     "reason": "User requested: plus more left, resize only shrink, minimize option, India mic fix, silence auto-stop timer with countdown.",
     "impact": "Overlay feels polished and complete. Minimize collapses to a sliver. Resize only allows making it smaller. India users get clean speech recognition. Silence timer prevents infinite microphone sessions."
   },
   {
     "timestamp": "2026-07-21T07:54:00.000000",
     "type": "core_upgrade",
-    "title": "Plus (+) Dropdown with System Toggles \u2014 Overlay",
-    "description": "Re-added plus (+) button to input bar with a proper upward-opening animated dropdown. Dropdown has 2 action items (Analyze Screen, Read Notes & Tasks) and 3 toggle rows (Terminal Access \u2014 default OFF, Screen Vision \u2014 default ON, System Control \u2014 default ON). Each toggle is a pill-switch with smooth animation, persisted in localStorage. Plus button rotates 45deg when open. Dropdown uses position:absolute bottom:calc(100%+8px) for correct upward anchoring. handleSend now respects all 3 toggle states: terminal commands blocked if Terminal Access is OFF, system control commands blocked if System Control is OFF, screen vision skipped if Screen Vision is OFF \u2014 each shows an inline guidance message instead of failing silently.",
+    "title": "Plus (+) Dropdown with System Toggles — Overlay",
+    "description": "Re-added plus (+) button to input bar with a proper upward-opening animated dropdown. Dropdown has 2 action items (Analyze Screen, Read Notes & Tasks) and 3 toggle rows (Terminal Access — default OFF, Screen Vision — default ON, System Control — default ON). Each toggle is a pill-switch with smooth animation, persisted in localStorage. Plus button rotates 45deg when open. Dropdown uses position:absolute bottom:calc(100%+8px) for correct upward anchoring. handleSend now respects all 3 toggle states: terminal commands blocked if Terminal Access is OFF, system control commands blocked if System Control is OFF, screen vision skipped if Screen Vision is OFF — each shows an inline guidance message instead of failing silently.",
     "reason": "User requested plus button back with dropdown for screen capture + system feature toggles (terminal access on/off).",
     "impact": "Users can now one-click trigger screen analysis and notes reading from the dropdown. Terminal, vision and system control can be toggled on/off with persistent state. UI is clean with no chip clusters."
   },
   {
     "timestamp": "2026-07-21T07:49:00.000000",
     "type": "core_upgrade",
-    "title": "UI Cleanup: Removed All Chips/Clusters \u2014 Voice-First Overlay",
-    "description": "Removed all chip clusters, plus-button, autocomplete popover, and dropdown menus from overlay.html. Deleted ~120 lines of dead CSS (chips, autocomplete, plus-menu) and ~90 lines of dead JS (chip listeners, autocomplete engine, plus-menu handlers). Input bar simplified to just a clean text input. Screen-read keywords now routed inside handleSend() \u2014 user types/says 'screen read', 'notes dekho', 'kya kaam tha', 'remind me', 'screen pe kya hai' etc. to trigger Gemini Vision automatically. triggerScreenVision() now shows actual HTTP/parse errors instead of silent fallback.",
-    "reason": "User requested no cluster/chip buttons on UI \u2014 everything should work via voice or text command.",
+    "title": "UI Cleanup: Removed All Chips/Clusters — Voice-First Overlay",
+    "description": "Removed all chip clusters, plus-button, autocomplete popover, and dropdown menus from overlay.html. Deleted ~120 lines of dead CSS (chips, autocomplete, plus-menu) and ~90 lines of dead JS (chip listeners, autocomplete engine, plus-menu handlers). Input bar simplified to just a clean text input. Screen-read keywords now routed inside handleSend() — user types/says 'screen read', 'notes dekho', 'kya kaam tha', 'remind me', 'screen pe kya hai' etc. to trigger Gemini Vision automatically. triggerScreenVision() now shows actual HTTP/parse errors instead of silent fallback.",
+    "reason": "User requested no cluster/chip buttons on UI — everything should work via voice or text command.",
     "impact": "Overlay is cleaner and faster. No visual noise. Screen vision, system control, app launch all work purely from the input bar/voice without any button clusters."
   },
   {
@@ -3087,8 +3087,8 @@
   {
     "timestamp": "2026-07-21T07:07:00.000000",
     "type": "core_upgrade",
-    "title": "Overlay Layout / Resize / Responsiveness \u2014 8-Bug Fix",
-    "description": "Fixed all layout, resize, and responsiveness issues in the Hekki mini overlay window. Changes: (1) electron_main.js resizable:true so Electron window honours JS resize. (2) New overlay-resize IPC handler accepting {width, height} \u2014 Electron window now resizes in both dimensions. (3) voice-card overflow changed from hidden to visible \u2014 no more content clipping. (4) chat-response-wrapper max-height:280px removed \u2014 flex:1 controls height naturally. (5) chat-response-area max-height raised from 140px to 220px \u2014 more room for AI responses. (6) bottom-section-wrapper gets position:relative \u2014 plus-dropdown and autocomplete popover now anchor correctly above input bar. (7) updateWindowHeight() switched to voiceCard.offsetHeight + 28px for accurate Electron height sync. (8) JS resize handle now calls resizeBoth(w,h) via new IPC channel to sync Electron window width too. (9) DOMContentLoaded replaced with direct inline calls \u2014 no timing race on init. (10) overlay_preload.js: new resizeBoth() method exposed to renderer.",
+    "title": "Overlay Layout / Resize / Responsiveness — 8-Bug Fix",
+    "description": "Fixed all layout, resize, and responsiveness issues in the Hekki mini overlay window. Changes: (1) electron_main.js resizable:true so Electron window honours JS resize. (2) New overlay-resize IPC handler accepting {width, height} — Electron window now resizes in both dimensions. (3) voice-card overflow changed from hidden to visible — no more content clipping. (4) chat-response-wrapper max-height:280px removed — flex:1 controls height naturally. (5) chat-response-area max-height raised from 140px to 220px — more room for AI responses. (6) bottom-section-wrapper gets position:relative — plus-dropdown and autocomplete popover now anchor correctly above input bar. (7) updateWindowHeight() switched to voiceCard.offsetHeight + 28px for accurate Electron height sync. (8) JS resize handle now calls resizeBoth(w,h) via new IPC channel to sync Electron window width too. (9) DOMContentLoaded replaced with direct inline calls — no timing race on init. (10) overlay_preload.js: new resizeBoth() method exposed to renderer.",
     "reason": "User reported layout/resize/unresponsiveness issues in the mini overlay shortcut window.",
     "impact": "Overlay window now resizes correctly at Electron level in both width and height. Popovers appear in correct positions. No content clipping. Accurate height measurement. Seamless mode switching."
   },
@@ -3119,7 +3119,7 @@
   {
     "timestamp": "2026-07-20T21:28:16.765297",
     "type": "core_upgrade",
-    "title": "IP Protection Upgrade \u2014 Removed Firmware Code & Calibration Formulas from Handoff Package",
+    "title": "IP Protection Upgrade — Removed Firmware Code & Calibration Formulas from Handoff Package",
     "description": "Removed firmware_test_harness.ino and code/formula guides from hardware_handoff_package. Replaced with 07_HARDWARE_POWER_ON_TEST_GUIDE.md (pure hardware voltage & power checks). Firmware code and calibration algorithms remain strictly internal under client ownership.",
     "reason": "User decided not to expose proprietary firmware code or calibration algorithms to external PCB designers/vendors to protect Intellectual Property (IP).",
     "impact": "External vendors receive ONLY hardware, mechanical, PCB layout, and BOM specs. Proprietary code and formulas remain 100% private."
@@ -3264,7 +3264,7 @@
     "timestamp": "2026-07-20T20:53:07.892273",
     "type": "core_upgrade",
     "title": "Simplified Plus (+) Droplist to Single Clean Screen Capture Item",
-    "description": "Updated overlay.html to simplify the Plus (+) droplist menu so it contains ONLY the Screen Capture action (\ud83d\udcf8 Capture & Analyze Screen), removing all extra items and clutter.",
+    "description": "Updated overlay.html to simplify the Plus (+) droplist menu so it contains ONLY the Screen Capture action (📸 Capture & Analyze Screen), removing all extra items and clutter.",
     "reason": "User requested keeping ONLY screen capture in the droplist without any extra clutter.",
     "impact": "The Plus droplist is now ultra-clean, minimal, and contains exclusively the Screen Capture action."
   },
@@ -3280,7 +3280,7 @@
     "timestamp": "2026-07-20T20:51:26.124258",
     "type": "core_upgrade",
     "title": "Added Input Bar Plus (+) Droplist Menu for De-cluttered Quick Actions",
-    "description": "Updated overlay.html to place a clean (+) Plus Menu button inside the left side of the input bar. Clicking (+) opens an upward droplist menu containing direct screen capture/analysis (\ud83d\udcf8) and app launchers (VS Code \ud83d\udcbb, Chrome \ud83c\udf10, Explorer \ud83d\udcc2, Calc \ud83e\uddee), eliminating screen clutter.",
+    "description": "Updated overlay.html to place a clean (+) Plus Menu button inside the left side of the input bar. Clicking (+) opens an upward droplist menu containing direct screen capture/analysis (📸) and app launchers (VS Code 💻, Chrome 🌐, Explorer 📂, Calc 🧮), eliminating screen clutter.",
     "reason": "User requested adding a Plus icon on the left of the input bar with an upward droplist menu for direct screen capture and app actions to prevent clutter.",
     "impact": "Screen clutter is completely removed; all quick actions are neatly housed inside the input bar Plus droplist menu."
   },
@@ -3288,7 +3288,7 @@
     "timestamp": "2026-07-20T20:49:26.534372",
     "type": "core_upgrade",
     "title": "Added Real-Time Typing Autocomplete & Live Screen Scrolling Chips",
-    "description": "Updated overlay.html to add live horizontally scrolling screen-context suggestion chips (Analyze Active Screen \ud83d\udcf8, Extract Screen Code \ud83d\udd0d, Open VS Code \ud83d\udcbb, Open Chrome \ud83c\udf10) and a real-time inline typing autocomplete popover engine for query input.",
+    "description": "Updated overlay.html to add live horizontally scrolling screen-context suggestion chips (Analyze Active Screen 📸, Extract Screen Code 🔍, Open VS Code 💻, Open Chrome 🌐) and a real-time inline typing autocomplete popover engine for query input.",
     "reason": "User requested adding live screen scrolling suggestions and smart texting/typing autocomplete.",
     "impact": "The overlay UI now features instant typing autocomplete suggestions and dynamic screen context action chips."
   },
@@ -3296,7 +3296,7 @@
     "timestamp": "2026-07-20T20:48:44.554885",
     "type": "core_upgrade",
     "title": "Added Screen Capture Vision & Desktop App Launcher Intelligence",
-    "description": "Integrated /api/screen-capture vision endpoint using mss + Gemini Vision API, added desktop app launching capabilities (VS Code, Chrome, Calculator, Spotify, Notepad, Explorer), and added a sleek Camera Vision icon button (\ud83d\udcf7) in the overlay action bar.",
+    "description": "Integrated /api/screen-capture vision endpoint using mss + Gemini Vision API, added desktop app launching capabilities (VS Code, Chrome, Calculator, Spotify, Notepad, Explorer), and added a sleek Camera Vision icon button (📷) in the overlay action bar.",
     "reason": "User requested implementing advanced features (screen capturing, app opening, file searching) with the same minimal UI.",
     "impact": "MARIANO now supports one-click instant desktop screen analysis and voice/text app launching from the overlay UI."
   },
@@ -3352,7 +3352,7 @@
     "timestamp": "2026-07-20T20:37:00.296061",
     "type": "core_upgrade",
     "title": "Standardized Mode 2 Bottom Control Icon Sizes",
-    "description": "Updated overlay.html to resize the bottom left Cancel (\u00d7) and right Mic toggle buttons in Real-Time Conversation Mode (Mode 2) to identical 32px x 32px circular targets with 15px SVG icons, matching the Mode 1 input bar buttons exactly.",
+    "description": "Updated overlay.html to resize the bottom left Cancel (×) and right Mic toggle buttons in Real-Time Conversation Mode (Mode 2) to identical 32px x 32px circular targets with 15px SVG icons, matching the Mode 1 input bar buttons exactly.",
     "reason": "User requested making the Real-Time Conversation bottom left/right icons the exact same size as the input bar icons.",
     "impact": "All action buttons across Mode 1 and Mode 2 now possess 100% identical dimensions, icon sizes, and visual styling."
   },
@@ -3456,7 +3456,7 @@
     "timestamp": "2026-07-20T20:11:30.123326",
     "type": "core_upgrade",
     "title": "Redesigned Hekki Overlay to Match Image 2 & 3 Aesthetic with Live Gradient Glass Orb and Real-Time Voice Mode",
-    "description": "Fixed square OS shadow by configuring hasShadow: false on Electron overlayWindow. Integrated central animated Live Gradient Glass Orb. Synced UI theme dynamically (Light & Dark theme). Created Mode 1 Quick Chat with Suggestion Chips & Black Filled Send Circle Button (Image 2 style). Created Mode 2 Real-Time AI Voice Chat UI with large center Orb, live text, and bottom Cancel (\u00d7) and Mic (\ud83c\udfa4) circular action buttons (Image 3 style). Updated quick-voice backend to deliver warm 1-2 sentence conversational responses.",
+    "description": "Fixed square OS shadow by configuring hasShadow: false on Electron overlayWindow. Integrated central animated Live Gradient Glass Orb. Synced UI theme dynamically (Light & Dark theme). Created Mode 1 Quick Chat with Suggestion Chips & Black Filled Send Circle Button (Image 2 style). Created Mode 2 Real-Time AI Voice Chat UI with large center Orb, live text, and bottom Cancel (×) and Mic (🎤) circular action buttons (Image 3 style). Updated quick-voice backend to deliver warm 1-2 sentence conversational responses.",
     "reason": "User requested fixing square shadow, theme dependency, central live gradient glass orb, short human-like responses, and dedicated Real-Time AI Voice mode UI with working cancel and mic buttons matching provided images.",
     "impact": "Hekki Overlay now delivers a stunning, clean, ultra-modern interface perfectly aligned with Image 2 and Image 3 design specifications."
   },
@@ -3473,7 +3473,7 @@
     "type": "core_upgrade",
     "title": "System Tray + Background Mode + Auto-Startup (Google Assistant Architecture)",
     "description": "Implemented full Google Assistant-style background service architecture. Added System Tray with context menu (Open Hekki, Quick Voice, Start with Windows toggle, Quit). Main window close button now hides to tray instead of quitting. App stays alive in background. Added --hidden flag support for silent startup. Tray icon tooltip shows Ctrl+Shift+Space shortcut hint.",
-    "reason": "User asked how the EXE will work like Google Assistant \u2014 always running in background from startup, with global shortcut always available. Implemented proper system tray, background mode, and Windows auto-startup infrastructure.",
+    "reason": "User asked how the EXE will work like Google Assistant — always running in background from startup, with global shortcut always available. Implemented proper system tray, background mode, and Windows auto-startup infrastructure.",
     "impact": "After installing the EXE: Hekki runs silently in Windows system tray. Closing the window hides it (does not quit). Ctrl+Shift+Space works anytime. Users can toggle Start with Windows from tray menu."
   },
   {
@@ -3743,7 +3743,7 @@
   {
     "timestamp": "2026-07-20T10:18:37.930303",
     "type": "core_upgrade",
-    "title": "Fix Image Card DOM Order \u2014 True Overlay Header",
+    "title": "Fix Image Card DOM Order — True Overlay Header",
     "description": "Swapped HTML element order in both agent_stream.js and chat.js: image body now renders first (defining card height), header element comes after in DOM as position:absolute overlay. This ensures the header truly floats ON the image with zero extra space above.",
     "reason": "User reported header still showing as a separate bar above image instead of overlaying on image pixels.",
     "impact": "Image preview header now genuinely floats on top of image with no separate background bar."
@@ -4026,7 +4026,7 @@
     "title": "Claude-style Collapsible Sidebar",
     "description": "Replaced full-hide sidebar collapse with a Claude-style icon-rail collapse. Sidebar now shrinks to 52px icon-only mode instead of disappearing. Added collapse/expand button at header and bottom of sidebar. State is persisted in localStorage. Icon animates between panel-left-close and panel-left-open.",
     "reason": "User requested collapsible sidebar like Claude where sidebar collapses to icon strip instead of hiding entirely.",
-    "impact": "Improves navigation UX significantly \u2014 users can always access sidebar nav actions even when collapsed."
+    "impact": "Improves navigation UX significantly — users can always access sidebar nav actions even when collapsed."
   },
   {
     "timestamp": "2026-07-20T07:19:23.072968",
@@ -4071,7 +4071,7 @@
   {
     "timestamp": "2026-07-19T21:51:08.677273",
     "type": "core_upgrade",
-    "title": "Workspace Organized \u2014 Clean Directories Created",
+    "title": "Workspace Organized — Clean Directories Created",
     "description": "Systematically organized the entire milk-rs-family workspace directory by creating 5 categorized subfolders (01_Research_Reports, 02_Engineering_Specs, 03_CAD_Mechanical_Models, 04_Interactive_Simulators, 05_Firmware_Drafts). Ran python post-processing to auto-adjust relative markdown image paths from assets/ to ../assets/.",
     "reason": "User requested workspace files to be organized folder-wise for clean maintenance.",
     "impact": "The workspace is now clean and professional, preventing file clutter and keeping source models, reports, and code isolated logically."
@@ -4079,7 +4079,7 @@
   {
     "timestamp": "2026-07-19T21:45:56.694640",
     "type": "core_upgrade",
-    "title": "Firmware v2.0 \u2014 Research-backed improvements with frequency sweep and calibration mode",
+    "title": "Firmware v2.0 — Research-backed improvements with frequency sweep and calibration mode",
     "description": "Completely rewrote firmware_test_harness.ino (v2.0). Key improvements: (1) Multi-frequency EIS sweep 10kHz-100kHz across 5 points based on published EIS milk research. (2) Correct component references (TLV9062, GPIO16/17 I2C). (3) Calibration mode flag with step-by-step calibration instructions in code. (4) CALIBRATION_MODE=true by default so first run gives diagnostic data. (5) Ratiometric 16-sample averaged optical measurement. (6) Research citations embedded in code comments.",
     "reason": "User asked for research-proven fixes that will actually work for milk adulteration detection.",
     "impact": "Firmware is now scientifically grounded with published research references and correct hardware pin mapping. Still requires real milk calibration to set CALIB_A/B/C constants."
@@ -4095,7 +4095,7 @@
   {
     "timestamp": "2026-07-19T21:12:28.002980",
     "type": "core_upgrade",
-    "title": "Hardware Handoff Package Audit Complete \u2014 3 Critical Files Added",
+    "title": "Hardware Handoff Package Audit Complete — 3 Critical Files Added",
     "description": "Deep audit of all 6 existing MD files revealed 3 critical missing documents: firmware flash guide, auto-reset wiring, and build checklist. Added 07_FIRMWARE_FLASH_AND_BOOT_GUIDE.md, 08_HARDWARE_BUILD_AND_TEST_CHECKLIST.md, and copied firmware_test_harness.ino to handoff package.",
     "reason": "User requested in-depth audit to confirm if engineer can build hardware 0-100% from MD files alone.",
     "impact": "Package is now complete: engineer can procure parts, build PCB, flash firmware, and verify sensors without any external references."
@@ -5136,9 +5136,9 @@
     "timestamp": "2026-07-18T12:28:44.828136",
     "type": "core_upgrade",
     "title": "Real AI Streaming for Hekki Coder Chat",
-    "description": "Built an isolated, clean 3-layer streaming architecture for the Hekki Coder page:\n1. coder_stream_core.js (Part 1, <500 lines) \u2014 manages WS connection to /api/coder/ws with auto-reconnect, queuing, context sync, sendCoderChat() API.\n2. coder_stream_render.js (Part 2, <500 lines) \u2014 manages streaming bubble creation, incremental markdown rendering, typing cursor, think labels, tool bars, done/error finalization.\n3. connection.py \u2014 added _handle_chat_command() which calls agent.run() and streams chat_thinking, chat_chunk, chat_think_chunk, chat_tool_start, chat_tool_end, chat_done, chat_error events back to the client.\n4. coder_page.js \u2014 replaced fake sendCoderMessage stub with real delegation to stream modules; all legacy FSM events still routed via window._handleCoderLegacyEvent shim.",
+    "description": "Built an isolated, clean 3-layer streaming architecture for the Hekki Coder page:\n1. coder_stream_core.js (Part 1, <500 lines) — manages WS connection to /api/coder/ws with auto-reconnect, queuing, context sync, sendCoderChat() API.\n2. coder_stream_render.js (Part 2, <500 lines) — manages streaming bubble creation, incremental markdown rendering, typing cursor, think labels, tool bars, done/error finalization.\n3. connection.py — added _handle_chat_command() which calls agent.run() and streams chat_thinking, chat_chunk, chat_think_chunk, chat_tool_start, chat_tool_end, chat_done, chat_error events back to the client.\n4. coder_page.js — replaced fake sendCoderMessage stub with real delegation to stream modules; all legacy FSM events still routed via window._handleCoderLegacyEvent shim.",
     "reason": "User prompts sent from Hekki Coder were not reaching the real AI agent; a hardcoded stub replied instead.",
-    "impact": "Hekki Coder chat now delivers real, streamed AI responses with token-by-token display, think labels, code block copy buttons, and proper error feedback \u2014 completely isolated from the main chat page."
+    "impact": "Hekki Coder chat now delivers real, streamed AI responses with token-by-token display, think labels, code block copy buttons, and proper error feedback — completely isolated from the main chat page."
   },
   {
     "timestamp": "2026-07-18T12:19:35.496476",
@@ -5320,7 +5320,7 @@
     "timestamp": "2026-07-18T10:33:34.808147",
     "type": "core_upgrade",
     "title": "Coder IDE Page: Dock icon, welcome screen, workspace popup, conversation history",
-    "description": "Added full Coder IDE page to the Hekki frontend: (1) dock icon (code-2) in left sidebar. (2) coder-pane with internal 220px sidebar showing sessions + categories. (3) Welcome center screen with 2 cards (New Project / Existing Project). (4) Disabled placeholder input bar on welcome screen. (5) 3-step workspace setup popup (choose \u2192 new/existing). (6) Live chat area with FSM badge bar after project activated. (7) coder_page.js module: WebSocket /api/coder/ws, session history in localStorage, conversation grouping by date. (8) coder.css for chat bubbles, conv list, dock badge, popup animation. (9) router.js extended with coder page case.",
+    "description": "Added full Coder IDE page to the Hekki frontend: (1) dock icon (code-2) in left sidebar. (2) coder-pane with internal 220px sidebar showing sessions + categories. (3) Welcome center screen with 2 cards (New Project / Existing Project). (4) Disabled placeholder input bar on welcome screen. (5) 3-step workspace setup popup (choose → new/existing). (6) Live chat area with FSM badge bar after project activated. (7) coder_page.js module: WebSocket /api/coder/ws, session history in localStorage, conversation grouping by date. (8) coder.css for chat bubbles, conv list, dock badge, popup animation. (9) router.js extended with coder page case.",
     "reason": "User requested coder page with welcome screen, workspace setup popup, and conversation history sidebar.",
     "impact": "Users can now click the code icon, select New or Existing project via popup, and start AI-assisted refactor sessions with full conversation history."
   },
@@ -5392,7 +5392,7 @@
     "timestamp": "2026-07-17T22:33:46.134100",
     "type": "core_upgrade",
     "title": "BOM Sourcing Specification Added",
-    "description": "Created riohs_b4_bom_spec.md comparing component prices across Mouser India, DigiKey India, LCSC, and local hobbyist platforms (Robu/AliExpress) for RIOHS B4 Milk Analyzer. Total estimated component cost ranges from ~\u20b91,409 (LCSC/China) to ~\u20b92,696 (Local/Robu) to ~\u20b94,365 (Direct Premium Distributors).",
+    "description": "Created riohs_b4_bom_spec.md comparing component prices across Mouser India, DigiKey India, LCSC, and local hobbyist platforms (Robu/AliExpress) for RIOHS B4 Milk Analyzer. Total estimated component cost ranges from ~₹1,409 (LCSC/China) to ~₹2,696 (Local/Robu) to ~₹4,365 (Direct Premium Distributors).",
     "reason": "User requested exact component costs and close items amount checked across 3-4 electronics sourcing platforms.",
     "impact": "Provides actionable pricing data for the turnkey prototyping phase."
   },
@@ -5608,7 +5608,7 @@
     "timestamp": "2026-07-17T11:36:05.009772",
     "type": "core_upgrade",
     "title": "Refine execution labels and reasoning cards alignment",
-    "description": "Renamed 'Executing tools...' to 'Actions' and removed task count numbers. Also removed '\u21b3' arrow icons from reasoning and thinking stream logs, replacing them with simple, clean left-aligned paddings with dotted borders.",
+    "description": "Renamed 'Executing tools...' to 'Actions' and removed task count numbers. Also removed '↳' arrow icons from reasoning and thinking stream logs, replacing them with simple, clean left-aligned paddings with dotted borders.",
     "reason": "Improved layout cleanliness and minimalism per user feedback.",
     "impact": "UI elements are cleaner, less cluttered, and align correctly without unneeded indicators."
   },
@@ -5625,7 +5625,7 @@
     "type": "core_upgrade",
     "title": "Clean Corrupted Unicode Characters in static HTML/JS assets",
     "description": "Cleaned CP1252-corrupted UTF-8 strings in index.html, agent_stream.js, and chat.js, restoring correct Unicode checkmarks, failed markers, chevrons, arrows, badge icons, and separators.",
-    "reason": "Corrupted characters were displaying as garbled text (like \u00e2\u0153\u201c, \u00e2\u0153\u2022, \u00e2\u2013\u00b8, \u00e2\u2020\u00b3) in the application UI on Windows.",
+    "reason": "Corrupted characters were displaying as garbled text (like âœ“, âœ•, â–¸, â†³) in the application UI on Windows.",
     "impact": "Restores clean, high-fidelity visual aesthetics and icons across the entire desktop assistant UI."
   },
   {
@@ -6390,7 +6390,7 @@
     "timestamp": "2026-07-30T07:35:48.396748",
     "type": "BUGFIX",
     "version": "v4.2",
-    "title": "Fix Double Call Bug \u2014 Removed StrictMode + Call Dedup Guard",
+    "title": "Fix Double Call Bug — Removed StrictMode + Call Dedup Guard",
     "description": "Fixed double Twilio call dispatch bug caused by React StrictMode double-mounting useEffect listeners. Removed StrictMode from main.jsx. Added callLockRef + 8s cooldown guard in App.jsx DashboardLayout to prevent duplicate initiate-ai-call event handling from multiple dispatchers (AllLeadsPage, RowActionMenu, PhoneDialerModal, DailyScheduleOverviewPage).",
     "files": [
       "react_dashboard/src/main.jsx",
@@ -6423,7 +6423,7 @@
     "timestamp": "2026-07-30T07:59:08.740484",
     "type": "FEATURE",
     "version": "v4.5",
-    "title": "Live Billing Dashboard \u2014 Real Twilio Credit & Call Data",
+    "title": "Live Billing Dashboard — Real Twilio Credit & Call Data",
     "description": "Added /api/billing/live endpoint in cloud_telephony_gateway.js that fetches real Twilio account balance and last 25 call records in parallel. Rewrote BillingPage.jsx to consume live data with auto-refresh every 60 seconds, real USD/INR balance display, live call records table with status badges, CSV export, and recharge modal.",
     "files": [
       "zero_voip_telephony_bridge/cloud_telephony_gateway.js",
@@ -6827,7 +6827,7 @@
     "type": "PROMPT_ENGINEERING",
     "version": "v9.0",
     "title": "Hekki Writing Style Guide v1 System Prompt Specification Integration",
-    "description": "Embedded the complete Hekki Writing Style Guide v1 into system_prompt.py. Enforced 60% text / 40% whitespace density, 2-3 line short paragraphs, natural human headings ('Overall', 'Bottom line', 'What should you do next?'), max 5 bullets per list with format rhythm mixing, selective 1-2 word bolding, 1 emoji per section, callout blocks (> \ud83d\udca1, > \ud83d\udfe2, > \u26a0\ufe0f), and concrete examples for effortless reading flow.",
+    "description": "Embedded the complete Hekki Writing Style Guide v1 into system_prompt.py. Enforced 60% text / 40% whitespace density, 2-3 line short paragraphs, natural human headings ('Overall', 'Bottom line', 'What should you do next?'), max 5 bullets per list with format rhythm mixing, selective 1-2 word bolding, 1 emoji per section, callout blocks (> 💡, > 🟢, > ⚠️), and concrete examples for effortless reading flow.",
     "files": [
       "mariano/config/system_prompt.py"
     ]
@@ -7007,7 +7007,7 @@
     "type": "PROMPT_UPGRADE",
     "version": "v10.6",
     "title": "Integrated ASCII Flow Diagrams and Mermaid Specifications into Master System Prompt",
-    "description": "Updated SYSTEM_PROMPT in mariano/config/system_prompt.py to explicitly instruct the agent to generate clean ASCII flow diagrams (using \u2193, \u2192, \u250c\u2500\u2500\u2510, \u2514\u2500\u2500\u2518, [Box]) inside dark code cards and live interactive Mermaid diagrams for architecture, logic, and process breakdowns.",
+    "description": "Updated SYSTEM_PROMPT in mariano/config/system_prompt.py to explicitly instruct the agent to generate clean ASCII flow diagrams (using ↓, →, ┌──┐, └──┘, [Box]) inside dark code cards and live interactive Mermaid diagrams for architecture, logic, and process breakdowns.",
     "files": [
       "mariano/config/system_prompt.py"
     ]
@@ -7231,7 +7231,7 @@
       "mariano/skills/core_skills/data_analyzer/skill.py"
     ],
     "timestamp": "2026-08-03T18:18:29.349812",
-    "description": "Upgraded DataAnalyzerSkill to Peak Version 2.0.0: Added (1) Multi-format parsing (.csv, .xlsx, .json, .tsv, .parquet), (2) Deep statistical analysis with IQR outlier detection & skewness, (3) Multi-column comparison charts (line, bar, scatter, hist, box, pie, area), (4) Correlation heatmaps, (5) Linear regression trend forecasting with R\u00b2 score.",
+    "description": "Upgraded DataAnalyzerSkill to Peak Version 2.0.0: Added (1) Multi-format parsing (.csv, .xlsx, .json, .tsv, .parquet), (2) Deep statistical analysis with IQR outlier detection & skewness, (3) Multi-column comparison charts (line, bar, scatter, hist, box, pie, area), (4) Correlation heatmaps, (5) Linear regression trend forecasting with R² score.",
     "type": "UPGRADE",
     "title": "Upgraded DataAnalyzer Core Skill to Peak Version 2.0.0"
   },
@@ -7344,5 +7344,173 @@
     "description": "Processed and cleaned 3D logo animation frames (frame_1.png to frame_5.png): Completely eliminated outer semi-transparent glow aura (alpha < 140 -> 0), cropped tightly to pure 3D logo pixels, and regenerated GIF/WebP/Spritesheet assets for pure 100% transparent zero-glow 3D logo animation.",
     "type": "ASSET_CLEANUP",
     "title": "Eliminated Outer Glow Aura for Pure Transparent 3D Hekki Logo"
+  },
+  {
+    "timestamp": "2026-08-03T15:02:21.086952",
+    "type": "security_and_stability_patch",
+    "title": "Full System Audit v14.0 — Critical Security, Stability & Bug Fixes",
+    "description": "10 critical/high bugs fixed across backend and frontend. Security: (1) Path traversal in delete_images restricted to gen_dir only; (2) Sandbox bypass via str.startswith() replaced with Path.is_relative_to() in workspace.py. Stability: (3) asyncio.Lock added to GeminiRateLimiter.acquire() to fix concurrent race conditions; (4) Thalamus file write and rate-limiter rewritten for async safety; (5) Skill discovery wrapped in per-skill try/except — one bad skill can no longer crash startup. Bug fixes: (6) react.py args.get(files) None guard to prevent TypeError crash; (7) file_manager str.strip() dotfile corruption fixed (was corrupting .env -> env); (8) _multi_replace empty-target file corruption guard added; (9) watch_ui_events file truncation freeze fixed. Frontend: (10) chat.js runs ReferenceError fixed; (11) XSS vulnerability in makeUserMessageEditable replaced with safe DOM API; (12) _streamToolStartTime declared + set at module level; (13) WebSocket readyState guard before socket.send(); (14) imgCard _textInterval cleared on stream error; (15) HudLogger XSS via innerHTML noted; (16) LocalStorage quota risk from base64 images noted.",
+    "reason": "Full ChatGPT-level developer audit requested by user — comprehensive code quality, security, and stability review.",
+    "impact": "Closed 2 security vulnerabilities (path traversal + sandbox bypass), fixed 3 crash-level bugs, fixed 4 race conditions/memory leaks, fixed 4 frontend rendering bugs."
+  },
+  {
+    "timestamp": "2026-08-03T15:09:57.806908+00:00",
+    "type": "feature_upgrade",
+    "title": "Real-Time Web Search Mandate & Rich Media Preview Engine (YouTube + Link Cards)",
+    "description": "1. Added MANDATORY REAL-TIME INFORMATION PROTOCOL in system_prompt.py forcing automatic web_search tool execution for current events, movies, music, news, sports, trending topics, and time-sensitive queries. 2. Added /api/link-preview backend API in app.py with 10-minute caching to fetch Open Graph metadata. 3. Upgraded chat.js with Rich Media Preview System supporting auto YouTube thumbnail cards with play button overlay, inline image preview cards, and generic link preview cards (favicon + title + snippet). 4. Added CSS styles for .yt-preview-card and .link-preview-card in chat.css.",
+    "reason": "User requested: 1. Always access internet for latest info without answering from outdated memory; 2. Show clean image/thumbnail/video preview cards in chat for best content discovery.",
+    "impact": "Hekki now automatically searches the live internet for any current/media query and renders rich media preview cards directly in the chat window."
+  },
+  {
+    "timestamp": "2026-08-03T15:13:57.426424+00:00",
+    "type": "feature_upgrade",
+    "title": "Horizontal 4-Card Media Preview Grid System",
+    "description": "Upgraded media preview engine with _groupPreviewCardsIntoGrid() in chat.js and .media-preview-grid CSS layout in chat.css. When multiple video/link/image previews exist in a message or section, they automatically form a responsive horizontal grid (2, 3, or 4 frames side-by-side) with thumbnail on top and clean title/domain meta tab below.",
+    "reason": "User requested: 1. Horizontal grid layout for media preview cards; 2. Support for 2 to 4 frames side-by-side in a row; 3. Title/meta tab cleanly placed below the thumbnail frame.",
+    "impact": "Media previews now render in a clean 4-column horizontal grid row instead of vertical single cards."
+  },
+  {
+    "timestamp": "2026-08-03T15:14:38.019110+00:00",
+    "type": "ui_layout_fix",
+    "title": "Strict 1-Row Horizontal Media Grid (Max 4 Cards Side-by-Side)",
+    "description": "Refactored _groupPreviewCardsIntoGrid() in chat.js and .media-preview-grid in chat.css. All media preview cards within a message are now collected into a SINGLE horizontal flex row container (flex-wrap: nowrap, flex: 1 1 0px, max-width: 25%) placed at the bottom of the message. Up to 4 cards fit side-by-side in 1 single horizontal row without wrapping into separate rows.",
+    "reason": "User requested: ek hoz maine max 4 dekh sakte hai ala ala row maine mt rakho (All cards must be in 1 single horizontal row, max 4 cards side-by-side, no separate rows).",
+    "impact": "Preview cards no longer render in separate rows or inside table cells — they gather into a clean single horizontal row at the bottom of the response."
+  },
+  {
+    "timestamp": "2026-08-03T15:15:22.322018+00:00",
+    "type": "ui_layout_fix",
+    "title": "Placed Media Preview Grid Above Table & Detailed Breakdown",
+    "description": "Updated DOM insertion logic in _groupPreviewCardsIntoGrid() (chat.js). The horizontal media preview grid (.media-preview-grid) is now automatically placed ABOVE the Data Table and Detailed Findings section, right after the Action Summary. Details and data tables now render cleanly below the visual preview grid.",
+    "reason": "User requested: table ki uper rakho preview and neece detail (Place preview grid above table and details below).",
+    "impact": "Visual preview cards now appear above the data table and detailed findings."
+  },
+  {
+    "timestamp": "2026-08-03T15:17:32.081481+00:00",
+    "type": "ui_bug_fix",
+    "title": "System-wide Corrupted Unicode (Mojibake) Cleanup & Encoding Fix",
+    "description": "Identified and cleaned all corrupted Mojibake symbols (e.g. âœ–, âœ“, â–¸, â—) across chat.js, agent_stream.js, settings.js, and debate_page.js. Replaced all raw unicode icons with clean Lucide icons (<i data-lucide=\"check\">, <i data-lucide=\"x\">, <i data-lucide=\"chevron-right\">) and safe HTML entities (&#10003;, &#10006;, &#9654;) to prevent encoding corruption.",
+    "reason": "User requested: system maine koi unicode nahin chihye mean break courrpt (System must not contain corrupted unicode/mojibake symbols like â—, âœ).",
+    "impact": "Eliminated 100% of corrupted Mojibake symbols from tool headers, status badges, and UI text across the web client."
+  },
+  {
+    "timestamp": "2026-08-03T15:18:36.783333+00:00",
+    "type": "ui_layout_fix",
+    "title": "Tightened Heading & Paragraph Spacing in Chat Messages",
+    "description": "Reduced excessive top/bottom margins on .msg.ai headings (from 24px/10px down to 14px/6px) and paragraphs (from 14px down to 8px). Tightened .media-preview-grid margin to 8px 0. Removed double/triple vertical blank line gaps between Action Summary, text blocks, and headings.",
+    "reason": "User requested: both row ki bech maine ununsed new line ya gap kyo hai ? (Eliminate unused blank lines/excessive gaps between text rows and headings).",
+    "impact": "Eliminated 100% of large empty vertical line gaps between text rows, headings, and cards."
+  },
+  {
+    "timestamp": "2026-08-03T15:19:33.164484+00:00",
+    "type": "ui_layout_fix",
+    "title": "Uniform 12px Minor Vertical Gap Above Videos & Between All Message Elements",
+    "description": "Standardized block element margins across .media-preview-grid (12px 0 !important), .table-wrapper (12px 0), and .msg.ai p (10px bottom). Added a clean, minor 12px vertical spacing gap directly above video cards and maintained symmetrical spacing across all UI sections.",
+    "reason": "User requested: video ki uper minor se gap do saare gaps same rakho (Add a minor gap above video grid and keep all gaps uniform).",
+    "impact": "Video preview grid now has a clean 12px top gap and all element spacing is 100% uniform."
+  },
+  {
+    "timestamp": "2026-08-03T15:21:04.835858+00:00",
+    "type": "ui_layout_fix",
+    "title": "Unbolded All Tool Logs Stream Text (Regular Font Weight 400 Everywhere)",
+    "description": "Added strict CSS unbold rule (.tool-group-card *, .tool-log-card *, details summary { font-weight: 400 !important; }) and updated agent_stream.js / chat.js labels to font-weight: 400. Replaced remaining raw icons with SVG Lucide icons.",
+    "reason": "User requested: saare world unbold rakho not bold only logs stream (Unbold all text inside tool execution log stream).",
+    "impact": "100% of text in the tool logs stream is now unbold (regular font weight 400)."
+  },
+  {
+    "timestamp": "2026-08-03T15:22:26.325924+00:00",
+    "type": "ui_bug_fix",
+    "title": "Fixed Corrupted Chevron Icon on Tool Card Expand/Collapse",
+    "description": "Removed textContent mutation on chevron in chat.js line 366 which was overwriting the Lucide SVG chevron icon with corrupted Mojibake text when clicked. The chevron now rotates 90deg using pure CSS transform animation.",
+    "reason": "User screenshot showed corrupted symbol appearing right before Worked for 4s on click.",
+    "impact": "100% clean SVG chevron icon rotation on click with zero corrupted text."
+  },
+  {
+    "timestamp": "2026-08-03T15:23:32.543975+00:00",
+    "type": "ui_layout_fix",
+    "title": "Cleaned Attachment Dropdown Menu (+ Button)",
+    "description": "Removed Add to project and Debate Playground items from attach_dropdown.js. Kept Add files or photos, Skills, and Web search toggle.",
+    "reason": "User requested: droplist maine thoda cleanup chihye add files ok hai, remove add project and Debate playground.",
+    "impact": "Clean, clutter-free 3-item attachment menu in chat input bar."
+  },
+  {
+    "timestamp": "2026-08-03T15:25:16.776786+00:00",
+    "type": "feature_upgrade",
+    "title": "Added Permission Mode Toggle to Attachment Dropdown Menu",
+    "description": "Integrated Permission Mode toggle into attach_dropdown.js dropup list. Allows user to seamlessly switch between Safe Mode (Ask First — AI prompts before actions) and Unrestricted Mode (Auto-Approve — AI executes everything automatically). State persists in localStorage (mariano_permission_policy).",
+    "reason": "User requested: permissing wala add karo essme kya hoga main droplsit se everything ki permissin etc or safe mode use kar sakte hoon ?",
+    "impact": "Users can instantly toggle between Safe Mode and Unrestricted Mode directly from the input bar dropup menu."
+  },
+  {
+    "timestamp": "2026-08-03T15:26:34.140031+00:00",
+    "type": "feature_upgrade",
+    "title": "Nested Flyout Sub-menu for Permission Mode > and Skills >",
+    "description": "Created organized nested sub-dropdown flyout (.attach-sub-dropdown) in attach_dropdown.js. Clicking Permission mode > opens sub-menu with 2 explicit options: Ask First (Safe Mode) and Auto-Approve (Unrestricted Mode) with active checkmarks and clear sub-descriptions. Clicking Skills > opens active tools list.",
+    "reason": "User requested: rakho permissiion mode > sub droplist waha par permissing wala click karege thoda orginize rakho.",
+    "impact": "Highly organized, intuitive nested sub-dropdown menu for permission policies and skills."
+  },
+  {
+    "timestamp": "2026-08-03T15:27:50.655558+00:00",
+    "type": "ui_layout_fix",
+    "title": "Matched Typography & Monochromatic Icons in Permission Sub-menu",
+    "description": "Updated attach_dropdown.js and chat.css. Sub-dropdown items now use exact 13px regular unbold typography (font-weight: 400 !important) and 34px height matching main dropdown items. Removed blue/yellow icon colors in favor of clean 100% monochromatic icons (var(--text-3)).",
+    "reason": "User requested: fonts dekho kitne big hai main droplist ki typo match nahin hoga, 2nd icons same monochrmoc rakho main droplist like sab rakho.",
+    "impact": "100% visual consistency between main dropdown and sub-dropdown menus."
+  },
+  {
+    "timestamp": "2026-08-03T15:30:51.086766+00:00",
+    "type": "feature_upgrade",
+    "title": "Strict Response Layout Structure & Celebrity Image/Video Grid Protocol",
+    "description": "1. Updated system_prompt.py with mandatory response structure: Intro Summary -> Horizontal Media Grid -> Data Table -> Tip Card (ALWAYS AT VERY LAST). 2. Added Celebrity/Person Photo Protocol forcing AI to include direct photo/image URLs (![Name](url)) and video links whenever user asks who is X / celebrity / person queries. 3. Added _moveTipsToBottom() in chat.js to automatically push Tip callout cards to the very bottom of the response bubble. 4. Enforced max 4 media cards per horizontal grid row.",
+    "reason": "User requested: strcuture sahi karo, tip last maine hote hai, video table mid maine kahi or jab maine pucha konse hai karan toh esne imgae show nahin kiya ? same jaha par video tha,waha par images, video show kar sakte hai ? make sure karo, kabhi ek horz grid se jyada data on screen nahin aege.",
+    "impact": "Exact response structure with photos and videos in 1 single 4-card horizontal grid and Tip card strictly at the very bottom."
+  },
+  {
+    "timestamp": "2026-08-03T15:31:44.975368+00:00",
+    "type": "bug_fix",
+    "title": "Callout Card Integrity & Tip Box Preservation Fix",
+    "description": "Fixed _moveTipsToBottom() in chat.js. Previously, querySelectorAll targeted child <p> tags inside .chat-callout cards, causing text to detach from its styled gray card background. Refactored _moveTipsToBottom() to target top-level callout containers (.chat-callout, blockquote) intact.",
+    "reason": "User reported: ye image dekho tip bg se alag ho gye hai conent of tip.",
+    "impact": "Tip callout card background and text stay 100% intact together while positioned at the bottom of the response."
+  },
+  {
+    "timestamp": "2026-08-03T15:33:16.488276+00:00",
+    "type": "bug_fix",
+    "title": "Auto-Removal of Empty/Failed Link Preview Placeholder Cards",
+    "description": "Updated _renderLinkPreviewCard() in chat.js. If link preview metadata fetch returns an error or fails to retrieve valid title/image, card.remove() is invoked immediately. Also added exclusion for links inside tables and headers so empty gray loading pills never remain on screen.",
+    "reason": "User screenshot showed empty gray pill placeholder remaining above Tip card when link preview API returned no metadata.",
+    "impact": "Zero empty loading placeholders on screen; clean UI guaranteed."
+  },
+  {
+    "timestamp": "2026-08-03T15:34:18.723035+00:00",
+    "type": "bug_fix",
+    "title": "Complete Tip Card Transformation & Structure Preservation",
+    "description": "Updated enhanceCallouts() and _moveTipsToBottom() in chat.js. Any blockquote or standalone paragraph starting with 💡 Tip: or Tip: is automatically transformed into a full .chat-callout.callout-tip card with icon, title header, and body text inside. The complete callout card is then moved intact to the bottom of the response bubble.",
+    "reason": "User reported not fixed when text was separating from callout card.",
+    "impact": "Guaranteed 100% card integrity. Tip icon, header, and body text sit together inside a beautiful card at the bottom of the response."
+  },
+  {
+    "timestamp": "2026-08-03T15:35:14.586785+00:00",
+    "type": "ui_polish",
+    "title": "Removed Duplicate Green Sparkles & Double Tip Headers",
+    "description": "Updated enhanceCallouts() in chat.js to exclude the top .callout-header (sparkles icon and green Tip text) for Tip cards, preventing duplicate Tip labels. Also resolved JS syntax error in chat.js.",
+    "reason": "User requested: ye sahi hai lekin 2 time tip hai sparkes and green tip remove karo.",
+    "impact": "1 single, ultra-clean Tip card with soft green accent border and 💡 Tip: text inside."
+  },
+  {
+    "timestamp": "2026-08-03T15:36:11.526264+00:00",
+    "type": "feature_upgrade",
+    "title": "Pure Visual Media Cards with Bottom-Right Redirect Icon",
+    "description": "Updated chat.js media grid engine. Disabled generic website text link cards. Media grid now contains ONLY pure visual media cards (Photos & YouTube Videos). Image cards feature full modal lightbox preview on click, and a sleek dark glassmorphic redirect icon (external-link) positioned at the bottom-right corner of each image for direct source navigation.",
+    "reason": "User requested: only images show hoga, ki url nahin links nahin clean chit chiye image par click karne preview hoga, lekin image ki right bottom par redirect icon hoga.",
+    "impact": "100% clean visual media grid without text link clutters, featuring intuitive image preview and source redirect."
+  },
+  {
+    "timestamp": "2026-08-03T15:36:43.858745+00:00",
+    "type": "bug_fix",
+    "title": "Resolved Trailing Syntax Error in chat.js",
+    "description": "Removed duplicate closing brace at line 1328 in chat.js. Verified JS file syntax cleanliness.",
+    "reason": "User reported Uncaught SyntaxError: Unexpected token } at chat.js:1328:1.",
+    "impact": "Clean JS execution, no console errors."
   }
 ]

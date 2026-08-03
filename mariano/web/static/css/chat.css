@@ -576,6 +576,22 @@ body.dark .shortcut:hover {
   overflow: visible;
 }
 
+/* ALL text in tool logs stream — STRICTLY UNBOLD (font-weight: 400) */
+.tool-group-card,
+.tool-group-card *,
+.tool-group-header,
+.tool-group-title,
+.tool-group-status,
+.tool-log-card,
+.tool-log-card *,
+.tool-block-temp,
+.tool-block-temp *,
+.tool-detail,
+details summary,
+summary {
+  font-weight: 400 !important;
+}
+
 /* Inline Edit Bubble Styles */
 .msg-edit-container {
   display: flex;
@@ -644,25 +660,29 @@ body.dark .shortcut:hover {
 .msg.ai h1, .msg.ai h2, .msg.ai h3, .msg.ai h4, .msg.ai h5, .msg.ai h6 {
   font-family: var(--font), sans-serif;
   color: var(--text);
-  margin-top: 24px;
-  margin-bottom: 10px;
+  margin-top: 14px;
+  margin-bottom: 6px;
   font-weight: 600;
   letter-spacing: -0.01em;
-  font-size: 16px;
+  font-size: 15px;
   line-height: 1.4;
+}
+
+.msg.ai h1:first-child, .msg.ai h2:first-child, .msg.ai h3:first-child, .msg.ai h4:first-child {
+  margin-top: 4px;
 }
 
 .msg.ai p {
   margin-top: 0;
-  margin-bottom: 14px; /* Comfortable paragraph separation */
-  line-height: 1.75;
+  margin-bottom: 8px; /* Clean, compact paragraph separation */
+  line-height: 1.65;
 }
 /* ── List consistency fix ────────────────────────────────────────────────────
    marked.js wraps list item content in <p> tags, which causes double/triple
    gaps between bullets. We zero them out inside li to get consistent spacing. */
 .msg.ai ul, .msg.ai ol {
   margin-top: 4px;
-  margin-bottom: 14px;
+  margin-bottom: 8px;
   padding-left: 20px;
 }
 .msg.ai li {
@@ -1499,12 +1519,36 @@ body.oled .code-block-header,
   color: var(--text-3);
 }
 
-/* Check icon status on items like web search */
+/* Check icon status on items like web search & permission mode */
 .attach-dropdown-item .lucide-check-icon {
   margin-left: auto;
-  color: var(--blue) !important;
+  color: var(--text-2) !important;
   width: 14px;
   height: 14px;
+}
+
+/* === SUB-DROPDOWN MENU FLYOUT (Matches Main Dropdown Typo & Spacing Exactly) === */
+.attach-sub-dropdown {
+  position: absolute;
+  bottom: -6px;
+  left: calc(100% + 8px);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow-md);
+  padding: 6px;
+  z-index: 10002;
+  display: flex;
+  flex-direction: column;
+  min-width: 200px;
+  animation: fadeIn 0.12s ease-out;
+}
+
+.permission-sub-menu .attach-dropdown-item {
+  height: 34px !important;
+  padding: 0 10px !important;
+  font-size: var(--fs-base) !important; /* 13px */
+  font-weight: 400 !important;
 }
 
 /* === SEARCH HISTORY MODAL === */
@@ -1949,6 +1993,237 @@ body.oled .code-block-header,
   border-radius: 11px;
   transition: filter 0.2s;
 }
+
+/* === MEDIA PREVIEW GRID LAYOUT (Strict 1 Single Horizontal Row — Max 4 cards side-by-side) === */
+.media-preview-grid {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important; /* STRICT 1-ROW HORIZONTAL LINE — NO MULTI-ROW WRAPPING */
+  gap: 10px !important;
+  margin: 12px 0 !important; /* Uniform minor 12px gap above and below video preview grid */
+  width: 100% !important;
+  overflow-x: auto !important; /* Horizontal scrollbar if >4 cards */
+  scroll-snap-type: x mandatory;
+  padding-bottom: 6px;
+  box-sizing: border-box !important;
+}
+
+.media-preview-grid::-webkit-scrollbar {
+  height: 4px;
+}
+.media-preview-grid::-webkit-scrollbar-thumb {
+  background: var(--border, rgba(255, 255, 255, 0.2));
+  border-radius: 4px;
+}
+
+.media-preview-grid .yt-preview-card,
+.media-preview-grid .link-preview-card,
+.media-preview-grid .chat-image-preview-card {
+  flex: 1 1 0px !important; /* Equal column distribution */
+  min-width: 135px !important;
+  max-width: 25% !important; /* Max 4 cards side-by-side in 1 row */
+  margin: 0 !important;
+  box-sizing: border-box !important;
+  scroll-snap-align: start;
+}
+
+.media-preview-grid .yt-preview-play-btn {
+  width: 32px !important;
+  height: 32px !important;
+}
+
+.media-preview-grid .yt-preview-play-btn svg {
+  width: 20px !important;
+  height: 20px !important;
+}
+
+.media-preview-grid .yt-preview-title {
+  font-size: 11px !important;
+  line-height: 1.25 !important;
+}
+
+.media-preview-grid .yt-preview-meta {
+  padding: 6px 8px !important;
+}
+
+.media-preview-grid .yt-preview-domain {
+  font-size: 10px !important;
+}
+
+/* === YOUTUBE THUMBNAIL PREVIEW CARD === */
+.yt-preview-card {
+  margin: 10px 0;
+  border-radius: 12px;
+  overflow: hidden;
+  max-width: 380px;
+  background: var(--surface-2, rgba(255, 255, 255, 0.05));
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: inline-block;
+  width: 100%;
+}
+
+.yt-preview-card:hover {
+  transform: translateY(-2px);
+}
+
+.yt-preview-link {
+  text-decoration: none !important;
+  color: inherit !important;
+  display: flex;
+  flex-direction: column;
+}
+
+.yt-preview-thumb-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  overflow: hidden;
+}
+
+.yt-preview-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.yt-preview-card:hover .yt-preview-thumb {
+  transform: scale(1.04);
+}
+
+.yt-preview-play-btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 48px;
+  height: 48px;
+  background: rgba(255, 0, 0, 0.88);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  transition: transform 0.2s, background 0.2s;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+}
+
+.yt-preview-card:hover .yt-preview-play-btn {
+  transform: translate(-50%, -50%) scale(1.12);
+  background: #ff0000;
+}
+
+.yt-preview-badge {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background: rgba(0, 0, 0, 0.75);
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+  backdrop-filter: blur(4px);
+}
+
+.yt-preview-meta {
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.yt-preview-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary, #f4f4f5);
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.yt-preview-domain {
+  font-size: 11px;
+  color: var(--text-tertiary, #a1a1aa);
+}
+
+/* === GENERIC LINK PREVIEW CARD === */
+.link-preview-card {
+  margin: 8px 0;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: var(--surface-2, rgba(255, 255, 255, 0.05));
+  transition: background 0.15s, transform 0.15s;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-width: 520px;
+  text-decoration: none;
+}
+
+.link-preview-card:hover {
+  background: var(--hover-bg, rgba(255, 255, 255, 0.09));
+  transform: translateY(-1px);
+}
+
+.link-preview-loading {
+  opacity: 0.7;
+}
+
+.lp-favicon-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.lp-favicon {
+  width: 14px;
+  height: 14px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.lp-domain {
+  font-size: 11px;
+  color: var(--text-tertiary, #a1a1aa);
+  font-weight: 500;
+}
+
+.lp-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.lp-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary, #f4f4f5);
+  line-height: 1.35;
+}
+
+.lp-desc {
+  font-size: 11.5px;
+  color: var(--text-secondary, #d4d4d8);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.lp-og-image {
+  width: 100%;
+  max-height: 180px;
+  object-fit: cover;
+  border-radius: 6px;
+  margin-bottom: 6px;
+}
+
 
 /* ── AIDER EXECUTION TOGGLE CARD ────────────────────────────────
    Flat card, same bg as chat area — never a pop color.
@@ -2596,7 +2871,7 @@ body.oled .code-block-header,
    CLEAN NON-FANCY MARKDOWN TABLES & WRAPPER
    ========================================================================== */
 .table-wrapper {
-  margin: 16px 0;
+  margin: 12px 0;
   border: none !important;
   box-shadow: none !important;
   border-radius: 8px;

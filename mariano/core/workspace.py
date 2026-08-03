@@ -104,7 +104,7 @@ class PathGuard:
                 if scoped:
                     scoped_root = Path(scoped).resolve()
                     # Allow if target is inside the scoped root
-                    if target_path == scoped_root or str(target_path).startswith(str(scoped_root)):
+                    if target_path == scoped_root or target_path.is_relative_to(scoped_root):
                         return target_path
 
             raise PermissionError(

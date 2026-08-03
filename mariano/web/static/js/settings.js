@@ -174,7 +174,7 @@ export function initSettings(setGreetingCallback) {
     const statusEl = $('api-key-status');
     if (!statusEl) return;
     if (key && key.length > 8) {
-      statusEl.textContent = `✓ Key set (${key.slice(0, 6)}...)`;
+      statusEl.textContent = `completed Key set (${key.slice(0, 6)}...)`;
       statusEl.style.color = '#16a34a';
     } else {
       statusEl.textContent = 'No key configured. Hekki cannot respond without a Gemini API key.';
