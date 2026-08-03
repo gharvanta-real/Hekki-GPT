@@ -7276,5 +7276,15 @@
     "description": "Converted collapsible prompt toggle into a clean 24x24px circular icon button containing ONLY chevron-down / chevron-up icons (no text), styled with bubble/theme-matched surface background color.",
     "type": "UI_REFINEMENT",
     "title": "Circular Icon-Only Collapsible Toggle Button"
+  },
+  {
+    "version": "v12.9",
+    "files": [
+      "mariano/web/static/css/chat.css"
+    ],
+    "timestamp": "2026-08-03T18:27:22.210537",
+    "description": "Replaced custom blue hover colors with native system legacy design tokens: var(--bg-surface) for button background, var(--text-3) for icon default, var(--hover) for hover background, and var(--text) for hover icon across both light and dark themes.",
+    "type": "UI_REFINEMENT",
+    "title": "Legacy Theme Token Alignment for Collapsible Toggle Button"
   }
 ]

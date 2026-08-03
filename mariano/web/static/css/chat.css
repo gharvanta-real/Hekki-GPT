@@ -454,30 +454,20 @@ body.dark .shortcut:hover {
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background: var(--bg-surface, #ffffff);
-  color: var(--text-primary, #1e293b);
+  background: var(--bg-surface);
+  color: var(--text-3);
   border: none !important;
   box-shadow: none !important;
   cursor: pointer;
   user-select: none;
   padding: 0;
-  transition: all 0.2s ease;
-}
-
-[data-theme="dark"] .msg-expand-btn {
-  background: var(--hover, #262626);
-  color: var(--text-primary, #f8fafc);
+  transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
 }
 
 .msg-expand-btn:hover {
-  background: var(--bg-surface-hover, #e2e8f0);
-  color: var(--primary, #2563eb);
-  transform: scale(1.08);
-}
-
-[data-theme="dark"] .msg-expand-btn:hover {
-  background: #333333;
-  color: #60a5fa;
+  background: var(--hover);
+  color: var(--text);
+  transform: scale(1.05);
 }
 
 /* User & AI Message Group Containers (Bubble + Actions Bar below it) */
