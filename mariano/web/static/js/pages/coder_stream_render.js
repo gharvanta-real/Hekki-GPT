@@ -189,11 +189,6 @@ function _ensureAiBubble() {
   header.innerHTML = `
     <canvas class="cad-ai-orb-avatar" id="coder-active-orb-canvas" width="28" height="28"></canvas>
     <span class="cad-ai-header-title">Hekki Reasoning</span>
-    <div class="cad-typing-dots" id="coder-stream-typing-dots">
-      <span class="cad-dot"></span>
-      <span class="cad-dot"></span>
-      <span class="cad-dot"></span>
-    </div>
   `;
   col.appendChild(header);
 

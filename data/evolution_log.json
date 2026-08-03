@@ -7184,5 +7184,17 @@
     "description": "Updated stream completion logic: reasoning orb header and logo canvas are now completely removed upon response completion/error/permission_request for a clean output. Added automatic animation loop termination in ribbon_orb.js as soon as the canvas is removed from the DOM.",
     "type": "REFACTOR",
     "title": "Auto-Hide & Stop Reasoning Logo Orb Header On Response Completion"
+  },
+  {
+    "version": "v12.1",
+    "files": [
+      "mariano/web/static/js/agent_stream.js",
+      "mariano/web/static/js/pages/coder_stream_render.js",
+      "mariano/web/static/css/chat.css"
+    ],
+    "timestamp": "2026-08-03T18:08:03.637842",
+    "description": "Removed 3 blue typing dots animation and added a premium 2.5s flashy linear gradient shimmer text wave animation to Hekki Reasoning header title.",
+    "type": "UI",
+    "title": "Added Flashy Shimmer Text Animation & Removed Typing Dots"
   }
 ]

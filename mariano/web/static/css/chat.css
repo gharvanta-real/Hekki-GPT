@@ -3651,10 +3651,25 @@ body.dark .voice-recording-active {
 }
 
 .cad-ai-header-title {
-  font-weight: 400;
-  font-size: 13px;
-  color: var(--text-primary);
-  letter-spacing: -0.2px;
+  font-weight: 600;
+  font-size: 13.5px;
+  background: linear-gradient(90deg, #3B82F6 0%, #a855f7 25%, #60A5FA 50%, #e879f9 75%, #3B82F6 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: flashyTextShimmer 2.5s linear infinite;
+  letter-spacing: -0.1px;
+  display: inline-block;
+}
+
+@keyframes flashyTextShimmer {
+  0% {
+    background-position: 0% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
 }
 
 .cad-typing-dots {

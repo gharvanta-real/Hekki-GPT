@@ -81,11 +81,6 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
       headerEl.innerHTML = `
         <canvas class="cad-ai-orb-avatar" id="chat-active-orb-canvas" width="28" height="28"></canvas>
         <span class="cad-ai-header-title">Hekki Reasoning</span>
-        <div class="cad-typing-dots" id="chat-stream-typing-dots">
-          <span class="cad-dot"></span>
-          <span class="cad-dot"></span>
-          <span class="cad-dot"></span>
-        </div>
       `;
       col.appendChild(headerEl);
 
