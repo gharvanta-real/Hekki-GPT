@@ -7327,5 +7327,22 @@
     "description": "Fixed CSS specificity bug where #home-screen ID selector (specificity 1-0-0) overrode .hidden class rule (0-1-0), causing the welcome header to remain visible above active chat messages. Added explicit #home-screen.hidden { display: none !important; }.",
     "type": "BUG_FIX",
     "title": "Fixed #home-screen Overlap Bug on Active Chat Messages"
+  },
+  {
+    "version": "v13.4",
+    "files": [
+      "mariano/web/static/assets/logo_anim/frame_1.png",
+      "mariano/web/static/assets/logo_anim/frame_2.png",
+      "mariano/web/static/assets/logo_anim/frame_3.png",
+      "mariano/web/static/assets/logo_anim/frame_4.png",
+      "mariano/web/static/assets/logo_anim/frame_5.png",
+      "mariano/web/static/assets/logo_anim/logo_anim_spritesheet.png",
+      "mariano/web/static/assets/logo_anim/logo_anim.gif",
+      "mariano/web/static/assets/logo_anim/logo_anim.webp"
+    ],
+    "timestamp": "2026-08-03T20:21:02.924882",
+    "description": "Processed and cleaned 3D logo animation frames (frame_1.png to frame_5.png): Completely eliminated outer semi-transparent glow aura (alpha < 140 -> 0), cropped tightly to pure 3D logo pixels, and regenerated GIF/WebP/Spritesheet assets for pure 100% transparent zero-glow 3D logo animation.",
+    "type": "ASSET_CLEANUP",
+    "title": "Eliminated Outer Glow Aura for Pure Transparent 3D Hekki Logo"
   }
 ]
