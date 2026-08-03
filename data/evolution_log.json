@@ -1,5 +1,13 @@
 [
   {
+    "timestamp": "2026-08-03T22:38:36.997633",
+    "type": "ui_redesign",
+    "title": "Forced var(--text) Color for All Sidebar Link Spans & Labels",
+    "description": "Updated layout.css and debate.css to explicitly target all span, .lbl, and .btn-label inner elements of sidebar action links, overriding legacy muted gray #A1A1AA styles with pure var(--text) (#FFFFFF in dark mode, #111111 in light mode).",
+    "reason": "Fulfilled user feedback from DevTools: span elements inside sidebar links were inheriting grey #A1A1AA instead of pure black/white.",
+    "impact": "100% pure black & white link label text rendering across all sidebar buttons and spans."
+  },
+  {
     "timestamp": "2026-08-03T22:37:18.210849",
     "type": "ui_redesign",
     "title": "Pure Clean Black (#111111) & White (#FFFFFF) Link Text Tokens across All Sidebars",

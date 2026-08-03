@@ -1652,12 +1652,19 @@ body.dark .debate-stop-btn i, body.dark .debate-stop-btn svg {
 
 /* === FULL OPACITY & UNBOLD HIGHLIGHT FOR DEBATE PLAYGROUND SIDEBAR LINKS & CHAT ITEMS ONLY (NO TOUCH BADGES) === */
 .debate-sidebar-action-btn,
+.debate-sidebar-action-btn span,
 .debate-nav-item,
+.debate-nav-item span,
 .debate-sidebar-item,
+.debate-sidebar-item span,
 .debate-hist-item,
+.debate-hist-item span,
 .directory-sidebar button,
+.directory-sidebar button span,
 .directory-sidebar a,
-.directory-sidebar .sidebar-action-btn {
+.directory-sidebar a span,
+.directory-sidebar .sidebar-action-btn,
+.directory-sidebar .sidebar-action-btn span {
   color: var(--text) !important;
   opacity: 1 !important;
   font-weight: 400 !important;
