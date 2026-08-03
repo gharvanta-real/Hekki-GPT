@@ -279,19 +279,6 @@ function _buildLayout() {
                 </div>
                 <div class="des-title">Start a Debate</div>
                 <div class="des-subtitle">Type a topic below — Alpha and Beta will argue it out across 3 rounds. You can intervene anytime.</div>
-                <div class="des-agents">
-                  <div class="des-card">
-                    <div class="des-card-avatar">A</div>
-                    <div class="des-card-text">Alpha takes a strong position</div>
-                    <i data-lucide="arrow-up-right" class="des-card-arrow"></i>
-                  </div>
-                  <div class="des-vs">vs</div>
-                  <div class="des-card">
-                    <div class="des-card-avatar">B</div>
-                    <div class="des-card-text">Beta challenges every point</div>
-                    <i data-lucide="arrow-up-right" class="des-card-arrow"></i>
-                  </div>
-                </div>
               </div>
             </div>
 
@@ -423,10 +410,6 @@ function _buildLayout() {
                       <option value="5">5 Rounds</option>
                     </select>
                     
-                    <button class="cap-icon-btn" id="btn-input-voice" title="Voice">
-                      <i data-lucide="mic"></i>
-                    </button>
-                    
                     <!-- Stop Button -->
                     <button class="input-action-btn" id="btn-debate-stop" title="Stop Generation" style="display: none; color: #ef4444;">
                       <i data-lucide="square" style="width: 13px; height: 13px; fill: currentColor;"></i>
@@ -443,6 +426,9 @@ function _buildLayout() {
                     </button>
                   </div>
                 </div>
+              </div>
+              <div class="bottom-disclaimer">
+                Hekki can make mistakes. Verify important info.
               </div>
             </div>
 
@@ -966,19 +952,6 @@ function _resetDebate() {
         </div>
         <div class="des-title">Start a Debate</div>
         <div class="des-subtitle">Type a topic below — Alpha and Beta will argue it out across 3 rounds. You can intervene anytime.</div>
-        <div class="des-agents">
-          <div class="des-card">
-            <div class="des-card-avatar">A</div>
-            <div class="des-card-text">Alpha takes a strong position</div>
-            <i data-lucide="arrow-up-right" class="des-card-arrow"></i>
-          </div>
-          <div class="des-vs">vs</div>
-          <div class="des-card">
-            <div class="des-card-avatar">B</div>
-            <div class="des-card-text">Beta challenges every point</div>
-            <i data-lucide="arrow-up-right" class="des-card-arrow"></i>
-          </div>
-        </div>
       </div>
     `;
     if (window.lucide) lucide.createIcons();
@@ -1564,19 +1537,6 @@ function _resetDebateUIOnly() {
         </div>
         <div class="des-title">Start a Debate</div>
         <div class="des-subtitle">Type a topic below — Alpha and Beta will argue it out across 3 rounds. You can intervene anytime.</div>
-        <div class="des-agents">
-          <div class="des-card">
-            <div class="des-card-avatar">A</div>
-            <div class="des-card-text">Alpha takes a strong position</div>
-            <i data-lucide="arrow-up-right" class="des-card-arrow"></i>
-          </div>
-          <div class="des-vs">vs</div>
-          <div class="des-card">
-            <div class="des-card-avatar">B</div>
-            <div class="des-card-text">Beta challenges every point</div>
-            <i data-lucide="arrow-up-right" class="des-card-arrow"></i>
-          </div>
-        </div>
       </div>
     `;
     if (window.lucide) lucide.createIcons();

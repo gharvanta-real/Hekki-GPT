@@ -187,8 +187,8 @@ function _ensureAiBubble() {
   header.style.marginTop = '16px';
   header.id = 'coder-active-stream-header';
   header.innerHTML = `
-    <canvas class="cad-ai-orb-avatar" id="coder-active-orb-canvas" width="24" height="24"></canvas>
-    <span class="cad-ai-header-title">Gemini 3.1 Reasoning</span>
+    <canvas class="cad-ai-orb-avatar" id="coder-active-orb-canvas" width="28" height="28"></canvas>
+    <span class="cad-ai-header-title">Hekki Reasoning</span>
     <div class="cad-typing-dots" id="coder-stream-typing-dots">
       <span class="cad-dot"></span>
       <span class="cad-dot"></span>
@@ -292,11 +292,10 @@ function _finalizeStream() {
   _removeCursor();
   _sealThoughtBlock();
 
+  // Remove reasoning header completely on stream completion for clean output
   const activeHeader = document.getElementById('coder-active-stream-header');
   if (activeHeader) {
-    const dots = activeHeader.querySelector('#coder-stream-typing-dots');
-    if (dots) dots.remove();
-    activeHeader.removeAttribute('id');
+    activeHeader.remove();
   }
   if (_streamBubble && _streamText) {
     // Full markdown render on completion

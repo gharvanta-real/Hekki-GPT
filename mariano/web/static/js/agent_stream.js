@@ -79,8 +79,8 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
       headerEl.style.marginTop = '20px';
       headerEl.style.marginBottom = '8px';
       headerEl.innerHTML = `
-        <canvas class="cad-ai-orb-avatar" id="chat-active-orb-canvas" width="24" height="24"></canvas>
-        <span class="cad-ai-header-title">Gemini 3.1 Reasoning</span>
+        <canvas class="cad-ai-orb-avatar" id="chat-active-orb-canvas" width="28" height="28"></canvas>
+        <span class="cad-ai-header-title">Hekki Reasoning</span>
         <div class="cad-typing-dots" id="chat-stream-typing-dots">
           <span class="cad-dot"></span>
           <span class="cad-dot"></span>
@@ -321,13 +321,8 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
       // Stop generating spinner — user must decide before we continue
       if (window.setGeneratingState) window.setGeneratingState(false);
       _currentMessageActive = false;
-      // Remove orb header typing dots
-      const permHeader = document.querySelector('.chat-ai-stream-header');
-      if (permHeader) {
-        const d = permHeader.querySelector('#chat-stream-typing-dots');
-        if (d) d.remove();
-        permHeader.classList.remove('chat-ai-stream-header');
-      }
+      // Remove reasoning orb header completely
+      col.querySelectorAll('.chat-ai-stream-header, .cad-ai-stream-header').forEach(el => el.remove());
 
       const targetPath = (e.metadata && e.metadata.path) || e.target_path || e.path || "D:/";
       const targetFolder = targetPath.split(/[/\\]/).filter(Boolean).pop() || targetPath;
@@ -993,9 +988,8 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
       _finalizeStreamThought();
       _finalizeReasoning();
       _finalizeToolContainer(true);
-      // Remove typing dots from orb header
-      const doneHeader = document.querySelector('.chat-ai-stream-header');
-      if (doneHeader) { const d = doneHeader.querySelector('#chat-stream-typing-dots'); if (d) d.remove(); doneHeader.classList.remove('chat-ai-stream-header'); }
+      // Remove reasoning orb header completely on response completion for clean output
+      col.querySelectorAll('.chat-ai-stream-header, .cad-ai-stream-header').forEach(el => el.remove());
       _currentMessageActive = false;
       if (window.setGeneratingState) window.setGeneratingState(false);
       // Auto-refresh drawer tabs (plan / tasks / walkthrough) silently
@@ -1005,9 +999,8 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
 
     case 'error': {
       col.querySelectorAll('.think-label-temp, .tool-block-temp, .thought-container, .reasoning-inline-temp, .ai-reasoning-card').forEach(el => el.remove());
-      // Remove typing dots from orb header on error
-      const errHeader = document.querySelector('.chat-ai-stream-header');
-      if (errHeader) { const d = errHeader.querySelector('#chat-stream-typing-dots'); if (d) d.remove(); errHeader.classList.remove('chat-ai-stream-header'); }
+      // Remove reasoning orb header completely on error
+      col.querySelectorAll('.chat-ai-stream-header, .cad-ai-stream-header').forEach(el => el.remove());
       _finalizeReasoning();
       _finalizeToolContainer(false);
       

@@ -1,10 +1,58 @@
 /**
- * 21st.dev Liquid Mesh Gradient Shader (Lighter Soft Blue Adjustment)
- * Top-Left Soft White Glow -> Light Sky Blue (#82C2FF) -> Soft Periwinkle (#6E80FF) -> Soft Ultramarine (#6855FF)
- * Zero dark blue saturation. Soft, dreamy, bright liquid waves with fine film grain.
+ * MARIANO 3D Hekki Logo Animator
+ * High-performance 60 FPS cross-faded 3D animation engine using Hekki Logo frames
+ * extracted from 'Single image for multple animation frame.png'.
+ * Stable position, zero background glow, clean transparent 3D logo morphing animation.
  */
 (function() {
-  class RibbonGradientOrb {
+  const FRAME_PATHS = [
+    '/static/assets/logo_anim/frame_1.png',
+    '/static/assets/logo_anim/frame_2.png',
+    '/static/assets/logo_anim/frame_3.png',
+    '/static/assets/logo_anim/frame_4.png',
+    '/static/assets/logo_anim/frame_5.png'
+  ];
+
+  const loadedImages = [];
+  let isPreloading = false;
+
+  function preloadFrames(callback) {
+    if (loadedImages.length === FRAME_PATHS.length) {
+      if (callback) callback();
+      return;
+    }
+    if (isPreloading) {
+      const checkInterval = setInterval(() => {
+        if (loadedImages.length === FRAME_PATHS.length) {
+          clearInterval(checkInterval);
+          if (callback) callback();
+        }
+      }, 50);
+      return;
+    }
+    isPreloading = true;
+    let loadedCount = 0;
+    FRAME_PATHS.forEach((path, idx) => {
+      const img = new Image();
+      img.src = path;
+      img.onload = () => {
+        loadedImages[idx] = img;
+        loadedCount++;
+        if (loadedCount === FRAME_PATHS.length) {
+          isPreloading = false;
+          if (callback) callback();
+        }
+      };
+      img.onerror = (e) => {
+        console.warn('[HekkiLogoOrb] Failed to load frame:', path, e);
+      };
+    });
+  }
+
+  // Preload logo animation frames on script load
+  preloadFrames();
+
+  class HekkiLogoOrb {
     constructor(canvasEl) {
       this.canvas = typeof canvasEl === 'string' ? document.getElementById(canvasEl) : canvasEl;
       if (!this.canvas) return;
@@ -12,22 +60,21 @@
       this.running = false;
       this.startTime = null;
       this.animId = null;
-
-      // Internal resolution
-      this.res = 64;
-
-      // Pre-generate analog film grain table
-      this.grainTable = new Float32Array(this.res * this.res);
-      for (let i = 0; i < this.grainTable.length; i++) {
-        this.grainTable[i] = (Math.random() - 0.5) * 9.0;
-      }
+      this.res = 128; // High DPI resolution for crisp rendering
     }
 
     start() {
       if (this.running || !this.ctx) return;
       this.running = true;
       this.startTime = performance.now();
-      this.loop();
+
+      if (loadedImages.length < FRAME_PATHS.length) {
+        preloadFrames(() => {
+          if (this.running) this.loop();
+        });
+      } else {
+        this.loop();
+      }
     }
 
     stop() {
@@ -36,92 +83,51 @@
     }
 
     loop() {
-      if (!this.running) return;
-
-      if (this.canvas.width !== this.res) this.canvas.width = this.res;
-      if (this.canvas.height !== this.res) this.canvas.height = this.res;
-
-      const now = performance.now();
-      const t = (now - this.startTime) / 1000.0;
-      const waveClock = t * 0.9;
-
-      const res = this.res;
-      const ctx = this.ctx;
-      const imgData = ctx.createImageData(res, res);
-      const data = imgData.data;
-
-      for (let py = 0; py < res; py++) {
-        const ny = (py / (res - 1)) * 2 - 1; // -1 to +1
-        for (let px = 0; px < res; px++) {
-          const nx = (px / (res - 1)) * 2 - 1; // -1 to +1
-
-          const idx = (py * res + px) * 4;
-
-          // Circular boundary clip
-          const distSq = nx * nx + ny * ny;
-          if (distSq > 1.0) {
-            data[idx + 3] = 0; // Transparent background
-            continue;
-          }
-
-          // Top-Left radial distance origin (-1.25, -1.25)
-          const dx = nx + 1.25;
-          const dy = ny + 1.25;
-          const distTL = Math.sqrt(dx * dx + dy * dy) / 2.8;
-
-          // Dreamy liquid wave offsets
-          const wave1 = Math.sin(nx * 2.2 + ny * 1.8 + waveClock) * 0.10;
-          const wave2 = Math.cos(nx * 1.5 - ny * 2.1 + waveClock * 0.7) * 0.08;
-
-          let val = distTL + wave1 + wave2;
-          val = Math.max(0.0, Math.min(1.0, val));
-
-          // Lighter Palette Interpolation (White -> Lighter Sky Blue -> Soft Periwinkle -> Soft Ultramarine)
-          let r, g, b;
-          if (val < 0.40) {
-            // Soft White (#FFFFFF) to Lighter Sky Blue (#82C2FF)
-            const f = val / 0.40;
-            const sf = f * f * (3.0 - 2.0 * f);
-            r = 255 + (130 - 255) * sf;
-            g = 255 + (194 - 255) * sf;
-            b = 255 + (255 - 255) * sf;
-          } else if (val < 0.72) {
-            // Lighter Sky Blue (#82C2FF) to Soft Periwinkle (#6E80FF)
-            const f = (val - 0.40) / 0.32;
-            const sf = f * f * (3.0 - 2.0 * f);
-            r = 130 + (110 - 130) * sf;
-            g = 194 + (128 - 194) * sf;
-            b = 255 + (255 - 255) * sf;
-          } else {
-            // Soft Periwinkle (#6E80FF) to Soft Ultramarine (#6855FF)
-            const f = (val - 0.72) / 0.28;
-            const sf = f * f * (3.0 - 2.0 * f);
-            r = 110 + (104 - 110) * sf;
-            g = 128 + (85 - 128) * sf;
-            b = 255 + (255 - 255) * sf;
-          }
-
-          // Subtle Film Grain Overlay
-          const grain = this.grainTable[py * res + px];
-          r = Math.max(0, Math.min(255, r + grain));
-          g = Math.max(0, Math.min(255, g + grain));
-          b = Math.max(0, Math.min(255, b + grain));
-
-          data[idx]     = r | 0;
-          data[idx + 1] = g | 0;
-          data[idx + 2] = b | 0;
-
-          // Crisp circular edge antialiasing
-          const alpha = distSq > 0.88 ? Math.max(0, 1.0 - (distSq - 0.88) / 0.12) : 1.0;
-          data[idx + 3] = (alpha * 255) | 0;
-        }
+      if (!this.running || !this.ctx) return;
+      if (!this.canvas || !document.body.contains(this.canvas)) {
+        this.stop();
+        return;
       }
 
-      ctx.putImageData(imgData, 0, 0);
+      const res = this.res;
+      if (this.canvas.width !== res) this.canvas.width = res;
+      if (this.canvas.height !== res) this.canvas.height = res;
+
+      const ctx = this.ctx;
+      ctx.clearRect(0, 0, res, res);
+
+      const now = performance.now();
+      const t = (now - (this.startTime || now)) / 1000.0;
+
+      // Smooth 60 FPS cross-fading frame morphing (position perfectly stable, zero glow, clean transparent background)
+      if (loadedImages.length === 5) {
+        const frameSpeed = 3.2; // Frames per second
+        const pos = (t * frameSpeed) % 5;
+        const idx1 = Math.floor(pos) % 5;
+        const idx2 = (idx1 + 1) % 5;
+        const blend = pos - Math.floor(pos);
+
+        const img1 = loadedImages[idx1];
+        const img2 = loadedImages[idx2];
+
+        const padding = 0;
+        const drawSize = res - (padding * 2);
+
+        if (img1 && img1.complete) {
+          ctx.globalAlpha = 1.0 - blend;
+          ctx.drawImage(img1, padding, padding, drawSize, drawSize);
+        }
+        if (img2 && img2.complete) {
+          ctx.globalAlpha = blend;
+          ctx.drawImage(img2, padding, padding, drawSize, drawSize);
+        }
+        ctx.globalAlpha = 1.0;
+      }
 
       this.animId = requestAnimationFrame(() => this.loop());
     }
   }
 
-  window.RibbonGradientOrb = RibbonGradientOrb;
+  window.HekkiLogoOrb = HekkiLogoOrb;
+  window.RibbonGradientOrb = HekkiLogoOrb;
 })();

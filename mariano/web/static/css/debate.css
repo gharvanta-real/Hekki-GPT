@@ -908,16 +908,17 @@ body.dark .debate-input-wrapper:focus-within {
 }
 .debate-rounds-select {
   cursor: pointer;
-  background: var(--hover);
-  border: 1px solid var(--border) !important;
-  border-radius: 14px;
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--text-secondary);
-  padding: 0 10px;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text-2);
+  padding: 0 16px 0 4px !important;
   font-family: var(--font);
-  outline: none;
-  height: 26px;
+  outline: none !important;
+  height: 24px;
   line-height: 24px;
   display: inline-flex;
   align-items: center;
@@ -925,11 +926,11 @@ body.dark .debate-input-wrapper:focus-within {
   vertical-align: middle;
   box-sizing: border-box;
   margin: 0;
-  transition: border-color 0.15s, background 0.15s;
+  transition: color 0.15s, opacity 0.15s;
 }
 .debate-rounds-select:hover {
-  border-color: var(--text-3) !important;
-  color: var(--text-primary);
+  color: var(--text);
+  opacity: 0.9;
 }
 
 .input-action-btn {
@@ -1020,24 +1021,26 @@ body.dark .debate-input-wrapper:focus-within {
   appearance: none;
   background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 6px center;
+  background-position: right 4px center;
   background-size: 8px;
-  padding-right: 18px !important;
-  background-color: transparent; /* secondary chip bg */
-  border: 1px solid var(--border) !important; /* thin border */
-  border-radius: 20px; /* pill shape */
-  font-size: 11px;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  font-size: 12px;
+  font-weight: 400;
   color: var(--text-2);
-  padding: 4px 22px 4px 10px !important;
+  padding: 0 16px 0 4px !important;
   outline: none !important;
   font-family: var(--font);
   cursor: pointer;
-  transition: opacity 0.15s, border-color 0.15s;
-  height: 28px; /* match circular send button height */
+  transition: color 0.15s, opacity 0.15s;
+  height: 24px;
 }
 
 .debate-rounds-select:hover {
-  opacity: 0.85;
+  color: var(--text);
+  opacity: 0.9;
 }
 
 .debate-rounds-select:disabled {
