@@ -1650,16 +1650,9 @@ body.dark .debate-stop-btn i, body.dark .debate-stop-btn svg {
   z-index: 9999;
 }
 
-/* === FULL OPACITY & UNBOLD HIGHLIGHT FOR DEBATE PLAYGROUND SIDEBAR LINKS === */
+/* === FULL OPACITY & UNBOLD HIGHLIGHT FOR ACTION LINKS ONLY === */
 .debate-sidebar .debate-list-btn,
 .debate-sidebar .debate-list-btn span,
-.debate-sidebar .debate-sidebar-summary,
-.debate-sidebar .debate-sidebar-summary .summary-title,
-.debate-sidebar .debate-sidebar-summary span,
-.debate-sidebar button,
-.debate-sidebar button span,
-.debate-sidebar a,
-.debate-sidebar a span,
 .debate-sidebar-action-btn,
 .debate-nav-item,
 .debate-sidebar-item,
@@ -1671,25 +1664,22 @@ body.dark .debate-stop-btn i, body.dark .debate-stop-btn svg {
 
 .debate-sidebar .debate-list-btn i,
 .debate-sidebar .debate-list-btn svg,
-.debate-sidebar .debate-list-btn .lucide,
-.debate-sidebar .debate-sidebar-summary i,
-.debate-sidebar .debate-sidebar-summary svg,
-.debate-sidebar .debate-sidebar-summary .lucide,
-.debate-sidebar .accordion-chevron,
-.debate-sidebar i,
-.debate-sidebar svg,
-.debate-sidebar .lucide {
+.debate-sidebar .debate-list-btn .lucide {
   color: var(--text) !important;
   opacity: 1 !important;
 }
 
-/* Section Header & Badges (Matching Main Chat Left Sidebar) */
+/* === BADGE & CATEGORY COLOR (0.8 OPACITY) FOR ACTIONS, PARTICIPANTS, FLOW, DOCUMENTS === */
 .debate-sidebar .debate-sidebar-section-label,
-.debate-sidebar .badge,
-.debate-sidebar-section-label {
+.debate-sidebar-section-label,
+.debate-sidebar-summary,
+.debate-sidebar-summary .summary-title,
+.debate-sidebar-summary span,
+.debate-sidebar .accordion-chevron,
+.debate-sidebar .badge {
   color: var(--text-secondary, #d4d4d8) !important;
   opacity: 0.8 !important;
-  font-size: 11px !important;
+  font-size: 12px;
   font-weight: 500 !important;
   letter-spacing: 0.02em;
 }

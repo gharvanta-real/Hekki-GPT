@@ -1,5 +1,13 @@
 [
   {
+    "timestamp": "2026-08-03T22:41:04.549005",
+    "type": "ui_redesign",
+    "title": "Badge Color (var(--text-secondary), 0.8 Opacity) Applied to Debate Sidebar Accordion Titles",
+    "description": "Updated debate.css to set badge color (color: var(--text-secondary, #d4d4d8) !important; opacity: 0.8 !important) on Participants, Flow, and Documents accordion headers, matching main chat left sidebar category headers.",
+    "reason": "Fulfilled user request: use badge color on Participants, Flow, Documents summary titles in Debate Playground sidebar.",
+    "impact": "100% harmonious visual hierarchy across all sidebar sections."
+  },
+  {
     "timestamp": "2026-08-03T22:40:30.392161",
     "type": "ui_redesign",
     "title": "Identical Badge & Section Header Styling across Main Chat & Debate Sidebars",
