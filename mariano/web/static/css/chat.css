@@ -1896,23 +1896,27 @@ body.oled .code-block-header,
 /* === CHAT IMAGE PREVIEW CARD === */
 .chat-image-preview-card {
   margin: 10px 0;
-  border: 1px solid var(--border, rgba(255, 255, 255, 0.12));
+  border: none !important;
   border-radius: 12px;
   overflow: hidden;
   width: fit-content;
   max-width: 380px;
-  box-shadow: none;
-  transition: transform 0.18s, border-color 0.18s;
+  box-shadow: none !important;
+  transition: transform 0.18s;
   display: inline-block;
   position: relative;
   background: transparent;
   line-height: 0;
 }
 
+.img-preview-box {
+  position: relative;
+  width: 100%;
+}
+
 .chat-image-preview-card:hover {
   transform: translateY(-2px);
-  box-shadow: none;
-  border-color: rgba(255, 255, 255, 0.25);
+  box-shadow: none !important;
 }
 
 /* Header floats as overlay ON TOP of image — no background box */

@@ -1,4 +1,4 @@
-﻿/* === chat/media.js — Rich Media Preview System (YouTube, Images, Grid) === */
+/* === chat/media.js — Rich Media Preview System (YouTube, Images, Grid) === */
 
 /** Extract YouTube video ID from any YouTube URL format */
 function _getYoutubeId(url) {
@@ -66,8 +66,23 @@ function _renderImageCard(a, srcUrl, href) {
   `;
 
   const imgEl = card.querySelector('img');
-  imgEl.addEventListener('click', (e) => { e.stopPropagation(); window.open(srcUrl, '_blank'); });
-  imgEl.onerror = () => card.remove();
+  imgEl.addEventListener('click', (e) => { e.stopPropagation(); window.open(href, '_blank'); });
+  imgEl.onerror = () => {
+    // Show fallback placeholder instead of hiding the card entirely
+    const box = card.querySelector('.img-preview-box');
+    if (box) {
+      box.innerHTML = `
+        <div style="width:100%; height:130px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; background:var(--hover); border-radius:10px; color:var(--text-3); font-size:11px;">
+          <i data-lucide="image-off" style="width:20px;height:20px;opacity:0.4;"></i>
+          <span style="opacity:0.5;">Preview unavailable</span>
+        </div>
+        <a href="${href}" target="_blank" rel="noopener noreferrer" class="img-redirect-btn" style="position:absolute; bottom:6px; right:6px; background:rgba(0,0,0,0.5); backdrop-filter:blur(4px); color:#fff; width:22px; height:22px; border-radius:5px; display:flex; align-items:center; justify-content:center; text-decoration:none; z-index:5;" title="Open source">
+          <i data-lucide="external-link" style="width:11px; height:11px;"></i>
+        </a>
+      `;
+      if (window.lucide) lucide.createIcons({ parent: box });
+    }
+  };
 
   if (a.parentNode) {
     a.parentNode.replaceChild(card, a);
@@ -176,8 +191,22 @@ export function enhanceImagePreviews(container) {
     `;
 
     const newImg = card.querySelector('img');
-    newImg.addEventListener('click', (e) => { e.stopPropagation(); window.open(src, '_blank'); });
-    newImg.onerror = () => card.remove();
+    newImg.addEventListener('click', (e) => { e.stopPropagation(); window.open(targetUrl, '_blank'); });
+    newImg.onerror = () => {
+      const box = card.querySelector('.img-preview-box');
+      if (box) {
+        box.innerHTML = `
+          <div style="width:100%; height:130px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; background:var(--hover); border-radius:10px; color:var(--text-3); font-size:11px;">
+            <i data-lucide="image-off" style="width:20px;height:20px;opacity:0.4;"></i>
+            <span style="opacity:0.5;">Preview unavailable</span>
+          </div>
+          <a href="${targetUrl}" target="_blank" rel="noopener noreferrer" class="img-redirect-btn" style="position:absolute; bottom:6px; right:6px; background:rgba(0,0,0,0.5); backdrop-filter:blur(4px); color:#fff; width:22px; height:22px; border-radius:5px; display:flex; align-items:center; justify-content:center; text-decoration:none; z-index:5;" title="Open source">
+            <i data-lucide="external-link" style="width:11px; height:11px;"></i>
+          </a>
+        `;
+        if (window.lucide) lucide.createIcons({ parent: box });
+      }
+    };
 
     // Replace the img's closest block parent (p tag usually)
     const parent = img.closest('p') || img.parentNode;
