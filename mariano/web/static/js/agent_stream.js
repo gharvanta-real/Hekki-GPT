@@ -480,6 +480,7 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
       const lineRange = (startLine && endLine) ? `L${startLine}–${endLine}` : (startLine ? `L${startLine}+` : '');
 
       // Icon and label mapping — expanded to cover all tool names
+      const _toolMeta = {
         'file_manager:replace':       { icon: '<i data-lucide="file-diff" style="width:13px;height:13px;vertical-align:middle;display:inline-block;"></i>', label: 'Replacing',       detail: fileName },
         'file_manager:multi_replace': { icon: '<i data-lucide="file-diff" style="width:13px;height:13px;vertical-align:middle;display:inline-block;"></i>', label: 'Multi-replacing', detail: fileName },
         'run_command':                { icon: '<i data-lucide="terminal" style="width:13px;height:13px;vertical-align:middle;display:inline-block;"></i>', label: 'Ran command',    detail: escapeHtml(String(args.CommandLine||args.command||'').slice(0,55)) },

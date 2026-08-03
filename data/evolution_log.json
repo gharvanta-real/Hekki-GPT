@@ -7307,5 +7307,15 @@
     "description": "Updated tool execution UI: Changed group title from static Actions to dynamic elapsed execution time (e.g. Worked for 6s), and formatted tool log entries with clean slash separation (e.g. Created dir/test_folder_hekki, Writing/test_file.txt, Ran command/git status).",
     "type": "UI_REFINEMENT",
     "title": "Worked for Xs Tool Header & Slash-Separated Tool Log Entries"
+  },
+  {
+    "version": "v13.2",
+    "files": [
+      "mariano/web/static/js/agent_stream.js"
+    ],
+    "timestamp": "2026-08-03T18:32:54.210171",
+    "description": "Fixed Javascript syntax error in agent_stream.js by restoring const _toolMeta declaration.",
+    "type": "FIX",
+    "title": "Fixed JS Syntax Error in agent_stream.js"
   }
 ]
