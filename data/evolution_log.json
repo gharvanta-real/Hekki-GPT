@@ -1,5 +1,13 @@
 [
   {
+    "timestamp": "2026-08-03T22:29:54.194313",
+    "type": "ui_redesign",
+    "title": "Full Opacity & High Contrast Highlight for All Left Sidebar Links",
+    "description": "Updated layout.css to enforce 100% full opacity (opacity: 1) and bright high-contrast text/icon highlights (color: var(--text-primary)) across all left sidebar navigation elements (actions buttons, recent chats, section headers, dock items).",
+    "reason": "Fulfilled user request: all left bar links should have full opacity and high-contrast highlight matching main content text.",
+    "impact": "100% crisp, highly readable left sidebar navigation links across all themes."
+  },
+  {
     "timestamp": "2026-08-03T22:24:48.050472",
     "type": "ui_redesign",
     "title": "Minimalist Pure Image Lightbox Card Popup for Images Page",

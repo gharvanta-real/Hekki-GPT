@@ -1415,3 +1415,38 @@ body.dark .sidebar-user-avatar {
   border-radius: 4px;
   transform-origin: center center;
 }
+
+/* === FULL OPACITY & HIGHLIGHT FOR ALL LEFT SIDEBAR LINKS === */
+#sidebar-dock .dock-item,
+#sidebar-nav .sidebar-action-btn,
+#sidebar-nav .section-item,
+#sidebar-nav .section-item .lbl,
+#sidebar-nav .section-hdr,
+#sidebar-nav .section-hdr span,
+#sidebar-nav .btn-new-chat-dock,
+#sidebar-nav .recent-item,
+#sidebar-nav .nav-header-title,
+#sidebar-nav button,
+#sidebar-nav a,
+#sidebar-nav span {
+  color: var(--text-primary, var(--text, #ffffff)) !important;
+  opacity: 1 !important;
+  font-weight: 500;
+}
+
+#sidebar-dock .dock-item .lucide,
+#sidebar-dock .dock-item i,
+#sidebar-dock .dock-item svg,
+#sidebar-nav .sidebar-action-btn .lucide,
+#sidebar-nav .sidebar-action-btn i,
+#sidebar-nav .sidebar-action-btn svg,
+#sidebar-nav .section-item .lucide,
+#sidebar-nav .section-item i,
+#sidebar-nav .section-item svg,
+#sidebar-nav .lucide,
+#sidebar-nav svg,
+#sidebar-nav i {
+  color: var(--text-primary, var(--text, #ffffff)) !important;
+  opacity: 1 !important;
+}
+
