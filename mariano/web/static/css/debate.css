@@ -1650,3 +1650,45 @@ body.dark .debate-stop-btn i, body.dark .debate-stop-btn svg {
   z-index: 9999;
 }
 
+/* === FULL OPACITY & UNBOLD HIGHLIGHT FOR DEBATE PLAYGROUND LINKS & BADGES === */
+.debate-topbar-title,
+.debate-sender-badge,
+.debate-model-tag,
+.debate-nav-item,
+.debate-sidebar-item,
+.debate-hist-item,
+.directory-sidebar button,
+.directory-sidebar a,
+.directory-sidebar span:not(.directory-section-hdr) {
+  color: var(--text-primary, var(--text, #ffffff)) !important;
+  opacity: 1 !important;
+  font-weight: 400 !important;
+}
+
+.debate-sender-badge i,
+.debate-sender-badge svg,
+.debate-sender-badge .lucide,
+.debate-model-tag i,
+.debate-model-tag svg,
+.debate-model-tag .lucide,
+.directory-sidebar i,
+.directory-sidebar svg,
+.directory-sidebar .lucide {
+  color: var(--text-primary, var(--text, #ffffff)) !important;
+  opacity: 1 !important;
+}
+
+/* === BALANCED HIGHLIGHT (0.8 OPACITY) FOR DEBATE HEADERS & META BADGES === */
+.debate-section-hdr,
+.directory-section-hdr,
+.debate-model-vs,
+.debate-arrow,
+.debate-target-badge {
+  color: var(--text-secondary, #d4d4d8) !important;
+  opacity: 0.8 !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.02em;
+}
+
+

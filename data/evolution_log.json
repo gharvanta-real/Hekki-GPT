@@ -1,5 +1,13 @@
 [
   {
+    "timestamp": "2026-08-03T22:32:01.970508",
+    "type": "ui_redesign",
+    "title": "Debate Playground Sidebar & Badges Typography & Opacity Alignment",
+    "description": "Applied unbold high-contrast highlight (font-weight: 400, opacity: 1) for all Debate Playground links, buttons, and sender badges, while maintaining balanced 80% opacity (opacity: 0.8) for section headers and meta badges in debate.css.",
+    "reason": "Fulfilled user request: apply the exact same sidebar typography & opacity highlight rules to the Debate Playground.",
+    "impact": "100% uniform visual hierarchy across Main Chat and Debate Playground views."
+  },
+  {
     "timestamp": "2026-08-03T22:31:12.536164",
     "type": "ui_redesign",
     "title": "Balanced Opacity (0.8) for Category Headers in Left Sidebar",
