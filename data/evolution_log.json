@@ -1,5 +1,13 @@
 [
   {
+    "timestamp": "2026-08-03T22:41:49.202944",
+    "type": "ui_redesign",
+    "title": "Full Bright Fonts for All Text Inside Accordion Content & Participant Cards",
+    "description": "Updated debate_page.js and debate.css to force color: var(--text) !important and opacity: 1 !important on all inner text elements (dp-avatar initials, dp-name, model dropdowns, dp-status, dp-model) inside expanded sidebar accordion cards.",
+    "reason": "Fulfilled user request: keep fonts inside sidebar badges/cards full bright and crisp.",
+    "impact": "100% crisp, pure white/black high-contrast text for all inner accordion participant card contents."
+  },
+  {
     "timestamp": "2026-08-03T22:41:04.549005",
     "type": "ui_redesign",
     "title": "Badge Color (var(--text-secondary), 0.8 Opacity) Applied to Debate Sidebar Accordion Titles",

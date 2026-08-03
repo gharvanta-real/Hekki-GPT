@@ -89,39 +89,39 @@ function _buildLayout() {
                 
                 <!-- Participant 1 -->
                 <div class="debate-participant-card" id="dp-alpha" style="display:flex; align-items:center; justify-content:space-between; padding:4px 6px 4px 2px; background:transparent; border:none; border-bottom: 1px solid var(--border);">
-                  <div class="dp-avatar dp-alpha" style="width:24px; height:24px; border-radius:50%; background:var(--hover); color:var(--text-primary); display:flex; align-items:center; justify-content:center; font-weight:400; font-size:11.5px;">T</div>
+                  <div class="dp-avatar dp-alpha" style="width:24px; height:24px; border-radius:50%; background:var(--hover); color:var(--text); display:flex; align-items:center; justify-content:center; font-weight:500; font-size:11.5px;">T</div>
                   <div class="dp-info" style="flex-grow:1; min-width:0; margin-left:8px; display:flex; flex-direction:column; gap:1px;">
-                    <div class="dp-name" style="font-size:12px; font-weight:600; color:var(--text-secondary); line-height: 1.1;">Tony Stark</div>
-                    <select class="debate-model-select" id="select-alpha-model" style="width:100%; cursor:pointer;">
+                    <div class="dp-name" style="font-size:12px; font-weight:600; color:var(--text); line-height: 1.1;">Tony Stark</div>
+                    <select class="debate-model-select" id="select-alpha-model" style="width:100%; cursor:pointer; color:var(--text);">
                       <option value="gemini-3.1-flash-lite">Gemini 3.1 Flash</option>
                       <option value="qwen">Qwen (Optional)</option>
                     </select>
-                    <div class="dp-status" id="dp-alpha-status" style="font-size:10px; color:var(--text-3); line-height: 1.1; margin-top: 1px;">Idle</div>
+                    <div class="dp-status" id="dp-alpha-status" style="font-size:10px; color:var(--text); opacity:0.9; line-height: 1.1; margin-top: 1px;">Idle</div>
                   </div>
                   <div class="dp-indicator" id="dp-alpha-dot" style="width:6px; height:6px; border-radius:50%; background:transparent; margin-left:6px;"></div>
                 </div>
 
                 <!-- Participant 2 -->
                 <div class="debate-participant-card" id="dp-beta" style="display:flex; align-items:center; justify-content:space-between; padding:4px 6px 4px 2px; background:transparent; border:none; border-bottom: 1px solid var(--border);">
-                  <div class="dp-avatar dp-beta" style="width:24px; height:24px; border-radius:50%; background:var(--hover); color:var(--text-primary); display:flex; align-items:center; justify-content:center; font-weight:400; font-size:11.5px;">B</div>
+                  <div class="dp-avatar dp-beta" style="width:24px; height:24px; border-radius:50%; background:var(--hover); color:var(--text); display:flex; align-items:center; justify-content:center; font-weight:500; font-size:11.5px;">B</div>
                   <div class="dp-info" style="flex-grow:1; min-width:0; margin-left:8px; display:flex; flex-direction:column; gap:1px;">
-                    <div class="dp-name" style="font-size:12px; font-weight:600; color:var(--text-secondary); line-height: 1.1;">Bruce Banner</div>
-                    <select class="debate-model-select" id="select-beta-model" style="width:100%; cursor:pointer;">
+                    <div class="dp-name" style="font-size:12px; font-weight:600; color:var(--text); line-height: 1.1;">Bruce Banner</div>
+                    <select class="debate-model-select" id="select-beta-model" style="width:100%; cursor:pointer; color:var(--text);">
                       <option value="gemini-3.1-flash-lite">Gemini 3.1 Flash</option>
                       <option value="qwen">Qwen (Optional)</option>
                     </select>
-                    <div class="dp-status" id="dp-beta-status" style="font-size:10px; color:var(--text-3); line-height: 1.1; margin-top: 1px;">Idle</div>
+                    <div class="dp-status" id="dp-beta-status" style="font-size:10px; color:var(--text); opacity:0.9; line-height: 1.1; margin-top: 1px;">Idle</div>
                   </div>
                   <div class="dp-indicator" id="dp-beta-dot" style="width:6px; height:6px; border-radius:50%; background:transparent; margin-left:6px;"></div>
                 </div>
 
                 <!-- Participant 3 (User / Observer) -->
                 <div class="debate-participant-card" id="dp-user" style="display:flex; align-items:center; justify-content:space-between; padding:4px 6px 4px 2px; background:transparent; border:none;">
-                  <div class="dp-avatar dp-user" style="width:24px; height:24px; border-radius:50%; background:var(--hover); color:var(--text-primary); display:flex; align-items:center; justify-content:center; font-weight:400; font-size:11.5px;">U</div>
+                  <div class="dp-avatar dp-user" style="width:24px; height:24px; border-radius:50%; background:var(--hover); color:var(--text); display:flex; align-items:center; justify-content:center; font-weight:500; font-size:11.5px;">U</div>
                   <div class="dp-info" style="flex-grow:1; min-width:0; margin-left:8px; display:flex; flex-direction:column; gap:1px;">
-                    <div class="dp-name" style="font-size:12px; font-weight:600; color:var(--text-secondary); line-height: 1.1;">You</div>
-                    <div class="dp-model" style="font-size:10px; color:var(--text-3); margin-top:1px; line-height: 1.1;">Observer</div>
-                    <div class="dp-status" id="dp-user-status" style="font-size:10px; color:var(--text-3); line-height: 1.1; margin-top: 1px;">Active</div>
+                    <div class="dp-name" style="font-size:12px; font-weight:600; color:var(--text); line-height: 1.1;">You</div>
+                    <div class="dp-model" style="font-size:10px; color:var(--text); opacity:0.9; margin-top:1px; line-height: 1.1;">Observer</div>
+                    <div class="dp-status" id="dp-user-status" style="font-size:10px; color:var(--text); opacity:0.9; line-height: 1.1; margin-top: 1px;">Active</div>
                   </div>
                   <div class="dp-indicator active" id="dp-user-dot" style="width:6px; height:6px; border-radius:50%; background:var(--green); margin-left:6px;"></div>
                 </div>

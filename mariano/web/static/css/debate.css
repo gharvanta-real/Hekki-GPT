@@ -1684,5 +1684,29 @@ body.dark .debate-stop-btn i, body.dark .debate-stop-btn svg {
   letter-spacing: 0.02em;
 }
 
+/* === FULL BRIGHT FONTS FOR INSIDE ACCORDION CONTENT (PARTICIPANT CARDS, AVATARS, NAMES, DROPDOWNS, STATUSES) === */
+.debate-sidebar .details-content,
+.debate-sidebar .debate-participant-card,
+.debate-sidebar .dp-avatar,
+.debate-sidebar .dp-name,
+.debate-sidebar .debate-model-select,
+.debate-sidebar .dp-status,
+.debate-sidebar .dp-model {
+  color: var(--text) !important;
+  opacity: 1 !important;
+}
+
+.debate-sidebar .dp-avatar {
+  background: var(--hover) !important;
+  color: var(--text) !important;
+  font-weight: 500 !important;
+}
+
+.debate-sidebar .debate-model-select {
+  background: transparent !important;
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+}
+
 
 
