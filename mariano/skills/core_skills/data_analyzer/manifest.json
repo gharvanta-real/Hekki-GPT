@@ -1,8 +1,8 @@
 {
   "name": "data_analyzer",
-  "description": "Performs statistical analysis on CSV/JSON data files and generates visualization charts (line, bar, scatter plots) exported as PNG images.",
-  "version": "1.0.0",
+  "description": "Peak-grade Data Science Engine: Deep statistical analysis, correlation heatmaps, trend forecasting, multi-column comparison, and publication-quality visual charts (CSV, Excel, JSON, TSV, Parquet).",
+  "version": "2.0.0",
   "author": "mariano-core",
   "evolved": false,
-  "tags": ["data", "csv", "json", "charts", "analysis", "statistics", "visualization", "plot"]
+  "tags": ["data", "csv", "excel", "xlsx", "json", "charts", "analysis", "statistics", "visualization", "plot", "heatmap", "trend", "forecast", "correlation"]
 }

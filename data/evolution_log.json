@@ -7223,5 +7223,16 @@
     "description": "Upgraded DataAnalyzerSkill file path resolution to use PathGuard and multi-sandbox fallback lookup. Synchronized test_sales.csv across all active workspace sandbox roots (data/, data/workspace/, data/workspace/default/).",
     "type": "REFACTOR",
     "title": "Multi-Sandbox Path Guard Resolution for DataAnalyzerSkill"
+  },
+  {
+    "version": "v12.4",
+    "files": [
+      "mariano/skills/core_skills/data_analyzer/manifest.json",
+      "mariano/skills/core_skills/data_analyzer/skill.py"
+    ],
+    "timestamp": "2026-08-03T18:18:29.349812",
+    "description": "Upgraded DataAnalyzerSkill to Peak Version 2.0.0: Added (1) Multi-format parsing (.csv, .xlsx, .json, .tsv, .parquet), (2) Deep statistical analysis with IQR outlier detection & skewness, (3) Multi-column comparison charts (line, bar, scatter, hist, box, pie, area), (4) Correlation heatmaps, (5) Linear regression trend forecasting with R\u00b2 score.",
+    "type": "UPGRADE",
+    "title": "Upgraded DataAnalyzer Core Skill to Peak Version 2.0.0"
   }
 ]
