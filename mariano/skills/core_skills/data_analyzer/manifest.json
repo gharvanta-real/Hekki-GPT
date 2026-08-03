@@ -1,0 +1,8 @@
+{
+  "name": "data_analyzer",
+  "description": "Performs statistical analysis on CSV/JSON data files and generates visualization charts (line, bar, scatter plots) exported as PNG images.",
+  "version": "1.0.0",
+  "author": "mariano-core",
+  "evolved": false,
+  "tags": ["data", "csv", "json", "charts", "analysis", "statistics", "visualization", "plot"]
+}
