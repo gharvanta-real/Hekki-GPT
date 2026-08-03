@@ -3737,11 +3737,12 @@ body.dark .voice-recording-active {
   z-index: 1;
   display: flex;
   flex-direction: column;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 14px;
+  background: var(--card, #18181b);
+  border: none !important;
+  box-shadow: 0 25px 65px rgba(0, 0, 0, 0.65) !important;
+  border-radius: 16px;
   overflow: hidden;
-  max-width: min(90vw, 900px);
+  max-width: min(92vw, 920px);
   max-height: 90vh;
   width: max-content;
   animation: lb-in 0.22s cubic-bezier(0.34,1.56,0.64,1);
@@ -3755,21 +3756,15 @@ body.dark .voice-recording-active {
 .img-lightbox-topbar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 10px 14px;
-  border-bottom: 1px solid var(--border);
-  gap: 12px;
+  justify-content: flex-end !important;
+  padding: 8px 12px !important;
+  border-bottom: none !important;
+  gap: 8px;
+  background: transparent;
 }
 
 .img-lightbox-name {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-secondary);
-  font-family: var(--font);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  flex: 1;
+  display: none !important;
 }
 
 .img-lightbox-actions {
@@ -3782,16 +3777,17 @@ body.dark .voice-recording-active {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 30px;
-  height: 30px;
-  border: 1px solid var(--border);
-  border-radius: 7px;
-  background: transparent;
+  width: 32px;
+  height: 32px;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
   color: var(--text-secondary);
   cursor: pointer;
-  transition: background 0.15s, color 0.15s;
+  transition: background 0.15s, color 0.15s, transform 0.1s;
 }
-.img-lightbox-btn:hover { background: var(--border); color: var(--text-primary); }
+.img-lightbox-btn:hover { background: rgba(255, 255, 255, 0.18); color: var(--text-primary); transform: scale(1.05); }
 
 .img-lightbox-body {
   position: relative;

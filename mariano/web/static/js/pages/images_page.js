@@ -68,110 +68,64 @@ export class ImagesPage {
   _render() {
     this._root.innerHTML = `
       <div class="img-gallery-wrap">
-
-        <!-- Header -->
         <div class="img-gallery-header">
           <div class="img-gallery-title-row">
-            <div class="img-gallery-title">
-              <span>My images</span>
-              <span class="img-gallery-count" id="img-count-badge">0</span>
-            </div>
+            <div class="img-gallery-title"><span>My images</span><span class="img-gallery-count" id="img-count-badge">0</span></div>
             <div class="img-gallery-controls">
-              <!-- Search -->
               <div class="img-gallery-search-wrap">
                 <i data-lucide="search" style="width:13px;height:13px;color:var(--text-3);flex-shrink:0;"></i>
                 <input class="img-gallery-search" id="img-search" placeholder="Search images…" autocomplete="off" />
               </div>
-              <!-- Sort -->
               <select class="img-gallery-sort" id="img-sort" title="Sort by">
-                <option value="date">Newest first</option>
-                <option value="name">Name A–Z</option>
-                <option value="size">Largest first</option>
+                <option value="date">Newest first</option><option value="name">Name A–Z</option><option value="size">Largest first</option>
               </select>
-
-              <!-- Select Mode Toggle -->
               <button class="img-gallery-btn" id="img-select-toggle" title="Toggle Select Mode">
-                <i data-lucide="check-square" style="width:14px;height:14px;"></i>
-                <span id="img-select-toggle-label" class="hidden">Select</span>
+                <i data-lucide="check-square" style="width:14px;height:14px;"></i><span id="img-select-toggle-label" class="hidden">Select</span>
               </button>
-
-              <!-- Single Smart Delete Icon (Hidden by default, shown when items are selected) -->
               <button class="img-gallery-btn img-gallery-btn-danger hidden" id="img-delete-btn" title="Delete Selected">
-                <i data-lucide="trash-2" style="width:14px;height:14px;"></i>
-                <span id="img-delete-btn-label" class="hidden">Delete</span>
+                <i data-lucide="trash-2" style="width:14px;height:14px;"></i><span id="img-delete-btn-label" class="hidden">Delete</span>
               </button>
-
-              <!-- Refresh -->
               <button class="img-gallery-refresh-btn" id="img-refresh" title="Refresh">
                 <i data-lucide="refresh-cw" style="width:14px;height:14px;"></i>
               </button>
             </div>
           </div>
         </div>
-
-        <!-- Body -->
         <div class="img-gallery-body" id="img-gallery-body">
-          <div class="img-gallery-loading" id="img-loading">
-            <div class="img-gallery-spinner"></div>
-            <span>Loading images…</span>
-          </div>
+          <div class="img-gallery-loading" id="img-loading"><div class="img-gallery-spinner"></div><span>Loading images…</span></div>
         </div>
-
       </div>
 
       <!-- Lightbox -->
       <div class="img-lightbox-overlay hidden" id="img-lightbox">
         <div class="img-lightbox-backdrop" id="img-lightbox-backdrop"></div>
         <div class="img-lightbox-modal">
-          <div class="img-lightbox-topbar">
-            <span class="img-lightbox-name" id="img-lightbox-name"></span>
+          <div class="img-lightbox-topbar" style="justify-content: flex-end; padding: 8px 12px; border-bottom: none;">
             <div class="img-lightbox-actions">
-              <button class="img-lightbox-btn" id="img-lb-download" title="Download">
-                <i data-lucide="download" style="width:15px;height:15px;"></i>
-              </button>
-              <button class="img-lightbox-btn img-card-btn img-del-btn" id="img-lb-delete" title="Delete Image">
-                <i data-lucide="trash-2" style="width:15px;height:15px;"></i>
-              </button>
-              <button class="img-lightbox-btn" id="img-lb-close" title="Close">
-                <i data-lucide="x" style="width:15px;height:15px;"></i>
-              </button>
+              <button class="img-lightbox-btn" id="img-lb-download" title="Download"><i data-lucide="download" style="width:15px;height:15px;"></i></button>
+              <button class="img-lightbox-btn img-card-btn img-del-btn" id="img-lb-delete" title="Delete Image"><i data-lucide="trash-2" style="width:15px;height:15px;"></i></button>
+              <button class="img-lightbox-btn" id="img-lb-close" title="Close"><i data-lucide="x" style="width:15px;height:15px;"></i></button>
             </div>
           </div>
           <div class="img-lightbox-body">
-            <button class="img-lb-nav img-lb-prev" id="img-lb-prev" title="Previous">
-              <i data-lucide="chevron-left" style="width:20px;height:20px;"></i>
-            </button>
             <img class="img-lightbox-img" id="img-lightbox-img" src="" alt="" />
-            <button class="img-lb-nav img-lb-next" id="img-lb-next" title="Next">
-              <i data-lucide="chevron-right" style="width:20px;height:20px;"></i>
-            </button>
-          </div>
-          <div class="img-lightbox-footer">
-            <span class="img-lb-meta" id="img-lb-meta"></span>
-            <span class="img-lb-counter" id="img-lb-counter"></span>
           </div>
         </div>
       </div>
 
-      <!-- Monochromatic System Confirmation Modal -->
-      <div class="img-confirm-modal-overlay hidden" id="img-confirm-modal">
-        <div class="img-confirm-backdrop" id="img-confirm-backdrop"></div>
-        <div class="img-confirm-dialog">
+      <!-- Custom Confirmation Modal -->
+      <div id="img-confirm-modal" class="modal-overlay hidden" style="z-index: 10005;">
+        <div class="modal-box compact img-confirm-box">
           <div class="img-confirm-header">
             <h3 class="img-confirm-title" id="img-confirm-title">Delete Images</h3>
-            <button class="img-confirm-close" id="img-confirm-close" title="Close">
-              <i data-lucide="x" style="width:16px;height:16px;"></i>
-            </button>
+            <button class="img-confirm-close" id="img-confirm-close" title="Close"><i data-lucide="x" style="width:16px;height:16px;"></i></button>
           </div>
-          <div class="img-confirm-body">
-            <p class="img-confirm-msg" id="img-confirm-msg">Are you sure you want to delete the selected image(s)? This action cannot be undone.</p>
-          </div>
+          <div class="img-confirm-body"><p class="img-confirm-msg" id="img-confirm-msg">Are you sure?</p></div>
           <div class="img-confirm-actions">
             <button class="img-confirm-btn img-confirm-btn-cancel" id="img-confirm-btn-cancel">Cancel</button>
             <button class="img-confirm-btn img-confirm-btn-action" id="img-confirm-btn-action">Confirm</button>
           </div>
         </div>
-      </div>
     `;
 
     this._bindControls();
@@ -280,8 +234,6 @@ export class ImagesPage {
     // Lightbox actions
     $('img-lb-close')?.addEventListener('click', () => this._closeLightbox());
     $('img-lightbox-backdrop')?.addEventListener('click', () => this._closeLightbox());
-    $('img-lb-prev')?.addEventListener('click', () => this._lightboxNav(-1));
-    $('img-lb-next')?.addEventListener('click', () => this._lightboxNav(1));
 
     $('img-lb-download')?.addEventListener('click', () => {
       if (this._lightboxIdx < 0) return;
@@ -484,13 +436,7 @@ export class ImagesPage {
 
   _showLoading() {
     const body = this._root.querySelector('#img-gallery-body');
-    if (body) {
-      body.innerHTML = `
-        <div class="img-gallery-loading">
-          <div class="img-gallery-spinner"></div>
-          <span>Loading images…</span>
-        </div>`;
-    }
+    if (body) body.innerHTML = `<div class="img-gallery-loading"><div class="img-gallery-spinner"></div><span>Loading images…</span></div>`;
   }
 
   _showError(msg) {
@@ -498,7 +444,6 @@ export class ImagesPage {
     if (body) body.innerHTML = `<div class="img-gallery-empty"><p class="img-gallery-empty-title" style="color:#ef4444;">⚠ ${msg}</p></div>`;
   }
 
-  // ── Lightbox ───────────────────────────────────────────────────────────────
   _openLightbox(idx) {
     this._lightboxIdx = idx;
     this._syncLightbox();
@@ -512,45 +457,20 @@ export class ImagesPage {
     this._lightboxIdx = -1;
   }
 
-  _lightboxNav(delta) {
-    const next = this._lightboxIdx + delta;
-    if (next < 0 || next >= this._filtered.length) return;
-    this._lightboxIdx = next;
-    this._syncLightbox();
-  }
-
   _syncLightbox() {
     const img = this._filtered[this._lightboxIdx];
     if (!img) return;
-    const $ = id => this._root.querySelector(`#${id}`);
-    const imgEl = $('img-lightbox-img');
+    const imgEl = this._root.querySelector('#img-lightbox-img');
     if (imgEl) { imgEl.src = img.render_url; imgEl.alt = img.name; }
-    const nameEl = $('img-lightbox-name');
-    if (nameEl) nameEl.textContent = img.name;
-    const metaEl = $('img-lb-meta');
-    if (metaEl) metaEl.textContent = `${this._formatSize(img.size)} · ${this._formatDate(img.modified_iso)}`;
-    const counterEl = $('img-lb-counter');
-    if (counterEl) counterEl.textContent = `${this._lightboxIdx + 1} / ${this._filtered.length}`;
-
-    // Nav button visibility
-    const prev = $('img-lb-prev');
-    const next = $('img-lb-next');
-    if (prev) prev.style.opacity = this._lightboxIdx > 0 ? '1' : '0.2';
-    if (next) next.style.opacity = this._lightboxIdx < this._filtered.length - 1 ? '1' : '0.2';
   }
 
-  // ── Download ───────────────────────────────────────────────────────────────
   _downloadImage(img) {
     const a = document.createElement('a');
-    a.href = img.render_url;
-    a.download = img.name;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    a.href = img.render_url; a.download = img.name;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
     this._showToast('Download', `Downloading ${img.name}`, 2000);
   }
 
-  // ── Helpers ────────────────────────────────────────────────────────────────
   _formatSize(bytes) {
     if (!bytes) return '0 B';
     if (bytes < 1024) return `${bytes} B`;
@@ -561,10 +481,7 @@ export class ImagesPage {
   _formatDate(iso) {
     if (!iso) return '';
     try {
-      const d = new Date(iso);
-      const now = new Date();
-      const diffMs = now - d;
-      const diffH = Math.floor(diffMs / 3600000);
+      const d = new Date(iso), diffH = Math.floor((new Date() - d) / 3600000);
       if (diffH < 1) return 'Just now';
       if (diffH < 24) return `${diffH}h ago`;
       const diffD = Math.floor(diffH / 24);
@@ -573,14 +490,10 @@ export class ImagesPage {
     } catch { return ''; }
   }
 
-  _escHtml(str) {
-    return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  }
+  _escHtml(str) { return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
   destroy() {
-    if (this._keyHandler) {
-      document.removeEventListener('keydown', this._keyHandler);
-    }
+    if (this._keyHandler) document.removeEventListener('keydown', this._keyHandler);
     this._mounted = false;
   }
 }
