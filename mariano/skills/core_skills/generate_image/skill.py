@@ -35,12 +35,12 @@ class GenerateImageSkill(BaseSkill):
         try:
             settings = get_settings()
             
-            # Define output path in workspace Exports folder
-            exports_dir = settings.mariano_data_dir / "workspace" / "Exports"
-            exports_dir.mkdir(parents=True, exist_ok=True)
+            # Define dedicated clean output path in data/generated_images folder
+            gen_dir = settings.mariano_data_dir / "generated_images"
+            gen_dir.mkdir(parents=True, exist_ok=True)
             
             filename = f"{ImageName}_{int(time.time())}.png"
-            output_path = exports_dir / filename
+            output_path = gen_dir / filename
 
             # Construct pollinations.ai URL with url-encoded prompt
             encoded_prompt = urllib.parse.quote(Prompt)

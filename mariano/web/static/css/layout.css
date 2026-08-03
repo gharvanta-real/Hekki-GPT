@@ -1178,38 +1178,40 @@ body.dark .modal-nav-pill.active {
 
 
 
-/* ── Sidebar User Profile (Settings Trigger) ── */
+/* ── Sidebar User Profile (Settings Trigger Card) ── */
 .sidebar-user-profile {
   display: flex;
   align-items: center;
-  padding: 6px 12px;
-  border-top: none;
+  padding: 8px 10px;
+  border-top: none !important;
   cursor: pointer;
-  background: transparent;
-  transition: background 0.15s;
+  background: var(--card);
+  transition: background 0.15s ease, transform 0.12s ease;
   flex-shrink: 0;
-  gap: 8px;
+  gap: 10px;
   position: relative;
   z-index: 100;
-  margin: 8px;
-  margin-bottom: 12px;
-  border-radius: 8px;
+  margin: 8px 10px 12px 10px;
+  border-radius: 10px;
+  border: none !important;
+  box-shadow: none !important;
 }
 .sidebar-user-profile:hover {
-  background: var(--hover-1);
+  background: var(--hover);
 }
 .sidebar-user-avatar {
-  width: 26px;
-  height: 26px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  background: #333;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: normal;
-  font-size: 12px;
+  object-fit: cover;
   flex-shrink: 0;
+  background: var(--hover);
+  padding: 2px;
+  border: none !important;
+  box-shadow: none !important;
+}
+body.dark .sidebar-user-avatar {
+  background: #27272a;
 }
 .sidebar-user-info {
   display: flex;
@@ -1218,19 +1220,19 @@ body.dark .modal-nav-pill.active {
   min-width: 0; /* truncate */
 }
 .sidebar-user-name {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--text-primary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  line-height: 1;
+  line-height: 1.2;
 }
 .sidebar-user-plan {
-  font-size: 10px;
+  font-size: 11px;
   color: var(--text-3);
   margin-top: 1px;
-  line-height: 1;
+  line-height: 1.2;
 }
 
 /* User Menu Dropdown */

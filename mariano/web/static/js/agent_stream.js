@@ -100,41 +100,35 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
       break;
     }
 
-    // ── LAYER 1: ACTION label — compact pre-tool narration (Codex style) ──────
+    // ── LAYER 1: ACTION label — pre-tool narration (contained inside tool block) ──────
     case 'reasoning': {
       enterConversationCallback();
-      // Clear any previous action label and finding from last cycle
       col.querySelectorAll('.action-label-temp').forEach(el => el.remove());
-      // Reset finding state so next tool gets a fresh finding
       _findingEl   = null;
       _findingText = '';
-      const text = (e.data || '').trim();
-      if (!text) break;
-      const al = document.createElement('div');
-      al.className = 'action-label action-label-temp';
-      al.textContent = text;
-      col.appendChild(al);
-      scrollChat();
       break;
     }
 
-    // ── LAYER 3: FINDING label — post-tool micro-summary (max 2 sentences) ───
+    // ── LAYER 3: FINDING label — post-tool micro-summary (nested inside tool block) ───
     case 'reasoning_chunk': {
-      // Remove the temporary action label once finding starts streaming
       col.querySelectorAll('.action-label-temp').forEach(el => el.classList.remove('action-label-temp'));
       if (!_findingEl) {
         _findingEl = document.createElement('div');
         _findingEl.className = 'finding-label';
-        col.appendChild(_findingEl);
+        _findingEl.style.cssText = 'width: 100%; margin-top: 3px; padding-left: 21px; font-size: 11.5px; color: var(--text-3); font-family: var(--font); opacity: 0.9; box-sizing: border-box;';
+        if (_lastToolBlock) {
+          _lastToolBlock.style.flexWrap = 'wrap';
+          _lastToolBlock.appendChild(_findingEl);
+        } else if (_streamToolBody) {
+          _streamToolBody.appendChild(_findingEl);
+        }
       }
       _findingText += e.data;
-      // Show max 2 sentences — never a paragraph
       const sentenceBreak = _findingText.search(/(?<=[.!?])\s+[A-Z]/);
       const display = sentenceBreak > 0
         ? _findingText.slice(0, sentenceBreak + 1).trim()
         : _findingText.slice(0, 180).trim();
-      _findingEl.textContent = display;
-      // Also track in tool run history for session persistence
+      if (_findingEl) _findingEl.textContent = display;
       if (_currentMessageToolRuns.length > 0) {
         _currentMessageToolRuns[_currentMessageToolRuns.length - 1].reasoning += e.data;
       }
@@ -143,7 +137,6 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
     }
 
     case 'reasoning_done': {
-      // Lock the finding label (remove streaming indicator, finalize)
       if (_findingEl) {
         _findingEl.classList.remove('finding-label--streaming');
       }
@@ -325,56 +318,72 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
 
     case 'permission_request': {
       col.querySelectorAll('.think-label-temp, .tool-block-temp').forEach(el => el.remove());
-      
+      // Stop generating spinner — user must decide before we continue
+      if (window.setGeneratingState) window.setGeneratingState(false);
+      _currentMessageActive = false;
+      // Remove orb header typing dots
+      const permHeader = document.querySelector('.chat-ai-stream-header');
+      if (permHeader) {
+        const d = permHeader.querySelector('#chat-stream-typing-dots');
+        if (d) d.remove();
+        permHeader.classList.remove('chat-ai-stream-header');
+      }
+
+      const targetPath = (e.metadata && e.metadata.path) || e.target_path || e.path || "D:/";
+      const targetFolder = targetPath.split(/[/\\]/).filter(Boolean).pop() || targetPath;
+
       const card = document.createElement('div');
       card.className = 'permission-request-card';
-      card.style.border = '1px solid var(--border)';
-      card.style.borderRadius = '8px';
+      card.style.border = 'none';
+      card.style.borderRadius = '12px';
       card.style.background = 'var(--card)';
       card.style.margin = '14px 0';
       card.style.padding = '16px';
       card.style.display = 'flex';
       card.style.flexDirection = 'column';
       card.style.gap = '12px';
-      card.style.fontFamily = 'var(--font-sans)';
+      card.style.fontFamily = 'var(--font)';
       
       card.innerHTML = `
-        <div style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:600; color:var(--text-primary);">
-          <i data-lucide="shield-alert" style="width:16px; height:16px; color:var(--text-secondary);"></i>
-          <span>Permission Required</span>
+        <div style="display:flex; align-items:center; gap:8px; font-size:13.5px; font-weight:600; color:var(--text-primary);">
+          <i data-lucide="shield-alert" style="width:16px; height:16px; color:#f59e0b;"></i>
+          <span>Workspace Access Permission Request</span>
         </div>
         <p style="font-size:12px; color:var(--text-secondary); margin:0; line-height:1.5;">
-          ${escapeHtml(e.data || "This action requires system-level file access to read/write files outside the workspace sandbox.")}
+          Hekki is trying to access <strong>${escapeHtml(targetPath)}</strong> which is outside the current workspace sandbox. Grant access to continue.
         </p>
-        <div style="display:flex; align-items:center; gap:10px; margin-top:4px;">
-          <button class="approve-btn" style="border:1px solid var(--border); background:var(--text-primary); color:var(--card); padding:6px 14px; border-radius:6px; font-size:11.5px; cursor:pointer; font-weight:600; transition:opacity 0.1s;">
-            Approve Access
+        <div style="display:flex; align-items:center; gap:10px; margin-top:4px; flex-wrap:wrap;">
+          <button class="allow-everything-btn" style="border:none; background:var(--text-primary); color:var(--card); padding:8px 14px; border-radius:8px; font-size:12px; cursor:pointer; font-weight:600; display:flex; align-items:center; gap:6px; transition:opacity 0.1s;">
+            <i data-lucide="unlock" style="width:13px; height:13px;"></i>
+            <span>Allow Everything</span>
           </button>
-          <button class="deny-btn" style="border:1px solid var(--border); background:var(--hover); color:var(--text-secondary); padding:6px 14px; border-radius:6px; font-size:11.5px; cursor:pointer; font-weight:500; transition:all 0.1s;">
-            Cancel
+          <button class="allow-target-btn" style="border:none; background:var(--hover); color:var(--text-primary); padding:8px 14px; border-radius:8px; font-size:12px; cursor:pointer; font-weight:600; display:flex; align-items:center; gap:6px; transition:all 0.1s;">
+            <i data-lucide="folder-check" style="width:13px; height:13px;"></i>
+            <span>Allow Only: ${escapeHtml(targetPath)}</span>
+          </button>
+          <button class="deny-btn" style="border:none; background:transparent; color:var(--text-3); padding:8px 10px; border-radius:8px; font-size:11.5px; cursor:pointer; font-weight:500;">
+            Deny
           </button>
         </div>
       `;
       
       col.appendChild(card);
+      if (window.lucide) lucide.createIcons();
       
-      const activeChatId = localStorage.getItem('hekki_active_chat_id');
-      
-      card.querySelector('.approve-btn').addEventListener('click', () => {
-        if (window.socket && window.socket.readyState === WebSocket.OPEN) {
-          window.socket.send(JSON.stringify({
-            type: 'grant_permission',
-            chat_id: activeChatId
-          }));
-        }
-        
+      const activeChatId = localStorage.getItem('mariano_active_chat_id')
+                        || localStorage.getItem('hekki_active_chat_id');
+
+      const _retryQuery = (permissionMode, pathScope) => {
         card.remove();
+        localStorage.setItem('mariano_permission_policy', permissionMode);
         
         if (window.showToast) {
-          window.showToast('Access Granted', 'Full system permission unlocked for this session.', 2500);
+          const msg = permissionMode === 'everything' 
+            ? 'Full system access granted for this session.' 
+            : `Access allowed for: ${pathScope || targetFolder}`;
+          window.showToast('Access Granted', msg, 2500);
         }
-        
-        // Re-submit the user query
+
         const chatLog = ChatSessionManager.getChats();
         const activeChat = chatLog.find(c => c.id === activeChatId);
         if (activeChat && activeChat.messages.length > 0) {
@@ -387,33 +396,44 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
             retryEl.style.fontSize = '11px';
             retryEl.style.color = 'var(--text-3)';
             retryEl.style.margin = '4px 0 12px 12px';
-            retryEl.innerHTML = `▸ retrying action with granted permissions...`;
+            retryEl.innerHTML = `▸ retrying with permission: ${permissionMode}...`;
             col.appendChild(retryEl);
             
-            const activeProj = localStorage.getItem('hekki_active_project');
-            const activePath = localStorage.getItem('hekki_active_project_path');
+            const activeProj = localStorage.getItem('mariano_active_project')
+                            || localStorage.getItem('hekki_active_project');
+            const activeProjPath = localStorage.getItem('mariano_active_project_path');
+            
             window.socket.send(JSON.stringify({ 
               type: 'query', 
               text: lastQuery,
               project: activeProj || null,
-              project_path: activePath || null,
+              project_path: pathScope || activeProjPath || null,
+              permission_policy: permissionMode,
               chat_id: activeChatId
             }));
             if (window.setGeneratingState) window.setGeneratingState(true);
           }
         }
+      };
+
+      card.querySelector('.allow-everything-btn').addEventListener('click', () => {
+        _retryQuery('everything', null);
       });
-      
+
+      card.querySelector('.allow-target-btn').addEventListener('click', () => {
+        _retryQuery('scoped', targetPath);
+      });
+
       card.querySelector('.deny-btn').addEventListener('click', () => {
         card.remove();
-        ChatSessionManager.appendMessage('assistant', '✖ **Permission Denied** — Action aborted by user.');
+        ChatSessionManager.appendMessage('assistant', '✖ **Permission Denied** — Action blocked by user.');
         if (window.setGeneratingState) window.setGeneratingState(false);
       });
       
-      if (window.lucide) lucide.createIcons({ parent: card });
       scrollChat();
       break;
     }
+
 
     case 'tool_call': {
       enterConversationCallback();
@@ -531,6 +551,18 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
         </div>
         <span class="tool-status" style="flex-shrink:0;font-size:11px;color:var(--text-3);white-space:nowrap;opacity:0.6;">running<span class="dots">.</span></span>
       `;
+
+      // Live brief execution hint line for transparent execution feedback
+      const briefCmd = args.command || args.cmd || args.query || args.pattern || args.path || args.url || '';
+      if (briefCmd) {
+        card.style.flexWrap = 'wrap';
+        const hintEl = document.createElement('div');
+        hintEl.className = 'tool-brief-hint';
+        hintEl.style.cssText = 'width: 100%; margin-top: 2px; padding-left: 21px; font-size: 11px; color: var(--text-3); font-family: var(--font-mono); opacity: 0.85; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; box-sizing: border-box;';
+        hintEl.innerHTML = `▸ Executing: ${escapeHtml(String(briefCmd).slice(0, 90))}`;
+        card.appendChild(hintEl);
+      }
+
       _ensureToolContainer(col, enterConversationCallback);
       _streamToolCount++;
       
@@ -595,7 +627,11 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
         }
 
         if (_currentMessageToolRuns.length > 0) {
-          _currentMessageToolRuns[_currentMessageToolRuns.length - 1].status = isSuccess ? 'done' : 'failed';
+          const lastRun = _currentMessageToolRuns[_currentMessageToolRuns.length - 1];
+          lastRun.status = isSuccess ? 'done' : 'failed';
+          if (e.data && typeof e.data === 'string') {
+            lastRun.output = e.data;
+          }
         }
 
         const toolName = e.metadata?.tool || '';
@@ -659,9 +695,6 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
                   }
                 }
 
-                // ── PERSIST image path so it survives page refresh ────────────
-                // Store the raw path in the last tool run entry. loadChat() will
-                // read this and re-render the image card without needing a re-run.
                 if (_currentMessageToolRuns.length > 0) {
                   _currentMessageToolRuns[_currentMessageToolRuns.length - 1].image_path = relativeOrAbsolute;
                 }
@@ -676,21 +709,33 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
           }
         }
 
-
-
-        if (isSuccess && toolName === 'file_manager' && e.data && typeof e.data === 'string') {
-          const isRead = _lastToolBlock.dataset.tool === 'file_manager:read';
-          if (isRead) {
-            const previewText = e.data.slice(0, 200) + (e.data.length > 200 ? '\n...' : '');
-            const readDetail = document.createElement('div');
-            readDetail.innerHTML = `
-              <details style="margin: 4px 0 0 12px; opacity: 0.85;">
-                <summary style="cursor:pointer; color:var(--text-3); font-size:10px; outline:none; user-select:none;">Show read preview</summary>
-                <pre style="margin:4px 0 0 0; padding:6px; background:#1e293b; color:#cbd5e1; border-radius:4px; font-size:10px; overflow-x:auto; border:1px solid #334155; max-height:100px;">${escapeHtml(previewText)}</pre>
-              </details>
-            `;
-            _lastToolBlock.appendChild(readDetail);
-          }
+        // ── Render Output Details / Terminal UI Block for commands and file ops ──
+        if (e.data && typeof e.data === 'string' && e.data.trim().length > 0) {
+          const hint = _lastToolBlock.querySelector('.tool-brief-hint');
+          if (hint) hint.remove();
+          _lastToolBlock.style.flexWrap = 'wrap';
+          
+          const toolTag = _lastToolBlock.dataset.tool || toolName || 'action';
+          const isTerminalCmd = toolTag.includes('shell') || toolTag.includes('run_command') || toolTag.includes('system_control');
+          const isSearchGrep = toolTag.includes('grep') || toolTag.includes('search');
+          const iconName = isTerminalCmd ? 'terminal' : (isSearchGrep ? 'search' : 'file-text');
+          const summaryLabel = isTerminalCmd ? '▸ Terminal Output' : '▸ View output details';
+          const maxLen = isTerminalCmd ? 6000 : 3000;
+          const previewText = e.data.length > maxLen ? e.data.slice(0, maxLen) + '\n... (truncated)' : e.data;
+          
+          const outputDetail = document.createElement('div');
+          outputDetail.style.cssText = 'width: 100%; margin-top: 4px; padding-left: 21px; box-sizing: border-box;';
+          outputDetail.innerHTML = `
+            <details style="margin: 0; opacity: 0.95; width: 100%;" ${isTerminalCmd ? 'open' : ''}>
+              <summary style="cursor:pointer; color:var(--text-3); font-size:11px; font-weight:500; outline:none; user-select:none; display:inline-flex; align-items:center; gap:4px; padding: 2px 0;">
+                <i data-lucide="${iconName}" style="width:12px;height:12px;color:var(--text-3);display:inline-block;vertical-align:middle;"></i>
+                <span>${summaryLabel}</span>
+              </summary>
+              <pre style="margin:6px 0 2px 0; padding:10px 12px; background:var(--card); color:var(--text-primary); border-radius:8px; font-size:11px; font-family:var(--font-mono); line-height:1.55; overflow-x:auto; border:none !important; box-shadow:none !important; max-height:220px; width:100%; box-sizing:border-box; white-space:pre-wrap; word-break:break-all;">${escapeHtml(previewText)}</pre>
+            </details>
+          `;
+          _lastToolBlock.appendChild(outputDetail);
+          if (window.lucide) lucide.createIcons({ parent: outputDetail });
         }
         
         _lastToolBlock.classList.remove('tool-block-temp');
@@ -1172,10 +1217,11 @@ function _finalizeToolContainer(isSuccess = true) {
     titleEl.textContent = 'Actions';
   }
 
-  // Smoothly collapse the body after 1.5 seconds to keep the chat clean
+  // Smoothly collapse the body after 2 seconds unless terminal output / open details are present
   const body = _streamToolBody;
   const chevron = _streamToolContainer.querySelector('.chevron-icon');
-  if (body && body.style.display !== 'none') {
+  const hasOpenDetails = body && body.querySelector('details[open]');
+  if (body && body.style.display !== 'none' && !hasOpenDetails) {
     setTimeout(() => {
       if (body) {
         body.style.display = 'none';
@@ -1183,7 +1229,7 @@ function _finalizeToolContainer(isSuccess = true) {
           chevron.style.transform = 'rotate(0deg)';
         }
       }
-    }, 1500);
+    }, 2000);
   }
 
   _streamToolContainer = null;

@@ -75,6 +75,12 @@ class MarianoAgent:
         else:
             PathGuard.set_active_project("default")
 
+        # Apply permission policy (user may have granted wider access via the permission card)
+        if permission_policy and permission_policy != "ask":
+            PathGuard.set_permission_policy(permission_policy, scoped_path=project_path)
+        else:
+            PathGuard.set_permission_policy("ask")
+
         # 5. Cognitive Profiler Feedback Analysis
         from mariano.core.cognitive_profiler import CognitiveProfiler
         cp = CognitiveProfiler.get_instance()

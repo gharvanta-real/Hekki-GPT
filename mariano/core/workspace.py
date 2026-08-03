@@ -12,6 +12,12 @@ active_project_context: contextvars.ContextVar[str | None] = contextvars.Context
 # When set, secure_path() uses this root instead of the internal sandbox directory.
 active_project_path_context: contextvars.ContextVar[str | None] = contextvars.ContextVar("active_project_path", default=None)
 
+# Permission policy: 'ask' (default sandbox), 'everything' (full host access), 'scoped' (widened to a specific path)
+active_permission_policy: contextvars.ContextVar[str] = contextvars.ContextVar("permission_policy", default="ask")
+
+# The scoped path granted when policy is 'scoped' — acts as an additional allowed root
+active_scoped_path: contextvars.ContextVar[str | None] = contextvars.ContextVar("scoped_path", default=None)
+
 class PathGuard:
     @staticmethod
     def get_active_project() -> str | None:
@@ -37,19 +43,40 @@ class PathGuard:
         active_project_path_context.set(project_path)
 
     @staticmethod
+    def set_permission_policy(policy: str, scoped_path: str | None = None) -> None:
+        """
+        Set the permission policy for this async context.
+
+        Args:
+            policy:      'ask' (default), 'everything' (bypass sandbox), 'scoped' (allow specific path)
+            scoped_path: The specific path to allow when policy is 'scoped'.
+        """
+        active_permission_policy.set(policy)
+        active_scoped_path.set(scoped_path)
+
+    @staticmethod
     def secure_path(raw_path: str | Path) -> Path:
         """
         Resolves path and validates that it remains inside the scoped project workspace.
 
         Resolution order:
           1. If no active project → Base Mode: unrestricted host access.
-          2. If an explicit project_path was set (external user folder) → use that as root.
-          3. Otherwise → resolve relative to the internal sandbox folder
+          2. If permission_policy is 'everything' → full host access (user explicitly granted).
+          3. If permission_policy is 'scoped' → allow access within the scoped path.
+          4. If an explicit project_path was set (external user folder) → use that as root.
+          5. Otherwise → resolve relative to the internal sandbox folder
              at <data_dir>/workspaces/<project_id>.
         """
         project_id = active_project_context.get()
         if not project_id:
             # Base System/Self-evolution mode: allow unrestricted access to host files
+            return Path(raw_path).resolve()
+
+        # Check permission policy — user may have granted wider access
+        policy = active_permission_policy.get()
+
+        if policy == "everything":
+            # User explicitly granted full system access — skip sandbox check
             return Path(raw_path).resolve()
 
         # Prefer an explicit external project root (set when user browses to a folder)
@@ -71,6 +98,15 @@ class PathGuard:
 
         # Security validation: check if the resolved path is inside the project workspace directory
         if not target_path.is_relative_to(workspaces_root):
+            # If policy is 'scoped', also allow the user-granted scoped path
+            if policy == "scoped":
+                scoped = active_scoped_path.get()
+                if scoped:
+                    scoped_root = Path(scoped).resolve()
+                    # Allow if target is inside the scoped root
+                    if target_path == scoped_root or str(target_path).startswith(str(scoped_root)):
+                        return target_path
+
             raise PermissionError(
                 f"Security Violation: Path '{raw_path}' resolves outside the active project workspace sandbox: '{workspaces_root}'"
             )

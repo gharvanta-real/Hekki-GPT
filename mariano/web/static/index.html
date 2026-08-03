@@ -104,10 +104,10 @@
         <div class="settings-row border-b">
           <span class="row-label">Active Model</span>
           <select class="settings-select" id="settings-hekki-model">
-            <option value="gemini-2.5-flash">Gemini 2.5 Flash (Fast)</option>
-            <option value="gemini-2.5-pro">Gemini 2.5 Pro (Smart)</option>
-            <option value="gemini-3.1-flash-lite">Gemini 3.1 Flash Lite</option>
-            <option value="gemini-3.1-flash">Gemini 3.1 Flash</option>
+            <option value="gemini-3.1-flash-lite">Gemini 3.1 Flash Lite (Fast)</option>
+            <option value="gemini-3.1-flash">Gemini 3.1 Flash (Pro)</option>
+            <option value="gemini-3.1-pro">Gemini 3.1 Pro (Deep)</option>
+            <option value="openrouter_nemotron">Nemotron 3 Ultra (OpenRouter)</option>
           </select>
         </div>
 
@@ -334,10 +334,6 @@
               <i data-lucide="compass" style="width:15px; height:15px; margin-right:8px;"></i>
               <span>Skills</span>
             </button>
-            <button class="sidebar-action-btn" id="btn-nav-coder">
-              <i data-lucide="code-2" style="width:15px; height:15px; margin-right:8px;"></i>
-              <span>Coder IDE</span>
-            </button>
             <button class="sidebar-action-btn" id="btn-nav-images">
               <i data-lucide="image" style="width:15px; height:15px; margin-right:8px;"></i>
               <span>Images</span>
@@ -371,167 +367,9 @@
     </div>
 
 
-    <!-- CODER SUBPANEL (shown when coder dock icon is active) -->
-    <div class="nav-inner" id="nav-inner-coder" style="display:none; flex-direction:column; height:calc(100% - 48px); padding: 2px 0 12px; position:relative;">
-      <!-- 0. Top Global Actions Group -->
-      <div style="display:flex; flex-direction:column; gap:6px; padding:0 8px;">
-        <div class="nav-section" style="margin-top: 4px;">
-          <div class="section-hdr" style="display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: var(--text-3); letter-spacing: 0.02em; font-weight: 500; margin-bottom: 2px; padding: 0 4px;">
-            <span>Actions</span>
-          </div>
-          <div class="nav-section-actions" style="display: flex; flex-direction: column; gap: 2px; margin-top: 0;">
-            <button class="sidebar-action-btn" id="coder-top-btn-new" title="Start a New Chat">
-              <i data-lucide="message-circle-plus" style="width:15px; height:15px; margin-right:8px;"></i>
-              <span>New Chat</span>
-            </button>
-            <button class="sidebar-action-btn" id="coder-top-btn-history" title="Show Past Conversations">
-              <i data-lucide="history" style="width:15px; height:15px; margin-right:8px;"></i>
-              <span>Conversation History</span>
-            </button>
-            <button class="sidebar-action-btn" id="coder-top-btn-scheduled" title="Show Scheduled Tasks">
-              <i data-lucide="clock" style="width:15px; height:15px; margin-right:8px;"></i>
-              <span>Scheduled Tasks</span>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div style="display:none; height:1px;background:var(--border);margin:8px 12px;opacity:0.6;"></div>
-
-      <!-- 1. Filters & Toolbar Row -->
-      <div class="coder-sidebar-toolbar" style="padding: 16px 12px 2px;">
-        <span class="section-hdr" style="font-size: 11px; color: var(--text-3); letter-spacing: 0.02em; font-weight: 500;">Projects</span>
-        <div class="coder-sidebar-toolbar-right">
-          <button class="coder-icon-btn" id="coder-toolbar-btn-filter" title="Filter & Group By">
-            <i data-lucide="sliders-horizontal" style="width:13px;height:13px;"></i>
-          </button>
-          <button class="coder-icon-btn" id="coder-toolbar-btn-new-session" title="New Session">
-            <i data-lucide="folder-plus" style="width:13px;height:13px;"></i>
-          </button>
-          <button class="coder-icon-btn" id="coder-toolbar-btn-sort-dir" title="Sort Order">
-            <i data-lucide="chevron-down" style="width:13px;height:13px;" id="coder-sort-dir-icon"></i>
-          </button>
-        </div>
-      </div>
-
-      <!-- 2. Active Project Header -->
-      <div class="coder-sidebar-header" style="border-bottom: none; padding-top: 4px; padding-bottom: 6px;">
-        <div class="coder-sidebar-header-left">
-          <i data-lucide="folder" style="width:14px;height:14px;color:var(--text-3);flex-shrink:0;"></i>
-          <span id="coder-active-project-name" style="font-weight:600;">default</span>
-        </div>
-        <div class="coder-sidebar-header-right">
-          <button class="coder-icon-btn" id="coder-sidebar-btn-settings" title="Manage Projects">
-            <i data-lucide="settings" style="width:14px;height:14px;"></i>
-          </button>
-          <button class="coder-icon-btn" id="coder-sidebar-btn-plus" title="Project Actions">
-            <i data-lucide="plus" style="width:14px;height:14px;"></i>
-          </button>
-        </div>
-      </div>
-
-      <!-- 3. Dynamic Session List -->
-      <div style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:1px;padding:0 8px;" id="coder-conv-list">
-        <!-- Rendered by coder_page.js -->
-      </div>
-
-      <!-- 4. WS Connection status dot at the bottom -->
-      <div style="display:none;align-items:center;gap:6px;padding:8px 12px;border-top:1px solid var(--border);background:var(--bg);">
-        <span id="coder-ws-dot" style="width:6px;height:6px;border-radius:50%;background:#6b7280;flex-shrink:0;"></span>
-        <span id="coder-ws-label" style="font-size:9.5px;color:var(--text-3);">Disconnected</span>
-      </div>
-
-
-
-      <!-- 5. Absolute Context Menus -->
-      <!-- Project Plus Menu -->
-      <div id="coder-project-plus-menu" class="coder-context-menu hidden" style="top:165px; right:8px;">
-        <button class="coder-context-menu-item" id="coder-menu-opt-new-project">
-          <i data-lucide="folder-plus" style="width:13px;height:13px;"></i>
-          <span>New Project</span>
-        </button>
-        <button class="coder-context-menu-item" id="coder-menu-opt-quick-start">
-          <i data-lucide="folder-git-2" style="width:13px;height:13px;"></i>
-          <span>Quick Start</span>
-        </button>
-      </div>
-
-      <!-- Toolbar Filter & Group Dropdown -->
-      <div id="coder-filter-dropdown" class="coder-context-menu hidden" style="top:133px; right:8px; width:170px;">
-        <div class="coder-context-menu-header">Group By</div>
-        <button class="coder-context-menu-item" data-group="project">
-          <i data-lucide="check" style="width:12px;height:12px;opacity:0;"></i>
-          <span>Project</span>
-        </button>
-        <button class="coder-context-menu-item" data-group="environment">
-          <i data-lucide="check" style="width:12px;height:12px;opacity:0;"></i>
-          <span>Environment</span>
-        </button>
-        <button class="coder-context-menu-item" data-group="status">
-          <i data-lucide="check" style="width:12px;height:12px;opacity:0;"></i>
-          <span>Status</span>
-        </button>
-        <button class="coder-context-menu-item active" data-group="none">
-          <i data-lucide="check" style="width:12px;height:12px;opacity:1;"></i>
-          <span>None</span>
-        </button>
-
-        <div class="coder-context-menu-separator"></div>
-
-        <div class="coder-context-menu-header">Sort Conversations</div>
-        <button class="coder-context-menu-item active" data-sort="ts">
-          <i data-lucide="check" style="width:12px;height:12px;opacity:1;"></i>
-          <span>Last Updated</span>
-        </button>
-        <button class="coder-context-menu-item" data-sort="alphabetical">
-          <i data-lucide="check" style="width:12px;height:12px;opacity:0;"></i>
-          <span>Alphabetical (A-Z)</span>
-        </button>
-        <button class="coder-context-menu-item" data-sort="date_added">
-          <i data-lucide="check" style="width:12px;height:12px;opacity:0;"></i>
-          <span>Date Added</span>
-        </button>
-
-        <div class="coder-context-menu-separator"></div>
-
-        <div class="coder-context-menu-header">Subtitles</div>
-        <button class="coder-context-menu-item" data-subtitle="worktree">
-          <i data-lucide="check" style="width:12px;height:12px;opacity:0;"></i>
-          <span>Worktree</span>
-        </button>
-        <button class="coder-context-menu-item active" data-subtitle="none">
-          <i data-lucide="check" style="width:12px;height:12px;opacity:1;"></i>
-          <span>No Subtitle</span>
-        </button>
-
-        <div class="coder-context-menu-separator"></div>
-
-        <div class="coder-context-menu-header">Filter</div>
-        <button class="coder-context-menu-item" id="coder-filter-opt-scheduled">
-          <i data-lucide="check" style="width:12px;height:12px;opacity:0;"></i>
-          <span>Scheduled</span>
-        </button>
-      </div>
-
-      <!-- Item Action Dropdown (More Options) -->
-      <div id="coder-item-actions-menu" class="coder-context-menu hidden">
-        <button class="coder-context-menu-item" id="coder-item-opt-unread">
-          <i data-lucide="mail" style="width:12px;height:12px;"></i>
-          <span>Mark as Unread</span>
-        </button>
-        <button class="coder-context-menu-item" id="coder-item-opt-rename">
-          <i data-lucide="pencil" style="width:12px;height:12px;"></i>
-          <span>Rename</span>
-        </button>
-        <button class="coder-context-menu-item delete" id="coder-item-opt-delete">
-          <i data-lucide="trash-2" style="width:12px;height:12px;"></i>
-          <span>Delete</span>
-        </button>
-      </div>
-    </div>
 
     <!-- Global User Profile (Anchored to bottom of sidebar) -->
-    <div style="position: relative; margin-top: auto; border-top: 1px solid var(--border);">
+    <div style="position: relative; margin-top: auto; border-top: none;">
       <!-- User Menu Dropdown -->
       <div class="user-menu-dropdown hidden" id="user-menu-dropdown">
         <div class="user-menu-header">anshu@gmail.com</div>
@@ -557,7 +395,7 @@
 
       <!-- User Profile Action -->
       <div class="sidebar-user-profile" id="btn-sidebar-user-profile" style="border-top: none;">
-        <div class="sidebar-user-avatar" id="sidebar-user-avatar">A</div>
+        <img class="sidebar-user-avatar" id="sidebar-user-avatar" src="/static/avatars/3d-avatar-1.webp" alt="User Avatar" />
         <div class="sidebar-user-info">
           <div class="sidebar-user-name" id="sidebar-user-name">User</div>
           <div class="sidebar-user-plan">Free plan</div>
@@ -740,125 +578,6 @@
       <!-- ═══ IMAGES GALLERY PANE ═══ -->
       <div id="images-pane"></div>
 
-      <!-- ═══ CODER PANE ═══ -->
-      <div id="coder-pane" style="display:none;flex-direction:column;width:100%;height:100%;overflow:hidden;background:var(--bg);">
-
-        <!-- WELCOME SCREEN (shown until project selected) -->
-        <div id="coder-welcome-screen" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;overflow-y:auto;">
-          <div style="width:100%;max-width:720px;margin:0 auto;display:flex;flex-direction:column;align-items:center;text-align:center;">
-            
-            <div style="width:52px;height:52px;border-radius:12px;background:var(--hover);display:flex;align-items:center;justify-content:center;margin-bottom:16px;border:1px solid var(--border);">
-              <i data-lucide="code-2" style="width:24px;height:24px;color:var(--text-2);"></i>
-            </div>
-            
-            <h2 style="font-family:var(--font-serif);font-size:26px;font-weight:400;color:var(--text);margin:0 0 8px;letter-spacing:-0.3px;">Hekki Coder</h2>
-            <p style="font-size:13.5px;color:var(--text-3);line-height:1.6;margin:0 0 32px;max-width:480px;">AI-powered transactional code refactoring pipeline with AST-aware verification and atomic fallback checks.</p>
-
-            <!-- Monochromatic Card Options (Expanded BGs, Smaller Icons, Divider) -->
-            <div style="display:flex;align-items:center;gap:16px;width:100%;max-width:540px;margin-bottom:32px;justify-content:center;">
-              <button id="coder-welcome-card-new" style="flex:1;background:transparent;border:none;padding:24px 20px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:12px;transition:all 0.12s;text-align:center;">
-                <div class="welcome-card-icon" style="width:64px;height:64px;border-radius:14px;background:var(--hover);display:flex;align-items:center;justify-content:center;transition:background 0.12s;">
-                  <i data-lucide="folder-plus" style="width:24px;height:24px;color:var(--text-2);"></i>
-                </div>
-                <div>
-                  <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px;">New Workspace</div>
-                  <div style="font-size:11px;color:var(--text-3);line-height:1.4;">Create a fresh project folder from scratch</div>
-                </div>
-              </button>
-
-              <!-- Mini Vertical Divider -->
-              <div style="width:1px;height:50px;background:var(--border);opacity:0.7;flex-shrink:0;"></div>
-
-              <button id="coder-welcome-card-existing" style="flex:1;background:transparent;border:none;padding:24px 20px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:12px;transition:all 0.12s;text-align:center;">
-                <div class="welcome-card-icon" style="width:64px;height:64px;border-radius:14px;background:var(--hover);display:flex;align-items:center;justify-content:center;transition:background 0.12s;">
-                  <i data-lucide="folder-open" style="width:24px;height:24px;color:var(--text-2);"></i>
-                </div>
-                <div>
-                  <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px;">Existing Project</div>
-                  <div style="font-size:11px;color:var(--text-3);line-height:1.4;">Open an existing directory on your disk</div>
-                </div>
-              </button>
-            </div>
-
-
-
-          </div>
-        </div>
-
-        <!-- CHAT AREA (hidden until workspace selected) -->
-        <div id="coder-chat-area" class="hidden" style="flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative;">
-          <!-- Message log with centered col -->
-          <div id="coder-chat-log" style="flex:1;overflow-y:auto;padding:0 24px;display:flex;flex-direction:column;scroll-padding-bottom:20px;">
-            <!-- Coder Chat Welcome Dashboard (shown for new unsaved sessions, sibling of messages container) -->
-            <div id="coder-chat-welcome" style="display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 0;margin:auto 0;flex:1;width:100%;">
-              <div style="width:52px;height:52px;border-radius:12px;background:var(--hover);display:flex;align-items:center;justify-content:center;margin-bottom:16px;border:1px solid var(--border);">
-                <i data-lucide="code-2" style="width:24px;height:24px;color:var(--text-2);"></i>
-              </div>
-              <h1 style="font-family:var(--font-serif);font-size:26px;font-weight:400;color:var(--text);margin:0 0 8px;letter-spacing:-0.3px;">Code Workspace</h1>
-              <p style="font-size:13.5px;color:var(--text-3);line-height:1.6;margin:0 0 32px;max-width:480px;">Ask Hekki Coder to write code, refactor files, add tests, or optimize your active workspace.</p>
-              
-              <!-- Prompt Suggestions Grid (premium styled cards) -->
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;max-width:540px;margin:0 auto;">
-                <button class="coder-suggestion-card" onclick="document.getElementById('coder-input').value='Refactor my codebase';document.getElementById('coder-input').dispatchEvent(new Event('input'));" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:left;cursor:pointer;transition:all 0.12s;">
-                  <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:4px;">Refactor Code</div>
-                  <div style="font-size:10.5px;color:var(--text-3);line-height:1.4;">Improve readability and structure of my files</div>
-                </button>
-                <button class="coder-suggestion-card" onclick="document.getElementById('coder-input').value='Write unit tests for connection.py';document.getElementById('coder-input').dispatchEvent(new Event('input'));" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:left;cursor:pointer;transition:all 0.12s;">
-                  <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:4px;">Write Tests</div>
-                  <div style="font-size:10.5px;color:var(--text-3);line-height:1.4;">Add unit verification coverage to python logic</div>
-                </button>
-                <button class="coder-suggestion-card" onclick="document.getElementById('coder-input').value='Optimize database search queries';document.getElementById('coder-input').dispatchEvent(new Event('input'));" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:left;cursor:pointer;transition:all 0.12s;">
-                  <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:4px;">Optimize Performance</div>
-                  <div style="font-size:10.5px;color:var(--text-3);line-height:1.4;">Speed up query execution times and bottlenecks</div>
-                </button>
-                <button class="coder-suggestion-card" onclick="document.getElementById('coder-input').value='Audit code for security issues';document.getElementById('coder-input').dispatchEvent(new Event('input'));" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:left;cursor:pointer;transition:all 0.12s;">
-                  <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:4px;">Audit Security</div>
-                  <div style="font-size:10.5px;color:var(--text-3);line-height:1.4;">Verify secure inputs and path boundaries check</div>
-                </button>
-              </div>
-            </div>
-
-            <div id="coder-chat-col" style="width:100%;max-width:720px;margin:0 auto;display:flex;flex-direction:column;padding:32px 0 20px;flex:1;">
-              <!-- Messages injected here -->
-            </div>
-          </div>
-
-          <!-- Pinned Bottom Input capsule (matches Hekki Chat exactly) -->
-          <div style="flex-shrink:0;padding:8px 24px 6px;background:var(--bg);">
-            <div style="width:100%;max-width:720px;margin:0 auto;">
-              <div id="coder-input-capsule" style="display: flex; flex-direction: column; align-items: stretch; gap: 0; padding: 10px 16px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-xl); box-shadow: var(--shadow); transition: border-color 0.15s, box-shadow 0.15s;">
-                <div class="input-preview-area hidden" id="preview-area-coder"></div>
-                <div class="input-capsule-row" style="display: flex; flex-direction: row; align-items: center; gap: 10px;">
-                  <!-- Attachment button (plus) -->
-                  <button class="cap-icon-btn" id="coder-btn-attach" title="Attach Files" style="background: var(--hover); color: var(--text); flex-shrink: 0;">
-                    <i data-lucide="plus"></i>
-                  </button>
-
-                  <textarea id="coder-input" rows="1" placeholder="Write code, refactor files, or fix bugs..."
-                    style="flex: 1; resize: none; outline: none; border: none; background: transparent; padding-top: 4px; min-height: 24px; height: 24px; color:var(--text); font-family:var(--font); font-size:14px; line-height:1.55; max-height:200px; overflow-y:hidden;"></textarea>
-
-                  <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
-                    <button class="cap-icon-btn" id="coder-btn-voice" title="Voice">
-                      <i data-lucide="mic"></i>
-                    </button>
-                    <!-- Submit / Send Button -->
-                    <button id="coder-btn-send" class="submit-btn hidden" title="Send Message">
-                      <i data-lucide="arrow-up"></i>
-                    </button>
-                    <!-- Stop Button -->
-                    <button id="coder-btn-stop" class="submit-btn hidden" title="Stop Generation" style="background: rgba(239, 68, 68, 0.08); color: #ef4444; border: none;">
-                      <i data-lucide="square" style="fill: currentColor; width: 10px; height: 10px;"></i>
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <div style="font-size:10px;color:var(--text-3);text-align:center;margin-top:5px;">Hekki Coder writes changes securely to the active project path.</div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-      <!-- ═══ end CODER PANE ═══ -->
 
       <!-- ═══ IMAGES PANE ═══ -->
       <div id="images-pane"></div>

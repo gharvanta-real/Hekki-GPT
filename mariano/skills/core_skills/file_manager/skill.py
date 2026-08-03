@@ -48,7 +48,20 @@ class FileManagerSkill(BaseSkill):
                 resolved_dst = PathGuard.secure_path(resolved_dst)
 
         except PermissionError as pe:
-            return SkillResult(success=False, data=None, error=str(pe))
+            # Extract the attempted path from the error message for the permission card
+            import re as _re
+            _path_match = _re.search(r"Path '([^']+)' resolves outside", str(pe))
+            _attempted_path = _path_match.group(1) if _path_match else str(path)
+            return SkillResult(
+                success=False,
+                data=None,
+                error=str(pe),
+                metadata={
+                    "__permission_request__": True,
+                    "attempted_path": _attempted_path,
+                    "action": action
+                }
+            )
         except Exception as e:
             return SkillResult(success=False, data=None, error=f"Path resolution failed: {e}")
 
@@ -58,7 +71,11 @@ class FileManagerSkill(BaseSkill):
             content = kwargs.get("content", kwargs.get("code", kwargs.get("text", "")))
             return self._write(resolved, content)
         elif action == "delete":
-            return self._delete(resolved)
+            return SkillResult(
+                success=False,
+                data=None,
+                error="Safety Policy: File and directory deletion ('delete' action) is strictly disabled by user security policy."
+            )
         elif action == "create_dir":
             return self._create_dir(resolved)
         elif action == "copy":

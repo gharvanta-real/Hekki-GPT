@@ -226,7 +226,22 @@ async def run_react_loop(
                     result = await agent._registry.execute(name, **args)
                     tools_used.append(name)
                     result_text = result.to_text()
-                    
+
+                    # ── Permission Request Intercept ───────────────────────────
+                    # If the tool hit a sandbox boundary, emit a permission_request
+                    # event to the frontend (shows Allow/Deny card) and halt the loop.
+                    # Do NOT feed the error to Gemini — that causes verbose text explanations.
+                    if not result.success and result.metadata and result.metadata.get("__permission_request__"):
+                        attempted_path = result.metadata.get("attempted_path", "")
+                        yield AgentEvent(
+                            "permission_request",
+                            f"The AI is trying to access a path outside the current workspace sandbox: {attempted_path}",
+                            metadata={"path": attempted_path, "tool": name}
+                        )
+                        halt_execution = True
+                        break
+                    # ── End Permission Request Intercept ──────────────────────
+
                     # TCMM State Update (GABA lateral inhibition factored by active manifests size)
                     agent._nm.update_on_step(
                         action_name=name,

@@ -18,7 +18,10 @@ class SkillResult:
 
     def to_text(self) -> str:
         if not self.success:
-            return f"ERROR: {self.error}"
+            err = self.error if self.error else "Execution failed"
+            if self.data and isinstance(self.data, str) and self.data.strip():
+                return f"ERROR: {err}\n\nOutput:\n{self.data}"
+            return f"ERROR: {err}"
         if isinstance(self.data, str):
             return self.data
         if isinstance(self.data, (dict, list)):

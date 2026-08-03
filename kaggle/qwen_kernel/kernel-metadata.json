@@ -1,0 +1,14 @@
+{
+  "id": "anshugurjar2065/hekki-uncensored-qwen-t4x2",
+  "title": "hekki-uncensored-qwen-t4x2",
+  "code_file": "qwen_server.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_internet": true,
+  "dataset_sources": [],
+  "competition_sources": [],
+  "kernel_sources": [],
+  "model_sources": []
+}

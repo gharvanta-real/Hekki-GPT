@@ -34,9 +34,11 @@ function _buildLayout() {
 
       <!-- Collapsible Sidebar (Left Side, Full Height) -->
       <div class="debate-sidebar" style="padding-top: 0;">
-        <!-- Top Nav Header -->
-        <div class="nav-header" style="height: 48px; display: flex; align-items: center; justify-content: space-between; border-bottom: none; padding: 0 4px; flex-shrink: 0;">
-          <div style="font-weight: 700; font-size: 16px; color: var(--text-primary); margin-left: 4px; display: flex; align-items: center; gap: 8px;">Hekki</div>
+        <!-- Nav Header (With Back Chevron right before Collapsible Icon) -->
+        <div class="nav-header" style="display: flex; align-items: center; justify-content: space-between; height: 48px; padding: 0 12px 0 16px; flex-shrink: 0;">
+          <div class="nav-header-title" style="font-weight: 600; font-size: 16px; color: var(--text-primary); margin: 0; padding: 0; display: flex; align-items: center; gap: 8px; flex: 1;">
+            Hekki
+          </div>
           <div style="display: flex; align-items: center; gap: 4px;">
             <button class="icon-btn" id="btn-debate-sidebar-back" title="Back to Chat" style="border: none; background: transparent; cursor: pointer;">
               <i data-lucide="chevron-left" style="width: 14px; height: 14px;"></i>
@@ -48,9 +50,9 @@ function _buildLayout() {
         </div>
 
         <!-- Scrollable Inner Content Area -->
-        <div class="debate-sidebar-inner">
+        <div class="debate-sidebar-inner" style="padding-top: 0;">
           <!-- Section Header -->
-          <div class="debate-sidebar-section-label" style="margin-top: 4px;">Actions</div>
+          <div class="debate-sidebar-section-label" style="margin-top: 0; padding-top: 0;">Actions</div>
 
           <!-- Sidebar Controls List -->
           <div class="debate-sidebar-controls-list">
@@ -185,7 +187,7 @@ function _buildLayout() {
         </div>
 
         <!-- Global User Profile (Anchored to bottom of sidebar) -->
-        <div style="position: relative; margin-top: auto; border-top: 1px solid var(--border);">
+        <div style="position: relative; margin-top: auto; border-top: none;">
           <!-- User Menu Dropdown (Debate Specific) -->
           <div class="user-menu-dropdown hidden" id="debate-user-menu-dropdown" style="bottom: 50px; left: 8px;">
             <div class="user-menu-header">anshu@gmail.com</div>
@@ -211,9 +213,9 @@ function _buildLayout() {
 
           <!-- User Profile Action -->
           <div class="sidebar-user-profile" id="btn-debate-sidebar-user-profile" style="border-top: none;">
-            <div class="sidebar-user-avatar">A</div>
+            <img class="sidebar-user-avatar" id="debate-sidebar-user-avatar" src="/static/avatars/3d-avatar-1.webp" alt="User Avatar" />
             <div class="sidebar-user-info">
-              <div class="sidebar-user-name">User</div>
+              <div class="sidebar-user-name" id="debate-sidebar-user-name">User</div>
               <div class="sidebar-user-plan">Free plan</div>
             </div>
             <i data-lucide="chevrons-up-down" style="width:14px; height:14px; color:var(--text-3); margin-left:4px;"></i>
@@ -272,18 +274,22 @@ function _buildLayout() {
             <!-- Thread (Active Debate Room) -->
             <div class="debate-thread" id="debate-thread" style="flex: 1; overflow-y: auto;">
               <div class="debate-empty-state" id="debate-empty-state">
-                <div class="des-icon">⚔</div>
+                <div class="des-icon">
+                  <img src="/static/hekki.png" alt="Logo" style="width: 44px; height: 44px; border-radius: 50%; object-fit: contain; pointer-events: none;" />
+                </div>
                 <div class="des-title">Start a Debate</div>
                 <div class="des-subtitle">Type a topic below — Alpha and Beta will argue it out across 3 rounds. You can intervene anytime.</div>
                 <div class="des-agents">
-                  <div class="des-agent">
-                    <span class="des-avatar a">A</span>
-                    <span>Alpha takes a strong position</span>
+                  <div class="des-card">
+                    <div class="des-card-avatar">A</div>
+                    <div class="des-card-text">Alpha takes a strong position</div>
+                    <i data-lucide="arrow-up-right" class="des-card-arrow"></i>
                   </div>
                   <div class="des-vs">vs</div>
-                  <div class="des-agent">
-                    <span class="des-avatar b">B</span>
-                    <span>Beta challenges every point</span>
+                  <div class="des-card">
+                    <div class="des-card-avatar">B</div>
+                    <div class="des-card-text">Beta challenges every point</div>
+                    <i data-lucide="arrow-up-right" class="des-card-arrow"></i>
                   </div>
                 </div>
               </div>
@@ -454,6 +460,8 @@ function _buildLayout() {
 // ── Event bindings ──────────────────────────────────────────────────────────
 function _bindEvents() {
   const $ = (id) => document.getElementById(id);
+
+  if (window.setup3DAvatar) window.setup3DAvatar();
 
   const textarea = $('debate-input');
   if (textarea) {
@@ -953,16 +961,27 @@ function _resetDebate() {
   if (thread) {
     thread.innerHTML = `
       <div class="debate-empty-state" id="debate-empty-state">
-        <div class="des-icon">⚔</div>
+        <div class="des-icon">
+          <img src="/static/hekki.png" alt="Logo" style="width: 44px; height: 44px; border-radius: 50%; object-fit: contain; pointer-events: none;" />
+        </div>
         <div class="des-title">Start a Debate</div>
-        <div class="des-subtitle">Type a topic below — Alpha and Beta will argue it out across 3 rounds.</div>
+        <div class="des-subtitle">Type a topic below — Alpha and Beta will argue it out across 3 rounds. You can intervene anytime.</div>
         <div class="des-agents">
-          <div class="des-agent"><span class="des-avatar a">A</span><span>Alpha takes a strong position</span></div>
+          <div class="des-card">
+            <div class="des-card-avatar">A</div>
+            <div class="des-card-text">Alpha takes a strong position</div>
+            <i data-lucide="arrow-up-right" class="des-card-arrow"></i>
+          </div>
           <div class="des-vs">vs</div>
-          <div class="des-agent"><span class="des-avatar b">B</span><span>Beta challenges every point</span></div>
+          <div class="des-card">
+            <div class="des-card-avatar">B</div>
+            <div class="des-card-text">Beta challenges every point</div>
+            <i data-lucide="arrow-up-right" class="des-card-arrow"></i>
+          </div>
         </div>
       </div>
     `;
+    if (window.lucide) lucide.createIcons();
   }
 
   ['1','2','3','s'].forEach(s => _setFlowStep(s, 'idle'));
@@ -1540,16 +1559,27 @@ function _resetDebateUIOnly() {
   if (thread) {
     thread.innerHTML = `
       <div class="debate-empty-state" id="debate-empty-state">
-        <div class="des-icon">⚔</div>
+        <div class="des-icon">
+          <img src="/static/hekki.png" alt="Logo" style="width: 44px; height: 44px; border-radius: 50%; object-fit: contain; pointer-events: none;" />
+        </div>
         <div class="des-title">Start a Debate</div>
         <div class="des-subtitle">Type a topic below — Alpha and Beta will argue it out across 3 rounds. You can intervene anytime.</div>
         <div class="des-agents">
-          <div class="des-agent"><span class="des-avatar a">A</span><span>Alpha takes a strong position</span></div>
+          <div class="des-card">
+            <div class="des-card-avatar">A</div>
+            <div class="des-card-text">Alpha takes a strong position</div>
+            <i data-lucide="arrow-up-right" class="des-card-arrow"></i>
+          </div>
           <div class="des-vs">vs</div>
-          <div class="des-agent"><span class="des-avatar b">B</span><span>Beta challenges every point</span></div>
+          <div class="des-card">
+            <div class="des-card-avatar">B</div>
+            <div class="des-card-text">Beta challenges every point</div>
+            <i data-lucide="arrow-up-right" class="des-card-arrow"></i>
+          </div>
         </div>
       </div>
     `;
+    if (window.lucide) lucide.createIcons();
   }
 
   ['1','2','3','s'].forEach(s => _setFlowStep(s, 'idle'));

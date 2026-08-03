@@ -30,6 +30,16 @@ class RunCommandSkill(BaseSkill):
         if not command:
             return SkillResult(success=False, data=None, error="Parameter 'command' is required.")
 
+        # Security Policy: Block destructive deletion / formatting commands
+        cmd_lower = command.lower()
+        blocked_terms = ["del ", "del/", "rmdir", "rd ", "rd/", "rm -", "remove-item", "erase ", "format "]
+        if any(term in cmd_lower for term in blocked_terms):
+            return SkillResult(
+                success=False,
+                data=None,
+                error="Safety Policy: Deletion and formatting commands ('del', 'rmdir', 'rm', 'Remove-Item', 'format') are strictly disabled by user security policy."
+            )
+
         # Determine working directory
         try:
             from mariano.core.workspace import PathGuard
@@ -73,10 +83,21 @@ class RunCommandSkill(BaseSkill):
             )
 
         except asyncio.TimeoutError:
+            partial_text = ""
+            try:
+                process.kill()
+                out_b, err_b = await process.communicate()
+                partial_out = out_b.decode("utf-8", errors="replace") if out_b else ""
+                partial_err = err_b.decode("utf-8", errors="replace") if err_b else ""
+                if partial_out or partial_err:
+                    partial_text = f"STDOUT:\n{partial_out}\nSTDERR:\n{partial_err}".strip()
+            except Exception:
+                pass
+            err_msg = f"ERROR: Command execution timed out after 60 seconds: '{command}'"
             return SkillResult(
                 success=False,
-                data=None,
-                error=f"Command execution timed out after 60 seconds: '{command}'"
+                data=partial_text if partial_text else err_msg,
+                error=err_msg
             )
         except Exception as e:
             return SkillResult(

@@ -105,10 +105,6 @@ export function bindNavigation(tabs, showToast, inConversationStateRef) {
     router.navigateTo('debate');
   });
 
-  // ── Coder IDE ────────────────────────────────────────
-  $('btn-nav-coder')?.addEventListener('click', () => {
-    router.navigateTo('coder');
-  });
 
   // ── Images Gallery ───────────────────────────────────
   $('btn-nav-images')?.addEventListener('click', () => {

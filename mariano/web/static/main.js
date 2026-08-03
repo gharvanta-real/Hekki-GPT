@@ -423,15 +423,43 @@ if (document.readyState === 'loading') {
   boot();
 }
 
-// ── GREETING & USER PROFILE ──────────────────────────────────────────────────
+// ── GREETING & USER PROFILE & 3D AVATAR CYCLER ──────────────────────────────
+function setup3DAvatar() {
+  let curIdx = parseInt(localStorage.getItem('hekki_3d_avatar_idx') || '0', 10);
+  if (curIdx === 0) {
+    curIdx = 1;
+    localStorage.setItem('hekki_3d_avatar_idx', '1');
+  }
+
+  const avatarUrl = `/static/avatars/3d-avatar-${curIdx}.webp`;
+  ['sidebar-user-avatar', 'debate-sidebar-user-avatar'].forEach(id => {
+    const sbAvatar = document.getElementById(id);
+    if (!sbAvatar) return;
+    if (sbAvatar.tagName && sbAvatar.tagName.toLowerCase() === 'img') {
+      sbAvatar.src = avatarUrl;
+    } else {
+      sbAvatar.innerHTML = `<img src="${avatarUrl}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;" />`;
+    }
+  });
+}
+
+function rotate3DAvatarOnBoot() {
+  let lastIdx = parseInt(localStorage.getItem('hekki_3d_avatar_idx') || '0', 10);
+  let nextIdx = (lastIdx % 5) + 1;
+  localStorage.setItem('hekki_3d_avatar_idx', nextIdx.toString());
+  setup3DAvatar();
+}
+window.setup3DAvatar = setup3DAvatar;
+
 function setGreeting(nameOverride) {
   const el = $('greeting-text');
   const updateSidebar = (name) => {
     const sbName = $('sidebar-user-name');
-    const sbAvatar = $('sidebar-user-avatar');
+    const dbName = $('debate-sidebar-user-name');
     if (sbName) sbName.textContent = name || 'User';
-    if (sbAvatar) sbAvatar.textContent = (name || 'U').charAt(0).toUpperCase();
+    if (dbName) dbName.textContent = name || 'User';
   };
+  rotate3DAvatarOnBoot();
 
   const hour = new Date().getHours();
   const timeGreet = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';

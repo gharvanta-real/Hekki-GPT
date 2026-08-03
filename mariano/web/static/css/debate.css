@@ -211,10 +211,11 @@
 .debate-sidebar-inner {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 2px;
   overflow-y: auto;
   flex-grow: 1;
-  padding: 2px 8px 0 8px;
+  padding: 0 8px;
+  font-family: var(--font);
 }
 .debate-layout.collapsed-sidebar .debate-sidebar-inner {
   padding: 4px 6px !important;
@@ -265,9 +266,9 @@
 .debate-sidebar-controls-list {
   display: flex;
   flex-direction: column;
-  gap: 2px; /* match section-list gap */
-  margin: 0; /* remove bottom margin completely */
-  padding: 0; /* remove additional padding to align with section-hdr */
+  gap: 2px;
+  margin: 0;
+  padding: 0;
 }
 .debate-list-btn {
   display: flex;
@@ -280,8 +281,8 @@
   border: none !important;
   border-radius: 8px;
   color: var(--text-2);
-  font-family: inherit;
-  font-size: 13px;
+  font-family: var(--font);
+  font-size: 14px;
   font-weight: 400;
   cursor: pointer;
   transition: all 0.12s ease;
@@ -292,22 +293,29 @@
 }
 .debate-list-btn i, .debate-list-btn svg {
   color: var(--text-2);
-  transition: color 0.12s ease;
+  stroke-width: 2.2px;
+  transition: color 0.12s ease, stroke-width 0.12s ease;
 }
 .debate-list-btn:hover i, .debate-list-btn:hover svg {
-  color: var(--text);
+  color: var(--text-primary);
+  stroke-width: 2.4px;
 }
 .debate-sidebar-section-label {
   display: flex;
   align-items: center;
   width: 100%;
+  font-family: var(--font);
   font-size: 11px;
-  font-weight: 500; /* match main chat sidebar .section-hdr span */
-  color: var(--text-secondary);
+  font-weight: 600;
+  color: var(--text-3);
+  margin-top: 4px;
   margin-bottom: 2px;
-  margin-top: 0;
   letter-spacing: 0.02em;
-  padding: 0 8px; /* match main chat sidebar section-hdr padding */
+  padding: 0 8px !important;
+}
+.debate-sidebar-inner > .debate-sidebar-section-label:first-of-type {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
 }
 .debate-sidebar-divider {
   display: none;
@@ -320,7 +328,7 @@
   gap: 12px;
   padding: 4px 8px;
   cursor: default;
-  border-bottom: 1px solid var(--border);
+  border-bottom: none !important;
   transition: background 0.12s;
   position: relative;
 }
@@ -432,45 +440,86 @@
   flex: 1;
 }
 .des-icon {
-  font-size: 28px;
-  opacity: 0.5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
 }
 .des-title {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 600;
   color: var(--text-primary);
 }
 .des-subtitle {
   font-size: 13px;
   color: var(--text-secondary);
-  max-width: 400px;
-  line-height: 1.6;
+  max-width: 420px;
+  line-height: 1.5;
 }
 .des-agents {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 16px;
-  margin-top: 12px;
+  margin-top: 16px;
+  flex-wrap: wrap;
 }
-.des-agent {
+.des-card {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 12px;
-  color: var(--text-secondary);
+  gap: 12px;
+  background: var(--card);
+  border: none !important;
+  outline: none !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  border-radius: 12px;
+  padding: 14px 20px 14px 14px;
+  position: relative;
+  min-width: 230px;
+  transition: transform 0.15s ease, background 0.15s ease;
 }
-.des-avatar {
-  width: 26px;
-  height: 26px;
+.des-card:hover {
+  background: var(--hover);
+  transform: translateY(-2px);
+}
+.des-card-avatar {
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
-  border: 1px solid var(--border);
+  background: #000000;
+  color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
-  font-weight: 400;
-  background: var(--card);
-  color: var(--text-secondary);
+  font-weight: 700;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+body.dark .des-card-avatar {
+  background: #ffffff;
+  color: #000000;
+}
+.des-card-text {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+  padding-right: 14px;
+  text-align: left;
+}
+.des-card-arrow {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  width: 14px;
+  height: 14px;
+  color: var(--text-3);
+  opacity: 0.7;
+}
+.des-vs {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-3);
+  opacity: 0.6;
 }
 .des-vs {
   font-size: 11px;
@@ -801,15 +850,15 @@
   margin: 0 auto !important;
   box-sizing: border-box !important;
   background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow);
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  border-radius: 8px;
   padding: 10px 16px;
   display: flex;
   flex-direction: column;
   align-items: stretch;
   gap: 0;
-  transition: border-color 0.15s, box-shadow 0.15s;
 }
 .debate-active-progress-card,
 .debate-active-search-card {
@@ -1022,14 +1071,15 @@ body.dark .debate-input-wrapper:focus-within {
   cursor: pointer;
   list-style: none;
   user-select: none;
+  font-family: var(--font);
   font-size: 11px;
-  font-weight: 500; /* match main chat sidebar .section-hdr span */
+  font-weight: 600;
   color: var(--text-secondary);
   letter-spacing: 0.02em;
   margin-bottom: 6px;
   margin-top: 16px;
   transition: color 0.12s;
-  padding: 0 8px; /* match main chat sidebar section-hdr padding */
+  padding: 0 8px !important;
 }
 .debate-sidebar-summary:hover {
   color: var(--text);

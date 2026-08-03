@@ -583,11 +583,10 @@ async def list_images():
     image_extensions = {'.png', '.jpg', '.jpeg', '.webp', '.gif'}
     base_dir = Path(__file__).resolve().parent.parent.parent  # repo root
 
-    # Search these directories recursively
-    search_dirs = [
-        base_dir / "data" / "workspace",
-        Path("C:/Users/anshu/.gemini/antigravity/brain"),
-    ]
+    # Search dedicated clean AI-generated images folder ONLY (no uploaded files or screenshots)
+    gen_dir = base_dir / "data" / "generated_images"
+    gen_dir.mkdir(parents=True, exist_ok=True)
+    search_dirs = [gen_dir]
 
     images = []
     for search_dir in search_dirs:
@@ -623,7 +622,7 @@ class DeleteImagesPayload(BaseModel):
 
 @app.post("/api/images/delete")
 async def delete_images(payload: DeleteImagesPayload):
-    """Deletes selected or all image files from workspace and brain directories."""
+    """Deletes selected or all image files from data/generated_images folder."""
     import os
     deleted_count = 0
     errors = []
@@ -631,10 +630,8 @@ async def delete_images(payload: DeleteImagesPayload):
     if payload.delete_all:
         image_extensions = {'.png', '.jpg', '.jpeg', '.webp', '.gif'}
         base_dir = Path(__file__).resolve().parent.parent.parent
-        search_dirs = [
-            base_dir / "data" / "workspace",
-            Path("C:/Users/anshu/.gemini/antigravity/brain"),
-        ]
+        gen_dir = base_dir / "data" / "generated_images"
+        search_dirs = [gen_dir]
         for sdir in search_dirs:
             if not sdir.exists():
                 continue

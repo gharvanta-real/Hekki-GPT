@@ -320,16 +320,29 @@ export const ChatSessionManager = {
                 ? `<div class="ai-reasoning-card" style="margin: 3px 0 6px 14px; padding: 3px 0 3px 10px; border-left: 1px dashed var(--border); background: transparent; font-size: 11.5px; font-family: var(--font); color: var(--text-3); line-height: 1.55; opacity: 0.9;"><div style="white-space:pre-wrap;word-break:break-word;"><span>${escapeHtml(r.reasoning)}</span></div></div>`
                 : '';
               
+              const isTerminal = r.label && (r.label.includes('Shell') || r.label.includes('Command') || r.label.includes('System') || r.label.includes('run_command'));
+              const outputHtml = r.output
+                ? `<div style="width: 100%; margin-top: 4px; padding-left: 21px; box-sizing: border-box;">
+                    <details style="margin: 0; opacity: 0.95; width: 100%;">
+                      <summary style="cursor:pointer; color:var(--text-3); font-size:11px; font-weight:500; outline:none; user-select:none; display:inline-flex; align-items:center; gap:4px; padding: 2px 0;">
+                        <span>${isTerminal ? '▸ Terminal Output' : '▸ View output details'}</span>
+                      </summary>
+                      <pre style="margin:6px 0 2px 0; padding:10px 12px; background:var(--card); color:var(--text-primary); border-radius:8px; font-size:11px; font-family:var(--font-mono); line-height:1.55; overflow-x:auto; border:none !important; box-shadow:none !important; max-height:220px; width:100%; box-sizing:border-box; white-space:pre-wrap; word-break:break-all;">${escapeHtml(r.output)}</pre>
+                    </details>
+                  </div>`
+                : '';
+
               const iconToUse = r.icon || '▸';
 
               return `
-                <div class="tool-log-card" style="display:flex; align-items:center; justify-content:space-between; margin:3px 0 4px 0; padding:4px 0; background:transparent; font-size:12px; font-family:var(--font); color:var(--text-3); gap:10px;">
+                <div class="tool-log-card" style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; margin:3px 0 4px 0; padding:4px 0; background:transparent; font-size:12px; font-family:var(--font); color:var(--text-3); gap:10px;">
                   <div style="display:flex; align-items:center; gap:8px; overflow:hidden;">
-                    <span style="flex-shrink:0; opacity:0.5;">${escapeHtml(iconToUse)}</span>
+                    <span style="flex-shrink:0; opacity:0.75;">${iconToUse}</span>
                     <span style="font-weight:500; color:var(--text-secondary); white-space:nowrap;">${escapeHtml(r.label || '')}</span>
                     <span class="tool-detail" style="color:var(--text-3); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:340px;">${r.detail || ''}</span>
                   </div>
                   <span class="tool-status" style="flex-shrink:0; font-size:11px; color:var(--text-3); white-space:nowrap; opacity:0.6;">${statusSpan}</span>
+                  ${outputHtml}
                 </div>
                 ${reasoningHtml}
               `;

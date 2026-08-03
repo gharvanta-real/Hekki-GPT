@@ -9,7 +9,7 @@
  * Pages: 'chat' | 'workspace' | 'skills' | 'changelog' | 'debate'
  */
 
-const PAGES = ['chat', 'workspace', 'skills', 'changelog', 'debate', 'coder', 'images'];
+const PAGES = ['chat', 'workspace', 'skills', 'changelog', 'debate', 'images'];
 
 class Router {
   constructor() {
@@ -213,33 +213,6 @@ class Router {
         }
         break;
 
-      case 'coder':
-        this._showPane('coder-pane');
-        // Restore the coder nav subpanel (reversed the _hideAllPanes triple-hide)
-        document.getElementById('sidebar-nav')?.classList.remove('collapsed');
-        const toggleBtnCoder = document.getElementById('btn-sidebar-toggle-main');
-        if (toggleBtnCoder) toggleBtnCoder.style.display = '';
-        if (innerChat) innerChat.style.display = 'none';
-        if (innerCoder) {
-          innerCoder.style.display = 'flex';
-          innerCoder.style.visibility = 'visible';
-          innerCoder.style.pointerEvents = '';
-        }
-        
-        // Update main titlebar breadcrumb
-        if (window.updateCoderBreadcrumb) {
-          window.updateCoderBreadcrumb();
-        } else if (window.updateTitleBreadcrumb) {
-          let activeProjName = '';
-          try {
-            const saved = localStorage.getItem('hekki_coder_active_project');
-            if (saved) {
-              activeProjName = JSON.parse(saved).name;
-            }
-          } catch {}
-          window.updateTitleBreadcrumb(activeProjName, '');
-        }
-        break;
 
       case 'images':
         this._showPane('images-pane', 'flex');
