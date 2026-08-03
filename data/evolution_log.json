@@ -1,5 +1,13 @@
 [
   {
+    "timestamp": "2026-08-03T22:39:28.989191",
+    "type": "ui_redesign",
+    "title": "Targeted Exact Debate Sidebar Button & Summary Selectors in debate.css",
+    "description": "Updated debate.css to target .debate-list-btn, .debate-sidebar-summary, .summary-title, and .accordion-chevron directly with color: var(--text) !important and opacity: 1 !important, fixing muted grey text on Participants/Flow/Documents accordions and controls.",
+    "reason": "Fulfilled user issue report: Participants, Flow, Documents, and action buttons in Debate sidebar were inheriting grey styling because exact DOM class names were missing.",
+    "impact": "100% pure black & white unbold highlight for all Debate Playground sidebar links & accordions."
+  },
+  {
     "timestamp": "2026-08-03T22:38:36.997633",
     "type": "ui_redesign",
     "title": "Forced var(--text) Color for All Sidebar Link Spans & Labels",

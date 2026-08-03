@@ -1650,34 +1650,46 @@ body.dark .debate-stop-btn i, body.dark .debate-stop-btn svg {
   z-index: 9999;
 }
 
-/* === FULL OPACITY & UNBOLD HIGHLIGHT FOR DEBATE PLAYGROUND SIDEBAR LINKS & CHAT ITEMS ONLY (NO TOUCH BADGES) === */
+/* === FULL OPACITY & UNBOLD HIGHLIGHT FOR DEBATE PLAYGROUND SIDEBAR LINKS === */
+.debate-sidebar .debate-list-btn,
+.debate-sidebar .debate-list-btn span,
+.debate-sidebar .debate-sidebar-summary,
+.debate-sidebar .debate-sidebar-summary .summary-title,
+.debate-sidebar .debate-sidebar-summary span,
+.debate-sidebar button,
+.debate-sidebar button span,
+.debate-sidebar a,
+.debate-sidebar a span,
 .debate-sidebar-action-btn,
-.debate-sidebar-action-btn span,
 .debate-nav-item,
-.debate-nav-item span,
 .debate-sidebar-item,
-.debate-sidebar-item span,
-.debate-hist-item,
-.debate-hist-item span,
-.directory-sidebar button,
-.directory-sidebar button span,
-.directory-sidebar a,
-.directory-sidebar a span,
-.directory-sidebar .sidebar-action-btn,
-.directory-sidebar .sidebar-action-btn span {
+.debate-hist-item {
   color: var(--text) !important;
   opacity: 1 !important;
   font-weight: 400 !important;
 }
 
-.directory-sidebar i,
-.directory-sidebar svg,
-.directory-sidebar .lucide,
-.debate-nav-item i,
-.debate-nav-item svg,
-.debate-nav-item .lucide {
+.debate-sidebar .debate-list-btn i,
+.debate-sidebar .debate-list-btn svg,
+.debate-sidebar .debate-list-btn .lucide,
+.debate-sidebar .debate-sidebar-summary i,
+.debate-sidebar .debate-sidebar-summary svg,
+.debate-sidebar .debate-sidebar-summary .lucide,
+.debate-sidebar .accordion-chevron,
+.debate-sidebar i,
+.debate-sidebar svg,
+.debate-sidebar .lucide {
   color: var(--text) !important;
   opacity: 1 !important;
+}
+
+/* Section Label ("Actions") */
+.debate-sidebar .debate-sidebar-section-label {
+  color: var(--text-secondary, #d4d4d8) !important;
+  opacity: 0.8 !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.02em;
 }
 
 
