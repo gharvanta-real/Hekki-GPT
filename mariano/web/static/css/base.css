@@ -6,11 +6,11 @@
   --border:      #E8E8E6; 
   --hover:       #EEEEEC;
 
-  --text:        #191919;
+  --text:        #111111;
   --text-primary: var(--text);
-  --text-2:      #525250;
+  --text-2:      #52525b;
   --text-secondary: var(--text-2);
-  --text-3:      #8e8d89;
+  --text-3:      #a1a1aa;
 
   --orange:      #d97706;
   --blue:        #2563eb;
@@ -49,11 +49,11 @@ body.dark {
   --border:      #333332;
   --hover:       #2A2A29;
 
-  --text:        #e8e6e3; /* warm off-white text */
+  --text:        #FFFFFF; /* pure clean white text */
   --text-primary: var(--text);
-  --text-2:      #9d9b96;
+  --text-2:      #a1a1aa;
   --text-secondary: var(--text-2);
-  --text-3:      #757470;
+  --text-3:      #71717a;
 
   --shadow:      none;
   --shadow-md:   none;

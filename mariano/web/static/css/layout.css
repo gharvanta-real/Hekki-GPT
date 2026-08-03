@@ -1427,7 +1427,7 @@ body.dark .sidebar-user-avatar {
 #sidebar-nav button,
 #sidebar-nav a,
 #sidebar-nav span:not(.section-hdr span):not(.badge):not(.img-gallery-count) {
-  color: var(--text-primary, var(--text, #ffffff)) !important;
+  color: var(--text) !important;
   opacity: 1 !important;
   font-weight: 400 !important;
 }
@@ -1444,7 +1444,7 @@ body.dark .sidebar-user-avatar {
 #sidebar-nav .lucide,
 #sidebar-nav svg,
 #sidebar-nav i {
-  color: var(--text-primary, var(--text, #ffffff)) !important;
+  color: var(--text) !important;
   opacity: 1 !important;
 }
 

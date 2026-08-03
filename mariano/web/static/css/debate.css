@@ -1658,7 +1658,7 @@ body.dark .debate-stop-btn i, body.dark .debate-stop-btn svg {
 .directory-sidebar button,
 .directory-sidebar a,
 .directory-sidebar .sidebar-action-btn {
-  color: var(--text-primary, var(--text, #ffffff)) !important;
+  color: var(--text) !important;
   opacity: 1 !important;
   font-weight: 400 !important;
 }
@@ -1669,7 +1669,7 @@ body.dark .debate-stop-btn i, body.dark .debate-stop-btn svg {
 .debate-nav-item i,
 .debate-nav-item svg,
 .debate-nav-item .lucide {
-  color: var(--text-primary, var(--text, #ffffff)) !important;
+  color: var(--text) !important;
   opacity: 1 !important;
 }
 

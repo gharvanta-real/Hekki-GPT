@@ -1,5 +1,13 @@
 [
   {
+    "timestamp": "2026-08-03T22:37:18.210849",
+    "type": "ui_redesign",
+    "title": "Pure Clean Black (#111111) & White (#FFFFFF) Link Text Tokens across All Sidebars",
+    "description": "Updated base.css color tokens to set pure clean white (#FFFFFF) in dark mode and crisp dark charcoal (#111111) in light mode for --text, eliminating any warm/brownish off-color tint on links.",
+    "reason": "Fulfilled user request: link text color should be pure clean black/white without off-color tinting.",
+    "impact": "100% pure black & white high-contrast text rendering for all sidebar links."
+  },
+  {
     "timestamp": "2026-08-03T22:36:02.774226",
     "type": "ui_redesign",
     "title": "Scoped Debate Playground Highlight strictly to Sidebar Links & Chat Items (Badges Untouched)",
