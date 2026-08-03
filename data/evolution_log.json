@@ -7286,5 +7286,15 @@
     "description": "Replaced custom blue hover colors with native system legacy design tokens: var(--bg-surface) for button background, var(--text-3) for icon default, var(--hover) for hover background, and var(--text) for hover icon across both light and dark themes.",
     "type": "UI_REFINEMENT",
     "title": "Legacy Theme Token Alignment for Collapsible Toggle Button"
+  },
+  {
+    "version": "v13.0",
+    "files": [
+      "mariano/web/static/css/chat.css"
+    ],
+    "timestamp": "2026-08-03T18:29:08.415725",
+    "description": "Replaced colorful rainbow text gradient with a clean Monochromatic High & Low Flash Shimmer animation (@keyframes monoFlashyShimmer) for Hekki Reasoning header title text.",
+    "type": "UI_REFINEMENT",
+    "title": "Monochromatic High & Low Flash Text Animation for Reasoning Header"
   }
 ]
