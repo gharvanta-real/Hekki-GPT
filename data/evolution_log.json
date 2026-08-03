@@ -1,5 +1,13 @@
 [
   {
+    "timestamp": "2026-08-03T22:31:12.536164",
+    "type": "ui_redesign",
+    "title": "Balanced Opacity (0.8) for Category Headers in Left Sidebar",
+    "description": "Adjusted layout.css to set category headers (.section-hdr, .section-hdr span) and badges (.badge, .img-gallery-count) to a balanced 80% opacity (opacity: 0.8, color: var(--text-secondary)), ensuring clear readability without being overly dim.",
+    "reason": "Fulfilled user feedback: category header opacity was too dim, tuned to a balanced 80% opacity.",
+    "impact": "Perfect visual balance between sidebar category headers and active navigation links."
+  },
+  {
     "timestamp": "2026-08-03T22:30:47.958176",
     "type": "ui_redesign",
     "title": "Muted Highlight for Category Headers & Badges in Left Sidebar",

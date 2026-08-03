@@ -1448,16 +1448,16 @@ body.dark .sidebar-user-avatar {
   opacity: 1 !important;
 }
 
-/* === REDUCED HIGHLIGHT FOR CATEGORY HEADERS & BADGES === */
+/* === BALANCED HIGHLIGHT FOR CATEGORY HEADERS & BADGES === */
 #sidebar-nav .section-hdr,
 #sidebar-nav .section-hdr span,
 #sidebar-nav .badge,
 #sidebar-nav .img-gallery-count {
-  color: var(--text-3, #a1a1aa) !important;
-  opacity: 0.55 !important;
+  color: var(--text-secondary, #d4d4d8) !important;
+  opacity: 0.8 !important;
   font-size: 11px !important;
   font-weight: 500 !important;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.02em;
 }
 
 
