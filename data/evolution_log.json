@@ -1,5 +1,13 @@
 [
   {
+    "timestamp": "2026-08-03T22:36:02.774226",
+    "type": "ui_redesign",
+    "title": "Scoped Debate Playground Highlight strictly to Sidebar Links & Chat Items (Badges Untouched)",
+    "description": "Updated debate.css to remove badge overrides entirely. Highlight (font-weight: 400, opacity: 1) is now strictly scoped to Debate Playground sidebar action links and chat list items.",
+    "reason": "Fulfilled user request: only highlight playground links & chat items, do not touch badges.",
+    "impact": "Original badge designs preserved while playground sidebar links remain crisp and high-contrast."
+  },
+  {
     "timestamp": "2026-08-03T22:32:01.970508",
     "type": "ui_redesign",
     "title": "Debate Playground Sidebar & Badges Typography & Opacity Alignment",
