@@ -7255,5 +7255,15 @@
     "description": "Added collapsible long prompt feature to user message bubbles: Max 4-5 lines height with a smooth 55px gradient fade-out overlay on lines 5-6, and a centered borderless pill button (Show more / Show less) for seamless UI expansion.",
     "type": "UI_UX",
     "title": "Collapsible Long User Prompts with Gradient Fade Overlay"
+  },
+  {
+    "version": "v12.7",
+    "files": [
+      "mariano/web/static/css/chat.css"
+    ],
+    "timestamp": "2026-08-03T18:25:11.542809",
+    "description": "Refined collapsible prompt toggle button: Positioned at bottom-right corner of user message bubble with theme-adaptive background (var(--bg-surface)) and subtle outline border (1px solid var(--border)) instead of hardcoded white fill.",
+    "type": "UI_REFINEMENT",
+    "title": "Bottom-Right Theme-Adaptive Collapsible Toggle Button"
   }
 ]

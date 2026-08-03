@@ -435,50 +435,42 @@ body.dark .shortcut:hover {
   pointer-events: none;
 }
 
-/* Centered Pill Button for Collapsible Toggle */
+/* Bottom Right Pill Button for Collapsible Toggle */
 .msg-expand-pill-wrapper {
   position: absolute;
-  bottom: 4px;
-  left: 50%;
-  transform: translateX(-50%);
+  bottom: 6px;
+  right: 12px;
+  left: auto;
+  transform: none;
   z-index: 5;
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
 }
 
 .msg-expand-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 5px;
-  background: #ffffff;
-  color: var(--primary, #2563eb);
+  gap: 4px;
+  background: var(--bg-surface, #ffffff);
+  color: var(--text-secondary, #475569);
   font-family: var(--font);
   font-size: 11px;
-  font-weight: 600;
-  padding: 3px 12px;
-  border-radius: 14px;
-  border: none !important;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 12px;
+  border: 1px solid var(--border, #e2e8f0) !important;
   box-shadow: none !important;
   cursor: pointer;
   user-select: none;
   transition: all 0.2s ease;
 }
 
-[data-theme="dark"] .msg-expand-btn {
-  background: #1e293b;
-  color: #60a5fa;
-}
-
 .msg-expand-btn:hover {
-  background: var(--bg-surface-hover, #f1f5f9);
-  color: var(--primary-hover, #1d4ed8);
-  transform: scale(1.03);
-}
-
-[data-theme="dark"] .msg-expand-btn:hover {
-  background: #334155;
-  color: #93c5fd;
+  background: var(--hover, #f1f5f9);
+  border-color: var(--primary, #2563eb) !important;
+  color: var(--primary, #2563eb);
+  transform: translateY(-1px);
 }
 
 /* User & AI Message Group Containers (Bubble + Actions Bar below it) */
