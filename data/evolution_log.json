@@ -7234,5 +7234,15 @@
     "description": "Upgraded DataAnalyzerSkill to Peak Version 2.0.0: Added (1) Multi-format parsing (.csv, .xlsx, .json, .tsv, .parquet), (2) Deep statistical analysis with IQR outlier detection & skewness, (3) Multi-column comparison charts (line, bar, scatter, hist, box, pie, area), (4) Correlation heatmaps, (5) Linear regression trend forecasting with R\u00b2 score.",
     "type": "UPGRADE",
     "title": "Upgraded DataAnalyzer Core Skill to Peak Version 2.0.0"
+  },
+  {
+    "version": "v12.5",
+    "files": [
+      "mariano/skills/core_skills/file_manager/skill.py"
+    ],
+    "timestamp": "2026-08-03T18:20:07.424036",
+    "description": "Upgraded FileManagerSkill v2.2.0: Equipped Hekki Agent with surgical single-block (replace) and multi-block (multi_replace) editing capabilities, and fixed relative path resolution fallback from Path.home() to Path.cwd().",
+    "type": "UPGRADE",
+    "title": "Surgical Edit & Multi-Replace Powers for FileManagerSkill"
   }
 ]

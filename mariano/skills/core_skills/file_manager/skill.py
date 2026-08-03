@@ -70,6 +70,13 @@ class FileManagerSkill(BaseSkill):
         elif action == "write":
             content = kwargs.get("content", kwargs.get("code", kwargs.get("text", "")))
             return self._write(resolved, content)
+        elif action == "replace":
+            target = kwargs.get("target_content", kwargs.get("target", kwargs.get("old_code", "")))
+            replacement = kwargs.get("replacement_content", kwargs.get("replacement", kwargs.get("new_code", "")))
+            return self._replace(resolved, target, replacement)
+        elif action == "multi_replace":
+            replacements = kwargs.get("replacements", kwargs.get("chunks", []))
+            return self._multi_replace(resolved, replacements)
         elif action == "delete":
             return SkillResult(
                 success=False,
@@ -125,7 +132,7 @@ class FileManagerSkill(BaseSkill):
             else:
                 resolved = Path(raw_path).expanduser()
                 if not resolved.is_absolute():
-                    return (Path.home() / resolved).resolve()
+                    return (Path.cwd() / resolved).resolve()
                 else:
                     return resolved.resolve()
         else:
@@ -212,6 +219,55 @@ class FileManagerSkill(BaseSkill):
             )
         except Exception as e:
             return SkillResult(success=False, data=None, error=f"Failed to calculate size for '{path}': {e}")
+
+    def _replace(self, path: Path, target_content: str, replacement_content: str) -> SkillResult:
+        try:
+            if not path.exists():
+                return SkillResult(success=False, data=None, error=f"File not found: {path}")
+            if not target_content:
+                return SkillResult(success=False, data=None, error="Action 'replace' requires 'target_content' parameter")
+
+            text = path.read_text(encoding="utf-8", errors="replace")
+            if target_content not in text:
+                return SkillResult(success=False, data=None, error=f"Target content snippet not found in '{path.name}'. Ensure exact character/line match.")
+
+            count = text.count(target_content)
+            new_text = text.replace(target_content, replacement_content, 1)
+            path.write_text(new_text, encoding="utf-8")
+
+            return SkillResult(
+                success=True,
+                data=f"Successfully replaced target block in '{path.name}' ({count} match(es) found).",
+                metadata={"path": str(path), "matches": count, "action": "replace"}
+            )
+        except Exception as e:
+            return SkillResult(success=False, data=None, error=f"Replace operation failed on '{path}': {e}")
+
+    def _multi_replace(self, path: Path, replacements: list[dict]) -> SkillResult:
+        try:
+            if not path.exists():
+                return SkillResult(success=False, data=None, error=f"File not found: {path}")
+            if not replacements or not isinstance(replacements, list):
+                return SkillResult(success=False, data=None, error="Action 'multi_replace' requires 'replacements' list of dicts parameter")
+
+            text = path.read_text(encoding="utf-8", errors="replace")
+            applied = 0
+            for item in replacements:
+                target = item.get("target_content", item.get("target", ""))
+                replacement = item.get("replacement_content", item.get("replacement", ""))
+                if target and target in text:
+                    text = text.replace(target, replacement, 1)
+                    applied += 1
+
+            path.write_text(text, encoding="utf-8")
+
+            return SkillResult(
+                success=True,
+                data=f"Successfully applied {applied}/{len(replacements)} non-contiguous block replacements to '{path.name}'.",
+                metadata={"path": str(path), "applied": applied, "action": "multi_replace"}
+            )
+        except Exception as e:
+            return SkillResult(success=False, data=None, error=f"Multi-replace operation failed on '{path}': {e}")
 
     def _write(self, path: Path, content: str) -> SkillResult:
         try:
@@ -308,8 +364,8 @@ class FileManagerSkill(BaseSkill):
             "properties": {
                 "action": {
                     "type": "string",
-                    "enum": ["read", "write", "delete", "copy", "move", "create_dir", "get_size", "list", "grep", "search"],
-                    "description": "Operation: read, write, delete (file/folder), copy, move, create_dir, get_size, list, grep, search.",
+                    "enum": ["read", "write", "replace", "multi_replace", "delete", "copy", "move", "create_dir", "get_size", "list", "grep", "search"],
+                    "description": "Operation: read, write, replace (surgical single block edit), multi_replace (multiple non-contiguous edits), delete, copy, move, create_dir, get_size, list, grep, search.",
                 },
                 "path": {
                     "type": "string",
@@ -322,6 +378,18 @@ class FileManagerSkill(BaseSkill):
                 "content": {
                     "type": "string",
                     "description": "Required for write action: complete text/code content to write to the file.",
+                },
+                "target_content": {
+                    "type": "string",
+                    "description": "Required for replace action: exact string/lines of code to target for replacement.",
+                },
+                "replacement_content": {
+                    "type": "string",
+                    "description": "Required for replace action: new replacement code/text to substitute in.",
+                },
+                "replacements": {
+                    "type": "array",
+                    "description": "Required for multi_replace action: list of objects containing [{target_content: 'old', replacement_content: 'new'}]",
                 },
                 "pattern": {
                     "type": "string",
