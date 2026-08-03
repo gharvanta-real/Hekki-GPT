@@ -2002,13 +2002,13 @@ body.oled .code-block-header,
 .media-preview-grid {
   display: flex !important;
   flex-direction: row !important;
-  flex-wrap: nowrap !important; /* STRICT 1-ROW HORIZONTAL LINE — NO MULTI-ROW WRAPPING */
+  flex-wrap: nowrap !important; /* STRICT 1-ROW HORIZONTAL — NO WRAPPING */
   gap: 10px !important;
-  margin: 12px 0 !important; /* Uniform minor 12px gap above and below video preview grid */
+  margin: 16px 0 14px 0 !important; /* 16px above: clear break from intro text; 14px below: before body content */
   width: 100% !important;
-  overflow-x: auto !important; /* Horizontal scrollbar if >4 cards */
+  overflow-x: auto !important;
   scroll-snap-type: x mandatory;
-  padding-bottom: 6px;
+  padding-bottom: 4px;
   box-sizing: border-box !important;
 }
 

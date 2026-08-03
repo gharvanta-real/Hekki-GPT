@@ -90,7 +90,10 @@ function _renderImageCard(a, srcUrl, href) {
   if (window.lucide) lucide.createIcons({ parent: card });
 }
 
-/** Post-pass: Group ONLY Visual Media Cards (Photos & YouTube Videos) in 1 single horizontal row (max 4 cards) */
+/** Post-pass: Group ONLY Visual Media Cards (Photos & YouTube Videos) in 1 single horizontal row (max 4 cards)
+ *  PLACEMENT RULE: Always after the first <p> (intro text), before lists/tables/summary.
+ *  Layout result: Intro text → [MEDIA GRID] → Body content → Tip (at bottom)
+ */
 export function groupPreviewCardsIntoGrid(container) {
   const cards = Array.from(container.querySelectorAll('.yt-preview-card, .chat-image-preview-card'))
     .filter(c => !c.closest('.media-preview-grid'));
@@ -106,27 +109,33 @@ export function groupPreviewCardsIntoGrid(container) {
   msgBubbles.forEach((cardList, msgEl) => {
     if (cardList.length === 0) return;
 
+    // Reuse existing grid if already placed
     let grid = msgEl.querySelector('.media-preview-grid');
     if (!grid) {
       grid = document.createElement('div');
       grid.className = 'media-preview-grid';
 
-      // POSITIONING: Place in the middle — BEFORE table or BEFORE tip/callout or after intro paragraph
-      const table = msgEl.querySelector('table') || msgEl.querySelector('.table-wrapper');
-      const tipCallout = msgEl.querySelector('.chat-callout') || msgEl.querySelector('blockquote');
+      // PLACEMENT: After first <p> intro text. If none, insert at top of message.
+      // This gives: Intro paragraph → GRID → body (lists/tables/headings) → tip (bottom)
+      const allChildren = Array.from(msgEl.children);
 
-      if (table) {
-        const target = table.closest('.table-wrapper') || table.closest('div') || table;
-        target.parentNode.insertBefore(grid, target);
-      } else if (tipCallout) {
-        tipCallout.parentNode.insertBefore(grid, tipCallout);
+      // Find the first real text paragraph (not headings, not callouts, not already-placed cards)
+      const firstP = allChildren.find(el =>
+        el.tagName === 'P' &&
+        !el.closest('.chat-callout') &&
+        !el.closest('.media-preview-grid') &&
+        el.textContent.trim().length > 0
+      );
+
+      if (firstP && firstP.nextSibling) {
+        // Insert AFTER the first intro paragraph
+        msgEl.insertBefore(grid, firstP.nextSibling);
+      } else if (firstP) {
+        // First paragraph is the last child — append after it
+        msgEl.appendChild(grid);
       } else {
-        const firstP = msgEl.querySelector('p, ul, ol');
-        if (firstP && firstP.nextSibling) {
-          firstP.parentNode.insertBefore(grid, firstP.nextSibling);
-        } else {
-          msgEl.appendChild(grid);
-        }
+        // No paragraphs at all — put grid at the very top
+        msgEl.insertBefore(grid, msgEl.firstChild);
       }
     }
 
@@ -134,6 +143,7 @@ export function groupPreviewCardsIntoGrid(container) {
     cardList.slice(0, 4).forEach(card => grid.appendChild(card));
   });
 }
+
 
 /** Post-pass: Move Tip callouts to the VERY LAST/BOTTOM of the message bubble */
 export function moveTipsToBottom(container) {
