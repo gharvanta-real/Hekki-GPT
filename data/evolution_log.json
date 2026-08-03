@@ -1,5 +1,13 @@
 [
   {
+    "timestamp": "2026-08-03T22:42:58.033750",
+    "type": "bug_fix",
+    "title": "140px Right Padding Offset for Topbars to Prevent Overlap with Windows Controls",
+    "description": "Added padding-right: 140px !important to .debate-topbar in debate.css and #titlebar in layout.css, preventing topbar badges (e.g. \u2022 Ready, model tags) and control buttons from colliding with or hiding under Windows native window controls (minimize, maximize, close).",
+    "reason": "Fulfilled user screenshot issue: topbar badges were overlapping and getting hidden under Windows control buttons.",
+    "impact": "Zero visual overlap between topbar badges and Windows window controls."
+  },
+  {
     "timestamp": "2026-08-03T22:41:49.202944",
     "type": "ui_redesign",
     "title": "Full Bright Fonts for All Text Inside Accordion Content & Participant Cards",
