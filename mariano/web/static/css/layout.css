@@ -1421,14 +1421,12 @@ body.dark .sidebar-user-avatar {
 #sidebar-nav .sidebar-action-btn,
 #sidebar-nav .section-item,
 #sidebar-nav .section-item .lbl,
-#sidebar-nav .section-hdr,
-#sidebar-nav .section-hdr span,
 #sidebar-nav .btn-new-chat-dock,
 #sidebar-nav .recent-item,
 #sidebar-nav .nav-header-title,
 #sidebar-nav button,
 #sidebar-nav a,
-#sidebar-nav span {
+#sidebar-nav span:not(.section-hdr span):not(.badge):not(.img-gallery-count) {
   color: var(--text-primary, var(--text, #ffffff)) !important;
   opacity: 1 !important;
   font-weight: 400 !important;
@@ -1449,4 +1447,17 @@ body.dark .sidebar-user-avatar {
   color: var(--text-primary, var(--text, #ffffff)) !important;
   opacity: 1 !important;
 }
+
+/* === REDUCED HIGHLIGHT FOR CATEGORY HEADERS & BADGES === */
+#sidebar-nav .section-hdr,
+#sidebar-nav .section-hdr span,
+#sidebar-nav .badge,
+#sidebar-nav .img-gallery-count {
+  color: var(--text-3, #a1a1aa) !important;
+  opacity: 0.55 !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.03em;
+}
+
 

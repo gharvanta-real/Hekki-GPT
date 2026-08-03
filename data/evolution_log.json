@@ -1,5 +1,13 @@
 [
   {
+    "timestamp": "2026-08-03T22:30:47.958176",
+    "type": "ui_redesign",
+    "title": "Muted Highlight for Category Headers & Badges in Left Sidebar",
+    "description": "Updated layout.css to reduce highlight on category headers (.section-hdr, .section-hdr span) and badges (.badge, .img-gallery-count) to muted 55% opacity (opacity: 0.55, color: var(--text-3)), keeping actual navigation links bright and high-contrast.",
+    "reason": "Fulfilled user request: reduce the highlight of category headers/badges in the left sidebar.",
+    "impact": "Clean visual hierarchy distinguishing muted section headers from active navigation links."
+  },
+  {
     "timestamp": "2026-08-03T22:30:19.044266",
     "type": "ui_redesign",
     "title": "Unbolded Left Sidebar Links with Full Opacity Highlight",
