@@ -54,11 +54,17 @@ function _renderYoutubeCard(a, videoId) {
 function _renderImageCard(a, srcUrl, href) {
   a.dataset.hasPreview = 'img';
 
+  let displaySrc = srcUrl;
+  if (srcUrl.startsWith('http://') || srcUrl.startsWith('https://')) {
+    displaySrc = `/api/image-proxy?url=${encodeURIComponent(srcUrl)}`;
+  }
+
+  const altText = a.textContent.trim() || a.getAttribute('title') || 'Image';
   const card = document.createElement('div');
   card.className = 'chat-image-preview-card';
   card.innerHTML = `
     <div class="img-preview-box" style="position:relative; width:100%; border-radius:10px; overflow:hidden; cursor:pointer; background:var(--hover);">
-      <img src="${srcUrl}" loading="lazy" style="width:100%; height:130px; object-fit:cover; display:block; border-radius:10px;" />
+      <img src="${displaySrc}" alt="${escapeHtmlLocal(altText)}" loading="lazy" style="width:100%; height:130px; object-fit:cover; display:block; border-radius:10px;" />
       <a href="${href}" target="_blank" rel="noopener noreferrer" class="img-redirect-btn" style="position:absolute; bottom:6px; right:6px; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); color:#fff; width:22px; height:22px; border-radius:5px; display:flex; align-items:center; justify-content:center; text-decoration:none; z-index:5;" title="Open source">
         <i data-lucide="external-link" style="width:11px; height:11px;"></i>
       </a>
@@ -67,29 +73,62 @@ function _renderImageCard(a, srcUrl, href) {
 
   const imgEl = card.querySelector('img');
   imgEl.addEventListener('click', (e) => { e.stopPropagation(); window.open(href, '_blank'); });
+
   imgEl.onerror = () => {
-    // Attempt OpenGraph og:image extraction via /api/link-preview if direct src failed
+    // 1. Try direct raw src without proxy first if proxied
+    if (!imgEl.dataset.tryRaw && displaySrc.includes('/api/image-proxy')) {
+      imgEl.dataset.tryRaw = 'true';
+      imgEl.src = srcUrl;
+      return;
+    }
+
+    // 2. Attempt OpenGraph og:image extraction via /api/link-preview
     if (!imgEl.dataset.ogAttempted && href && href.startsWith('http')) {
       imgEl.dataset.ogAttempted = 'true';
       fetch(`/api/link-preview?url=${encodeURIComponent(href)}`)
         .then(res => res.json())
         .then(data => {
           if (data && data.image) {
-            imgEl.src = data.image;
+            imgEl.src = data.image.startsWith('http') ? `/api/image-proxy?url=${encodeURIComponent(data.image)}` : data.image;
           } else {
-            _showCardFallback(card, href);
+            _trySearchImagesFallback(card, altText, href);
           }
         })
-        .catch(() => _showCardFallback(card, href));
+        .catch(() => _trySearchImagesFallback(card, altText, href));
       return;
     }
-    _showCardFallback(card, href);
+
+    _trySearchImagesFallback(card, altText, href);
   };
 
   if (a.parentNode) {
     a.parentNode.replaceChild(card, a);
   }
   if (window.lucide) lucide.createIcons({ parent: card });
+}
+
+function escapeHtmlLocal(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+/** Try search-images API before falling back to empty card placeholder */
+function _trySearchImagesFallback(card, queryText, targetUrl) {
+  const imgEl = card.querySelector('img');
+  if (imgEl && !imgEl.dataset.searchAttempted && queryText && queryText.length > 2 && queryText !== 'Image') {
+    imgEl.dataset.searchAttempted = 'true';
+    fetch(`/api/search-images?q=${encodeURIComponent(queryText)}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.images && data.images.length > 0) {
+          imgEl.src = data.images[0];
+        } else {
+          _showCardFallback(card, targetUrl);
+        }
+      })
+      .catch(() => _showCardFallback(card, targetUrl));
+    return;
+  }
+  _showCardFallback(card, targetUrl);
 }
 
 /** Helper to render clean fallback box when image load fails completely */
@@ -197,22 +236,21 @@ export function enhanceImagePreviews(container) {
     let src = img.getAttribute('src') || '';
     if (!src) return;
 
-    // Fix file:/// paths
-    if (src.startsWith('file:///')) {
-      src = `/api/workspace/render?path=${encodeURIComponent(decodeURIComponent(src.replace('file:///', '')))}`;
+    let displaySrc = src;
+    if ((src.startsWith('http://') || src.startsWith('https://')) && !src.includes('/api/')) {
+      displaySrc = `/api/image-proxy?url=${encodeURIComponent(src)}`;
     }
-
-    // Only process external http images (not UI icons)
-    if (!src.startsWith('http') && !src.startsWith('/api/')) return;
 
     img.dataset.hasPreview = 'img';
 
     const targetUrl = img.closest('a')?.getAttribute('href') || src;
+    const altText = img.getAttribute('alt') || 'Image';
+
     const card = document.createElement('div');
     card.className = 'chat-image-preview-card';
     card.innerHTML = `
       <div class="img-preview-box" style="position:relative; width:100%; border-radius:10px; overflow:hidden; cursor:pointer; background:var(--hover);">
-        <img src="${src}" loading="lazy" style="width:100%; height:130px; object-fit:cover; display:block; border-radius:10px;" />
+        <img src="${displaySrc}" alt="${escapeHtmlLocal(altText)}" loading="lazy" style="width:100%; height:130px; object-fit:cover; display:block; border-radius:10px;" />
         <a href="${targetUrl}" target="_blank" rel="noopener noreferrer" class="img-redirect-btn" style="position:absolute; bottom:6px; right:6px; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); color:#fff; width:22px; height:22px; border-radius:5px; display:flex; align-items:center; justify-content:center; text-decoration:none; z-index:5;" title="Open source">
           <i data-lucide="external-link" style="width:11px; height:11px;"></i>
         </a>
@@ -221,22 +259,32 @@ export function enhanceImagePreviews(container) {
 
     const newImg = card.querySelector('img');
     newImg.addEventListener('click', (e) => { e.stopPropagation(); window.open(targetUrl, '_blank'); });
+
     newImg.onerror = () => {
+      // 1. Try direct raw src if proxy failed
+      if (!newImg.dataset.tryRaw && displaySrc.includes('/api/image-proxy')) {
+        newImg.dataset.tryRaw = 'true';
+        newImg.src = src;
+        return;
+      }
+
+      // 2. OpenGraph og:image attempt
       if (!newImg.dataset.ogAttempted && targetUrl && targetUrl.startsWith('http')) {
         newImg.dataset.ogAttempted = 'true';
         fetch(`/api/link-preview?url=${encodeURIComponent(targetUrl)}`)
           .then(res => res.json())
           .then(data => {
             if (data && data.image) {
-              newImg.src = data.image;
+              newImg.src = data.image.startsWith('http') ? `/api/image-proxy?url=${encodeURIComponent(data.image)}` : data.image;
             } else {
-              _showCardFallback(card, targetUrl);
+              _trySearchImagesFallback(card, altText, targetUrl);
             }
           })
-          .catch(() => _showCardFallback(card, targetUrl));
+          .catch(() => _trySearchImagesFallback(card, altText, targetUrl));
         return;
       }
-      _showCardFallback(card, targetUrl);
+
+      _trySearchImagesFallback(card, altText, targetUrl);
     };
 
     // Replace the img's closest block parent (p tag usually)

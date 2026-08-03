@@ -20,7 +20,7 @@ import uvicorn
 import structlog
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, UploadFile
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import HTMLResponse, FileResponse
+from fastapi.responses import HTMLResponse, FileResponse, Response
 from pydantic import BaseModel
 
 from mariano.config import get_settings
@@ -1211,10 +1211,98 @@ async def openai_chat_completions(req: OpenAIChatCompletionRequest):
             ]
         }
 
+# ── Image Proxy & Search Endpoints ───────────────────────────────────────────
+@app.get("/api/image-proxy")
+async def proxy_image(url: str):
+    """Proxy external web images to bypass CORS and anti-hotlinking protections."""
+    import httpx
+    from mariano.core.anonymizer import NetworkAnonymizer
+
+    if not url or not url.startswith(("http://", "https://")):
+        return Response(status_code=400, content=b"Invalid URL")
+
+    # If it's already a local render API URL, return error to prevent loop
+    if "/api/workspace/render" in url or "/api/image-proxy" in url:
+        return Response(status_code=400, content=b"Loop prohibited")
+
+    try:
+        headers = NetworkAnonymizer.get_headers()
+        headers["Referer"] = url
+        headers["Accept"] = "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8"
+
+        async with httpx.AsyncClient(timeout=6.0, follow_redirects=True, verify=False) as client:
+            resp = await client.get(url, headers=headers)
+            if resp.status_code == 200 and len(resp.content) > 100:
+                content_type = resp.headers.get("content-type", "image/jpeg")
+                if not content_type.startswith("image/"):
+                    content_type = "image/jpeg"
+                return Response(
+                    content=resp.content,
+                    media_type=content_type,
+                    headers={
+                        "Cache-Control": "public, max-age=86400",
+                        "Access-Control-Allow-Origin": "*",
+                    }
+                )
+    except Exception as exc:
+        log.warning("image_proxy.fetch_failed", url=url, error=str(exc))
+
+    return Response(status_code=404, content=b"Image unavailable")
 
 
+@app.get("/api/search-images")
+async def search_images_endpoint(q: str):
+    """Searches live web for direct image URLs matching query.
+    Returns: {"images": [url1, url2, ...], "query": q}
+    """
+    import re
+    import urllib.parse
+    import httpx
+    from mariano.core.anonymizer import NetworkAnonymizer
 
+    if not q or not q.strip():
+        return {"images": [], "query": q}
 
+    query = q.strip()
+    images: list[str] = []
 
+    # 1. Bing Image Search Scraper
+    try:
+        headers = NetworkAnonymizer.get_headers()
+        search_url = f"https://www.bing.com/images/search?q={urllib.parse.quote(query)}&first=1"
+        async with httpx.AsyncClient(timeout=4.0, headers=headers, follow_redirects=True, verify=False) as client:
+            res = await client.get(search_url)
+            if res.status_code == 200:
+                matches = re.findall(r'murl&quot;:&quot;(https?://[^&]+?\.(?:jpg|jpeg|png|webp))&quot;', res.text, re.IGNORECASE)
+                for m in matches:
+                    if m not in images:
+                        images.append(m)
+    except Exception as e:
+        log.warning("search_images.bing_failed", error=str(e))
 
+    # 2. Wikimedia Commons Fallback
+    if len(images) < 4:
+        try:
+            wiki_headers = {'User-Agent': 'HekkiBot/1.0 (https://hekki.ai; bot@hekki.ai)'}
+            wiki_url = f"https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch={urllib.parse.quote(query)}&gsrnamespace=6&prop=imageinfo&iiprop=url&format=json&gsrlimit=8"
+            async with httpx.AsyncClient(timeout=4.0, headers=wiki_headers, follow_redirects=True) as client:
+                res = await client.get(wiki_url)
+                if res.status_code == 200:
+                    pages = res.json().get('query', {}).get('pages', {})
+                    for pid, p in pages.items():
+                        info = p.get('imageinfo', [{}])[0]
+                        img_url = info.get('url')
+                        if img_url and img_url.lower().endswith(('.jpg', '.jpeg', '.png', '.webp')) and img_url not in images:
+                            images.append(img_url)
+        except Exception as e:
+            log.warning("search_images.wiki_failed", error=str(e))
 
+    # Wrap images with local proxy URLs to guarantee CORS & anti-hotlinking bypass
+    proxied_images = [f"/api/image-proxy?url={urllib.parse.quote(img)}" for img in images[:6]]
+
+    return {
+        "query": query,
+        "images": proxied_images,
+        "raw_images": images[:6],
+        "count": len(images)
+    }
