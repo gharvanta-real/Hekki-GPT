@@ -7244,5 +7244,16 @@
     "description": "Upgraded FileManagerSkill v2.2.0: Equipped Hekki Agent with surgical single-block (replace) and multi-block (multi_replace) editing capabilities, and fixed relative path resolution fallback from Path.home() to Path.cwd().",
     "type": "UPGRADE",
     "title": "Surgical Edit & Multi-Replace Powers for FileManagerSkill"
+  },
+  {
+    "version": "v12.6",
+    "files": [
+      "mariano/web/static/css/chat.css",
+      "mariano/web/static/js/chat.js"
+    ],
+    "timestamp": "2026-08-03T18:24:03.606051",
+    "description": "Added collapsible long prompt feature to user message bubbles: Max 4-5 lines height with a smooth 55px gradient fade-out overlay on lines 5-6, and a centered borderless pill button (Show more / Show less) for seamless UI expansion.",
+    "type": "UI_UX",
+    "title": "Collapsible Long User Prompts with Gradient Fade Overlay"
   }
 ]

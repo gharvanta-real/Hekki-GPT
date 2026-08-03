@@ -678,6 +678,37 @@ function createMessageElement(type, text, timestamp, index) {
       const bubble = document.createElement('div');
       bubble.className = 'msg user';
       bubble.innerHTML = escapeHtml(cleanText);
+
+      // Collapsible logic for long user prompts (>200 chars or >4 lines)
+      const lineCount = (cleanText.match(/\n/g) || []).length + 1;
+      if (cleanText.length > 200 || lineCount > 4) {
+        bubble.classList.add('collapsible');
+
+        const expandWrapper = document.createElement('div');
+        expandWrapper.className = 'msg-expand-pill-wrapper';
+
+        const expandBtn = document.createElement('button');
+        expandBtn.className = 'msg-expand-btn';
+        expandBtn.type = 'button';
+        expandBtn.innerHTML = '<i data-lucide="chevron-down" style="width:12px;height:12px;"></i> Show more';
+
+        expandBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const isExpanded = bubble.classList.contains('expanded');
+          if (isExpanded) {
+            bubble.classList.remove('expanded');
+            expandBtn.innerHTML = '<i data-lucide="chevron-down" style="width:12px;height:12px;"></i> Show more';
+          } else {
+            bubble.classList.add('expanded');
+            expandBtn.innerHTML = '<i data-lucide="chevron-up" style="width:12px;height:12px;"></i> Show less';
+          }
+          if (window.lucide) lucide.createIcons();
+        });
+
+        expandWrapper.appendChild(expandBtn);
+        bubble.appendChild(expandWrapper);
+      }
+
       group.appendChild(bubble);
     }
 
