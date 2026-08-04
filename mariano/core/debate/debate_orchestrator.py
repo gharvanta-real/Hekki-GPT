@@ -536,9 +536,11 @@ class DebateOrchestrator:
     async def run_debate(
         self,
         topic: str,
-        send_event: Callable,
+        send_event: Callable | None = None,
         user_intervention: str | None = None,
+        callback: Callable | None = None,
     ) -> None:
+        send_event = send_event or callback or (lambda ev: None)
         # Step 1: Sharpen vague topics into concrete problem statements
         topic = await self._sharpen_topic(topic)
         log.info("debate.sharpened_topic_in_use", topic=topic)

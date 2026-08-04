@@ -31,6 +31,7 @@ CORE_SKILL_MODULES = [
     "mariano.skills.core_skills.data_analyzer.skill",
     "mariano.skills.core_skills.recon_scanner.skill",
     "mariano.skills.core_skills.security_header_analyzer.skill",
+    "mariano.skills.core_skills.expert_debate.skill",
 ]
 
 

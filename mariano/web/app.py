@@ -846,7 +846,7 @@ async def websocket_endpoint(websocket: WebSocket):
                             "metadata": {}
                         })
 
-                await orchestrator.run_debate(topic=topic, callback=_debate_event_callback)
+                await orchestrator.run_debate(topic=topic, send_event=_debate_event_callback)
 
                 await websocket.send_json({
                     "type": "agent_event",

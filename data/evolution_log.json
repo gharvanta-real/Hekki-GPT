@@ -8384,5 +8384,13 @@
     "description": "Added /debate command & Debate pill mode button to Chat Page. Executes Tony Stark vs Shuri multi-turn consensus engine directly inside Chat. Uses collapsible monochromatic execution cards to stream research questions and round micro-summaries without polluting the chat log, delivering a single Master Executive Solution & Verdict.",
     "reason": "User requested: kya main chat page both run kar sakte hai, final summary or conclusion bata sakte hai, chat page par debate as normal message show nahin hoga wo engine as use hoga, logs me only working/searching question & round summary show hoga.",
     "impact": "Seamless in-chat Dual-Agent Debate Engine with zero chat log pollution and rich master synthesis output."
+  },
+  {
+    "timestamp": "2026-08-04T16:16:26.132371+00:00",
+    "type": "feature_enhancement",
+    "title": "Registered expert_debate as an Official Core Agent Skill",
+    "description": "Created expert_debate skill in mariano/skills/core_skills/expert_debate/skill.py and registered it in discovery.py. Allows Hekki to natively invoke the Dual-Agent Expert Debate Engine whenever a user requests a debate, without manual script execution.",
+    "reason": "User requested: jab maine bolete hoon debate karo toh script execute na ho, skill use ho.",
+    "impact": "Native skill-based execution for Dual-Agent Expert Debate Engine."
   }
 ]
