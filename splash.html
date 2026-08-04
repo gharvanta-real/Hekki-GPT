@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hekki Loading</title>
     <style>
-        /* CSS Reset & Variable Setup */
+        /* CSS Reset & Variabled Theme Architecture */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -14,16 +14,21 @@
 
         :root {
             --bg-color: #ffffff;
-            --logo-filter: none;
-            --progress-bg: #e3e2de;
-            --progress-fill: #191919;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --progress-bg: rgba(0, 0, 0, 0.12);
+            --progress-fill: #0f172a;
+            --progress-glow: rgba(15, 23, 42, 0.25);
             --transition-speed: 0.3s;
         }
 
         body.dark {
-            --bg-color: #0a0a0a;
-            --progress-bg: #222222;
+            --bg-color: #080808;
+            --text-primary: #ffffff;
+            --text-secondary: #9ca3af;
+            --progress-bg: rgba(255, 255, 255, 0.15);
             --progress-fill: #ffffff;
+            --progress-glow: rgba(255, 255, 255, 0.85);
         }
 
         html, body {
@@ -35,53 +40,96 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: "Google Sans Flex", "Google Sans", "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             -webkit-user-select: none;
             user-select: none;
         }
 
-        /* Container & Animation Layout */
+        /* Centered Boot Screen Container */
         .boot-container {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             opacity: 0;
-            transform: scale(0.97);
-            animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            transform: scale(0.98);
+            animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
-        .logo-wrapper {
-            margin-bottom: 32px;
+        /* Side-by-Side Brand Header */
+        .brand-header {
             display: flex;
             align-items: center;
             justify-content: center;
+            gap: 20px;
+            margin-bottom: 34px;
         }
 
-        .logo {
-            width: 110px;
-            height: 110px;
-            object-fit: contain;
-            transition: transform 0.3s ease;
-        }
-
-        /* Apple-like Progress Bar */
-        .progress-track {
-            width: 220px;
-            height: 4px;
-            background-color: var(--progress-bg);
-            border-radius: 4px;
-            overflow: hidden;
+        .logo-container {
+            width: 76px;
+            height: 76px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             position: relative;
         }
 
-        .progress-fill {
+        #logo-canvas {
+            width: 76px;
+            height: 76px;
+            object-fit: contain;
+        }
+
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .brand-title {
+            font-size: 36px;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+            line-height: 1.1;
+        }
+
+        .brand-subtitle {
+            font-size: 14px;
+            font-weight: 400;
+            color: var(--text-secondary);
+            margin-top: 4px;
+            letter-spacing: -0.01em;
+        }
+
+        /* Curved Progress Bar Container & SVG Curve */
+        .progress-container {
+            width: 320px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .progress-svg {
+            width: 100%;
             height: 100%;
-            width: 0%;
-            background-color: var(--progress-fill);
-            border-radius: 4px;
-            /* Custom transition for ultra smooth flow */
-            transition: width 0.4s cubic-bezier(0.1, 0.8, 0.3, 1);
+            overflow: visible;
+        }
+
+        .progress-track-path {
+            stroke: var(--progress-bg);
+            stroke-width: 3.5;
+            stroke-linecap: round;
+        }
+
+        .progress-fill-path {
+            stroke: var(--progress-fill);
+            stroke-width: 3.5;
+            stroke-linecap: round;
+            filter: drop-shadow(0 0 6px var(--progress-glow));
+            transition: stroke-dashoffset 0.3s cubic-bezier(0.1, 0.8, 0.3, 1);
         }
 
         /* Keyframe Animations */
@@ -94,7 +142,7 @@
 
         .fade-out {
             opacity: 0;
-            transform: scale(0.97);
+            transform: scale(0.98);
             transition: opacity 0.4s ease, transform 0.4s ease;
         }
     </style>
@@ -102,32 +150,124 @@
 <body>
 
     <div class="boot-container" id="boot-container">
-        <div class="logo-wrapper">
-            <!-- Relative to root folder where electron_main.js lives -->
-            <img src="assets/hekki.png" class="logo" alt="Hekki Logo" id="logo-img">
+        <!-- Side-by-Side Brand Header: Animated 3D Logo + Text -->
+        <div class="brand-header">
+            <div class="logo-container">
+                <canvas id="logo-canvas" width="152" height="152"></canvas>
+            </div>
+            <div class="brand-text">
+                <h1 class="brand-title">Hekki</h1>
+                <p class="brand-subtitle">AI Assistant &amp; Workspace</p>
+            </div>
         </div>
-        <div class="progress-track">
-            <div class="progress-fill" id="progress-bar"></div>
+
+        <!-- Curved SVG Progress Bar -->
+        <div class="progress-container">
+            <svg class="progress-svg" viewBox="0 0 320 30">
+                <path class="progress-track-path" d="M 10 8 Q 160 22 310 8" fill="none" />
+                <path class="progress-fill-path" id="progress-fill-path" d="M 10 8 Q 160 22 310 8" fill="none" />
+            </svg>
         </div>
     </div>
 
     <script>
-        // Apply Light/Dark Theme dynamically from query params
+        // 1. Theme Auto-Detection (URL query param or localStorage or default dark)
         const params = new URLSearchParams(window.location.search);
-        const theme = params.get('theme') || 'dark';
+        let theme = params.get('theme');
+        if (!theme) {
+            try {
+                theme = localStorage.getItem('hekki_theme');
+            } catch (e) {}
+        }
+        if (!theme) theme = 'dark';
+
         if (theme === 'dark') {
             document.body.classList.add('dark');
+        } else {
+            document.body.classList.remove('dark');
         }
 
-        const progressBar = document.getElementById('progress-bar');
-        const container = document.getElementById('boot-container');
+        // 2. 3D Animated Logo Frame Loader & Morphing Engine
+        const FRAME_PATHS = [
+            'assets/logo_frames/frame_1.png',
+            'assets/logo_frames/frame_2.png',
+            'assets/logo_frames/frame_3.png',
+            'assets/logo_frames/frame_4.png',
+            'assets/logo_frames/frame_5.png'
+        ];
+
+        const loadedImages = [];
+        let loadedCount = 0;
+        const canvas = document.getElementById('logo-canvas');
+        const ctx = canvas.getContext('2d');
+        let animRunning = true;
+        let startTime = null;
+
+        FRAME_PATHS.forEach((path, idx) => {
+            const img = new Image();
+            img.src = path;
+            img.onload = () => {
+                loadedImages[idx] = img;
+                loadedCount++;
+                if (loadedCount === FRAME_PATHS.length) {
+                    startLogoAnimation();
+                }
+            };
+            img.onerror = () => {
+                // Fallback to standard logo asset if frames fail
+                if (idx === 0) {
+                    const fallback = new Image();
+                    fallback.src = 'assets/hekki.png';
+                    fallback.onload = () => {
+                        ctx.drawImage(fallback, 0, 0, 152, 152);
+                    };
+                }
+            };
+        });
+
+        function startLogoAnimation() {
+            startTime = performance.now();
+            function loop(now) {
+                if (!animRunning) return;
+                ctx.clearRect(0, 0, 152, 152);
+                const t = (now - startTime) / 1000.0;
+                const frameSpeed = 3.2; // 60 FPS smooth morphing transition
+                const pos = (t * frameSpeed) % 5;
+                const idx1 = Math.floor(pos) % 5;
+                const idx2 = (idx1 + 1) % 5;
+                const blend = pos - Math.floor(pos);
+
+                const img1 = loadedImages[idx1];
+                const img2 = loadedImages[idx2];
+
+                if (img1 && img1.complete) {
+                    ctx.globalAlpha = 1.0 - blend;
+                    ctx.drawImage(img1, 0, 0, 152, 152);
+                }
+                if (img2 && img2.complete) {
+                    ctx.globalAlpha = blend;
+                    ctx.drawImage(img2, 0, 0, 152, 152);
+                }
+                ctx.globalAlpha = 1.0;
+                requestAnimationFrame(loop);
+            }
+            requestAnimationFrame(loop);
+        }
+
+        // 3. SVG Curved Progress Bar Controller
+        const fillPath = document.getElementById('progress-fill-path');
+        const pathLength = fillPath.getTotalLength();
+        fillPath.style.strokeDasharray = pathLength;
+        fillPath.style.strokeDashoffset = pathLength; // 0% initially
+
+        function setProgress(percent) {
+            const clamped = Math.min(100, Math.max(0, percent));
+            const offset = pathLength * (1 - clamped / 100);
+            fillPath.style.strokeDashoffset = offset;
+        }
 
         let currentProgress = 0;
-        let animationFrameId;
-
-        // Custom slow-crawling simulated progress bar
         function animateBootProgress() {
-            // Fast transition initially, then slow down asymptotically towards 88%
             if (currentProgress < 30) {
                 currentProgress += 1.8;
             } else if (currentProgress < 65) {
@@ -138,26 +278,23 @@
                 currentProgress += 0.05;
             }
 
-            progressBar.style.width = currentProgress + '%';
+            setProgress(currentProgress);
 
             if (currentProgress < 90) {
-                // Continue simulation loop
                 setTimeout(animateBootProgress, 50);
             }
         }
 
-        // Start loading simulation
         setTimeout(animateBootProgress, 100);
 
-        // Called by Electron main process once the uvicorn backend server responds with 200
+        // Called by Electron main process when server is online
         function completeProgress() {
-            // Cancel any pending simulation
             currentProgress = 100;
-            progressBar.style.width = '100%';
-            
-            // Wait for completion animation, then fade out screen content
+            setProgress(100);
             setTimeout(() => {
+                const container = document.getElementById('boot-container');
                 container.classList.add('fade-out');
+                animRunning = false;
             }, 300);
         }
     </script>

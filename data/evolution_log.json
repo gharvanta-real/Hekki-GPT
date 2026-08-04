@@ -1,5 +1,181 @@
 [
   {
+    "timestamp": "2026-08-04T08:56:25.000000",
+    "type": "ui_redesign",
+    "title": "Model Selector Added Soft Hover/Click Background Highlight (var(--hover))",
+    "description": "Updated .model-pill in chat.css to display transparent background by default, with a smooth rounded hover/click background highlight (background: var(--hover) !important) when hovered or active.",
+    "reason": "Fulfilled user request: add hover and click background highlight response to model selector.",
+    "impact": "Interactive, subtle hover response on model selector trigger in input bar."
+  },
+  {
+    "timestamp": "2026-08-04T08:55:58.000000",
+    "type": "ui_redesign",
+    "title": "Model Selector Input Bar Styling Updated to Normal Flat Dropdown Trigger (No Grey Pill)",
+    "description": "Updated .model-pill in chat.css to apply transparent background (background: transparent !important), 13px font-size, font-weight: 500, and smooth hover text color transitions, removing the grey pill container background.",
+    "reason": "Fulfilled user screenshot request: keep model selector normal flat dropdown trigger instead of grey pill box in input bar.",
+    "impact": "Clean, modern, flat model selector in input bar."
+  },
+  {
+    "timestamp": "2026-08-04T08:55:08.000000",
+    "type": "ui_redesign",
+    "title": "Entire Logout Item (Text & Icon) Default Color Set to Red (#ef4444)",
+    "description": "Updated #btn-user-logout rules in layout.css to apply color: #ef4444 !important on both text span and icon by default, with dark red hover state (#dc2626).",
+    "reason": "Fulfilled user request: make default state of logout item red.",
+    "impact": "100% default red log out action item."
+  },
+  {
+    "timestamp": "2026-08-04T08:54:38.000000",
+    "type": "ui_redesign",
+    "title": "User Dropdown Logout Icon Styled in Red (#ef4444)",
+    "description": "Applied color: #ef4444 !important to #btn-user-logout icon (i, svg, .lucide) in layout.css for clear visual demarcation of the log out action.",
+    "reason": "Fulfilled user request: keep logout icon red.",
+    "impact": "Vibrant red logout icon in user dropdown menu."
+  },
+  {
+    "timestamp": "2026-08-04T08:54:12.000000",
+    "type": "ui_redesign",
+    "title": "User Menu Dropdown Box-Shadow Removed (box-shadow: none !important)",
+    "description": "Updated .user-menu-dropdown in layout.css to enforce box-shadow: none !important, matching flat borderless/shadowless workspace aesthetic rule.",
+    "reason": "Fulfilled user request: set shadow to 0 on dropdown list.",
+    "impact": "100% flat shadowless dropdown panel surface."
+  },
+  {
+    "timestamp": "2026-08-04T08:53:45.000000",
+    "type": "ui_redesign",
+    "title": "User Menu Icons Scaled to 16px & Shortcut Hint Removed",
+    "description": "Adjusted user menu dropdown item icons to 16px (slightly smaller) in index.html and layout.css. Removed the Ctrl+Shift+, shortcut hint from Settings item for clean, minimalist menu styling.",
+    "reason": "Fulfilled user request: make icons slightly smaller and remove Ctrl+Shift+, shortcut text from Settings.",
+    "impact": "Clean, balanced, minimalist user dropdown menu items."
+  },
+  {
+    "timestamp": "2026-08-04T08:50:35.000000",
+    "type": "ui_redesign",
+    "title": "User Menu Dropdown Repositioning (Main Area Direction), 18px Icons & 14px 500 Bold Text",
+    "description": "Repositioned user menu dropdown (.user-menu-dropdown) to open towards the main content area with width 250px and z-index 9999. Enlarged item icons to 18px with high contrast, and increased item text size to 14px with font-weight: 500.",
+    "reason": "Fulfilled user screenshot request: open dropdown towards main area, increase icon size, and make text slightly larger and bolder.",
+    "impact": "100% clean, spacious, high-contrast user dropdown menu opening towards main workspace area."
+  },
+  {
+    "timestamp": "2026-08-04T08:49:15.000000",
+    "type": "ui_redesign",
+    "title": "User Profile Card Redesign (Avatar Left, Name Middle, Settings Gear Right, Plans Hidden)",
+    "description": "Rearranged sidebar user profile card (.sidebar-user-profile) in index.html to match reference design with circular avatar on left, vertically centered user name in middle, and Lucide settings gear icon on far right. Hidden plan text (.sidebar-user-plan) completely via CSS.",
+    "reason": "Fulfilled user screenshot request: arrange user profile card with avatar, name, and settings icon, and hide plan badge.",
+    "impact": "Clean, modern user profile account card without plan text distraction."
+  },
+  {
+    "timestamp": "2026-08-04T08:46:45.000000",
+    "type": "ui_redesign",
+    "title": "Leftbar Right Border Outline (1px solid var(--border)) Added across All Sidebars",
+    "description": "Updated unified sidebar container rules in layout.css to apply border-right: 1px solid var(--border) !important on #sidebar-dock, #sidebar-nav, and .debate-sidebar, restoring a clean subtle border separation between the white leftbars and the #FDFCFC main content surface.",
+    "reason": "Fulfilled user request: add right outline/border to leftbars.",
+    "impact": "100% clean visual separation between leftbars and main content surface across all views."
+  },
+  {
+    "timestamp": "2026-08-04T08:46:10.000000",
+    "type": "ui_redesign",
+    "title": "Light Mode Main Content Background Color Token Updated to #FDFCFC",
+    "description": "Updated --bg design token in base.css to #FDFCFC for Light Mode, rendering all main workspace content areas (Chat, Debate, Coder IDE, Library, Skills) in soft clean #FDFCFC background surface.",
+    "reason": "Fulfilled user request: change light mode main content background to #FDFCFC.",
+    "impact": "100% application-wide #FDFCFC main content background rendering in Light Mode."
+  },
+  {
+    "timestamp": "2026-08-04T08:45:05.000000",
+    "type": "ui_redesign",
+    "title": "Pure Clean White (#FFFFFF) Leftbar Background Token across All Sidebars",
+    "description": "Updated --sidebar-bg design token in base.css to #ffffff (pure clean white) and bound #sidebar-dock, #sidebar-nav, .debate-sidebar, and .debate-sidebar-inner in layout.css to background: var(--sidebar-bg, #ffffff) !important, ensuring all left sidebars render in crisp pure white in light mode.",
+    "reason": "Fulfilled user request: keep leftbar pure clean white across all sidebars.",
+    "impact": "100% pure clean white leftbar rendering across all sidebars in light mode."
+  },
+  {
+    "timestamp": "2026-08-04T08:43:45.000000",
+    "type": "ui_redesign",
+    "title": "Unified 12.5px Badge Token across Chat & Debate Sidebars (Zero Border/Shadow)",
+    "description": "Created a unified badge token in layout.css applying 12.5px font-size (1.5pt larger), font-weight: 600, 20px height pill dimensions, and borderless/shadowless var(--hover) background tint identically to all badges across Chat (#sidebar-nav) and Debate (.debate-sidebar) sidebars.",
+    "reason": "Fulfilled user request: make badges 1-2 points larger and ensure 100% identical styling across both sidebars.",
+    "impact": "100% harmonious, crisp, larger badge typography across all left sidebars."
+  },
+  {
+    "timestamp": "2026-08-04T08:43:00.000000",
+    "type": "ui_redesign",
+    "title": "Unified Sidebar Tokenization Architecture for 100% Chat & Debate Styling Harmony",
+    "description": "Engineered a central Unified Sidebar Tokenization Engine in layout.css that binds both #sidebar-nav (Main Chat Leftbar) and .debate-sidebar (Debate Playground Leftbar) to identical CSS selectors for panel backgrounds, topnav headers, category labels, action buttons, links, and Lucide icons.",
+    "reason": "Fulfilled user request: connect both Chat and Debate sidebars to a single unified CSS system so any style change hits both sidebars identically.",
+    "impact": "100% guaranteed visual & architectural synchronization across all sidebars."
+  },
+  {
+    "timestamp": "2026-08-04T08:41:20.000000",
+    "type": "ui_redesign",
+    "title": "Global System Typography Updated to Google Sans Flex / Google Sans Stack",
+    "description": "Updated global font family design tokens (--font, --font-sans, --font-serif, --font-ai) in base.css and splash.html, and included Google Sans Flex & Google Sans webfont imports in index.html. The entire application UI now renders with 'Google Sans Flex', 'Google Sans', 'Open Sans'.",
+    "reason": "Fulfilled user screenshot request: update overall system font style to Google Sans Flex / Google Sans font stack.",
+    "impact": "100% application-wide Google Sans typography rendering."
+  },
+  {
+    "timestamp": "2026-08-04T08:40:20.000000",
+    "type": "ui_redesign",
+    "title": "Strict Lucide Icons Enforcement on Image Hover Action Buttons & Checkbox",
+    "description": "Updated chat.css to ensure all image hover action overlay buttons (Download, Delete, Checkbox) strictly use Lucide SVG icons (data-lucide='check', data-lucide='download', data-lucide='trash-2') with crisp stroke rendering and zero Material font dependencies.",
+    "reason": "Fulfilled user request: use Lucide icons for image hover action buttons instead of Material icons.",
+    "impact": "100% Lucide icon rendering across all image card hover action buttons."
+  },
+  {
+    "timestamp": "2026-08-04T08:38:45.000000",
+    "type": "ui_redesign",
+    "title": "Complete Removal of Images/Library Topnav Bar for Pure Gemini Layout",
+    "description": "Removed .img-gallery-header topnav bar completely from images_page.js template and set display: none !important in chat.css. The Library page now renders directly starting with the 'Library' main title, 'Documents' section, and 'Media' section.",
+    "reason": "Fulfilled user request: remove topnav bar completely from the Library page.",
+    "impact": "100% clean, borderless Gemini-style Library page without any topnav header distraction."
+  },
+  {
+    "timestamp": "2026-08-04T08:37:25.000000",
+    "type": "ui_redesign",
+    "title": "Gemini-Style Library Page Layout with Documents & Media Sections",
+    "description": "Restructured Images page into a Gemini-style Library view featuring a top 'Library' header, 'Documents' section with an empty state box ('Documents that you create will appear here'), and 'Media' section rendering all image thumbnails with legacy UI card interactive features (lightbox, multi-select, delete).",
+    "reason": "Fulfilled user screenshot request: implement Gemini-style Library layout using legacy UI styling and components.",
+    "impact": "100% structured Gemini-style Library experience combined with legacy UI cards and actions."
+  },
+  {
+    "timestamp": "2026-08-04T08:35:45.000000",
+    "type": "ui_redesign",
+    "title": "Ultra-Compact Images Page Topnav with 210px Right Offset & Auto-expanding Search",
+    "description": "Updated chat.css to set 210px right padding offset on .img-gallery-header, ensuring 100% complete clearance from Windows native window control buttons (minimize, maximize, close). Reduced search input width to 85px (expanding to 120px on focus) with 'Search…' placeholder, set control height to 25px, and centered all topnav items vertically ('mid top').",
+    "reason": "Fulfilled user screenshot request: reduce topnav width usage, make items ultra-narrow, and ensure no overlap under Windows controls.",
+    "impact": "100% zero collision with Windows control buttons and ultra-sleek, compact topnav bar."
+  },
+  {
+    "timestamp": "2026-08-04T08:34:45.000000",
+    "type": "ui_redesign",
+    "title": "Images Page Topnav Narrowing, Mid-Top Alignment & 140px Right Offset",
+    "description": "Updated .img-gallery-header in chat.css with 140px right padding offset to prevent topnav buttons from colliding with native Windows window controls (minimize/maximize/close). Adjusted search input width to 110px, height to 26px, and vertically centered all topnav items ('mid top') in a clean 46px header bar.",
+    "reason": "Fulfilled user screenshot request: make image page topnav items narrow, mid-top aligned, and offset from Windows control buttons.",
+    "impact": "Zero collision with Windows window controls and a sleek, compact, mid-top aligned topnav bar for Images page."
+  },
+  {
+    "timestamp": "2026-08-04T08:33:30.000000",
+    "type": "ui_redesign",
+    "title": "Debate Leftbar Icons Theme-Dependent Black/White Color Enforcement",
+    "description": "Updated debate.css to bind all icons inside .debate-sidebar (including nav header back button #btn-debate-sidebar-back, search button #btn-debate-search-nav, collapse toggle #btn-debate-sidebar-toggle, and action list icons) to var(--text) with full opacity, rendering pure white (#FFFFFF) in dark mode and pure black (#111111) in light mode.",
+    "reason": "Fulfilled user request: debate leftbar icons should adapt to pure black or white depending on light/dark theme selection.",
+    "impact": "100% theme-adaptive contrast for all Debate leftbar icons."
+  },
+  {
+    "timestamp": "2026-08-04T08:32:30.000000",
+    "type": "ui_redesign",
+    "title": "Relocated Search Icon Button to Chat & Debate Leftbar Topnav (Left of Collapse Button)",
+    "description": "Moved search icon button (#btn-search-nav, #btn-debate-search-nav) out of main content titlebar and placed it into the leftbar topnav header of both Chat and Debate views, positioned directly to the left of the collapsible sidebar toggle button. Updated search_modal.js to handle global event delegation.",
+    "reason": "Fulfilled user request: move search icon from main workspace titlebar right group to leftbar topnav directly to the left of the collapse button.",
+    "impact": "Sleeker topbar workspace layout and quick accessible search trigger directly in sidebar header."
+  },
+  {
+    "timestamp": "2026-08-04T08:30:00.000000",
+    "type": "ui_redesign",
+    "title": "Boot Splash Screen Redesign matching Exact Reference Layout & Animation",
+    "description": "Updated splash.html to include 3D animated logo morphing cross-fade (assets/logo_frames), side-by-side brand header ('Hekki' + 'AI Assistant & Workspace'), dynamic light/dark background theme adaptation, and a smooth curved SVG progress bar with glowing indicator.",
+    "reason": "Fulfilled user request: match boot splash screen to reference image with side-by-side logo/text and curved progress bar.",
+    "impact": "100% brand-consistent, modern animated boot splash experience matching reference screenshot."
+  },
+  {
     "timestamp": "2026-08-03T22:42:58.033750",
     "type": "bug_fix",
     "title": "140px Right Padding Offset for Topbars to Prevent Overlap with Windows Controls",

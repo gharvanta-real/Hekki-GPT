@@ -68,29 +68,6 @@ export class ImagesPage {
   _render() {
     this._root.innerHTML = `
       <div class="img-gallery-wrap">
-        <div class="img-gallery-header">
-          <div class="img-gallery-title-row">
-            <div class="img-gallery-title"><span>My images</span><span class="img-gallery-count" id="img-count-badge">0</span></div>
-            <div class="img-gallery-controls">
-              <div class="img-gallery-search-wrap">
-                <i data-lucide="search" style="width:13px;height:13px;color:var(--text-3);flex-shrink:0;"></i>
-                <input class="img-gallery-search" id="img-search" placeholder="Search images…" autocomplete="off" />
-              </div>
-              <select class="img-gallery-sort" id="img-sort" title="Sort by">
-                <option value="date">Newest first</option><option value="name">Name A–Z</option><option value="size">Largest first</option>
-              </select>
-              <button class="img-gallery-btn" id="img-select-toggle" title="Toggle Select Mode">
-                <i data-lucide="check-square" style="width:14px;height:14px;"></i><span id="img-select-toggle-label" class="hidden">Select</span>
-              </button>
-              <button class="img-gallery-btn img-gallery-btn-danger hidden" id="img-delete-btn" title="Delete Selected">
-                <i data-lucide="trash-2" style="width:14px;height:14px;"></i><span id="img-delete-btn-label" class="hidden">Delete</span>
-              </button>
-              <button class="img-gallery-refresh-btn" id="img-refresh" title="Refresh">
-                <i data-lucide="refresh-cw" style="width:14px;height:14px;"></i>
-              </button>
-            </div>
-          </div>
-        </div>
         <div class="img-gallery-body" id="img-gallery-body">
           <div class="img-gallery-loading" id="img-loading"><div class="img-gallery-spinner"></div><span>Loading images…</span></div>
         </div>
@@ -311,20 +288,46 @@ export class ImagesPage {
 
     this._updateSelectUI();
 
+    let mediaContent = '';
     if (this._filtered.length === 0) {
-      body.innerHTML = `
+      mediaContent = `
         <div class="img-gallery-empty">
           <div class="img-gallery-empty-icon">
-            <i data-lucide="image-off" style="width:40px;height:40px;opacity:0.3;"></i>
+            <i data-lucide="image-off" style="width:36px;height:36px;opacity:0.3;"></i>
           </div>
-          <p class="img-gallery-empty-title">${this._search ? 'No images match your search' : 'No images yet'}</p>
-          <p class="img-gallery-empty-sub">${this._search ? 'Try a different keyword' : 'Generate images in a chat to see them here'}</p>
+          <p class="img-gallery-empty-title">${this._search ? 'No media matches your search' : 'No media yet'}</p>
+          <p class="img-gallery-empty-sub">${this._search ? 'Try a different keyword' : 'Generated images will appear here'}</p>
         </div>`;
+    } else {
+      mediaContent = `<div class="img-gallery-grid" id="img-grid"></div>`;
+    }
+
+    body.innerHTML = `
+      <div class="library-container">
+        <h1 class="library-main-title">Library</h1>
+
+        <!-- Documents Section -->
+        <div class="library-section">
+          <h2 class="library-section-title">Documents</h2>
+          <div class="library-empty-box">
+            <i data-lucide="file-plus-2" class="library-empty-icon"></i>
+            <div class="library-empty-text">Documents that you create will appear here</div>
+          </div>
+        </div>
+
+        <!-- Media Section -->
+        <div class="library-section">
+          <h2 class="library-section-title">Media</h2>
+          ${mediaContent}
+        </div>
+      </div>
+    `;
+
+    if (this._filtered.length === 0) {
       if (window.lucide) lucide.createIcons({ parent: body });
       return;
     }
 
-    body.innerHTML = `<div class="img-gallery-grid" id="img-grid"></div>`;
     const grid = body.querySelector('#img-grid');
 
     this._filtered.forEach((img, idx) => {

@@ -197,7 +197,7 @@
   <meta charset="UTF-8">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@300;400;500;600;700&family=Google+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hekki</title>
   <link class="cache-bust" rel="stylesheet" href="/static/theme.css?v=161">
@@ -307,6 +307,9 @@
       <button class="icon-btn" id="btn-return-chat-nav" title="Return to Chat" style="display: none; border: none; background: transparent; cursor: pointer; margin-right: 4px;">
         <i data-lucide="chevron-left" style="width: 14px; height: 14px;"></i>
       </button>
+      <button class="icon-btn" id="btn-search-nav" title="Search Chat History" style="margin-right: 2px;">
+        <i data-lucide="search" style="width: 15px; height: 15px;"></i>
+      </button>
       <button id="btn-sidebar-collapse" title="Collapse sidebar">
         <i data-lucide="panel-left-close" style="width:15px;height:15px;"></i>
       </button>
@@ -376,7 +379,6 @@
         <button class="user-menu-item" id="btn-user-settings">
           <i data-lucide="settings" style="width:16px; height:16px;"></i>
           <span>Settings</span>
-          <span class="user-menu-shortcut">Ctrl+⇧+,</span>
         </button>
         <button class="user-menu-item" id="btn-user-theme">
           <i data-lucide="sun" style="width:16px; height:16px;" id="user-menu-theme-icon"></i>
@@ -398,9 +400,8 @@
         <img class="sidebar-user-avatar" id="sidebar-user-avatar" src="/static/avatars/3d-avatar-1.webp" alt="User Avatar" />
         <div class="sidebar-user-info">
           <div class="sidebar-user-name" id="sidebar-user-name">User</div>
-          <div class="sidebar-user-plan">Free plan</div>
         </div>
-        <i data-lucide="chevrons-up-down" style="width:14px; height:14px; color:var(--text-3); margin-left:4px;"></i>
+        <i data-lucide="settings" style="width:16px; height:16px; color:var(--text); margin-left:auto;"></i>
       </div>
     </div>
   </div>
@@ -423,9 +424,6 @@
           <div id="coder-fsm-badge" style="margin-left: 10px; display: flex; align-items: center;"></div>
         </div>
         <div class="tb-group" style="gap: 8px; display: flex; align-items: center;">
-          <button class="icon-btn" id="btn-search-nav" title="Search Chat History">
-            <i data-lucide="search"></i>
-          </button>
           <button class="icon-btn" id="btn-toggle-sub-sidebar" title="Toggle Sub Sidebar">
             <i data-lucide="sidebar"></i>
           </button>

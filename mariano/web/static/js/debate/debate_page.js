@@ -43,6 +43,9 @@ function _buildLayout() {
             <button class="icon-btn" id="btn-debate-sidebar-back" title="Back to Chat" style="border: none; background: transparent; cursor: pointer;">
               <i data-lucide="chevron-left" style="width: 14px; height: 14px;"></i>
             </button>
+            <button class="icon-btn" id="btn-debate-search-nav" title="Search Chat History" style="border: none; background: transparent; cursor: pointer;">
+              <i data-lucide="search" style="width: 15px; height: 15px;"></i>
+            </button>
             <button class="icon-btn" id="btn-debate-sidebar-toggle" title="Toggle Sidebar" style="border: none; background: transparent; cursor: pointer;">
               <i data-lucide="panel-left-close" style="width: 15px; height: 15px;"></i>
             </button>

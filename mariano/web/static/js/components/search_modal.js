@@ -85,13 +85,14 @@ export class SearchModal {
       if (this.btnClear) this.btnClear.style.display = 'none';
     };
 
-    if (this.btnOpen) {
-      this.btnOpen.addEventListener('click', (e) => {
+    document.addEventListener('click', (e) => {
+      const searchBtn = e.target.closest('#btn-search-nav, #btn-debate-search-nav, .btn-open-search-modal');
+      if (searchBtn) {
         e.preventDefault();
         e.stopPropagation();
         openModal();
-      });
-    }
+      }
+    });
 
     this.btnClose?.addEventListener('click', closeModal);
     this.modal.addEventListener('click', (e) => {
