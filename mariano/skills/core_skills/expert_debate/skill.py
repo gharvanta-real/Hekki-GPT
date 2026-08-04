@@ -44,10 +44,14 @@ class ExpertDebateSkill(BaseSkill):
             settings = get_settings()
             api_key = settings.active_gemini_api_key
 
+            from mariano.core.debate.debate_config import ALPHA_MODEL, BETA_MODEL
+            model_alpha = kwargs.get("model_alpha") or ALPHA_MODEL
+            model_beta = kwargs.get("model_beta") or BETA_MODEL
+
             orchestrator = DebateOrchestrator(
                 api_key=api_key,
-                model_alpha="gemini-2.5-flash",
-                model_beta="gemini-2.5-flash",
+                model_alpha=model_alpha,
+                model_beta=model_beta,
                 max_rounds=rounds
             )
 

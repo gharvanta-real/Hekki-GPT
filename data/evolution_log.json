@@ -8392,5 +8392,13 @@
     "description": "Created expert_debate skill in mariano/skills/core_skills/expert_debate/skill.py and registered it in discovery.py. Allows Hekki to natively invoke the Dual-Agent Expert Debate Engine whenever a user requests a debate, without manual script execution.",
     "reason": "User requested: jab maine bolete hoon debate karo toh script execute na ho, skill use ho.",
     "impact": "Native skill-based execution for Dual-Agent Expert Debate Engine."
+  },
+  {
+    "timestamp": "2026-08-04T16:17:35.844396+00:00",
+    "type": "model_config_update",
+    "title": "Removed Hardcoded Models and Defaulted to gemini-3.1-flash-lite",
+    "description": "Updated app.py and expert_debate skill to import ALPHA_MODEL and BETA_MODEL from mariano.core.debate.debate_config (gemini-3.1-flash-lite). Model params are now fully dynamic and never hardcoded to 2.5.",
+    "reason": "User requested: gemini-2.5-flash hardcode nahi hoga, flash 3.1 default use karenge.",
+    "impact": "Dynamic debate model selection with default Gemini 3.1 Flash Lite."
   }
 ]

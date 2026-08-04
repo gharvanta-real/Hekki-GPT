@@ -805,14 +805,15 @@ async def websocket_endpoint(websocket: WebSocket):
                 })
 
                 from mariano.config import get_settings
+                from mariano.core.debate.debate_config import ALPHA_MODEL, BETA_MODEL
                 from mariano.core.debate.debate_orchestrator import DebateOrchestrator
                 _settings = get_settings()
                 api_key = _settings.active_gemini_api_key
 
                 orchestrator = DebateOrchestrator(
                     api_key=api_key,
-                    model_alpha="gemini-2.5-flash",
-                    model_beta="gemini-2.5-flash",
+                    model_alpha=ALPHA_MODEL,
+                    model_beta=BETA_MODEL,
                     max_rounds=2
                 )
 
