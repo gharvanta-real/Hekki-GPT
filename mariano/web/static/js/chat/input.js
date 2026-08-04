@@ -1,4 +1,4 @@
-﻿/* === chat/input.js — Input binding, scroll, clear helpers, shared state === */
+/* === chat/input.js — Input binding, scroll, clear helpers, shared state === */
 import { attachmentManager } from '../components/attachment_manager.js';
 
 // Shared mutable state (exported for session.js to access)
@@ -116,6 +116,20 @@ export function bindInputs(sendCallback, ChatSessionManager) {
     if (!text && !attachmentManager.hasFiles()) return;
     if (!text && attachmentManager.hasFiles()) text = "Analyze attached file(s)";
     sendCallback(text);
+  });
+
+  // Bind Expert Debate mode pill toggle
+  $('btn-debate-pill')?.addEventListener('click', () => {
+    const activeInput = $('chat-input-conv') && $('chat-input-conv').offsetParent !== null 
+      ? $('chat-input-conv') 
+      : $('chat-input');
+    if (activeInput) {
+      if (!activeInput.value.startsWith('/debate')) {
+        activeInput.value = '/debate ' + activeInput.value.trim();
+      }
+      activeInput.focus();
+      handleInputToggle(activeInput, activeInput.id === 'chat-input-conv' ? 'btn-submit-conv' : 'btn-submit-home');
+    }
   });
 
   // Render chats list or skeleton loaders on startup load

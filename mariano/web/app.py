@@ -787,6 +787,76 @@ async def websocket_endpoint(websocket: WebSocket):
 
     async def run_query(query_text, project=None, project_path=None, chat_id=None, permission_policy=None, aider_enabled=False):
         try:
+            # Check if query triggers Dual-Agent Expert Debate Engine in Chat
+            is_debate_query = query_text.strip().startswith("/debate") or \
+                              query_text.strip().lower().startswith("run debate") or \
+                              query_text.strip().lower().startswith("expert debate")
+
+            if is_debate_query:
+                raw_topic = query_text.replace("/debate", "").replace("run debate on", "").replace("expert debate on", "").replace("run debate", "").replace("expert debate", "").strip()
+                topic = raw_topic if raw_topic else "Technical Architecture & System Design"
+
+                await websocket.send_json({"type": "agent_event", "kind": "thinking", "data": f"⚡ Initializing Expert Consensus Engine for '{topic}'...", "metadata": {}})
+                await websocket.send_json({
+                    "type": "agent_event",
+                    "kind": "tool_start",
+                    "data": "expert_debate",
+                    "metadata": {"name": "expert_debate", "args": {"topic": topic, "rounds": 2}}
+                })
+
+                from mariano.config import get_settings
+                from mariano.core.debate.debate_orchestrator import DebateOrchestrator
+                _settings = get_settings()
+                api_key = _settings.active_gemini_api_key
+
+                orchestrator = DebateOrchestrator(
+                    api_key=api_key,
+                    model_alpha="gemini-2.5-flash",
+                    model_beta="gemini-2.5-flash",
+                    max_rounds=2
+                )
+
+                async def _debate_event_callback(event_dict):
+                    ev_type = event_dict.get("type")
+                    if ev_type in ["turn_start", "searching", "search_results", "turn_complete", "round_complete"]:
+                        agent_name = event_dict.get("agent", "Expert")
+                        rnd = event_dict.get("round", 1)
+                        if ev_type == "searching":
+                            q = event_dict.get("query", "")
+                            msg = f"• Round {rnd} [{agent_name}]: Searching web for '{q}'..."
+                        elif ev_type == "turn_complete":
+                            msg = f"• Round {rnd} [{agent_name}]: Formulated technical stance & empirical evidence."
+                        elif ev_type == "round_complete":
+                            msg = f"• Round {rnd} Summary: Consensus reached on core architectural principles."
+                        else:
+                            msg = f"• Round {rnd} [{agent_name}]: Analyzing system constraints & trade-offs..."
+                        
+                        await websocket.send_json({
+                            "type": "agent_event",
+                            "kind": "reasoning_chunk",
+                            "data": msg + "\n",
+                            "metadata": {}
+                        })
+                    elif ev_type == "synthesis_chunk":
+                        chunk = event_dict.get("text", "")
+                        await websocket.send_json({
+                            "type": "agent_event",
+                            "kind": "chunk",
+                            "data": chunk,
+                            "metadata": {}
+                        })
+
+                await orchestrator.run_debate(topic=topic, callback=_debate_event_callback)
+
+                await websocket.send_json({
+                    "type": "agent_event",
+                    "kind": "tool_end",
+                    "data": "expert_debate",
+                    "metadata": {"name": "expert_debate"}
+                })
+                await websocket.send_json({"type": "agent_event", "kind": "done", "data": "", "metadata": {}})
+                return
+
             async for event in agent.run(query_text, project=project, project_path=project_path, chat_id=chat_id, permission_policy=permission_policy, aider_enabled=aider_enabled):
                 await websocket.send_json({
                     "type": "agent_event",
