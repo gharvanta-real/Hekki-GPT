@@ -8400,5 +8400,13 @@
     "description": "Updated app.py and expert_debate skill to import ALPHA_MODEL and BETA_MODEL from mariano.core.debate.debate_config (gemini-3.1-flash-lite). Model params are now fully dynamic and never hardcoded to 2.5.",
     "reason": "User requested: gemini-2.5-flash hardcode nahi hoga, flash 3.1 default use karenge.",
     "impact": "Dynamic debate model selection with default Gemini 3.1 Flash Lite."
+  },
+  {
+    "timestamp": "2026-08-04T16:19:48.725682+00:00",
+    "type": "ui_enhancement",
+    "title": "Implemented Dynamic Dual Model Selector Dropdowns in Chat Capsule for Debate Mode",
+    "description": "Updated index.html, input.js, socket_manager.js, and app.py to dynamically show side-by-side Alpha Model & Beta Model pickers when /debate is typed or Debate mode pill is clicked. Erasing /debate reverts back to the single Hekki model pill.",
+    "reason": "User requested: /Debate likhne par input bar dual model selection hoga? Normally normal hoga.",
+    "impact": "Dynamic Dual Model Selection UI for in-chat Debate Mode."
   }
 ]

@@ -785,7 +785,7 @@ async def websocket_endpoint(websocket: WebSocket):
 
     query_task = None
 
-    async def run_query(query_text, project=None, project_path=None, chat_id=None, permission_policy=None, aider_enabled=False):
+    async def run_query(query_text, project=None, project_path=None, chat_id=None, permission_policy=None, aider_enabled=False, model_alpha=None, model_beta=None):
         try:
             # Check if query triggers Dual-Agent Expert Debate Engine in Chat
             is_debate_query = query_text.strip().startswith("/debate") or \
@@ -810,10 +810,13 @@ async def websocket_endpoint(websocket: WebSocket):
                 _settings = get_settings()
                 api_key = _settings.active_gemini_api_key
 
+                m_alpha = model_alpha if model_alpha else ALPHA_MODEL
+                m_beta = model_beta if model_beta else BETA_MODEL
+
                 orchestrator = DebateOrchestrator(
                     api_key=api_key,
-                    model_alpha=ALPHA_MODEL,
-                    model_beta=BETA_MODEL,
+                    model_alpha=m_alpha,
+                    model_beta=m_beta,
                     max_rounds=2
                 )
 
@@ -949,10 +952,13 @@ async def websocket_endpoint(websocket: WebSocket):
                     except Exception as exc:
                         log.error("web.attachment_processing_failed", error=str(exc))
 
-                log.info("web.query_received", text=text, attachments_count=len(attachments), project=project, project_path=project_path, chat_id=chat_id, permission_policy=permission_policy, aider_enabled=aider_enabled)
+                model_alpha = payload.get("model_alpha")
+                model_beta = payload.get("model_beta")
+
+                log.info("web.query_received", text=text, attachments_count=len(attachments), project=project, project_path=project_path, chat_id=chat_id, permission_policy=permission_policy, aider_enabled=aider_enabled, model_alpha=model_alpha, model_beta=model_beta)
                 if query_task and not query_task.done():
                     query_task.cancel()
-                query_task = asyncio.create_task(run_query(text, project=project, project_path=project_path, chat_id=chat_id, permission_policy=permission_policy, aider_enabled=aider_enabled))
+                query_task = asyncio.create_task(run_query(text, project=project, project_path=project_path, chat_id=chat_id, permission_policy=permission_policy, aider_enabled=aider_enabled, model_alpha=model_alpha, model_beta=model_beta))
 
             elif action_type == "grant_permission":
                 chat_id = payload.get("chat_id")

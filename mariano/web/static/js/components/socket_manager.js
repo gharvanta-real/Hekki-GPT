@@ -93,6 +93,9 @@ export function send(text, enterConversation, log) {
     return;
   }
 
+  const alphaSel = document.getElementById('select-model-alpha');
+  const betaSel = document.getElementById('select-model-beta');
+
   socket.send(JSON.stringify({ 
     type: 'query', 
     text,
@@ -102,6 +105,8 @@ export function send(text, enterConversation, log) {
     chat_id: activeChatId || null,
     permission_policy: localStorage.getItem('mariano_permission_policy') || 'ask',
     aider_enabled: false,
+    model_alpha: alphaSel ? alphaSel.value : null,
+    model_beta: betaSel ? betaSel.value : null,
   }));
   
   window.setGeneratingState(true);
