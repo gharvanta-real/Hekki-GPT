@@ -1317,7 +1317,7 @@ function _ensureToolContainer(col, enterConversationCallback) {
   enterConversationCallback();
 
   _streamToolContainer = document.createElement('div');
-  _streamToolStartTime = Date.now(); // Track start time for "Worked for Xs" header
+  _streamToolStartTime = Date.now();
   _streamToolContainer.className = 'tool-group-card';
   _streamToolContainer.style.cssText = [
     'margin: 6px 0',
@@ -1332,9 +1332,9 @@ function _ensureToolContainer(col, enterConversationCallback) {
     <div class="tool-group-header" style="display: flex; align-items: center; justify-content: space-between; padding: 4px 0; cursor: pointer; user-select: none;">
       <div style="display: flex; align-items: center; gap: 6px;">
         <i data-lucide="chevron-right" class="chevron-icon" style="width:13px; height:13px; opacity:0.6; transition: transform 0.15s; display:inline-block; vertical-align:middle;"></i>
-        <span class="tool-group-title" style="font-weight: 500; color: var(--text-secondary);">Actions</span>
+        <span class="tool-group-title" style="font-weight: 500; color: var(--text-secondary);">Executing actions (0s)</span>
       </div>
-      <span class="tool-group-status" style="font-size: 11px; opacity: 0.6;">running<span class="dots">.</span></span>
+      <span class="tool-group-status" style="font-size: 11px; color:var(--blue); font-weight:600;">0s<span class="dots">...</span></span>
     </div>
     <div class="tool-group-body" style="display: none; flex-direction: column; padding-left: 14px; border-left: 1px dashed var(--border); margin-left: 4px; margin-top: 2px; gap: 3px;">
     </div>
@@ -1358,13 +1358,17 @@ function _ensureToolContainer(col, enterConversationCallback) {
     });
   }
 
-  const dotsEl = _streamToolContainer.querySelector('.dots');
-  if (dotsEl) {
-    _streamToolContainer._dotsInterval = setInterval(() => {
-      const dots = dotsEl.textContent;
-      dotsEl.textContent = dots.length >= 3 ? '.' : dots + '.';
-    }, 400);
-  }
+  // Live 1-second ticking timer interval
+  _streamToolContainer._timerInterval = setInterval(() => {
+    if (!_streamToolContainer) return;
+    const elapsedSec = Math.max(0, Math.round((Date.now() - _streamToolStartTime) / 1000));
+    const titleEl = _streamToolContainer.querySelector('.tool-group-title');
+    const statusEl = _streamToolContainer.querySelector('.tool-group-status');
+    if (titleEl && statusEl) {
+      titleEl.textContent = `Executing actions (${elapsedSec}s)...`;
+      statusEl.innerHTML = `<span style="color:var(--blue);font-weight:600;">${elapsedSec}s</span> <span class="dots">...</span>`;
+    }
+  }, 1000);
 }
 
 function _finalizeToolContainer(isSuccess = true) {
@@ -1376,26 +1380,24 @@ function _finalizeToolContainer(isSuccess = true) {
 
   if (!_streamToolContainer) return;
   
-  // Stop status dots animation
-  if (_streamToolContainer._dotsInterval) {
-    clearInterval(_streamToolContainer._dotsInterval);
-    _streamToolContainer._dotsInterval = null;
-  }
-
-  const statusEl = _streamToolContainer.querySelector('.tool-group-status');
-  if (statusEl) {
-    statusEl.innerHTML = isSuccess 
-      ? '<span style="color: var(--text-3);">&#10003; completed</span>' 
-      : '<span style="color: #ef4444;">&#10006; failed</span>';
+  if (_streamToolContainer._timerInterval) {
+    clearInterval(_streamToolContainer._timerInterval);
+    _streamToolContainer._timerInterval = null;
   }
 
   const elapsedSec = Math.max(1, Math.round((Date.now() - (_streamToolStartTime || Date.now())) / 1000));
+  const statusEl = _streamToolContainer.querySelector('.tool-group-status');
+  if (statusEl) {
+    statusEl.innerHTML = isSuccess 
+      ? `<span style="color: var(--text-3);">&#10003; completed in ${elapsedSec}s</span>` 
+      : `<span style="color: #ef4444;">&#10006; failed after ${elapsedSec}s</span>`;
+  }
+
   const titleEl = _streamToolContainer.querySelector('.tool-group-title');
   if (titleEl) {
     titleEl.textContent = `Worked for ${elapsedSec}s`;
   }
 
-  // Smoothly collapse the body after 2 seconds unless terminal output / open details are present
   const body = _streamToolBody;
   const chevron = _streamToolContainer.querySelector('.chevron-icon');
   const hasOpenDetails = body && body.querySelector('details[open]');
