@@ -12,6 +12,34 @@ let overlayWindow = null;
 let tray = null;
 let isQuitting = false;  // true only when user explicitly clicks "Quit"
 
+// ── Single Instance Lock ──────────────────────────────────────────────────
+const gotTheLock = app.requestSingleInstanceLock();
+if (!gotTheLock) {
+    console.log('Another instance of Hekki is already running. Quitting duplicate process.');
+    app.quit();
+} else {
+    app.on('second-instance', () => {
+        if (mainWindow && !mainWindow.isDestroyed()) {
+            if (mainWindow.isMinimized()) mainWindow.restore();
+            mainWindow.show();
+            mainWindow.focus();
+        }
+    });
+}
+
+function freePort8000(callback) {
+    if (process.platform === 'win32') {
+        // Kill orphan processes bound to port 8000 or old hekki_backend processes
+        exec('for /f "tokens=5" %a in (\'netstat -aon ^| findstr :8000 ^| findstr LISTENING\') do taskkill /F /PID %a', () => {
+            setTimeout(callback, 300);
+        });
+    } else {
+        exec('fuser -k 8000/tcp', () => {
+            setTimeout(callback, 300);
+        });
+    }
+}
+
 function startBackend() {
     const isPackaged = app.isPackaged;
     let backendPath;
@@ -20,18 +48,65 @@ function startBackend() {
     if (isPackaged) {
         // In production, the executable is placed in resources/backend/hekki_backend.exe
         backendPath = path.join(process.resourcesPath, 'backend', 'hekki_backend.exe');
+
+        if (!fs.existsSync(backendPath)) {
+            // Check fallback locations if missing
+            const altPath = path.join(app.getAppPath(), '..', 'backend', 'hekki_backend.exe');
+            const devDistPath = path.join(__dirname, 'backend_dist', 'hekki_backend.exe');
+            if (fs.existsSync(altPath)) {
+                backendPath = altPath;
+            } else if (fs.existsSync(devDistPath)) {
+                backendPath = devDistPath;
+            } else {
+                console.warn(`Backend executable not found at ${backendPath}. Falling back to system python.`);
+                backendPath = 'python';
+                const runWebResource = path.join(process.resourcesPath, 'run_web.py');
+                args = [fs.existsSync(runWebResource) ? runWebResource : path.join(__dirname, 'run_web.py')];
+            }
+        }
     } else {
         // In development, run python run_web.py
         backendPath = 'python';
         args = [path.join(__dirname, 'run_web.py')];
     }
 
-    console.log(`Starting backend: ${backendPath} with args: ${args}`);
+    // Check if server is already running on port 8000 before spawning
+    http.get('http://localhost:8000', (res) => {
+        if (res.statusCode === 200) {
+            console.log('Backend server is already running and healthy on port 8000.');
+            isServerReady = true;
+            return;
+        } else {
+            spawnBackendProcess(backendPath, args, isPackaged);
+        }
+    }).on('error', () => {
+        // Port 8000 not serving 200 OK -> free port 8000 of zombie processes, then spawn
+        freePort8000(() => {
+            spawnBackendProcess(backendPath, args, isPackaged);
+        });
+    });
+}
+
+function spawnBackendProcess(backendPath, args, isPackaged) {
+    console.log(`Starting backend: ${backendPath} with args: ${args.join(' ')}`);
     
     try {
         backendProcess = spawn(backendPath, args, {
-            cwd: isPackaged ? path.dirname(backendPath) : __dirname,
+            cwd: (isPackaged && backendPath.endsWith('.exe')) ? path.dirname(backendPath) : __dirname,
+            windowsHide: true,
             env: { ...process.env, PYTHONIOENCODING: 'utf-8' }
+        });
+
+        backendProcess.on('error', (err) => {
+            console.error('Backend process spawn error:', err);
+            if (!isServerReady && !isQuitting) {
+                dialog.showErrorBox(
+                    'Backend Spawn Failed',
+                    `Failed to launch the backend process (${backendPath}):\n${err.message}\n\n` +
+                    `Please ensure python or hekki_backend.exe is installed and not blocked by antivirus.`
+                );
+                app.quit();
+            }
         });
 
         backendProcess.stdout.on('data', (data) => {
@@ -44,12 +119,11 @@ function startBackend() {
 
         backendProcess.on('close', (code) => {
             console.log(`Backend process exited with code ${code}`);
-            if (!isServerReady) {
+            if (!isServerReady && !isQuitting) {
                 dialog.showErrorBox(
                     'Backend Server Failed',
-                    `The backend server process exited unexpectedly (code ${code || 1}).\n\n` +
-                    `Please check if another instance of Hekki or a server is already running on port 8000. ` +
-                    `You can try closing port 8000 and restarting the app.`
+                    `The backend server process exited unexpectedly (code ${code !== null ? code : 1}).\n\n` +
+                    `Please check if another instance of Hekki or a server is already running on port 8000.`
                 );
                 app.quit();
             }
@@ -150,95 +224,7 @@ function applyNativeTheme(theme) {
     nativeTheme.themeSource = theme === 'light' ? 'light' : 'dark';
 }
 
-// ── Create Overlay Window ────────────────────────────────────────────────
-function createOverlayWindow() {
-    if (overlayWindow && !overlayWindow.isDestroyed()) {
-        return;
-    }
 
-    const primaryDisplay = screen.getPrimaryDisplay();
-    const { width } = primaryDisplay.workAreaSize;
-    const winWidth = 440;
-
-    overlayWindow = new BrowserWindow({
-        width: winWidth,
-        height: 520,
-        x: Math.round((width - winWidth) / 2),
-        y: 80,
-        frame: false,
-        transparent: true,
-        backgroundColor: '#00000000',
-        hasShadow: false,
-        alwaysOnTop: true,
-        skipTaskbar: true,
-        resizable: true,
-        movable: true,
-        minimizable: false,
-        maximizable: false,
-        fullscreenable: false,
-        show: false,
-        title: 'Hekki Quick Voice',
-        webPreferences: {
-            nodeIntegration: false,
-            contextIsolation: true,
-            preload: path.join(__dirname, 'overlay_preload.js')
-        }
-    });
-
-    overlayWindow.setAlwaysOnTop(true, 'screen-saver');
-    overlayWindow.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
-
-    const overlayPath = `file://${path.join(__dirname, 'overlay.html')}`;
-    overlayWindow.loadURL(overlayPath);
-
-    // Auto-resize based on content height
-    overlayWindow.webContents.on('did-finish-load', () => {
-        overlayWindow.webContents.executeJavaScript(
-            'document.getElementById("overlay-root").getBoundingClientRect().height'
-        ).then(h => {
-            if (h && h > 0) overlayWindow.setSize(winWidth, Math.ceil(h) + 20);
-        }).catch(() => {});
-    });
-
-    overlayWindow.on('blur', () => {
-        // Don't auto-close on blur — user might switch windows
-    });
-
-    overlayWindow.on('closed', () => {
-        overlayWindow = null;
-    });
-}
-
-function toggleOverlay() {
-    // Check if overlay feature is enabled
-    const dataDir = app.isPackaged
-        ? path.join(process.env.APPDATA || '', 'hekki', 'data')
-        : path.join(__dirname, 'data');
-    const settingsPath = path.join(dataDir, 'dynamic_settings.json');
-    try {
-        if (fs.existsSync(settingsPath)) {
-            const cfg = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
-            if (cfg.quick_voice_enabled === false) return; // disabled in settings
-        }
-    } catch(e) {}
-
-    const activeTheme = getThemeFromSettings();
-
-    if (!overlayWindow || overlayWindow.isDestroyed()) {
-        createOverlayWindow();
-        overlayWindow.once('ready-to-show', () => {
-            overlayWindow.webContents.send('overlay-theme-update', activeTheme);
-            overlayWindow.show();
-            overlayWindow.focus();
-        });
-    } else if (overlayWindow.isVisible()) {
-        overlayWindow.hide();
-    } else {
-        overlayWindow.webContents.send('overlay-theme-update', activeTheme);
-        overlayWindow.show();
-        overlayWindow.focus();
-    }
-}
 
 // ── Create Main Window ───────────────────────────────────────────────────
 function createWindow() {
@@ -301,72 +287,6 @@ function createWindow() {
     });
 
     // ── IPC: Overlay query → forward to backend ────────────────────────────
-    ipcMain.handle('overlay-query', async (_event, { text }) => {
-        return new Promise((resolve) => {
-            const postData = JSON.stringify({ text });
-            const req = http.request({
-                hostname: 'localhost',
-                port: 8000,
-                path: '/api/quick-voice',
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Content-Length': Buffer.byteLength(postData)
-                }
-            }, res => {
-                let body = '';
-                res.on('data', chunk => body += chunk);
-                res.on('end', () => {
-                    try { resolve(JSON.parse(body)); }
-                    catch(e) { resolve({ response_text: 'Error parsing response.' }); }
-                });
-            });
-            req.on('error', () => resolve({ response_text: 'Hekki backend is not reachable.' }));
-            req.write(postData);
-            req.end();
-        });
-    });
-
-    // ── IPC: Open main window from overlay ───────────────────────────────
-    ipcMain.on('overlay-open-main', () => {
-        if (mainWindow && !mainWindow.isDestroyed()) {
-            if (mainWindow.isMinimized()) mainWindow.restore();
-            mainWindow.show();
-            mainWindow.focus();
-        }
-        if (overlayWindow && !overlayWindow.isDestroyed()) {
-            overlayWindow.hide();
-        }
-    });
-
-    // ── IPC: Close overlay ────────────────────────────────────────────────
-    ipcMain.on('overlay-close', () => {
-        if (overlayWindow && !overlayWindow.isDestroyed()) {
-            overlayWindow.hide();
-        }
-    });
-
-    // ── IPC: Get theme for overlay ─────────────────────────────────────────
-    ipcMain.handle('overlay-get-theme', () => getThemeFromSettings());
-
-    // ── IPC: Resize overlay (width + height) ────────────────────────────────
-    ipcMain.on('overlay-resize', (_event, { width, height }) => {
-        if (overlayWindow && !overlayWindow.isDestroyed()) {
-            const targetW = Math.min(820, Math.max(340, Math.ceil(width)));
-            const targetH = Math.min(720, Math.max(280, Math.ceil(height)));
-            overlayWindow.setSize(targetW, targetH);
-        }
-    });
-
-    // ── IPC: Resize overlay height only (legacy compat) ─────────────────────
-    ipcMain.on('overlay-resize-height', (_event, height) => {
-        if (overlayWindow && !overlayWindow.isDestroyed()) {
-            const currentSize = overlayWindow.getSize();
-            const targetH = Math.min(720, Math.max(280, Math.ceil(height)));
-            overlayWindow.setSize(currentSize[0], targetH);
-        }
-    });
-
     // ── Intercept close → hide to tray instead of quitting ──────────────────
     mainWindow.on('close', (event) => {
         if (!isQuitting) {
@@ -377,7 +297,7 @@ function createWindow() {
                 tray.displayBalloon({
                     iconType: 'info',
                     title: 'Hekki is still running',
-                    content: 'Press Ctrl+Shift+Space anywhere or click the tray icon to reopen.'
+                    content: 'Click the tray icon to reopen Hekki.'
                 });
             }
         }
@@ -388,7 +308,7 @@ function createWindow() {
 function createTray() {
     const iconPath = path.join(__dirname, 'assets', 'hekki.ico');
     tray = new Tray(iconPath);
-    tray.setToolTip('Hekki — AI Assistant\nCtrl+Shift+Space to open Quick Voice');
+    tray.setToolTip('Hekki — AI Assistant');
 
     const contextMenu = Menu.buildFromTemplate([
         {
@@ -402,11 +322,6 @@ function createTray() {
                     createWindow();
                 }
             }
-        },
-        {
-            label: 'Quick Voice  (Ctrl+Shift+Space)',
-            type: 'normal',
-            click: () => toggleOverlay()
         },
         { type: 'separator' },
         {
@@ -463,10 +378,9 @@ app.whenReady().then(() => {
     checkServerReady(() => {
         isServerReady = true;
         createTray();
-        setupOverlayShortcut();
 
         if (launchHidden) {
-            // Background-only start: just keep tray + shortcut, no main window
+            // Background-only start: just keep tray, no main window
             console.log('Hekki started hidden in system tray.');
             return;
         }
@@ -486,21 +400,11 @@ app.whenReady().then(() => {
     });
 
     app.on('activate', () => {
-        if (BrowserWindow.getAllWindows().filter(w => !w.isDestroyed() && w !== overlayWindow).length === 0) {
+        if (BrowserWindow.getAllWindows().filter(w => !w.isDestroyed()).length === 0) {
             createWindow();
         }
     });
 });
-
-function setupOverlayShortcut() {
-    // Register Ctrl+Shift+Space global shortcut
-    const registered = globalShortcut.register('CommandOrControl+Shift+Space', () => {
-        toggleOverlay();
-    });
-    if (!registered) {
-        console.warn('Global shortcut Ctrl+Shift+Space could not be registered (may be in use by another app).');
-    }
-}
 
 app.on('window-all-closed', () => {
     // DON'T quit — keep running in system tray (Google Assistant behaviour)

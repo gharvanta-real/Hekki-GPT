@@ -25,6 +25,8 @@ import { initDebatePage, handleDebateEvent } from '/static/js/debate/debate_page
 import { initCoderPage, teardownCoderPage } from '/static/js/pages/coder_page.js';
 // Images Gallery page
 import { ImagesPage } from '/static/js/pages/images_page.js';
+// Interactive Live Canvas Engine (Claude Canvas style)
+import '/static/js/components/live_canvas.js';
 
 
 window.updateModelPills = updateModelPills;

@@ -128,7 +128,9 @@ class GeminiClient:
         
         # Build dynamic cognitive instructions
         current_temp = self._nm.get_temperature()
+        ns = self._nm.state
         import platform
+
         from pathlib import Path
 
         sys_os = platform.system()
@@ -390,9 +392,9 @@ class GeminiClient:
             reasoning_inject = (
                 "\n\n[REASONING MODE: DEEP THINKING]\n"
                 "- You MUST execute deep step-by-step reasoning before outputting your final answer.\n"
-                "- Write your complete internal thoughts, chain-of-thought analysis, fact verifications, self-corrections, and assumptions inside standard HTML-like `<think>...</think>` tags.\n"
-                "- Example output format: `<think>1. Analyze query... 2. Verify facts... 3. Conclude.</think>Here is the final verified answer...`\n"
-                "- Do not hide your thoughts; output them fully in the `<think>` block first, then follow with your direct response outside the tags.\n"
+                "- CRITICAL RULE: Write ALL internal thoughts, chain-of-thought analysis, safety checks, policy evaluations, and plan steps inside standard HTML-like `<think>...</think>` tags FIRST.\n"
+                "- Example output format: `<think>1. Analyze User Request... 2. Safety & Policy Check... 3. Formulate Response...</think>Here is the final verified answer...`\n"
+                "- NEVER output numbered reasoning headers (e.g. '1. **Analyze User Request:**') directly outside `<think>` tags.\n"
             )
 
         # Inject user identity + custom instructions from settings

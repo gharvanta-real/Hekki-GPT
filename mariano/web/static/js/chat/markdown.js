@@ -1,4 +1,4 @@
-﻿/* === chat/markdown.js — Markdown Enhancement Pipeline === */
+/* === chat/markdown.js — Markdown Enhancement Pipeline === */
 import { enhanceImagePreviews, moveTipsToBottom } from './media.js';
 
 // Configure marked parser options and custom link renderer
@@ -65,7 +65,29 @@ export function enhanceCodeBlocks(container) {
 
         const wrapper = document.createElement('div');
         wrapper.className = 'mermaid-block-wrapper';
-        wrapper.style.cssText = 'margin:12px 0; background:var(--card); border:1px solid var(--border); border-radius:8px; padding:12px; display:flex; justify-content:center; overflow-x:auto;';
+        wrapper.style.cssText = 'margin:12px 0; background:var(--card); border:1px solid var(--border); border-radius:8px; padding:12px; display:flex; flex-direction:column; gap:8px; overflow-x:auto;';
+
+        const mHeader = document.createElement('div');
+        mHeader.style.cssText = 'display:flex; align-items:center; justify-content:space-between; width:100%; border-bottom:1px solid var(--border); padding-bottom:6px;';
+        mHeader.innerHTML = `
+          <span style="font-size:11px; font-weight:700; color:var(--text-3); text-transform:uppercase;">MERMAID DIAGRAM</span>
+          <button class="code-action-btn btn-canvas" title="Open in Live Canvas" style="display:flex; align-items:center; gap:4px; font-size:11.5px; padding:3px 8px; border-radius:5px; border:1px solid var(--border); background:var(--bg); color:var(--text-2); cursor:pointer;">
+            <i data-lucide="layout" style="width:13px;height:13px"></i> Open in Canvas
+          </button>
+        `;
+
+        mHeader.querySelector('.btn-canvas').addEventListener('click', () => {
+          if (window.liveCanvas) {
+            window.liveCanvas.openArtifact({
+              type: 'diagram',
+              title: 'Architecture Diagram',
+              code: rawCodeText,
+              language: 'mermaid'
+            });
+          }
+        });
+
+        wrapper.appendChild(mHeader);
         wrapper.appendChild(mDiv);
 
         pre.parentNode.insertBefore(wrapper, pre);
@@ -100,6 +122,69 @@ export function enhanceCodeBlocks(container) {
     const actions = document.createElement('div');
     actions.className = 'code-block-actions';
 
+    const canvasBtn = document.createElement('button');
+    canvasBtn.className = 'code-action-btn btn-canvas';
+    canvasBtn.title = 'Open in Live Canvas';
+    canvasBtn.innerHTML = '<i data-lucide="layout" style="width:13px;height:13px"></i> Canvas';
+    canvasBtn.addEventListener('click', () => {
+      if (window.liveCanvas) {
+        const msgParent = pre.closest('.msg') || pre.closest('.msg-group');
+        let bundledHtml = '';
+        let bundledCss = '';
+        let bundledJs = '';
+
+        if (msgParent) {
+          const allPreBlocks = msgParent.querySelectorAll('pre');
+          allPreBlocks.forEach(p => {
+            const c = p.querySelector('code');
+            if (!c) return;
+            const codeText = c.innerText;
+            const classNames = c.className.split(' ');
+            let codeLang = 'code';
+            for (const cls of classNames) {
+              if (cls.startsWith('language-')) { codeLang = cls.replace('language-', ''); break; }
+            }
+
+            if (codeLang === 'html' || codeText.includes('<html') || codeText.includes('<!DOCTYPE')) {
+              bundledHtml += (bundledHtml ? '\n' : '') + codeText;
+            } else if (codeLang === 'css' || (codeText.includes('{') && codeText.includes('}'))) {
+              bundledCss += (bundledCss ? '\n' : '') + codeText;
+            } else if (codeLang === 'js' || codeLang === 'javascript') {
+              bundledJs += (bundledJs ? '\n' : '') + codeText;
+            }
+          });
+        }
+
+        const isWebApp = lang === 'html' || rawCodeText.includes('<html') || bundledHtml.length > 0 || (bundledCss && bundledJs);
+
+        if (isWebApp) {
+          const mainHtml = bundledHtml || (lang === 'html' ? rawCodeText : `<div id="app"></div>`);
+          window.liveCanvas.openArtifact({
+            type: 'web_app',
+            title: 'Interactive Web Application',
+            code: mainHtml,
+            html: mainHtml,
+            css: bundledCss || (lang === 'css' ? rawCodeText : ''),
+            js: bundledJs || (lang === 'js' || lang === 'javascript' ? rawCodeText : ''),
+            language: 'html'
+          });
+        } else {
+          const isDoc = ['text', 'txt', 'plaintext', 'markdown', 'md', 'pdf', 'doc', 'docx'].includes(lang) || 
+                        rawCodeText.includes('[Professional Summary]') || 
+                        rawCodeText.includes('[Skills]') || 
+                        rawCodeText.includes('[Experience]') || 
+                        rawCodeText.includes('Resume');
+
+          window.liveCanvas.openArtifact({
+            type: lang === 'mermaid' ? 'diagram' : (isDoc ? 'document' : 'code'),
+            title: isDoc ? 'Document Preview' : `${lang.toUpperCase()} Artifact`,
+            code: rawCodeText,
+            language: isDoc ? 'pdf' : lang
+          });
+        }
+      }
+    });
+
     const wrapBtn = document.createElement('button');
     wrapBtn.className = 'code-action-btn btn-wrap';
     wrapBtn.title = 'Toggle Line Wrap';
@@ -109,6 +194,8 @@ export function enhanceCodeBlocks(container) {
     copyBtn.className = 'code-action-btn btn-copy';
     copyBtn.title = 'Copy Code';
     copyBtn.innerHTML = '<i data-lucide="copy" style="width:14px;height:14px"></i>';
+
+    actions.appendChild(canvasBtn);
 
     let iframeContainer = null;
     let iframe = null;

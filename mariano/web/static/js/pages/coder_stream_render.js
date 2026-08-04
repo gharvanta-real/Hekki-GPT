@@ -139,7 +139,7 @@ function _removeCursor() {
     .coder-tool-bar {
       font-size: 11.5px;
       color: var(--text-3, #64748b);
-      font-family: var(--font-mono, monospace);
+      font-family: var(--font, sans-serif);
       padding: 3px 0 6px;
       display: flex;
       align-items: center;
@@ -188,7 +188,7 @@ function _ensureAiBubble() {
   header.id = 'coder-active-stream-header';
   header.innerHTML = `
     <canvas class="cad-ai-orb-avatar" id="coder-active-orb-canvas" width="28" height="28"></canvas>
-    <span class="cad-ai-header-title">Hekki Reasoning</span>
+    <span class="cad-ai-header-title">Thinking...</span>
   `;
   col.appendChild(header);
 

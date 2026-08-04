@@ -149,36 +149,49 @@ async def run_react_loop(
                 )
             )
 
-            # Process streamed chunks live
+            # Process streamed chunks live with tag-aware stream parsing
             in_think = False
+            stream_buf = ""
             while not chat_task.done() or not queue.empty():
                 try:
                     chunk = await asyncio.wait_for(queue.get(), timeout=0.05)
-                    
-                    # Parse thinking tags on the fly
-                    if "<think>" in chunk:
+                    stream_buf += chunk
+
+                    # Check for opening tags
+                    lower_buf = stream_buf.lower()
+                    if "<think>" in lower_buf or "<thinking>" in lower_buf:
                         in_think = True
-                        parts = chunk.split("<think>", 1)
+                        split_tag = "<think>" if "<think>" in lower_buf else "<thinking>"
+                        parts = stream_buf.split(split_tag, 1)
                         if parts[0]:
                             yield AgentEvent("response_chunk", parts[0])
-                        if parts[1]:
-                            yield AgentEvent("think_chunk", parts[1])
-                    elif "</think>" in chunk:
+                        stream_buf = parts[1]
+                    elif "</think>" in lower_buf or "</thinking>" in lower_buf:
                         in_think = False
-                        parts = chunk.split("</think>", 1)
+                        split_tag = "</think>" if "</think>" in lower_buf else "</thinking>"
+                        parts = stream_buf.split(split_tag, 1)
                         if parts[0]:
                             yield AgentEvent("think_chunk", parts[0])
-                        if parts[1]:
-                            yield AgentEvent("response_chunk", parts[1])
-                    else:
-                        if in_think:
-                            yield AgentEvent("think_chunk", chunk)
+                        stream_buf = parts[1]
+                    
+                    if stream_buf:
+                        # If buffer ends with incomplete tag (e.g. "<th"), hold it for next chunk
+                        if stream_buf.endswith("<") or stream_buf.endswith("</") or any(stream_buf.lower().endswith(t) for t in ["<t", "<th", "<thi", "<thin", "<think", "<thinki", "<thinking"]):
+                            pass
                         else:
-                            yield AgentEvent("response_chunk", chunk)
-                            
+                            evt_kind = "think_chunk" if in_think else "response_chunk"
+                            yield AgentEvent(evt_kind, stream_buf)
+                            stream_buf = ""
+
                     queue.task_done()
                 except asyncio.TimeoutError:
                     continue
+
+            # Flush remaining buffer if any
+            if stream_buf:
+                evt_kind = "think_chunk" if in_think else "response_chunk"
+                yield AgentEvent(evt_kind, stream_buf)
+                stream_buf = ""
 
             response = await chat_task
             text = response.get("text")

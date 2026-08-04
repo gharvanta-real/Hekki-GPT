@@ -34,14 +34,19 @@ function _buildLayout() {
 
       <!-- Collapsible Sidebar (Left Side, Full Height) -->
       <div class="debate-sidebar" style="padding-top: 0;">
-        <!-- Nav Header (With Back Chevron right before Collapsible Icon) -->
-        <div class="nav-header" style="display: flex; align-items: center; justify-content: space-between; height: 48px; padding: 0 12px 0 16px; flex-shrink: 0;">
-          <div class="nav-header-title" style="font-weight: 600; font-size: 16px; color: var(--text-primary); margin: 0; padding: 0; display: flex; align-items: center; gap: 8px; flex: 1;">
-            Hekki
+        <!-- Nav Header (With Hekki Logo on Left, Search + Collapsible Toggle on Right when Open) -->
+        <div class="nav-header" style="display: flex; align-items: center; justify-content: space-between; height: 48px; padding: 0 12px; flex-shrink: 0;">
+          <div class="nav-header-brand" style="display: flex; align-items: center; gap: 8px; flex: 1;">
+            <div class="nav-header-logo-wrapper" title="Hekki Assistant">
+              <img class="nav-header-logo" src="/static/hekki.png" alt="Hekki Logo" style="width: 28px; height: 28px; border-radius: 6px; object-fit: contain; flex-shrink: 0;" />
+            </div>
+            <div class="nav-header-title" style="font-weight: 600; font-size: 16px; color: var(--text-primary); margin: 0; padding: 0;">
+              Hekki
+            </div>
           </div>
           <div style="display: flex; align-items: center; gap: 4px;">
             <button class="icon-btn" id="btn-debate-sidebar-back" title="Back to Chat" style="border: none; background: transparent; cursor: pointer;">
-              <i data-lucide="chevron-left" style="width: 14px; height: 14px;"></i>
+              <i data-lucide="chevron-left" style="width: 15px; height: 15px;"></i>
             </button>
             <button class="icon-btn" id="btn-debate-search-nav" title="Search Chat History" style="border: none; background: transparent; cursor: pointer;">
               <i data-lucide="search" style="width: 15px; height: 15px;"></i>

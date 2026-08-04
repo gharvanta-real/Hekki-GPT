@@ -293,14 +293,43 @@ body.dark .dock-profile {
 #sidebar-nav.collapsed .nav-section:not(:first-of-type) {
   display: none !important;
 }
-/* Center the header, only show collapse button */
+/* Center the header in collapsed mode, show logo AND collapse button stacked cleanly */
 #sidebar-nav.collapsed .nav-header {
-  justify-content: center;
-  padding: 0 8px;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: auto !important;
+  padding: 10px 0 6px !important;
+  gap: 8px !important;
 }
-#sidebar-nav.collapsed .nav-header > *:not(#btn-sidebar-collapse) {
+#sidebar-nav.collapsed .nav-header > *:not(.nav-header-logo-wrapper):not(#btn-sidebar-collapse) {
   display: none !important;
 }
+#sidebar-nav.collapsed .nav-header-logo-wrapper {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 36px !important;
+  height: 36px !important;
+  margin: 0 auto !important;
+}
+#sidebar-nav.collapsed .nav-header-logo-wrapper img {
+  width: 28px !important;
+  height: 28px !important;
+}
+
+#sidebar-nav.collapsed #btn-sidebar-collapse {
+  width: 36px !important;
+  height: 36px !important;
+  min-width: 36px !important;
+  border-radius: 8px !important;
+  margin: 0 auto !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
 /* Center the user profile in collapsed mode */
 #sidebar-nav.collapsed .sidebar-user-profile {
   padding: 0 !important;
@@ -347,15 +376,17 @@ body.dark .dock-profile {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
   border: none;
   background: transparent;
   color: var(--text-3);
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   transition: background 0.12s, color 0.12s;
   flex-shrink: 0;
+  margin: 0 auto;
 }
 #btn-sidebar-collapse:hover {
   background: var(--hover);
@@ -652,10 +683,11 @@ body.dark .btn-new-chat-dock:hover {
 
 /* VERTICAL RESIZER DRAG BAR */
 .pane-resizer {
-  width: 4px;
+  width: 8px;
+  margin: 0 -2px;
   cursor: col-resize;
   background: transparent;
-  z-index: 100;
+  z-index: 1000;
   transition: background 0.12s;
   flex-shrink: 0;
 }
@@ -667,14 +699,18 @@ body.dark .btn-new-chat-dock:hover {
   display: none !important;
 }
 
-/* APP PANE (Right column workspace) */
+/* APP PANE (Right column workspace — Floating Claude Canvas Card Style) */
 #app-pane {
-  width: 440px;
-  border-left: 1px solid var(--border);
+  width: 520px;
+  height: calc(100% - 54px);
   display: flex;
   flex-direction: column;
   background: var(--bg);
   overflow: hidden;
+  margin: 40px 14px 14px 4px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  box-shadow: none !important;
   transition: width 0.25s ease, opacity 0.25s ease;
 }
 #app-pane.no-transition {
@@ -684,7 +720,9 @@ body.dark .btn-new-chat-dock:hover {
   width: 0 !important;
   min-width: 0 !important;
   max-width: 0 !important;
-  border-left: none !important;
+  margin: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
   opacity: 0 !important;
   pointer-events: none !important;
 }
@@ -1311,7 +1349,7 @@ body.dark .sidebar-user-avatar {
   margin-left: auto;
   font-size: 11px;
   color: var(--text-3);
-  font-family: monospace;
+  font-family: var(--font);
 }
 .user-download-btn {
   display: none !important;

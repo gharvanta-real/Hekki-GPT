@@ -506,6 +506,24 @@ async def add_evolution_log(req: EvolutionLogRequest):
     )
     return {"success": True}
 
+class CanvasSaveRequest(BaseModel):
+    filename: str
+    code: str
+
+@app.post("/api/canvas/save")
+async def save_canvas_artifact(req: CanvasSaveRequest):
+    """Saves live pair-edited canvas files directly to data/workspace."""
+    workspace_dir = Path("data/workspace")
+    workspace_dir.mkdir(parents=True, exist_ok=True)
+    
+    safe_filename = Path(req.filename).name
+    file_path = workspace_dir / safe_filename
+    
+    with open(file_path, "w", encoding="utf-8") as f:
+        f.write(req.code)
+        
+    return {"status": "ok", "filename": safe_filename, "path": str(file_path.resolve())}
+
 # ── Quick Voice Overlay Routes ────────────────────────────────────────────────
 @app.get("/overlay")
 @app.get("/overlay.html")
@@ -1306,3 +1324,38 @@ async def search_images_endpoint(q: str):
         "raw_images": images[:6],
         "count": len(images)
     }
+
+
+class ReconScanRequest(BaseModel):
+    target_domain: str
+    deep_boundary_scan: bool = True
+
+
+class SecurityAuditRequest(BaseModel):
+    target_url: str
+
+
+@app.post("/api/recon/scan")
+async def api_recon_scan(req: ReconScanRequest):
+    """Super-Intelligent Subdomain & Attack Surface Recon Scan Endpoint."""
+    from mariano.skills._registry.registry import SkillRegistry
+    registry = SkillRegistry.get_instance()
+    res = await registry.execute(
+        "recon_scanner",
+        target_domain=req.target_domain,
+        deep_boundary_scan=req.deep_boundary_scan,
+    )
+    return {"success": res.success, "report": res.data, "metadata": res.metadata, "error": res.error}
+
+
+@app.post("/api/recon/audit-headers")
+async def api_security_audit(req: SecurityAuditRequest):
+    """Super-Intelligent Security Header & Vulnerability Vector Audit Endpoint."""
+    from mariano.skills._registry.registry import SkillRegistry
+    registry = SkillRegistry.get_instance()
+    res = await registry.execute(
+        "security_header_analyzer",
+        target_url=req.target_url,
+    )
+    return {"success": res.success, "report": res.data, "metadata": res.metadata, "error": res.error}
+

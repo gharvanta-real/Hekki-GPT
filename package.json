@@ -23,8 +23,6 @@
     "files": [
       "electron_main.js",
       "preload.js",
-      "overlay.html",
-      "overlay_preload.js",
       "package.json",
       "splash.html",
       "assets/**/*",

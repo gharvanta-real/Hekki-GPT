@@ -1,0 +1,17 @@
+[+] mail.google.com | Server: ESF | X-Powered-By: None
+[+] docs.google.com | Server: ESF | X-Powered-By: None
+[+] drive.google.com | Server: ESF | X-Powered-By: None
+[+] calendar.google.com | Server: ESF | X-Powered-By: None
+[+] photos.google.com | Server: sffe | X-Powered-By: None
+[+] maps.google.com | Server: gws | X-Powered-By: None
+[+] translate.google.com | Server: ESF | X-Powered-By: None
+[+] news.google.com | Server: ESF | X-Powered-By: None
+[+] play.google.com | Server: ESF | X-Powered-By: None
+[+] plus.google.com | Server: GSE | X-Powered-By: None
+[+] sites.google.com | Server: ESF | X-Powered-By: None
+[+] groups.google.com | Server: ESF | X-Powered-By: None
+[+] blogger.google.com | Server: sffe | X-Powered-By: None
+[+] ads.google.com | Server: ESF | X-Powered-By: None
+[+] analytics.google.com | Server: ESF | X-Powered-By: None
+[+] search.google.com | Server: gws | X-Powered-By: None
+[+] cloud.google.com | Server: ESF | X-Powered-By: None

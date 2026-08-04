@@ -43,7 +43,32 @@ const PLANNER_NARRATION_RE = /^\s*-\s+(The (user|repository|previous attempt|cur
 
 function _stripPlannerMetadata(text) {
   if (!text) return text;
-  const lines = text.split('\n');
+  
+  // Strip <think>...</think> or <thinking>...</thinking>
+  let cleaned = text.replace(/<(think|thinking)>[\s\S]*?(?:<\/\1>|$)/gi, '');
+
+  // Strip CoT reasoning steps at the beginning of stream if present
+  if (/^(?:\d+\.\s*\*\*(?:Analyze|Safety|Policy|Persona|Constraint|Formulate).*?\*\*)/i.test(cleaned.trim())) {
+    const paragraphs = cleaned.split(/\n\s*\n/);
+    const contentPs = [];
+    let inThought = true;
+
+    for (let p of paragraphs) {
+      const trimmedP = p.trim();
+      if (inThought && (/^(?:\d+\.\s*\*|\*\*(?:Analyze|Safety|Policy|Persona|Constraint|Formulate).*?\*\*)/i.test(trimmedP) || trimmedP.startsWith('* **') || trimmedP.startsWith('- **'))) {
+        continue;
+      } else {
+        inThought = false;
+        contentPs.push(p);
+      }
+    }
+
+    if (contentPs.length > 0) {
+      cleaned = contentPs.join('\n\n');
+    }
+  }
+
+  const lines = cleaned.split('\n');
   const filtered = lines.filter(line =>
     !PLANNER_PREFIX_RE.test(line) && !PLANNER_NARRATION_RE.test(line)
   );
@@ -51,6 +76,126 @@ function _stripPlannerMetadata(text) {
     .join('\n')
     .replace(/\n{3,}/g, '\n\n')   // collapse triple+ blank lines
     .trim();
+}
+
+function _renderParsedMessage(containerEl, rawText) {
+  if (!containerEl || !rawText) return;
+
+  const parseThinking = (raw) => {
+    if (!raw) return { thought: '', content: '' };
+    const tagMatch = raw.match(/<(think|thinking)>([\s\S]*?)(?:<\/\1>|$)/i);
+    if (tagMatch) {
+      return {
+        thought: tagMatch[2].trim(),
+        content: raw.replace(/<(think|thinking)>[\s\S]*?(?:<\/\1>|$)/gi, '').trim()
+      };
+    }
+
+    if (/^(?:\d+\.\s*\*\*(?:Analyze|Safety|Policy|Persona|Constraint|Formulate).*?\*\*)/i.test(raw.trim())) {
+      const paragraphs = raw.split(/\n\s*\n/);
+      const thoughtPs = [];
+      const contentPs = [];
+      let inThought = true;
+
+      for (let p of paragraphs) {
+        const trimmedP = p.trim();
+        if (inThought && (/^(?:\d+\.\s*\*|\*\*(?:Analyze|Safety|Policy|Persona|Constraint|Formulate).*?\*\*)/i.test(trimmedP) || trimmedP.startsWith('* **') || trimmedP.startsWith('- **'))) {
+          thoughtPs.push(p);
+        } else {
+          inThought = false;
+          contentPs.push(p);
+        }
+      }
+
+      if (thoughtPs.length > 0 && contentPs.length > 0) {
+        return {
+          thought: thoughtPs.join('\n\n').trim(),
+          content: contentPs.join('\n\n').trim()
+        };
+      }
+    }
+
+    return { thought: '', content: raw };
+  };
+
+  const { thought: thoughtContent, content: finalText } = parseThinking(rawText);
+  const cleanFinalText = _stripPlannerMetadata(finalText);
+
+  let thoughtHtml = '';
+  if (thoughtContent) {
+    thoughtHtml = `
+      <div class="thought-container">
+        <div class="thought-header">
+          <span class="thought-title">Thinking Process</span>
+          <i class="mi-chevron thought-chevron" data-lucide="chevron-down" style="width:12px;height:12px;display:inline-block;vertical-align:middle;transition:transform 0.2s"></i>
+        </div>
+        <div class="thought-body collapsed" style="display: none;">
+          <div class="thought-step">${window.marked ? marked.parse(thoughtContent) : escapeHtml(thoughtContent)}</div>
+        </div>
+      </div>
+    `;
+  }
+
+  const responseHtml = window.marked ? marked.parse(cleanFinalText || rawText) : escapeHtml(cleanFinalText || rawText);
+  containerEl.innerHTML = thoughtHtml + responseHtml;
+  enhanceMarkdownContent(containerEl);
+
+  const header = containerEl.querySelector('.thought-header');
+  const body = containerEl.querySelector('.thought-body');
+  if (header && body) {
+    header.onclick = () => {
+      const collapsed = body.classList.toggle('collapsed');
+      header.classList.toggle('open', !collapsed);
+      body.style.display = collapsed ? 'none' : 'flex';
+    };
+  }
+  if (window.lucide) setTimeout(() => lucide.createIcons({ parent: containerEl }), 0);
+}
+
+function _getFriendlyToolActionText(toolName) {
+  if (!toolName) return 'Thinking...';
+  const name = toolName.toLowerCase();
+  
+  if (name.includes('search') || name.includes('scrape') || name.includes('news') || name.includes('wikipedia')) {
+    return 'Searching the web...';
+  }
+  if (name.includes('file') || name.includes('read') || name.includes('list') || name.includes('view')) {
+    return 'Reading codebase...';
+  }
+  if (name.includes('refactor') || name.includes('write') || name.includes('replace') || name.includes('edit')) {
+    return 'Modifying files...';
+  }
+  if (name.includes('command') || name.includes('bash') || name.includes('terminal')) {
+    return 'Running command...';
+  }
+  if (name.includes('recon') || name.includes('header') || name.includes('scan') || name.includes('security')) {
+    return 'Scanning security boundaries...';
+  }
+  if (name.includes('data') || name.includes('chart') || name.includes('analyzer')) {
+    return 'Analyzing data...';
+  }
+  if (name.includes('image') || name.includes('generate')) {
+    return 'Generating visual asset...';
+  }
+  if (name.includes('memory') || name.includes('episodic')) {
+    return 'Accessing memory...';
+  }
+  
+  const formatted = toolName.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+  return `Executing ${formatted}...`;
+}
+
+function _updateDynamicHeaderTitle(col, actionText) {
+  if (!col) return;
+  let titleEl = col.querySelector('.cad-ai-header-title');
+  if (titleEl && titleEl.textContent !== actionText) {
+    titleEl.style.transition = 'opacity 0.15s ease';
+    titleEl.style.opacity = '0.3';
+    setTimeout(() => {
+      titleEl.textContent = actionText;
+      titleEl.style.opacity = '1';
+    }, 150);
+  }
 }
 
 
@@ -81,7 +226,7 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
       headerEl.style.marginBottom = '8px';
       headerEl.innerHTML = `
         <canvas class="cad-ai-orb-avatar" id="chat-active-orb-canvas" width="28" height="28"></canvas>
-        <span class="cad-ai-header-title">Hekki Reasoning</span>
+        <span class="cad-ai-header-title">Thinking...</span>
       `;
       col.appendChild(headerEl);
 
@@ -154,7 +299,13 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
       // Remove typing dots once AI starts writing (orb stays, dots go)
       const activeOrb = document.querySelector('.chat-ai-stream-header #chat-stream-typing-dots');
       if (activeOrb) activeOrb.remove();
-      _finalizeToolContainer(true);
+      // Keep tool container active across turn steps; update status text smoothly
+      if (_streamToolContainer) {
+        const statusEl = _streamToolContainer.querySelector('.tool-group-status');
+        if (statusEl && statusEl.innerHTML.includes('running')) {
+          statusEl.innerHTML = '<span style="color: var(--text-3);">&#10003; completed</span>';
+        }
+      }
       
       if (_aiderActive) {
         appendHudLog(e.data);
@@ -296,13 +447,9 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
       } else {
         _ensureResponseMsg(enterConversationCallback);
         _streamResponseText += e.data;
-        // Strip internal planner metadata lines so only real AI reply shows in chat
-        const displayText = _stripPlannerMetadata(_streamResponseText);
+        _updateDynamicHeaderTitle(col, 'Writing response...');
         if (_streamResponseEl) {
-          _streamResponseEl.innerHTML = window.marked 
-            ? marked.parse(displayText) 
-            : escapeHtml(displayText);
-          enhanceMarkdownContent(_streamResponseEl);
+          _renderParsedMessage(_streamResponseEl, _streamResponseText);
         }
         if (_streamResponseText.includes('```')) {
           if (window.showWebPreviewIcon) window.showWebPreviewIcon();
@@ -431,6 +578,9 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
       _finalizeStreamResponse();
 
       const toolName = e.data || e.metadata?.tool || 'action';
+      const actionText = _getFriendlyToolActionText(toolName);
+      _updateDynamicHeaderTitle(col, actionText);
+
       const args = e.metadata?.args || {};
       const argsStr = JSON.stringify(args);
       appendHudLog(`[EXEC] ${toolName} args: ${argsStr}`);
@@ -522,9 +672,43 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
         detail: escapeHtml(String(Object.values(args)[0] || '').slice(0, 55))
       };
 
+      // Line addition (+) and deletion (-) diff counter calculation for file operations
+      let diffBadgeHtml = '';
+      if (action === 'write' || action === 'replace' || action === 'multi_replace' || toolName === 'write_to_file' || toolName === 'replace_file_content' || toolName === 'multi_replace_file_content') {
+        let added = 0;
+        let deleted = 0;
+        const codeContent = args.CodeContent || args.code || args.content || '';
+        const repContent = args.ReplacementContent || args.replacement_content || args.replacement || '';
+        const tgtContent = args.TargetContent || args.target_content || args.target || '';
+
+        if (codeContent) {
+          added = String(codeContent).split('\n').length;
+        } else if (repContent) {
+          added = String(repContent).split('\n').length;
+          deleted = tgtContent ? String(tgtContent).split('\n').length : 0;
+        } else if (args.ReplacementChunks && Array.isArray(args.ReplacementChunks)) {
+          for (const chunk of args.ReplacementChunks) {
+            if (chunk.ReplacementContent) added += String(chunk.ReplacementContent).split('\n').length;
+            if (chunk.TargetContent) deleted += String(chunk.TargetContent).split('\n').length;
+          }
+        } else if (args.chunks && Array.isArray(args.chunks)) {
+          for (const chunk of args.chunks) {
+            if (chunk.replacement) added += String(chunk.replacement).split('\n').length;
+            if (chunk.target) deleted += String(chunk.target).split('\n').length;
+          }
+        }
+
+        if (added > 0 || deleted > 0) {
+          const parts = [];
+          if (added > 0) parts.push(`<span style="color:#22c55e;font-weight:600;">+${added}</span>`);
+          if (deleted > 0) parts.push(`<span style="color:#ef4444;font-weight:600;">-${deleted}</span>`);
+          diffBadgeHtml = `<span style="margin-left:6px;font-family:var(--font-mono);font-size:11px;letter-spacing:0.3px;">${parts.join(' ')}</span>`;
+        }
+      }
+
       const slashContent = meta.detail
-        ? `<span style="font-weight:400;color:var(--text-secondary);white-space:nowrap;">${meta.label}</span><span style="color:var(--text-3);opacity:0.55;margin:0 1px;">/</span><span class="tool-detail" style="font-weight:400;color:var(--text-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:340px;">${meta.detail}</span>`
-        : `<span style="font-weight:400;color:var(--text-secondary);white-space:nowrap;">${meta.label}</span>`;
+        ? `<span style="font-weight:400;color:var(--text-secondary);white-space:nowrap;">${meta.label}</span><span style="color:var(--text-3);opacity:0.55;margin:0 1px;">/</span><span class="tool-detail" style="font-weight:400;color:var(--text-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:340px;">${meta.detail}</span>${diffBadgeHtml}`
+        : `<span style="font-weight:400;color:var(--text-secondary);white-space:nowrap;">${meta.label}</span>${diffBadgeHtml}`;
 
       const card = document.createElement('div');
       card.className = 'tool-block-temp tool-log-card';
@@ -965,23 +1149,13 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
           if (e.data && e.data.trim()) {
             _streamResponseText = e.data;   // overwrite with definitive final text
           }
-          const displayText = _stripPlannerMetadata(_streamResponseText);
-          if (displayText) {
-            _streamResponseEl.innerHTML = window.marked
-              ? marked.parse(displayText)
-              : escapeHtml(displayText);
-            enhanceMarkdownContent(_streamResponseEl);
-          }
+          _renderParsedMessage(_streamResponseEl, _streamResponseText);
           _finalizeStreamResponse();
         } else if (e.data && e.data.trim()) {
           // No streaming bubble (pure non-streaming response) — create one.
           const summaryEl = document.createElement('div');
           summaryEl.className = 'msg ai';
-          const displayText = _stripPlannerMetadata(e.data);
-          summaryEl.innerHTML = window.marked
-            ? marked.parse(displayText || e.data)
-            : escapeHtml(displayText || e.data);
-          enhanceMarkdownContent(summaryEl);
+          _renderParsedMessage(summaryEl, e.data);
           col.appendChild(summaryEl);
           scrollChat();
           ChatSessionManager.appendMessage('assistant', e.data, _consumeToolRuns());
@@ -1254,9 +1428,77 @@ function _ensureResponseMsg(enterConversationCallback) {
   col.appendChild(_streamResponseEl);
 }
 
+function _attachAiActions(msgEl, text) {
+  if (!msgEl || !text || text.trim().length === 0) return;
+
+  const group = msgEl.closest('.msg-group') || msgEl.parentElement || msgEl;
+  if (!group || group.querySelector('.ai-actions')) return;
+
+  const actions = document.createElement('div');
+  actions.className = 'msg-actions ai-actions';
+  actions.innerHTML = `
+    <button class="action-btn btn-copy" title="Copy response"><i data-lucide="copy"></i></button>
+    <button class="action-btn btn-like" title="Good response"><i data-lucide="thumbs-up"></i></button>
+    <button class="action-btn btn-dislike" title="Bad response"><i data-lucide="thumbs-down"></i></button>
+  `;
+
+  const fileMatch = text.match(/([\w\-_\/\\\.]+\.(html|js|css|py|json|md))/i);
+  if (fileMatch || text.includes('```html') || text.includes('```mermaid') || text.includes('```javascript') || text.includes('```py') || text.includes('```text') || text.includes('Resume')) {
+    const canvasActionBtn = document.createElement('button');
+    canvasActionBtn.className = 'action-btn btn-canvas-launch';
+    canvasActionBtn.title = 'Open in Live Canvas';
+    canvasActionBtn.innerHTML = '<i data-lucide="layout" style="width:13px;height:13px"></i> Open Canvas';
+    canvasActionBtn.style.cssText = 'display:flex; align-items:center; gap:4px; font-size:11.5px; font-weight:600; color:var(--blue); background:rgba(37,99,235,0.08); padding:3px 8px; border-radius:6px; border:none; cursor:pointer;';
+    canvasActionBtn.addEventListener('click', () => {
+      if (window.liveCanvas) {
+        const codeBlockMatch = text.match(/```(\w+)?\n([\s\S]*?)```/);
+        const extractedCode = codeBlockMatch ? codeBlockMatch[2] : text;
+        const extractedLang = codeBlockMatch ? (codeBlockMatch[1] || 'html') : 'html';
+        window.liveCanvas.openArtifact({
+          type: extractedLang === 'mermaid' ? 'diagram' : (extractedLang === 'html' || extractedCode.includes('<html') ? 'web_app' : 'code'),
+          title: fileMatch ? fileMatch[1] : 'Interactive Artifact',
+          code: extractedCode,
+          language: extractedLang
+        });
+      }
+    });
+    actions.insertBefore(canvasActionBtn, actions.firstChild);
+  }
+
+  actions.querySelector('.btn-copy')?.addEventListener('click', () => {
+    const cleanText = text.replace(/<think>[\s\S]*?<\/think>/i, '').trim();
+    navigator.clipboard.writeText(cleanText).then(() => {
+      const copyIcon = actions.querySelector('.btn-copy i');
+      if (copyIcon) {
+        copyIcon.setAttribute('data-lucide', 'check');
+        if (window.lucide) lucide.createIcons({ parent: actions });
+        setTimeout(() => {
+          copyIcon.setAttribute('data-lucide', 'copy');
+          if (window.lucide) lucide.createIcons({ parent: actions });
+        }, 1500);
+      }
+    });
+  });
+
+  actions.querySelector('.btn-like')?.addEventListener('click', (e) => {
+    const btn = e.currentTarget;
+    btn.classList.toggle('active-like');
+    btn.style.color = btn.classList.contains('active-like') ? '#22c55e' : '';
+  });
+
+  actions.querySelector('.btn-dislike')?.addEventListener('click', (e) => {
+    const btn = e.currentTarget;
+    btn.classList.toggle('active-dislike');
+    btn.style.color = btn.classList.contains('active-dislike') ? '#ef4444' : '';
+  });
+
+  group.appendChild(actions);
+  if (window.lucide) setTimeout(() => lucide.createIcons({ parent: actions }), 0);
+}
+
 function _finalizeStreamResponse() {
   if (_streamResponseEl) {
-
+    _attachAiActions(_streamResponseEl, _streamResponseText);
     ChatSessionManager.appendMessage('assistant', _streamResponseText, _consumeToolRuns());
   }
   _streamResponseEl = null;

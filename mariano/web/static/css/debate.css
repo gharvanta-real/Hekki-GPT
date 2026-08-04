@@ -225,12 +225,36 @@
 .debate-layout.collapsed-sidebar .debate-sidebar-divider,
 .debate-layout.collapsed-sidebar .debate-sidebar-details,
 .debate-layout.collapsed-sidebar #btn-debate-sidebar-back,
-.debate-layout.collapsed-sidebar .nav-header > div:first-child {
+.debate-layout.collapsed-sidebar #btn-debate-search-nav,
+.debate-layout.collapsed-sidebar .nav-header-title {
   display: none !important;
 }
 .debate-layout.collapsed-sidebar .nav-header {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
   justify-content: center !important;
-  padding: 0 4px !important;
+  height: auto !important;
+  padding: 10px 0 6px !important;
+  gap: 8px !important;
+}
+.debate-layout.collapsed-sidebar .nav-header-logo-wrapper {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 36px !important;
+  height: 36px !important;
+  margin: 0 auto !important;
+}
+.debate-layout.collapsed-sidebar #btn-debate-sidebar-toggle {
+  width: 36px !important;
+  height: 36px !important;
+  min-width: 36px !important;
+  border-radius: 8px !important;
+  margin: 0 auto !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 .debate-layout.collapsed-sidebar .debate-sidebar-controls-list {
   align-items: center;
@@ -682,7 +706,7 @@ body.dark .des-card-avatar {
   background-color: var(--hover);
   padding: 10px 14px;
   border-radius: 6px;
-  font-family: monospace;
+  font-family: var(--font);
   overflow-x: auto;
   margin: 10px 0;
 }
@@ -694,7 +718,7 @@ body.dark .des-card-avatar {
   border-radius: 4px;
   border: none !important;
   outline: none !important;
-  font-family: monospace;
+  font-family: var(--font);
   font-size: 0.9em;
   font-weight: 500;
 }

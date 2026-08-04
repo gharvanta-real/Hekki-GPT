@@ -1,4 +1,4 @@
-﻿/* === chat/messages.js — Message DOM rendering, user edit, retry === */
+/* === chat/messages.js — Message DOM rendering, user edit, retry === */
 import { escapeHtml, formatTime, scrollChat, clearChatLogs } from './input.js';
 import { enhanceMarkdownContent } from './markdown.js';
 import { enhanceImagePreviews } from './media.js';
@@ -128,23 +128,61 @@ export function createMessageElement(type, text, timestamp, index, ChatSessionMa
       let thoughtHtml = '';
       let finalText = text;
 
-      const thinkMatch = text.match(/<think>([\s\S]*?)(?:<\/think>|$)/i);
-      if (thinkMatch) {
-        const thoughtContent = thinkMatch[1].trim();
-        finalText = text.replace(/<think>([\s\S]*?)(?:<\/think>|$)/i, '').trim();
-        if (thoughtContent) {
-          thoughtHtml = `
-            <div class="thought-container">
-              <div class="thought-header">
-                <span class="thought-title">Thinking Process</span>
-                <i class="mi-chevron thought-chevron" data-lucide="chevron-down" style="width:12px;height:12px;display:inline-block;vertical-align:middle;transition:transform 0.2s"></i>
-              </div>
-              <div class="thought-body collapsed" style="display: none;">
-                <p class="thought-step">${escapeHtml(thoughtContent)}</p>
-              </div>
-            </div>
-          `;
+      // Extract thinking process (<think> tags or numbered CoT reasoning steps)
+      const parseThinking = (raw) => {
+        if (!raw) return { thought: '', content: '' };
+        // Pattern 1: Explicit <think>...</think> or <thinking>...</thinking>
+        const tagMatch = raw.match(/<(think|thinking)>([\s\S]*?)(?:<\/\1>|$)/i);
+        if (tagMatch) {
+          return {
+            thought: tagMatch[2].trim(),
+            content: raw.replace(/<(think|thinking)>[\s\S]*?(?:<\/\1>|$)/gi, '').trim()
+          };
         }
+
+        // Pattern 2: Leaked Step-by-Step CoT Blocks (e.g. 1. **Analyze User Request:** ... 2. **Safety & Policy Check:** ...)
+        if (/^(?:\d+\.\s*\*\*(?:Analyze|Safety|Policy|Persona|Constraint|Formulate).*?\*\*)/i.test(raw.trim())) {
+          const paragraphs = raw.split(/\n\s*\n/);
+          const thoughtPs = [];
+          const contentPs = [];
+          let inThought = true;
+
+          for (let p of paragraphs) {
+            const trimmedP = p.trim();
+            if (inThought && (/^(?:\d+\.\s*\*|\*\*(?:Analyze|Safety|Policy|Persona|Constraint|Formulate).*?\*\*)/i.test(trimmedP) || trimmedP.startsWith('* **') || trimmedP.startsWith('- **'))) {
+              thoughtPs.push(p);
+            } else {
+              inThought = false;
+              contentPs.push(p);
+            }
+          }
+
+          if (thoughtPs.length > 0 && contentPs.length > 0) {
+            return {
+              thought: thoughtPs.join('\n\n').trim(),
+              content: contentPs.join('\n\n').trim()
+            };
+          }
+        }
+
+        return { thought: '', content: raw };
+      };
+
+      const { thought: thoughtContent, content: parsedFinalText } = parseThinking(text);
+      finalText = parsedFinalText;
+
+      if (thoughtContent) {
+        thoughtHtml = `
+          <div class="thought-container">
+            <div class="thought-header">
+              <span class="thought-title">Thinking Process</span>
+              <i class="mi-chevron thought-chevron" data-lucide="chevron-down" style="width:12px;height:12px;display:inline-block;vertical-align:middle;transition:transform 0.2s"></i>
+            </div>
+            <div class="thought-body collapsed" style="display: none;">
+              <div class="thought-step">${window.marked ? marked.parse(thoughtContent) : escapeHtml(thoughtContent)}</div>
+            </div>
+          </div>
+        `;
       }
 
       el.innerHTML = thoughtHtml + (window.marked ? marked.parse(finalText) : escapeHtml(finalText));
@@ -163,38 +201,64 @@ export function createMessageElement(type, text, timestamp, index, ChatSessionMa
 
       group.appendChild(el);
 
-      const actions = document.createElement('div');
-      actions.className = 'msg-actions ai-actions';
-      actions.innerHTML = `
-        <button class="action-btn btn-copy" title="Copy response"><i data-lucide="copy"></i></button>
-        <button class="action-btn btn-like" title="Good response"><i data-lucide="thumbs-up"></i></button>
-        <button class="action-btn btn-dislike" title="Bad response"><i data-lucide="thumbs-down"></i></button>
-      `;
-      group.appendChild(actions);
+      if (finalText && finalText.trim().length > 0) {
+        const actions = document.createElement('div');
+        actions.className = 'msg-actions ai-actions';
+        actions.innerHTML = `
+          <button class="action-btn btn-copy" title="Copy response"><i data-lucide="copy"></i></button>
+          <button class="action-btn btn-like" title="Good response"><i data-lucide="thumbs-up"></i></button>
+          <button class="action-btn btn-dislike" title="Bad response"><i data-lucide="thumbs-down"></i></button>
+        `;
+        group.appendChild(actions);
 
-      actions.querySelector('.btn-copy').addEventListener('click', () => {
-        const cleanText = text.replace(/<think>[\s\S]*?<\/think>/i, '').trim();
-        navigator.clipboard.writeText(cleanText).then(() => {
-          const copyIcon = actions.querySelector('.btn-copy i');
-          if (copyIcon) {
-            copyIcon.setAttribute('data-lucide', 'check');
-            if (window.lucide) lucide.createIcons();
-            setTimeout(() => { copyIcon.setAttribute('data-lucide', 'copy'); if (window.lucide) lucide.createIcons(); }, 1500);
-          }
+        // Check if message references web apps or files
+        const fileMatch = text.match(/([\w\-_\/\\\.]+\.(html|js|css|py|json|md))/i);
+        if (fileMatch || text.includes('```html') || text.includes('```mermaid') || text.includes('```javascript') || text.includes('```py')) {
+          const canvasActionBtn = document.createElement('button');
+          canvasActionBtn.className = 'action-btn btn-canvas-launch';
+          canvasActionBtn.title = 'Open in Live Canvas';
+          canvasActionBtn.innerHTML = '<i data-lucide="layout" style="width:13px;height:13px"></i> Open Canvas';
+          canvasActionBtn.style.cssText = 'display:flex; align-items:center; gap:4px; font-size:11.5px; font-weight:600; color:var(--blue); background:rgba(37,99,235,0.08); padding:3px 8px; border-radius:6px; border:none; cursor:pointer;';
+          canvasActionBtn.addEventListener('click', () => {
+            if (window.liveCanvas) {
+              const codeBlockMatch = text.match(/```(\w+)?\n([\s\S]*?)```/);
+              const extractedCode = codeBlockMatch ? codeBlockMatch[2] : text;
+              const extractedLang = codeBlockMatch ? (codeBlockMatch[1] || 'html') : 'html';
+              window.liveCanvas.openArtifact({
+                type: extractedLang === 'mermaid' ? 'diagram' : (extractedLang === 'html' || extractedCode.includes('<html') ? 'web_app' : 'code'),
+                title: fileMatch ? fileMatch[1] : 'Interactive Artifact',
+                code: extractedCode,
+                language: extractedLang
+              });
+            }
+          });
+          actions.insertBefore(canvasActionBtn, actions.firstChild);
+        }
+
+        actions.querySelector('.btn-copy').addEventListener('click', () => {
+          const cleanText = text.replace(/<think>[\s\S]*?<\/think>/i, '').trim();
+          navigator.clipboard.writeText(cleanText).then(() => {
+            const copyIcon = actions.querySelector('.btn-copy i');
+            if (copyIcon) {
+              copyIcon.setAttribute('data-lucide', 'check');
+              if (window.lucide) lucide.createIcons();
+              setTimeout(() => { copyIcon.setAttribute('data-lucide', 'copy'); if (window.lucide) lucide.createIcons(); }, 1500);
+            }
+          });
         });
-      });
 
-      actions.querySelector('.btn-like').addEventListener('click', () => {
-        actions.querySelector('.btn-like').classList.toggle('active');
-        actions.querySelector('.btn-dislike').classList.remove('active');
-      });
+        actions.querySelector('.btn-like').addEventListener('click', () => {
+          actions.querySelector('.btn-like').classList.toggle('active');
+          actions.querySelector('.btn-dislike').classList.remove('active');
+        });
 
-      actions.querySelector('.btn-dislike').addEventListener('click', () => {
-        actions.querySelector('.btn-dislike').classList.toggle('active');
-        actions.querySelector('.btn-like').classList.remove('active');
-      });
+        actions.querySelector('.btn-dislike').addEventListener('click', () => {
+          actions.querySelector('.btn-dislike').classList.toggle('active');
+          actions.querySelector('.btn-like').classList.remove('active');
+        });
 
-      if (window.lucide) setTimeout(() => lucide.createIcons({ parent: actions }), 0);
+        if (window.lucide) setTimeout(() => lucide.createIcons({ parent: actions }), 0);
+      }
     } else {
       el.innerHTML = escapeHtml(text);
       group.appendChild(el);

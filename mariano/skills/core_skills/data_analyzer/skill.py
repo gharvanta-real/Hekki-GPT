@@ -4,14 +4,9 @@ from __future__ import annotations
 import asyncio
 from pathlib import Path
 from typing import Any
-import numpy as np
-import pandas as pd
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
-
 from mariano.skills._base import BaseSkill, SkillResult
 from mariano.config import get_settings
+
 
 
 class DataAnalyzerSkill(BaseSkill):
@@ -58,7 +53,8 @@ class DataAnalyzerSkill(BaseSkill):
             },
         }
 
-    def _load_dataset(self, file_path: Path) -> pd.DataFrame:
+    def _load_dataset(self, file_path: Path):
+        import pandas as pd
         suf = file_path.suffix.lower()
         if suf == ".csv":
             return pd.read_csv(file_path)
@@ -76,7 +72,13 @@ class DataAnalyzerSkill(BaseSkill):
 
     async def execute(self, action: str, file_path: str, x_col: str | None = None, y_col: str | None = None, chart_type: str = "line", title: str | None = None, top_n: int = 20, **kwargs: Any) -> SkillResult:
         try:
+            import numpy as np
+            import pandas as pd
+            import matplotlib
+            matplotlib.use('Agg')
+            import matplotlib.pyplot as plt
             from mariano.core.workspace import PathGuard
+
 
             settings = get_settings()
             workspace_root = settings.mariano_data_dir.parent

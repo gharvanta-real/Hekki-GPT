@@ -29,6 +29,8 @@ CORE_SKILL_MODULES = [
     "mariano.skills.core_skills.physics_solver.skill",
     "mariano.skills.core_skills.coder_refactor.skill",
     "mariano.skills.core_skills.data_analyzer.skill",
+    "mariano.skills.core_skills.recon_scanner.skill",
+    "mariano.skills.core_skills.security_header_analyzer.skill",
 ]
 
 
