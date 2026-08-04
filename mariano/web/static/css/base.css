@@ -1,8 +1,9 @@
 /* === BASE VARIABLES & RESET === */
 :root {
-  --bg:          #FDFCFC; /* soft off-white main content background */
+  --bg:          #ffffff; /* full clean white background */
   --card:        #ffffff;
-  --sidebar-bg:  #ffffff; /* pure clean white for all left sidebars */
+  --input-bg:    #F4F4F6; /* soft light neutral tint so input capsule stands out cleanly from white bg */
+  --sidebar-bg:  #ffffff; /* full clean white for all left sidebars */
   --border:      #E8E8E6; 
   --hover:       #EEEEEC;
 
@@ -45,6 +46,7 @@
 body.dark {
   --bg:          #1F1F1E; /* precise dark theme color requested */
   --card:        #2C2C2B; /* slightly lighter for cards/inputs */
+  --input-bg:    var(--card);
   --sidebar-bg:  #1F1F1E;
   --border:      #333332;
   --hover:       #2A2A29;
@@ -63,6 +65,7 @@ body.dark {
 body.oled {
   --bg:          #000000; /* true black background */
   --card:        #0E0E0E; /* extremely dark gray for cards/inputs */
+  --input-bg:    var(--card);
   --sidebar-bg:  #000000;
   --border:      #1F1F1F;
   --hover:       #181818;

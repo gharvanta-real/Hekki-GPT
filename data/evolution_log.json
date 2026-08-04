@@ -1,5 +1,109 @@
 [
   {
+    "timestamp": "2026-08-04T09:34:35.000000",
+    "type": "ui_redesign",
+    "title": "New Debate Action Button Icon Updated to Match New Chat (message-circle-plus)",
+    "description": "Updated #btn-sidebar-new-debate in debate_page.js to use data-lucide='message-circle-plus', unifying the action icon design across both Chat and Debate Playground sidebars.",
+    "reason": "Fulfilled user request: use the exact same icon on New Debate as New Chat.",
+    "impact": "100% unified action icon design across all workspace sidebars."
+  },
+  {
+    "timestamp": "2026-08-04T09:25:55.000000",
+    "type": "bug_fix_and_ui",
+    "title": "Fixed Accidental 'Listening...' Input Bug & Aligned Debate Playground Input Bar Tint",
+    "description": "Fixed bug in voice_controller.js where unhandled Spacebar keydown events triggered toggleVoice() outside text inputs. Added guard to ensure Listening... is never set on input placeholders when mic is disabled. Aligned .debate-input-wrapper background in debate.css to use var(--input-bg, #F4F4F6) matching the chat input bar in Light Mode.",
+    "reason": "Fulfilled user requests: 1. Fix accidental Listening... bug when typing/navigating. 2. Match Debate Playground input bar Light Theme background to Chat input bar.",
+    "impact": "100% stable input bar state without accidental voice triggers, with unified Light Mode input bar surface tint across all pages."
+  },
+  {
+    "timestamp": "2026-08-04T09:24:05.000000",
+    "type": "branding_update",
+    "title": "Deprecated 'MARIANO IDE' & 'MARIANO HUD' Text Replaced with 'Hekki / Hekki Assistant'",
+    "description": "Replaced user-facing text, system rules (layer1_rules.md, layer2_rules.md), agent constants (constants.py), and server startup banners (run_web.py, app.py) from MARIANO IDE to Hekki Assistant. Preserved internal Python module paths (mariano/...) for codebase import integrity.",
+    "reason": "Fulfilled user request: replace old MARIANO IDE text with Hekki across all user-facing rules and components.",
+    "impact": "100% unified Hekki branding across system instructions, prompts, and installer binaries."
+  },
+  {
+    "timestamp": "2026-08-04T09:19:30.000000",
+    "type": "build_and_deployment",
+    "title": "Standalone NSIS Windows Installer Built (Hekki Setup 1.0.0.exe)",
+    "description": "Compiled Python backend into standalone hekki_backend.exe using PyInstaller and packaged into a single NSIS Windows installer using Electron-Builder. Includes automatic backend spawn daemon, splash loading screen, desktop & start menu shortcuts, and auto taskkill cleanup on exit.",
+    "reason": "Fulfilled user request: create NSIS installable package for Hekki with automatic backend & frontend service startup.",
+    "impact": "100% standalone, production-ready Windows NSIS installer created at dist/Hekki Setup 1.0.0.exe."
+  },
+  {
+    "timestamp": "2026-08-04T09:15:46.000000",
+    "type": "ui_redesign",
+    "title": "Input Capsule Background Set to Soft Neutral Tint (#F4F4F6) for Clear White Background Contrast",
+    "description": "Updated --input-bg in base.css and chat.css to #F4F4F6 so the input capsule box stands out distinctly and cleanly from the pure white (#ffffff) workspace background.",
+    "reason": "Fulfilled user screenshot request: input bar background was blending into the white main background.",
+    "impact": "Distinct, clean, modern input capsule visibility on white Light Mode background."
+  },
+  {
+    "timestamp": "2026-08-04T09:14:10.000000",
+    "type": "ui_redesign",
+    "title": "Settings Controls & Typography Scale Scaled Down to 12.5px",
+    "description": "Updated font sizes in settings.css for .settings-input, .settings-select, .settings-textarea, and .row-label to 12.5px !important, and .section-title to 14.5px for crisp, compact, proportional settings controls.",
+    "reason": "Fulfilled user screenshot request: make main text of inputs, dropdowns, and controls slightly smaller.",
+    "impact": "100% compact, crisp, high-precision typography across all settings controls."
+  },
+  {
+    "timestamp": "2026-08-04T09:13:18.000000",
+    "type": "ui_redesign",
+    "title": "OLED Black & Dark Theme Modal Box Border Outline Added (border: 1px solid var(--border))",
+    "description": "Added body.oled .modal-box, body.dark .modal-box rule in settings.css to apply a crisp, subtle 1px border outline so the settings modal stands out cleanly against true black backdrops.",
+    "reason": "Fulfilled user screenshot request: keep outline/border on settings modal in OLED black theme.",
+    "impact": "100% visible, elegant modal container boundary in OLED Black theme."
+  },
+  {
+    "timestamp": "2026-08-04T09:12:25.000000",
+    "type": "ui_redesign",
+    "title": "Settings Input Fields Background Set to Soft Secondary Tint (var(--hover))",
+    "description": "Updated .settings-input, .settings-select, and .settings-textarea in settings.css to use background: var(--hover), providing a clean soft secondary background tint so input boxes stand out beautifully on white panel surfaces.",
+    "reason": "Fulfilled user screenshot request: set settings input field background color to secondary.",
+    "impact": "Clean, soft secondary surface contrast for all settings input fields and textareas."
+  },
+  {
+    "timestamp": "2026-08-04T09:11:46.000000",
+    "type": "ui_redesign",
+    "title": "Light Mode Theme Tokens Set to 100% Full White (#FFFFFF)",
+    "description": "Updated base.css Light Mode variables (--bg, --card, --input-bg, --sidebar-bg) to #ffffff. Updated settings.css and chat.css fallbacks to #ffffff for a 100% full white light theme surface across all application workspaces.",
+    "reason": "Fulfilled user request: make light theme full white across the entire app.",
+    "impact": "100% pure clean full white light theme workspace."
+  },
+  {
+    "timestamp": "2026-08-04T09:10:48.000000",
+    "type": "ui_redesign",
+    "title": "Settings Modal Dimensions Reduced (Width: 740px, Height: 560px, Nav: 190px)",
+    "description": "Updated .modal-box in settings.css to apply compact 740px width (down from 900px) and 560px height (down from 640px), with a streamlined 190px left nav width for balanced, centered modal proportion.",
+    "reason": "Fulfilled user request: reduce width of settings modal.",
+    "impact": "Compact, beautifully centered, proportional settings modal."
+  },
+  {
+    "timestamp": "2026-08-04T09:10:35.000000",
+    "type": "ui_redesign",
+    "title": "Settings Modal & Controls Borders/Outlines Removed (border: none !important)",
+    "description": "Updated settings.css to enforce border: none !important and outline: none !important on .modal-box, .modal-search, .settings-input, .settings-select, and .settings-textarea, enforcing Rule 3 flat background fill aesthetic.",
+    "reason": "Fulfilled user request: remove outlines/borders from settings modal.",
+    "impact": "100% borderless, shadowless, flat settings modal frame and inputs."
+  },
+  {
+    "timestamp": "2026-08-04T09:02:20.000000",
+    "type": "ui_redesign",
+    "title": "Settings Modal Redesigned: White Leftbar, FDFCFC Main Content, 18px Rounded Corners, Zero Shadow",
+    "description": "Updated settings.css modal-box border-radius to 18px and zero box-shadow. Set .modal-nav background to var(--sidebar-bg, #ffffff) for clean white leftbar. Set .modal-content background to var(--bg, #FDFCFC) for soft secondary main content surface distinct from the leftbar.",
+    "reason": "Fulfilled user request: Settings modal should have clean leftbar color distinct from main content area, and slightly more rounded modal corners.",
+    "impact": "100% clean visual separation between Settings leftbar (white) and main content area (FDFCFC) with premium rounded modal."
+  },
+  {
+    "timestamp": "2026-08-04T08:59:58.000000",
+    "type": "ui_redesign",
+    "title": "Input Capsule Light Mode Background Color Updated to Soft Tint (#F4F4F6)",
+    "description": "Created --input-bg design token in base.css set to #F4F4F6 for Light Mode and applied to #input-capsule and #input-capsule-conv in chat.css. Ensures the input capsule stands out cleanly from the #FDFCFC main content background with an elegant, non-dark soft neutral tint.",
+    "reason": "Fulfilled user screenshot request: give input capsule background a distinct soft light tint so it doesn't blend identically into the #FDFCFC main background.",
+    "impact": "Clean, distinct visual contrast for input bar in Light Mode."
+  },
+  {
     "timestamp": "2026-08-04T08:56:25.000000",
     "type": "ui_redesign",
     "title": "Model Selector Added Soft Hover/Click Background Highlight (var(--hover))",

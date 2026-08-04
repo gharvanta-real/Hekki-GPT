@@ -175,7 +175,7 @@ async def lifespan(app: FastAPI):
     log.info("web.shutting_down")
 
 
-app = FastAPI(title="MARIANO HUD Engine", lifespan=lifespan)
+app = FastAPI(title="Hekki Engine", lifespan=lifespan)
 
 # Setup static files directory
 STATIC_DIR = Path(__file__).resolve().parent / "static"
@@ -207,7 +207,7 @@ async def get_index():
                 "Expires": "0"
             }
         )
-    return HTMLResponse(content="<h1>MARIANO index.html not found.</h1>", status_code=404)
+    return HTMLResponse(content="<h1>Hekki index.html not found.</h1>", status_code=404)
 
 
 @app.get("/favicon.ico", include_in_schema=False)

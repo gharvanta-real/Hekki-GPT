@@ -76,7 +76,7 @@
 #input-capsule {
   position: relative;
   width: 100%;
-  background: var(--card);
+  background: var(--input-bg, #F4F4F6);
   border: none !important;
   outline: none !important;
   box-shadow: none !important;
@@ -110,7 +110,7 @@
 /* ── BOTTOM CONVERSATION INPUT CAPSULE (Always pinned at bottom) ── */
 #input-capsule-conv {
   width: 100%;
-  background: var(--card);
+  background: var(--input-bg, #F4F4F6);
   border: none !important;
   outline: none !important;
   box-shadow: none !important;

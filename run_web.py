@@ -32,7 +32,7 @@ if __name__ == "__main__":
     # Essential for PyInstaller on Windows when using multiprocessing or async servers
     multiprocessing.freeze_support()
     print("====================================================")
-    print("MARIANO HUD WEB SERVER INITIATED")
+    print("HEKKI ASSISTANT WEB SERVER INITIATED")
     print("Local Access:   http://localhost:8000")
     print("Network Access (Phone): http://[YOUR-PC-IP]:8000")
     print("WebSocket Pipe: ws://localhost:8000/ws")

@@ -1,8 +1,8 @@
-"""MARIANO — All constants. No magic strings in code."""
+"""Hekki — All constants. No magic strings in code."""
 from __future__ import annotations
 
 # Agent
-AGENT_NAME = "MARIANO"
+AGENT_NAME = "Hekki"
 AGENT_VERSION = "1.0.0"
 
 # Memory

@@ -849,7 +849,7 @@ body.dark .des-card-avatar {
   width: 100% !important;
   margin: 0 auto !important;
   box-sizing: border-box !important;
-  background: var(--card);
+  background: var(--input-bg, #F4F4F6);
   border: none !important;
   outline: none !important;
   box-shadow: none !important;

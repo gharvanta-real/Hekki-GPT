@@ -60,7 +60,7 @@ function _buildLayout() {
           <!-- Sidebar Controls List -->
           <div class="debate-sidebar-controls-list">
             <button class="debate-list-btn" id="btn-sidebar-new-debate" title="New Debate">
-              <i data-lucide="plus" style="width:15px; height:15px; margin-right:8px;"></i>
+              <i data-lucide="message-circle-plus" style="width:15px; height:15px; margin-right:8px;"></i>
               <span>New Debate</span>
             </button>
             <button class="debate-list-btn" id="btn-sidebar-research-directory" title="Research Directory">

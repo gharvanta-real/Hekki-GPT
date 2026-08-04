@@ -75,8 +75,13 @@ export function bindVoice(voice, socket, inConversationState, log) {
     return { mic: $('btn-voice'), cap: $('input-capsule'), input: $('chat-input') };
   };
 
-  const toggleVoice = async () => {
+  const toggleVoice = async (e) => {
+    // Only toggle voice if explicitly triggered by a user action when mic button exists
     const { mic, cap, input } = getActiveMicAndCapsule();
+    if (!mic) {
+      resetVoiceUI();
+      return;
+    }
     await voice.toggleVoice(socket, log, mic);
 
     if (voice.isRecording) {
@@ -101,7 +106,7 @@ export function bindVoice(voice, socket, inConversationState, log) {
 
     const { input } = getActiveMicAndCapsule();
     if (input) {
-      input.placeholder = inConversationState.val ? 'Reply...' : 'How can I help you today?';
+      input.placeholder = inConversationState.val ? 'Write a message...' : 'How can I help you today?';
       input.disabled = false;
     }
     
@@ -118,6 +123,7 @@ export function bindVoice(voice, socket, inConversationState, log) {
   };
   
   resetVoiceUIInstance = resetVoiceUI;
+  resetVoiceUI(); // Clean up on init
 
   ['btn-voice', 'btn-voice-conv', 'coder-btn-voice', 'btn-input-voice', 'btn-stop'].forEach(id => {
     const btn = $(id);
@@ -131,24 +137,7 @@ export function bindVoice(voice, socket, inConversationState, log) {
   document.body.addEventListener('click', (e) => {
     const btn = e.target.closest('#btn-agent-voice');
     if (btn) {
-      toggleVoice();
-    }
-  });
-
-  // Space bar outside input = toggle voice (NOT when Ctrl/Shift/Meta held — those are system shortcuts)
-  window.addEventListener('keydown', e => {
-    if (e.code === 'Space' && !e.ctrlKey && !e.shiftKey && !e.metaKey && !e.altKey) {
-      const active = document.activeElement;
-      if (active && (
-        active.tagName === 'INPUT' ||
-        active.tagName === 'TEXTAREA' ||
-        active.tagName === 'SELECT' ||
-        active.hasAttribute('contenteditable')
-      )) {
-        return;
-      }
-      e.preventDefault();
-      toggleVoice();
+      toggleVoice(e);
     }
   });
 }
