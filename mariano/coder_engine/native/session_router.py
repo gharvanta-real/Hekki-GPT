@@ -20,7 +20,7 @@ class CreateSessionPayload(BaseModel):
     session_id: str
     title: str
     workspace: Optional[str] = ""
-    model: Optional[str] = "openrouter_nemotron"
+    model: Optional[str] = "gemini-3.1-flash-lite"
 
 
 @session_api_router.post("/sessions")

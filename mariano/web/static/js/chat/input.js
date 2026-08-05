@@ -80,21 +80,6 @@ export function bindInputs(sendCallback, ChatSessionManager) {
       submitBtn?.classList.add('hidden');
     }
 
-    // Toggle Dual Model Selectors when /debate is typed or present
-    const isDebate = textarea.value.trim().toLowerCase().includes('/debate') || 
-                     textarea.value.trim().toLowerCase().startsWith('run debate') || 
-                     textarea.value.trim().toLowerCase().startsWith('expert debate');
-    const dualSelectors = $('dual-model-selectors');
-    const singlePill = $('single-model-pill');
-    if (dualSelectors && singlePill) {
-      if (isDebate) {
-        dualSelectors.classList.remove('hidden');
-        singlePill.classList.add('hidden');
-      } else {
-        dualSelectors.classList.add('hidden');
-        singlePill.classList.remove('hidden');
-      }
-    }
   };
 
   $('chat-input')?.addEventListener('keydown', e => {

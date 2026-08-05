@@ -8,23 +8,15 @@
 }
 
 /* === TITLEBAR === */
-#titlebar {
-  height: 48px;
-  background: var(--sidebar-bg);
-  border-bottom: none !important;
-  box-shadow: none !important;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 140px 0 12px;
-  flex-shrink: 0;
-  user-select: none;
-}
-/* Titlebar under workspace */
+#titlebar,
 #workspace #titlebar {
-  background: var(--bg);
-  border-bottom: none !important;
-  box-shadow: none !important;
+  display: none !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  border: none !important;
 }
 
 .tb-group { 
@@ -1223,7 +1215,7 @@ body.dark .modal-nav-pill.active {
   padding: 8px 10px;
   border-top: none !important;
   cursor: pointer;
-  background: var(--card);
+  background: var(--input-bg, #f6f7f9);
   transition: background 0.15s ease, transform 0.12s ease;
   flex-shrink: 0;
   gap: 10px;
@@ -1235,7 +1227,7 @@ body.dark .modal-nav-pill.active {
   box-shadow: none !important;
 }
 .sidebar-user-profile:hover {
-  background: var(--hover);
+  background: var(--hover, #e2e8f0);
 }
 .sidebar-user-avatar {
   width: 32px;
@@ -1279,11 +1271,12 @@ body.dark .sidebar-user-avatar {
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: 14px;
-  padding: 8px 0;
+  padding: 6px !important;
   box-shadow: none !important;
   z-index: 9999;
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;
 }
 .user-menu-dropdown.hidden {
   display: none;
@@ -1291,19 +1284,20 @@ body.dark .sidebar-user-avatar {
 .user-menu-header {
   font-size: 12.5px;
   color: var(--text-3);
-  padding: 6px 16px 8px;
+  padding: 6px 12px 6px;
   font-weight: 500;
 }
 .user-menu-divider {
   height: 1px;
   background: var(--border);
-  margin: 6px 0;
+  margin: 4px 0;
 }
 .user-menu-item {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 16px;
+  padding: 9px 12px;
+  border-radius: 8px !important;
   background: transparent;
   border: none;
   cursor: pointer;
@@ -1311,12 +1305,14 @@ body.dark .sidebar-user-avatar {
   font-size: 14px !important;
   font-weight: 500 !important;
   font-family: inherit;
-  transition: background 0.15s;
+  transition: background 0.15s, border-radius 0.15s;
   width: 100%;
+  box-sizing: border-box;
   text-align: left;
 }
 .user-menu-item:hover {
-  background: var(--hover);
+  background: var(--hover) !important;
+  border-radius: 8px !important;
 }
 .user-menu-item i,
 .user-menu-item svg,

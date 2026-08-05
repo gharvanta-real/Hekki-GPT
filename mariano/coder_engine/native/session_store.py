@@ -35,7 +35,7 @@ def init_session_tables():
     conn.close()
 
 
-def create_session(session_id: str, title: str, workspace: str = "", model: str = "openrouter_nemotron") -> dict:
+def create_session(session_id: str, title: str, workspace: str = "", model: str = "gemini-3.1-flash-lite") -> dict:
     init_session_tables()
     now = datetime.utcnow().isoformat() + "Z"
     clean_title = (title or "New Conversation").strip()

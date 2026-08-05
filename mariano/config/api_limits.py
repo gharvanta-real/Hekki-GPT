@@ -4,13 +4,14 @@ API Limits Configuration — Single source of truth for Chat, Coder, and Debate 
 from __future__ import annotations
 
 # ==========================================
-# 1. GLOBAL RATE LIMITER (Gemini API Limits)
+# 1. GLOBAL RATE LIMITER (Gemini API Limits with Buffer Guard)
 # ==========================================
-GLOBAL_MAX_RPM = 1000   # Unlimited / High throughput
-GLOBAL_MAX_TPM = 1000000 # 1 Million Tokens Per Minute (as per Google Live API Quota)
-GLOBAL_MAX_RPD = 100000 # Unlimited / High daily quota
+GLOBAL_MAX_RPM = 14       # Buffer guard: 14 RPM (Google limit is 15 RPM)
+GLOBAL_MAX_TPM = 250000   # Buffer guard: 250K TPM
+GLOBAL_MAX_RPD = 480      # Buffer guard: 480 RPD (Google limit is 500 RPD)
+MIN_REQUEST_INTERVAL = 4.0 # 4.0s pacing buffer between requests (ensures max 15 RPM)
 
-LIVE_AUDIO_MAX_TPM = 1000000 # 1M TPM for Gemini 2.5 Flash Native Audio Dialog
+LIVE_AUDIO_MAX_TPM = 250000 # 1M TPM for Gemini 2.5 Flash Native Audio Dialog
 
 
 # ==========================================

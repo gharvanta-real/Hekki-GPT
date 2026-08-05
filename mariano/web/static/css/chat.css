@@ -58,6 +58,12 @@
   gap: 12px;
   margin-bottom: 12px;
 }
+.greeting img {
+  box-shadow: none !important;
+  filter: none !important;
+  border: none !important;
+  outline: none !important;
+}
 .greeting-star {
   color: var(--orange);
   font-size: 24px;
@@ -1081,7 +1087,10 @@ body.oled .table-wrapper :not(pre) > code,
   padding: 12px 16px;
   overflow-x: auto;
   margin: 10px 0;
-  white-space: pre !important;
+  white-space: pre-wrap !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  max-width: 100% !important;
 }
 .msg pre code {
   background: transparent !important;
@@ -1213,12 +1222,14 @@ body.oled .code-action-btn:hover,
   border-radius: 0 !important;
   background: transparent !important;
   padding: 14px 16px !important;
-  overflow-x: auto;
+  overflow-x: auto !important;
   font-size: 13px;
   line-height: 1.6;
   font-family: var(--font-mono), monospace;
-  white-space: pre !important;
-  word-break: normal !important;
+  white-space: pre-wrap !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  max-width: 100% !important;
 }
 
 .code-block-wrapper pre code {
@@ -1285,13 +1296,18 @@ body.oled .code-action-btn:hover,
   position: relative !important;
 }
 .bottom-disclaimer {
-  text-align: center;
-  font-size: 10px; /* Very small, clean & subtle disclaimer */
-  color: var(--text-3);
-  opacity: 0.7;
-  margin-top: 4px;
-  margin-bottom: 2px;
-  letter-spacing: 0.01em;
+  text-align: center !important;
+  font-size: 10px !important; /* Very small, clean & subtle disclaimer */
+  color: var(--text-3) !important;
+  opacity: 0.7 !important;
+  margin: 6px auto 2px auto !important;
+  width: 100% !important;
+  max-width: 720px !important;
+  display: block !important;
+  letter-spacing: 0.01em !important;
+  box-sizing: border-box !important;
+  float: none !important;
+  clear: both !important;
 }
 
 /* === AGENT THOUGHTS (Reasoning timeline) === */
@@ -1621,7 +1637,7 @@ body.oled .code-action-btn:hover,
   max-height: 80vh !important;
   background: var(--card) !important;
   border: 1px solid var(--border) !important;
-  border-radius: 12px !important;
+  border-radius: 24px !important;
   box-shadow: 0 20px 25px -5px rgba(0,0,0,0.15), 0 10px 10px -5px rgba(0,0,0,0.08) !important;
   overflow: hidden !important;
 }
@@ -1629,9 +1645,9 @@ body.oled .code-action-btn:hover,
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
-  padding: 14px 20px !important;
+  padding: 10px 18px 4px !important;
   border-bottom: none !important;
-  height: 56px !important;
+  height: 42px !important;
   box-sizing: border-box !important;
   position: relative !important;
   overflow: hidden !important;
@@ -1741,7 +1757,7 @@ body.oled .code-action-btn:hover,
   margin: 0;
 }
 .search-modal-body {
-  padding: 8px 20px 20px !important;
+  padding: 2px 14px 14px !important;
   display: flex;
   flex-direction: column;
   min-height: 0;
@@ -1759,8 +1775,10 @@ body.oled .code-action-btn:hover,
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 8px;
-  border-bottom: 1px solid var(--border) !important;
+  padding: 10px 12px;
+  margin: 2px 0;
+  border-radius: 12px !important;
+  border-bottom: none !important;
   cursor: pointer;
   transition: all 0.15s ease;
   background: transparent !important;
@@ -1769,7 +1787,8 @@ body.oled .code-action-btn:hover,
   border-bottom: none;
 }
 .search-result-item:hover {
-  background: var(--hover);
+  background: var(--hover) !important;
+  border-radius: 12px !important;
 }
 .search-result-left {
   display: flex;
@@ -4482,6 +4501,21 @@ body.dark .cad-ai-header-title,
   font-size: 13.5px;
   line-height: 1.65;
   box-sizing: border-box;
+  overflow-x: auto !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+}
+
+.canvas-paper-page pre,
+.canvas-paper-page code,
+.canvas-paper-page p,
+.canvas-paper-page div {
+  max-width: 100% !important;
+  white-space: pre-wrap !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  overflow-x: auto !important;
+  box-sizing: border-box !important;
 }
 
 .paper-resume-header {

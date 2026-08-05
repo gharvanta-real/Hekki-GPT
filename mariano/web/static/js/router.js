@@ -130,7 +130,7 @@ class Router {
     }
     
     const titlebarEl = document.getElementById('titlebar');
-    if (titlebarEl) titlebarEl.style.display = 'flex';
+    if (titlebarEl) titlebarEl.style.display = 'none';
 
     const sidebarNav = document.getElementById('sidebar-nav');
     if (sidebarNav) {

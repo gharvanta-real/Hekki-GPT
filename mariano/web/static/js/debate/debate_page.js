@@ -159,33 +159,35 @@ function _buildLayout() {
           <div class="debate-sidebar-divider"></div>
 
           <!-- Documents Section (Persistent Saved Documentaries) -->
-          <details class="debate-sidebar-details" id="debate-documents-details" style="position: relative;">
-            <summary class="debate-sidebar-summary">
+          <details class="debate-sidebar-details" id="debate-documents-details">
+            <summary class="debate-sidebar-summary" style="display: flex; align-items: center; justify-content: space-between;">
               <span class="summary-title">Documents</span>
-              <i data-lucide="chevron-right" class="accordion-chevron"></i>
-            </summary>
-            <!-- Documents Options Dropdown -->
-            <div class="doc-dropdown" style="position: absolute; right: 10px; top: 2px; z-index: 115;">
-              <button class="debate-docs-menu-btn" id="btn-debate-docs-menu" style="background: transparent; border: none; padding: 4px; cursor: pointer; color: var(--text-secondary); display: flex; align-items: center; justify-content: center; border-radius: 4px; transition: background 0.12s, color 0.12s;" title="Document Options">
-                <i data-lucide="more-vertical" style="width: 14px; height: 14px;"></i>
-              </button>
-              <div class="doc-dropdown-menu" id="debate-docs-dropdown-menu" style="top: 24px;">
-                <button class="dropdown-item btn-upload-doc" id="btn-debate-upload-doc" style="display: flex; align-items: center; gap: 8px;">
-                  <i data-lucide="upload" style="width: 12px; height: 12px;"></i>
-                  <span>Upload Document</span>
-                </button>
-                <button class="dropdown-item btn-export-docs" id="btn-debate-export-docs" style="display: flex; align-items: center; gap: 8px;">
-                  <i data-lucide="download" style="width: 12px; height: 12px;"></i>
-                  <span>Export All</span>
-                </button>
-                <div style="border-top: 1px solid var(--border); margin: 4px 0;"></div>
-                <button class="dropdown-item btn-clear-docs" id="btn-debate-clear-docs" style="display: flex; align-items: center; gap: 8px; color: #ef4444;">
-                  <i data-lucide="trash-2" style="width: 12px; height: 12px;"></i>
-                  <span>Clean All</span>
-                </button>
+              <div style="display: flex; align-items: center; gap: 4px; margin-left: auto;">
+                <!-- Documents Options Dropdown -->
+                <div class="doc-dropdown" style="position: relative; display: flex; align-items: center;">
+                  <button class="debate-docs-menu-btn" id="btn-debate-docs-menu" style="background: transparent; border: none; padding: 2px 4px; cursor: pointer; color: var(--text-secondary); display: flex; align-items: center; justify-content: center; border-radius: 4px; transition: background 0.12s, color 0.12s;" title="Document Options">
+                    <i data-lucide="more-vertical" style="width: 14px; height: 14px;"></i>
+                  </button>
+                  <div class="doc-dropdown-menu" id="debate-docs-dropdown-menu" style="top: 24px; right: 0;">
+                    <button class="dropdown-item btn-upload-doc" id="btn-debate-upload-doc" style="display: flex; align-items: center; gap: 8px;">
+                      <i data-lucide="upload" style="width: 12px; height: 12px;"></i>
+                      <span>Upload Document</span>
+                    </button>
+                    <button class="dropdown-item btn-export-docs" id="btn-debate-export-docs" style="display: flex; align-items: center; gap: 8px;">
+                      <i data-lucide="download" style="width: 12px; height: 12px;"></i>
+                      <span>Export All</span>
+                    </button>
+                    <div style="border-top: 1px solid var(--border); margin: 4px 0;"></div>
+                    <button class="dropdown-item btn-clear-docs" id="btn-debate-clear-docs" style="display: flex; align-items: center; gap: 8px; color: #ef4444;">
+                      <i data-lucide="trash-2" style="width: 12px; height: 12px;"></i>
+                      <span>Clean All</span>
+                    </button>
+                  </div>
+                  <input type="file" id="debate-doc-upload-input" accept=".txt,.md,.json" style="display: none;" />
+                </div>
+                <i data-lucide="chevron-right" class="accordion-chevron"></i>
               </div>
-              <input type="file" id="debate-doc-upload-input" accept=".txt,.md,.json" style="display: none;" />
-            </div>
+            </summary>
             <div class="details-content">
               <div class="debate-docs-list" id="debate-docs-list">
                 <div class="debate-doc-empty">No saved documents yet.</div>
@@ -209,7 +211,7 @@ function _buildLayout() {
               <span>Toggle Theme</span>
             </button>
             <button class="user-menu-item" id="btn-debate-user-skills">
-              <i data-lucide="zap" style="width:16px; height:16px;"></i>
+              <i data-lucide="compass" style="width:16px; height:16px;"></i>
               <span>Skills & Capabilities</span>
             </button>
             <div class="user-menu-divider"></div>
@@ -224,9 +226,8 @@ function _buildLayout() {
             <img class="sidebar-user-avatar" id="debate-sidebar-user-avatar" src="/static/avatars/3d-avatar-1.webp" alt="User Avatar" />
             <div class="sidebar-user-info">
               <div class="sidebar-user-name" id="debate-sidebar-user-name">User</div>
-              <div class="sidebar-user-plan">Free plan</div>
             </div>
-            <i data-lucide="chevrons-up-down" style="width:14px; height:14px; color:var(--text-3); margin-left:4px;"></i>
+            <i data-lucide="settings" style="width:16px; height:16px; color:var(--text); margin-left:auto;"></i>
           </div>
         </div>
 
@@ -560,6 +561,7 @@ function _bindEvents() {
   const docsDropdownMenu = $('debate-docs-dropdown-menu');
   if (docsMenuBtn && docsDropdownMenu) {
     docsMenuBtn.addEventListener('click', (e) => {
+      e.preventDefault();
       e.stopPropagation();
       $('doc-export-menu')?.classList.remove('show');
       docsDropdownMenu.classList.toggle('show');

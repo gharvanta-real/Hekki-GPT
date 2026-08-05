@@ -65,51 +65,41 @@ GEMINI_MODELS: dict[str, GeminiModelDef] = {
     # ── Fast Mode → Gemini 3.1 Flash-Lite ──
     "fast": GeminiModelDef(
         model_id  = "gemini-3.1-flash-lite",
-        display   = "Gemini 3.1 Flash Lite (Fast)",
+        display   = "Gemini 3.1 Flash Lite",
         rpm_limit = 13,
         rpd_limit = 1500,
         tpm_limit = 1_000_000,
         paid_tier = False,
     ),
 
-    # ── Pro Mode → Gemini 3.1 Flash ───────────────────────────────────────
+    # ── Pro Mode → Gemini 3.1 Flash Lite ───────────────────────────────────
     "pro": GeminiModelDef(
-        model_id  = "gemini-3.1-flash",
-        display   = "Gemini 3.1 Flash (Pro)",
+        model_id  = "gemini-3.1-flash-lite",
+        display   = "Gemini 3.1 Flash Lite",
         rpm_limit = 13,
         rpd_limit = 1500,
         tpm_limit = 1_000_000,
         paid_tier = False,
     ),
 
-    # ── Deep Thinking Mode → Gemini 3.1 Pro ─────────────────────────────
+    # ── Deep Thinking Mode → Gemini 3.1 Flash Lite ─────────────────────────
     "thinking": GeminiModelDef(
-        model_id  = "gemini-3.1-pro",
-        display   = "Gemini 3.1 Pro (Thinking)",
-        rpm_limit = 10,
-        rpd_limit = 1000,
+        model_id  = "gemini-3.1-flash-lite",
+        display   = "Gemini 3.1 Flash Lite",
+        rpm_limit = 13,
+        rpd_limit = 1500,
         tpm_limit = 1_000_000,
         paid_tier = False,
     ),
 
-    # ── Normal Mode → alias for fast ───────────────────────────────────────
+    # ── Normal Mode → Gemini 3.1 Flash Lite ────────────────────────────────
     "normal": GeminiModelDef(
         model_id  = "gemini-3.1-flash-lite",
-        display   = "Gemini 3.1 Flash Lite (Normal)",
+        display   = "Gemini 3.1 Flash Lite",
         rpm_limit = 13,
         rpd_limit = 1500,
         tpm_limit = 1_000_000,
         paid_tier = False,
-    ),
-
-    # ── Gemini 3.1 Pro ─────────────────────────────────────────────
-    "gemini_31_pro": GeminiModelDef(
-        model_id  = "gemini-3.1-pro",
-        display   = "Gemini 3.1 Pro (Smart)",
-        rpm_limit = 1000,
-        rpd_limit = 100_000,
-        tpm_limit = 4_000_000,
-        paid_tier = True,
     ),
 }
     # ────────────────────────────────────────────────────────────────────────

@@ -19,10 +19,12 @@ class GeminiRateLimiter:
     _instance: Optional[GeminiRateLimiter] = None
 
     def __init__(self) -> None:
-        from mariano.config.api_limits import GLOBAL_MAX_RPM, GLOBAL_MAX_TPM, GLOBAL_MAX_RPD
+        from mariano.config.api_limits import GLOBAL_MAX_RPM, GLOBAL_MAX_TPM, GLOBAL_MAX_RPD, MIN_REQUEST_INTERVAL
         self.max_rpm = GLOBAL_MAX_RPM
         self.max_tpm = GLOBAL_MAX_TPM
         self.max_rpd = GLOBAL_MAX_RPD
+        self.min_interval = MIN_REQUEST_INTERVAL
+        self._last_request_time: float = 0.0
 
         # Queues to hold timestamps
         self._timestamps: deque[float] = deque()                    # RPM window (60s)
@@ -55,6 +57,10 @@ class GeminiRateLimiter:
             while self._day_timestamps and self._day_timestamps[0] < current_time - 86400.0:
                 self._day_timestamps.popleft()
 
+            # 1.5 Check Pacing Interval Buffer
+            pacing_wait = max(0.0, self.min_interval - (current_time - self._last_request_time))
+            wait_time = pacing_wait
+
             # 2. Check Daily Limit (RPD)
             if len(self._day_timestamps) >= self.max_rpd:
                 msg = f"Daily API Quota Exhausted ({len(self._day_timestamps)}/{self.max_rpd} RPD). Standby."
@@ -65,17 +71,15 @@ class GeminiRateLimiter:
             # 3. Check Requests Per Minute (RPM)
             if len(self._timestamps) >= self.max_rpm:
                 oldest_ts = self._timestamps[0]
-                wait_time = max(0.1, 60.0 - (current_time - oldest_ts))
+                rpm_wait = max(0.1, 60.0 - (current_time - oldest_ts))
+                wait_time = max(wait_time, rpm_wait)
 
-                log.warning("rate_limiter.rpm_limit_approaching", active_rpm=len(self._timestamps), wait_secs=round(wait_time, 2))
+                log.warning("rate_limiter.rpm_limit_approaching", active_rpm=len(self._timestamps), wait_secs=round(rpm_wait, 2))
                 nc.push_notification(
                     title="Rate Limit Guard",
-                    message=f"RPM Limit approaching ({len(self._timestamps)}/{self.max_rpm} RPM). Pausing for {wait_time:.1f}s.",
+                    message=f"RPM Limit approaching ({len(self._timestamps)}/{self.max_rpm} RPM). Pausing for {rpm_wait:.1f}s.",
                     severity="warning"
                 )
-                # Release lock while sleeping, then re-acquire
-            else:
-                wait_time = 0.0
 
             # 4. Check Tokens Per Minute (TPM)
             active_tokens = sum(tokens for _, tokens in self._token_timestamps)
@@ -97,9 +101,6 @@ class GeminiRateLimiter:
                 )
 
             # 5. If waiting needed, sleep outside lock to avoid blocking other tasks
-            if wait_time > 0:
-                # Release lock during sleep so other tasks don't deadlock
-                pass
 
         # Sleep outside the lock so other coroutines can proceed
         if wait_time > 0:
@@ -116,5 +117,6 @@ class GeminiRateLimiter:
             self._timestamps.append(current_time)
             self._token_timestamps.append((current_time, token_count))
             self._day_timestamps.append(current_time)
+            self._last_request_time = current_time
 
             log.debug("rate_limiter.acquired", active_rpm=len(self._timestamps), active_tpm=active_tokens + token_count)

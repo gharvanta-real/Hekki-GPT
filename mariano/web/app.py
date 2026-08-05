@@ -235,6 +235,8 @@ class SettingsUpdateRequest(BaseModel):
     quick_voice_enabled: bool | None = None
     kaggle_username: str | None = None
     kaggle_api_key: str | None = None
+    debate_model_alpha: str | None = None
+    debate_model_beta: str | None = None
 
 @app.get("/api/models")
 async def get_available_models():
@@ -268,6 +270,8 @@ async def get_api_settings():
         "quick_voice_enabled": settings.dynamic_config.get("quick_voice_enabled", True),
         "kaggle_username": settings.dynamic_config.get("kaggle_username", os.environ.get("KAGGLE_USERNAME", "")),
         "kaggle_api_key": settings.dynamic_config.get("kaggle_api_key", os.environ.get("KAGGLE_KEY", "")),
+        "debate_model_alpha": settings.dynamic_config.get("debate_model_alpha", "gemini-3.1-flash-lite"),
+        "debate_model_beta": settings.dynamic_config.get("debate_model_beta", "gemini-3.1-flash-lite"),
     }
 
 @app.post("/api/settings")
@@ -298,6 +302,10 @@ async def update_api_settings(req: SettingsUpdateRequest):
         update_dict["quick_voice_enabled"] = req.quick_voice_enabled
     if req.kaggle_username is not None:
         update_dict["kaggle_username"] = req.kaggle_username
+    if req.debate_model_alpha is not None:
+        update_dict["debate_model_alpha"] = req.debate_model_alpha
+    if req.debate_model_beta is not None:
+        update_dict["debate_model_beta"] = req.debate_model_beta
         os.environ["KAGGLE_USERNAME"] = req.kaggle_username
     if req.kaggle_api_key is not None:
         update_dict["kaggle_api_key"] = req.kaggle_api_key

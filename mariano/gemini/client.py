@@ -14,12 +14,10 @@ from mariano.config import get_settings, SYSTEM_PROMPT, MAX_OUTPUT_TOKENS
 
 log = structlog.get_logger(__name__)
 
-# Ordered fallback model chain — tried in sequence on 429
-_MODEL_FALLBACK_CHAIN = [
-    "gemini-3.1-flash-lite",   # Primary (only model)
-]
-_MAX_RETRIES = 3
-_RETRY_BASE_DELAY = 30  # seconds
+# Strict Single Model Enforcement — No Fallback Models
+_MODEL_FALLBACK_CHAIN: list[str] = []
+_MAX_RETRIES = 2
+_RETRY_BASE_DELAY = 1  # seconds
 
 
 class GeminiClient:

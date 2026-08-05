@@ -1,6 +1,6 @@
 """
 code_brain.py — Hekki Code Brain Engine
-Direct streaming to Google Gemini API or OpenRouter — NO agy dependency.
+Direct streaming to Google Gemini API — NO agy dependency.
 agy is used ONLY as a tools/action executor via AgyToolRunner.
 Under 200 lines.
 """
@@ -14,10 +14,7 @@ from typing import AsyncGenerator
 
 logger = logging.getLogger("Hekki.CodeBrain")
 
-GEMINI_BASE  = "https://generativelanguage.googleapis.com/v1beta"
-OPENROUTER_BASE = "https://openrouter.ai/api/v1"
-
-from mariano.providers.openrouter_models import OPENROUTER_MODELS
+GEMINI_BASE = "https://generativelanguage.googleapis.com/v1beta"
 
 # Model routing table
 MODEL_MAP = {
@@ -25,10 +22,6 @@ MODEL_MAP = {
     "gemini-3.1-flash-lite":   ("gemini", "gemini-3.1-flash-lite"),
     "gemini-3.1-flash":        ("gemini", "gemini-3.1-flash"),
     "gemini-3.1-pro":          ("gemini", "gemini-3.1-pro"),
-    # Hekki OpenRouter modes (sync with OPENROUTER_MODELS)
-    "openrouter":              ("openrouter", OPENROUTER_MODELS["openrouter"].model_id),
-    "openrouter_gpt":          ("openrouter", OPENROUTER_MODELS["openrouter"].model_id),
-    "openrouter_nemotron":     ("openrouter", OPENROUTER_MODELS["openrouter_nemotron"].model_id),
 }
 
 SYSTEM_PROMPT = (
@@ -80,51 +73,6 @@ async def stream_gemini(
                         pass
 
 
-async def stream_openrouter(
-    model_id: str,
-    messages: list[dict],
-    api_key: str,
-) -> AsyncGenerator[str, None]:
-    """Stream from OpenRouter API (OpenAI-compatible)."""
-    full_messages = [{"role": "system", "content": SYSTEM_PROMPT}] + messages
-    url = f"{OPENROUTER_BASE}/chat/completions"
-    payload = {
-        "model": model_id,
-        "messages": full_messages,
-        "stream": True,
-        "temperature": 0.7,
-        "max_tokens": 8192,
-    }
-    headers = {
-        "Authorization": f"Bearer {api_key}",
-        "HTTP-Referer": "https://hekki.app",
-        "X-Title": "Hekki Assistant",
-    }
-    async with httpx.AsyncClient(timeout=120) as client:
-        async with client.stream("POST", url, json=payload, headers=headers) as resp:
-            if resp.status_code != 200:
-                err_body = await resp.aread()
-                err_text = err_body.decode('utf-8', errors='ignore')
-                yield f"[OpenRouter API Error ({resp.status_code}): {err_text[:300]}]\n"
-                return
-            async for line in resp.aiter_lines():
-                if line.startswith("data:"):
-                    raw = line[5:].strip()
-                    if raw == "[DONE]" or not raw:
-                        continue
-                    try:
-                        data = json.loads(raw)
-                        delta = (
-                            data.get("choices", [{}])[0]
-                            .get("delta", {})
-                            .get("content", "")
-                        )
-                        if delta:
-                            yield delta
-                    except Exception:
-                        pass
-
-
 def _get_env_key(key: str) -> str:
     val = os.getenv(key, "").strip()
     if val:
@@ -149,30 +97,22 @@ async def stream_brain(
     history: list[dict] | None = None,
 ) -> AsyncGenerator[str, None]:
     """
-    Main entry. Routes to Gemini or OpenRouter based on model_key.
+    Main entry. Routes to Gemini based on model_key.
     Yields text chunks for SSE streaming.
     """
-    provider, model_id = MODEL_MAP.get(model_key, ("gemini", "gemini-2.0-flash-lite"))
+    provider, model_id = MODEL_MAP.get(model_key, ("gemini", "gemini-3.1-flash-lite"))
 
     messages = (history or []) + [{"role": "user", "content": prompt}]
 
     try:
-        if provider == "gemini":
-            api_key = _get_env_key("GEMINI_API_KEY")
-            if not api_key:
-                yield "[Error: GEMINI_API_KEY not set in .env]\n"
-                return
-            async for chunk in stream_gemini(model_id, messages, api_key):
-                yield chunk
-
-        elif provider == "openrouter":
-            api_key = _get_env_key("OPENROUTER_API_KEY")
-            if not api_key:
-                yield "[Error: OPENROUTER_API_KEY not set in .env]\n"
-                return
-            async for chunk in stream_openrouter(model_id, messages, api_key):
-                yield chunk
+        api_key = _get_env_key("GEMINI_API_KEY")
+        if not api_key:
+            yield "[Error: GEMINI_API_KEY not set in .env]\n"
+            return
+        async for chunk in stream_gemini(model_id, messages, api_key):
+            yield chunk
 
     except Exception as e:
         logger.error(f"[CodeBrain] Stream error: {e}")
         yield f"\n[Stream error: {e}]\n"
+

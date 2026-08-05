@@ -453,6 +453,55 @@ function rotate3DAvatarOnBoot() {
 }
 window.setup3DAvatar = setup3DAvatar;
 
+function getRandomDynamicGreeting(name) {
+  const hour = new Date().getHours();
+  let greetings = [];
+
+  if (hour >= 5 && hour < 12) {
+    greetings = [
+      "Good morning",
+      "Rise and shine",
+      "Morning! Ready to build?",
+      "Good morning! What's on the agenda?",
+      "Fresh start today",
+      "Morning! Let's get things done"
+    ];
+  } else if (hour >= 12 && hour < 17) {
+    greetings = [
+      "Good afternoon",
+      "Hey there! How's your day going?",
+      "Afternoon! Ready to work?",
+      "Good afternoon! What's next?",
+      "Hey! Hope your day is going great"
+    ];
+  } else if (hour >= 17 && hour < 22) {
+    greetings = [
+      "Good evening",
+      "Evening! Let me know what you need",
+      "Good evening! Ready to build something cool?",
+      "Hey! How was your day?",
+      "Good evening! What can I help with?"
+    ];
+  } else {
+    greetings = [
+      "Night owl mode active",
+      "Working late tonight?",
+      "Late night coding?",
+      "Quiet hours! What are we building?",
+      "Good evening! Still grinding?"
+    ];
+  }
+
+  const baseGreet = greetings[Math.floor(Math.random() * greetings.length)];
+  if (!name) return baseGreet;
+
+  if (baseGreet.includes("?")) {
+    return baseGreet.replace("?", `, ${name}?`);
+  } else {
+    return `${baseGreet}, ${name}`;
+  }
+}
+
 function setGreeting(nameOverride) {
   const el = $('greeting-text');
   const updateSidebar = (name) => {
@@ -463,11 +512,8 @@ function setGreeting(nameOverride) {
   };
   rotate3DAvatarOnBoot();
 
-  const hour = new Date().getHours();
-  const timeGreet = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
-  
-  if (nameOverride) {
-    if (el) el.textContent = `${timeGreet}, ${nameOverride}`;
+  if (nameOverride !== undefined) {
+    if (el) el.textContent = getRandomDynamicGreeting(nameOverride);
     updateSidebar(nameOverride);
     return;
   }
@@ -477,11 +523,11 @@ function setGreeting(nameOverride) {
     .then(r => r.json())
     .then(cfg => {
       const name = cfg.user_name || localStorage.getItem('hekki_user_name') || '';
-      if (el) el.textContent = name ? `${timeGreet}, ${name}` : `${timeGreet}`;
+      if (el) el.textContent = getRandomDynamicGreeting(name);
       updateSidebar(name);
     })
     .catch(() => {
-      if (el) el.textContent = `${timeGreet}`;
+      if (el) el.textContent = getRandomDynamicGreeting('');
       updateSidebar('');
     });
 }

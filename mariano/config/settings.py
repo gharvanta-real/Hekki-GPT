@@ -12,19 +12,24 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 if getattr(sys, 'frozen', False):
     DATA_DIR = Path(os.environ.get("APPDATA", os.path.expanduser("~"))) / "hekki" / "data"
+    ENV_FILES = [
+        Path(os.environ.get("APPDATA", os.path.expanduser("~"))) / "hekki" / ".env",
+        Path.cwd() / ".env"
+    ]
 else:
     DATA_DIR = BASE_DIR / "data"
+    ENV_FILES = [
+        BASE_DIR / ".env",
+        Path(os.environ.get("APPDATA", os.path.expanduser("~"))) / "hekki" / ".env",
+        Path.cwd() / ".env"
+    ]
 
 SKILLS_DIR = BASE_DIR / "mariano" / "skills"
 
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_file=[
-            BASE_DIR / ".env",
-            Path(os.environ.get("APPDATA", os.path.expanduser("~"))) / "hekki" / ".env",
-            Path.cwd() / ".env"
-        ],
+        env_file=ENV_FILES,
         env_file_encoding="utf-8",
         case_sensitive=False,
         extra="ignore",
@@ -113,6 +118,10 @@ class Settings(BaseSettings):
     def active_gemini_api_key(self) -> str:
         # User-entered dynamically overrides env variable
         return self.dynamic_config.get("gemini_api_key", self.gemini_api_key)
+
+    @property
+    def active_news_api_key(self) -> str:
+        return self.dynamic_config.get("news_api_key", self.news_api_key)
 
     @property
     def active_use_ollama(self) -> bool:

@@ -139,7 +139,7 @@ def build_antigravity_activity_meta(tool_name: str, args: dict) -> dict:
 async def run_native_agent_loop(
     prompt: str,
     workspace: str = "",
-    model: str = "openrouter_nemotron",
+    model: str = "gemini-3.1-flash-lite",
     history: list[dict] = None,
     session_id: str = None
 ) -> AsyncGenerator[str, None]:
@@ -191,7 +191,7 @@ def summarize_tool_result(tool_name: str, output: str) -> str:
 async def run_native_agent_loop(
     prompt: str,
     workspace: str = "",
-    model: str = "openrouter_nemotron",
+    model: str = "gemini-3.1-flash-lite",
     history: list[dict] = None,
     session_id: str = None
 ) -> AsyncGenerator[str, None]:

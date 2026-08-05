@@ -171,7 +171,7 @@ class BrainRequest(BaseModel):
 @router.post("/brain")
 async def stream_brain_response(req: BrainRequest):
     """
-    POST /api/code/brain — Direct brain model stream (Gemini or OpenRouter).
+    POST /api/code/brain — Direct brain model stream (Gemini).
     agy not involved. Pure LLM chat with SSE.
     """
     from mariano.coder_engine.code_brain import stream_brain
