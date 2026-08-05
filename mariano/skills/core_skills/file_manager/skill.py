@@ -77,12 +77,8 @@ class FileManagerSkill(BaseSkill):
         elif action == "multi_replace":
             replacements = kwargs.get("replacements", kwargs.get("chunks", []))
             return self._multi_replace(resolved, replacements)
-        elif action == "delete":
-            return SkillResult(
-                success=False,
-                data=None,
-                error="Safety Policy: File and directory deletion ('delete' action) is strictly disabled by user security policy."
-            )
+        elif action in ("delete", "trash", "remove"):
+            return self._recycle_delete(resolved)
         elif action == "create_dir":
             return self._create_dir(resolved)
         elif action == "copy":
@@ -145,26 +141,64 @@ class FileManagerSkill(BaseSkill):
             else:
                 return Path.cwd().resolve()
 
-    def _delete(self, path: Path) -> SkillResult:
+    def _recycle_delete(self, path: Path) -> SkillResult:
         try:
             if not path.exists():
                 return SkillResult(success=False, data=None, error=f"Path not found for deletion: {path}")
-            if path.is_dir():
-                shutil.rmtree(path)
+
+            import ctypes
+            from ctypes import wintypes
+
+            FO_DELETE = 3
+            FOF_ALLOWUNDO = 0x0040       # Moves to Recycle Bin
+            FOF_NOCONFIRMATION = 0x0010  # Silent execution
+
+            class SHFILEOPSTRUCTW(ctypes.Structure):
+                _fields_ = [
+                    ("hwnd", wintypes.HWND),
+                    ("wFunc", wintypes.UINT),
+                    ("pFrom", wintypes.LPCWSTR),
+                    ("pTo", wintypes.LPCWSTR),
+                    ("fFlags", wintypes.WORD),
+                    ("fAnyOperationsAborted", wintypes.BOOL),
+                    ("hNameMappings", wintypes.LPVOID),
+                    ("lpszProgressTitle", wintypes.LPCWSTR),
+                ]
+
+            path_str = str(path.resolve())
+            recycled = False
+
+            try:
+                import send2trash
+                send2trash.send2trash(path_str)
+                recycled = True
+            except Exception:
+                path_buf = path_str + "\0\0"
+                fileop = SHFILEOPSTRUCTW(
+                    hwnd=None,
+                    wFunc=FO_DELETE,
+                    pFrom=path_buf,
+                    pTo=None,
+                    fFlags=FOF_ALLOWUNDO | FOF_NOCONFIRMATION,
+                    fAnyOperationsAborted=False,
+                    hNameMappings=None,
+                    lpszProgressTitle=None
+                )
+                res = ctypes.windll.shell32.SHFileOperationW(ctypes.byref(fileop))
+                recycled = (res == 0)
+
+            if recycled or not path.exists():
+                item_type = "directory" if path.is_dir() else "file"
                 return SkillResult(
                     success=True,
-                    data=f"Successfully deleted directory '{path.name}'",
-                    metadata={"path": str(path), "action": "delete"}
+                    data=f"Successfully moved {item_type} '{path.name}' to Windows Recycle Bin. You can restore it anytime.",
+                    metadata={"path": str(path), "action": "delete", "recycle_bin": True}
                 )
             else:
-                path.unlink()
-                return SkillResult(
-                    success=True,
-                    data=f"Successfully deleted file '{path.name}'",
-                    metadata={"path": str(path), "action": "delete"}
-                )
+                return SkillResult(success=False, data=None, error=f"Failed to move '{path.name}' to Recycle Bin.")
+
         except Exception as e:
-            return SkillResult(success=False, data=None, error=f"Failed to delete '{path}': {e}")
+            return SkillResult(success=False, data=None, error=f"Recycle deletion failed for '{path}': {e}")
 
     def _create_dir(self, path: Path) -> SkillResult:
         try:

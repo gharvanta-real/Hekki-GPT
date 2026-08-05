@@ -178,13 +178,15 @@ class MarianoAgent:
         ctx.add("user", full_user_input)
 
         # 10. Execute core ReAct loop
+        # Smart step limits: enough for 4-5 autonomous retries, but not infinite.
+        # User wants Hekki to keep trying on its own until task is done or genuinely impossible.
         reasoning_mode = self._settings.active_reasoning_mode
         if reasoning_mode == "fast":
-            max_steps_limit = 5
+            max_steps_limit = 5    # Up to 4 tool calls + final answer
         elif reasoning_mode == "pro":
-            max_steps_limit = 15
-        else: # thinking
-            max_steps_limit = 35
+            max_steps_limit = 12   # Up to 10 tool calls — enough for multi-step recon/scrape/download
+        else:  # thinking
+            max_steps_limit = 20   # Up to 18 tool calls — deep autonomous tasks
 
         max_steps_adjusted = self._nm.get_context_limit(max_steps_limit)
         async for event in run_react_loop(

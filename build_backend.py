@@ -75,6 +75,8 @@ def main():
         "--hidden-import=PIL.Image",
         "--hidden-import=google.genai",
         "--hidden-import=google.genai.types",
+        "--hidden-import=send2trash",
+        "--hidden-import=send2trash.plat_win",
         # Exclude heavy unused machine learning and data science frameworks to speed up compilation
         "--exclude-module=transformers",
         "--exclude-module=torch",

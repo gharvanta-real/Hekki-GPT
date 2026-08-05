@@ -227,6 +227,7 @@ export function initAttachDropdowns(inConversationState) {
         sub.className = 'attach-sub-dropdown';
         sub.innerHTML = `
           <div class="sub-dropdown-header" style="font-size:10px; color:var(--text-3); padding:4px 10px 4px; font-weight:600; letter-spacing:0.04em;">REGISTERED SKILLS</div>
+          <div class="attach-dropdown-item"><i data-lucide="trash-2"></i><span>Safe Recycler & Delete</span></div>
           <div class="attach-dropdown-item"><i data-lucide="globe"></i><span>Web Search</span></div>
           <div class="attach-dropdown-item"><i data-lucide="file-text"></i><span>File Manager</span></div>
           <div class="attach-dropdown-item"><i data-lucide="terminal"></i><span>Terminal CMD</span></div>
@@ -258,6 +259,11 @@ export function initAttachDropdowns(inConversationState) {
             <span>Auto-Approve (Fast)</span>
             ${policy === 'auto' ? '<i data-lucide="check" class="lucide-check-icon"></i>' : ''}
           </button>
+          <button class="attach-dropdown-item btn-opt-super ${policy === 'super' ? 'active' : ''}">
+            <i data-lucide="sparkles"></i>
+            <span>Super Permission (100% + Recycle Bin)</span>
+            ${policy === 'super' ? '<i data-lucide="check" class="lucide-check-icon"></i>' : ''}
+          </button>
         `;
 
         permBtn.appendChild(sub);
@@ -274,6 +280,13 @@ export function initAttachDropdowns(inConversationState) {
           e.stopPropagation();
           localStorage.setItem('mariano_permission_policy', 'auto');
           showToast('Policy Updated', 'Set to Auto-Approve (Unrestricted mode).', 2000);
+          document.querySelectorAll('.attach-dropdown, .attach-sub-dropdown').forEach(d => d.remove());
+        });
+
+        sub.querySelector('.btn-opt-super')?.addEventListener('click', (e) => {
+          e.stopPropagation();
+          localStorage.setItem('mariano_permission_policy', 'super');
+          showToast('Super Permission Active', '100% Full Access Enabled (Deletes sent to Recycle Bin)', 3000);
           document.querySelectorAll('.attach-dropdown, .attach-sub-dropdown').forEach(d => d.remove());
         });
       });

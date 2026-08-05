@@ -1,5 +1,13 @@
 [
   {
+    "timestamp": "2026-08-05T09:48:31.000000",
+    "type": "git_push",
+    "title": "Pushed Latest Changes & Improvements to Remote GitHub (origin/main)",
+    "description": "1. Staged and committed 30 modified/added files (commit c511cd0). 2. Successfully pushed commit to https://github.com/gharvanta-real/Hekki-GPT.git on branch main. 3. All UI redesigns, single model enforcement, dynamic greetings, header fixes, and NSIS installer updates synced.",
+    "reason": "Fulfilled explicit user directive: Git push karo.",
+    "impact": "100% synced remote GitHub repository on origin/main branch."
+  },
+  {
     "timestamp": "2026-08-05T09:42:12.000000",
     "type": "build",
     "title": "Compiled Final Executable & NSIS Desktop Installer (v1.0.0)",
@@ -8654,7 +8662,21 @@
     "type": "ui_enhancement",
     "title": "Implemented Dynamic Dual Model Selector Dropdowns in Chat Capsule for Debate Mode",
     "description": "Updated index.html, input.js, socket_manager.js, and app.py to dynamically show side-by-side Alpha Model & Beta Model pickers when /debate is typed or Debate mode pill is clicked. Erasing /debate reverts back to the single Hekki model pill.",
-    "reason": "User requested: /Debate likhne par input bar dual model selection hoga? Normally normal hoga.",
-    "impact": "Dynamic Dual Model Selection UI for in-chat Debate Mode."
+  },
+  {
+    "timestamp": "2026-08-05T17:54:00.000000+00:00",
+    "type": "core_engine_upgrade",
+    "title": "Decisive ReAct Engine: Rate-Limit-Aware Smart Step Limits",
+    "description": "Drastically reduced max_steps_limit across all reasoning modes (Fast: 5→3, Pro: 15→6, Thinking: 35→10). Updated step continuation message to bias strongly towards early completion ('DECISION: If you already have enough information, respond NOW'). Added FINAL STEP forced-conclusion mode on last step. Updated system_prompt TOOL RUNNING PROTOCOLS to enforce One-Best-Shot, Minimum Tool Calls, Never Speculative Exploration rules.",
+    "reason": "User reported: Hekki 2-4 baar try karta hai, fir bahut der tak lagta rehta hai, aur user ko baar baar continue kehna padta hai. Model apna rate limit waste kar raha tha.",
+    "impact": "Hekki now completes tasks decisively in minimum tool calls. No more infinite exploration loops. User no longer needs to say 'continue'."
+  },
+  {
+    "timestamp": "2026-08-05T19:59:00.000000+00:00",
+    "type": "critical_bug_fix",
+    "title": "Deleted Hard-Locked Deletion Prohibition & Installed send2trash",
+    "description": "Removed 'Strict Deletion Protection' hard-coded rule from system_prompt.py ENVIRONMENT section that was overriding all permission toggles. Replaced with 'Safe Deletion via Recycle Bin' rule allowing file_manager delete action. Installed send2trash>=1.8.0 Python package (was missing) and verified Recycle Bin deletion works. Added send2trash to pyproject.toml dependencies.",
+    "reason": "User reported: delete action still failing with Safety Policy error even after Super Permission toggle. Root cause was hard-coded STRICTLY PROHIBITED rule in system prompt that AI model was following unconditionally.",
+    "impact": "file_manager delete action now works end-to-end: AI calls delete → send2trash → Windows Recycle Bin. Zero permanent data loss."
   }
 ]

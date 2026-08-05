@@ -129,13 +129,24 @@ async def run_react_loop(
                 message_to_send = user_input
             else:
                 history = ctx.get_history()
-                message_to_send = (
-                    f"Step {step}/{max_steps_adjusted}. "
-                    "Based on the tool results, execute the NEXT required action immediately using the appropriate tool. "
-                    "If all tool execution steps are complete, provide a comprehensive, fully detailed final response. "
-                    "Provide a clear summary of what was done, a detailed explanation of findings or changes, and a definitive concluding section. "
-                    "NEVER output just 1-2 lines or a bare table without thorough explanatory text and a clear conclusion."
-                )
+                # Steps remaining check — bias towards finishing early
+                steps_remaining = max_steps_adjusted - step
+                if steps_remaining <= 1:
+                    # Force final answer on last step — no more tool calls
+                    message_to_send = (
+                        "FINAL STEP: You MUST now provide the complete final answer to the user. "
+                        "Do NOT call any more tools. Compile everything you have found so far into a clear, "
+                        "direct, well-formatted response. If there were any failures, report what was found. "
+                        "Stop exploring and deliver the result NOW."
+                    )
+                else:
+                    message_to_send = (
+                        f"Step {step}/{max_steps_adjusted} — {steps_remaining} step(s) remaining. "
+                        "DECISION: If you already have enough information to answer the user's request, "
+                        "respond with the final answer NOW (do not call more tools). "
+                        "ONLY call another tool if it is strictly necessary and not yet done. "
+                        "Avoid redundant or exploratory tool calls — be decisive."
+                    )
 
             # Call Gemini with streaming chunks queue
             queue = asyncio.Queue()
@@ -267,16 +278,17 @@ async def run_react_loop(
                         agent._nm.surge_curiosity(0.20)
                         from mariano.core.curiosity_learner import CuriosityLearner
                         CuriosityLearner.get_instance().trigger_learning(failed_query=name, error_message=str(result.error))
-                        
+
                         if last_failed_tool == name:
                             consecutive_failures += 1
                         else:
                             consecutive_failures = 1
                             last_failed_tool = name
-                            
-                        if consecutive_failures >= 3:
-                            yield AgentEvent("thinking", f"Failure Guard: Tool '{name}' failed {consecutive_failures} times consecutively. Halting execution loop to prevent API exhaustion.")
-                            yield AgentEvent("response", f"\n\n✕ **Execution Stopped by Safety Guard**: Tool `{name}` failed consecutively 3 times. Please guide me with a different command.")
+
+                        # Only halt after 4 consecutive failures on same tool — otherwise retry autonomously
+                        if consecutive_failures >= 4:
+                            yield AgentEvent("thinking", f"Tried '{name}' {consecutive_failures} times — genuinely stuck. Reporting to user.")
+                            yield AgentEvent("response", f"\n\n❌ **Task could not be completed** after {consecutive_failures} attempts with `{name}`.\n\n**What went wrong:** `{result.error}`\n\nMain khud se kuch aur nahi kar sakta is situation mein. Kya aap mujhe alag approach ya naya command dena chahenge?")
                             halt_execution = True
                             break
                     else:
@@ -323,9 +335,20 @@ async def run_react_loop(
                             yield r_event
 
                     if result.success:
-                        user_input = f"Tool '{name}' returned: {result_text[:40000]}. Continue."
+                        # Task succeeded — check if more steps genuinely needed or can conclude
+                        user_input = (
+                            f"Tool '{name}' returned the result above. "
+                            "Now autonomously decide: Is the user's original task FULLY complete? "
+                            "If YES → write the final answer now. "
+                            "If NO → immediately run the next required tool without asking the user — keep going until done."
+                        )
                     else:
-                        user_input = f"Tool '{name}' failed: {result.error}. Try a different approach."
+                        # Tool failed — try a different approach autonomously, don't ask user
+                        user_input = (
+                            f"Tool '{name}' failed with error: {result.error}. "
+                            "Do NOT ask the user. Autonomously try a different tool or approach to accomplish the same goal. "
+                            "Keep trying until you succeed or exhaust all reasonable options."
+                        )
                 if halt_execution:
                     break
             else:
@@ -333,7 +356,7 @@ async def run_react_loop(
                 break
 
         if not success and not halt_execution:
-            yield AgentEvent("response", "I have completed all the exploration steps but haven't formulated a final summary yet. Please let me know if you would like me to compile the gathered information or continue exploring.")
+            yield AgentEvent("response", "I've used all my reasoning steps for this task. Here's what I was able to determine so far from the steps I completed. If you need me to dig deeper on a specific part, just ask!")
 
     except Exception as exc:
         log.error("agent.error", error=str(exc))

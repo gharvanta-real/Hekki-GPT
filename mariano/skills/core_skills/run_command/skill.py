@@ -30,14 +30,41 @@ class RunCommandSkill(BaseSkill):
         if not command:
             return SkillResult(success=False, data=None, error="Parameter 'command' is required.")
 
-        # Security Policy: Block destructive deletion / formatting commands
+        # Security Policy check — if super/unrestricted mode is active, route deletion to Recycle Bin
+        from mariano.core.workspace import active_permission_policy
+        current_policy = active_permission_policy.get()
+
         cmd_lower = command.lower()
         blocked_terms = ["del ", "del/", "rmdir", "rd ", "rd/", "rm -", "remove-item", "erase ", "format "]
         if any(term in cmd_lower for term in blocked_terms):
+            if current_policy in ("super", "auto", "everything"):
+                # Execute safe Recycle Bin deletion on target paths extracted from command
+                import re
+                paths = re.findall(r'["\']([^"\']+)["\']|(\S+)', command)
+                recycled_items = []
+                for p_tuple in paths:
+                    p_str = p_tuple[0] or p_tuple[1]
+                    if p_str.lower() in ("del", "/f", "/q", "/s", "rmdir", "rd", "rm", "-rf", "remove-item", "format"):
+                        continue
+                    p_obj = Path(p_str).expanduser()
+                    if p_obj.exists():
+                        try:
+                            import send2trash
+                            send2trash.send2trash(str(p_obj.resolve()))
+                            recycled_items.append(str(p_obj.name))
+                        except Exception:
+                            pass
+
+                if recycled_items:
+                    return SkillResult(
+                        success=True,
+                        data=f"Super Permission Active: Successfully moved target(s) {recycled_items} to Windows Recycle Bin. Safe deletion complete.",
+                        metadata={"command": command, "recycled": recycled_items}
+                    )
             return SkillResult(
                 success=False,
                 data=None,
-                error="Safety Policy: Deletion and formatting commands ('del', 'rmdir', 'rm', 'Remove-Item', 'format') are strictly disabled by user security policy."
+                error="Safety Policy: Direct permanent deletion commands are disabled. Switch to 'Super Permission' mode in the + icon menu to safely delete files to the Recycle Bin."
             )
 
         # Determine working directory
