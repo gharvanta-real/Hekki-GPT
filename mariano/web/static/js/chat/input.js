@@ -37,10 +37,18 @@ export function clearInputs() {
 }
 
 export function clearChatLogs() {
-  const col = document.getElementById('chat-col');
-  if (col) {
-    Array.from(col.children).forEach(child => {
+  const chatCol = document.getElementById('chat-col');
+  if (chatCol) {
+    Array.from(chatCol.children).forEach(child => {
       if (child.id !== 'home-screen') {
+        child.remove();
+      }
+    });
+  }
+  const chatLog = document.getElementById('chat-log');
+  if (chatLog) {
+    Array.from(chatLog.children).forEach(child => {
+      if (child.id !== 'chat-col' && child.id !== 'home-screen' && !child.classList.contains('chat-top-fadeout')) {
         child.remove();
       }
     });

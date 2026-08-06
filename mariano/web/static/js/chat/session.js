@@ -299,6 +299,7 @@ export const ChatSessionManager = {
     const isNewChat = chat.messages.length === 0;
     if (window.inConversationState) window.inConversationState.val = !isNewChat;
     if (isNewChat) {
+      clearChatLogs();
       document.getElementById('home-screen')?.classList.remove('hidden');
       document.getElementById('bottom-input-bar')?.classList.add('hidden');
     } else {
