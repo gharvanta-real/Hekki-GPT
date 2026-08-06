@@ -89,24 +89,26 @@ function _notifyElectronTheme(isDark) {
 
 /** Apply dark/light/oled class, update the icon, and sync the native titlebar. */
 function _applyTheme(theme, btn) {
-  const effectiveTheme = (theme === 'light') ? 'light' : 'oled';
-  document.body.classList.remove('dark', 'oled');
-  if (effectiveTheme === 'oled') {
+  if (theme === 'dark' || !theme) theme = 'oled';
+  document.body.classList.remove('dark', 'light', 'oled');
+  if (theme === 'oled') {
     document.body.classList.add('oled');
+  } else if (theme === 'light') {
+    document.body.classList.add('light');
   }
   // Keep native Windows titlebar in sync
-  _notifyElectronTheme(effectiveTheme === 'oled');
+  _notifyElectronTheme(theme !== 'light');
   if (btn) {
     const icon = btn.querySelector('[data-lucide]');
     if (icon) {
-      const lucideName = (effectiveTheme === 'light') ? 'sun' : 'moon';
+      const lucideName = (theme === 'light') ? 'sun' : 'moon';
       icon.setAttribute('data-lucide', lucideName);
       if (window.lucide) lucide.createIcons();
     }
   }
   // Sync settings modal theme-opt pills if modal is open
   document.querySelectorAll('.theme-opt').forEach(b => {
-    if (b.dataset.theme === effectiveTheme) {
+    if (b.dataset.theme === theme || (theme === 'oled' && b.dataset.theme === 'dark')) {
       b.classList.add('active');
     } else {
       b.classList.remove('active');
@@ -125,29 +127,30 @@ export function bindThemeToggle() {
 
   const $ = (id) => document.getElementById(id);
   const btn = $('btn-user-theme');
-  if (!btn) return;
 
-  // ── Restore persisted theme on page load (Default: OLED Black) ──
-  const rawSaved = localStorage.getItem('hekki_theme');
-  const savedTheme = (rawSaved === 'light') ? 'light' : 'oled';
+  // Restore persisted theme on page load (defaults to OLED Black)
+  let savedTheme = localStorage.getItem('hekki_theme') || 'oled';
+  if (savedTheme === 'dark') savedTheme = 'oled';
+  localStorage.setItem('hekki_theme', savedTheme);
   _applyTheme(savedTheme, btn);
 
-  // ── Toggle on button click (cycles strictly: oled <-> light) ─────
-  btn.addEventListener('click', () => {
-    const rawCurrent = localStorage.getItem('hekki_theme');
-    const currentTheme = (rawCurrent === 'light') ? 'light' : 'oled';
-    const newTheme = (currentTheme === 'light') ? 'oled' : 'light';
+  if (btn) {
+    // ── Toggle on button click (2-way toggle: oled <-> light) ─────
+    btn.addEventListener('click', () => {
+      let currentTheme = localStorage.getItem('hekki_theme') || 'oled';
+      if (currentTheme === 'dark') currentTheme = 'oled';
+      const newTheme = (currentTheme === 'light') ? 'oled' : 'light';
+      localStorage.setItem('hekki_theme', newTheme);
+      _applyTheme(newTheme, btn);
 
-    localStorage.setItem('hekki_theme', newTheme);
-    _applyTheme(newTheme, btn);
-
-    // Sync theme to backend settings
-    fetch('/api/settings', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ theme: newTheme })
-    }).catch(err => console.error("Failed to sync theme settings to backend:", err));
-  });
+      // Sync theme to backend settings
+      fetch('/api/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ theme: newTheme })
+      }).catch(err => console.error("Failed to sync theme settings to backend:", err));
+    });
+  }
 }
 
 /** Update the titlebar breadcrumb — call whenever project/chat changes */

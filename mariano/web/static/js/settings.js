@@ -44,8 +44,11 @@ export function initSettings(setGreetingCallback) {
   }
 
   // ── Theme (localStorage & backend) ────────────────────────────────────
-  const savedTheme = localStorage.getItem('hekki_theme') || 'dark';
-  applyTheme(savedTheme);
+  let savedTheme = localStorage.getItem('hekki_theme') || 'oled';
+  if (savedTheme === 'dark') savedTheme = 'oled';
+  if (window._applyThemeGlobal) {
+    window._applyThemeGlobal(savedTheme, document.getElementById('btn-user-theme'));
+  }
   modal.querySelectorAll('.theme-opt').forEach(b => {
     b.classList.toggle('active', b.dataset.theme === savedTheme);
     b.addEventListener('click', () => {
@@ -55,10 +58,7 @@ export function initSettings(setGreetingCallback) {
       
       if (window._applyThemeGlobal) {
         window._applyThemeGlobal(b.dataset.theme, document.getElementById('btn-user-theme'));
-      } else {
-        applyTheme(b.dataset.theme);
       }
-
       // Notify Electron to update the native Windows titlebar colour
       if (window.electronAPI?.setTheme) {
         window.electronAPI.setTheme(b.dataset.theme);
@@ -74,9 +74,7 @@ export function initSettings(setGreetingCallback) {
       // sync titlebar icon
       const iconEl = $('btn-theme')?.querySelector('[data-lucide]');
       if (iconEl) {
-        let lucideName = 'moon';
-        if (b.dataset.theme === 'light') lucideName = 'sun';
-        else if (b.dataset.theme === 'oled') lucideName = 'zap';
+        const lucideName = (b.dataset.theme === 'light') ? 'sun' : 'moon';
         iconEl.setAttribute('data-lucide', lucideName);
         if (window.lucide) lucide.createIcons();
       }
@@ -84,9 +82,9 @@ export function initSettings(setGreetingCallback) {
   });
 
   function applyTheme(theme) {
-    const effective = (theme === 'light') ? 'light' : 'oled';
-    document.body.classList.remove('dark', 'oled');
-    if (effective === 'oled') document.body.classList.add('oled');
+    if (window._applyThemeGlobal) {
+      window._applyThemeGlobal(theme, document.getElementById('btn-user-theme'));
+    }
   }
 
   // ── API key visibility toggle ─────────────────────────────────────────
