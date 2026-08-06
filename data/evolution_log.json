@@ -197,4 +197,19 @@
       "data/evolution_log.json"
     ]
   }
+  ,
+  {
+    "timestamp": "2026-08-06T15:52:00+05:30",
+    "version": "1.1.6-modular-arch-split",
+    "category": "Architecture & Refactoring",
+    "summary": "Modularized God CSS files and web/app.py into clean 5-Layer token sub-modules and FastAPI APIRouters",
+    "details": "Split chat.css (4,678 lines -> 10 lines with 9 @import sub-modules), layout.css (1,621 -> 7 lines), debate.css (1,759 -> 5 lines), coder.css (981 -> 4 lines). Modularized web/app.py (1,472 lines -> 927 lines) into 6 sub-router packages in mariano/web/routes/ (settings, chats, skills, canvas, images, recon). Extracted stream_utils.js into mariano/web/static/js/stream/. All 50 API routes verified working.",
+    "files": [
+      "mariano/web/app.py",
+      "mariano/web/routes/",
+      "mariano/web/static/css/",
+      "mariano/web/static/js/stream/stream_utils.js",
+      "data/evolution_log.json"
+    ]
+  }
 ]
