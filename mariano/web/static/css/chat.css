@@ -559,7 +559,7 @@ body.dark .shortcut:hover {
 .msg-group.user:hover .msg-actions {
   opacity: 1;
   pointer-events: auto;
-  max-height: 24px;
+  max-height: none;
   margin-top: 4px;
 }
 
@@ -567,7 +567,7 @@ body.dark .shortcut:hover {
 .msg-group.ai .msg-actions {
   opacity: 1;
   pointer-events: auto;
-  max-height: 24px;
+  max-height: none;
   margin-top: 4px;
 }
 
