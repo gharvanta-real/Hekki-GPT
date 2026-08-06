@@ -47,6 +47,7 @@ def main():
         # Include data files/folders
         # Format: source_path;dest_path
         f'--add-data="mariano/web/static;mariano/web/static"',
+        f'--add-data="mariano/web/routes;mariano/web/routes"',
         f'--add-data="mariano/skills;mariano/skills"',
         f'--add-data="mariano/config/rules;mariano/config/rules"',
         

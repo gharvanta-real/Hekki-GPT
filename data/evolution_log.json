@@ -1,5 +1,17 @@
 [
   {
+    "timestamp": "2026-08-06T16:26:45Z",
+    "version": "1.1.8-exe-nsis-bundle",
+    "category": "Packaging & Release",
+    "summary": "Compiled standalone executable backend and packaged Electron NSIS installer",
+    "details": "Compiled backend Python engine into single standalone binary backend_dist/hekki_backend.exe (110.32 MB) with PyInstaller (bundled static, routes, skills, rules data). Packaged production Electron desktop application using electron-builder into standalone Windows NSIS setup installer dist/Hekki Setup 1.0.0.exe (184.55 MB).",
+    "files": [
+      "build_backend.py",
+      "package.json",
+      "backend_dist/hekki_backend.exe",
+      "dist/Hekki Setup 1.0.0.exe"
+    ]
+  },
     "timestamp": "2026-08-06T16:22:30Z",
     "version": "1.1.7-two-theme-streamline",
     "category": "UI & Appearance",
