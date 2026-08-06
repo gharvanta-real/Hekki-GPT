@@ -12,22 +12,6 @@
   display: none !important;
 }
 
-/* Safeguard: Hide any leftover chat bubbles or tool runs when Home Screen dashboard is active */
-#home-screen:not(.hidden) ~ .msg,
-#home-screen:not(.hidden) ~ .msg-group,
-#home-screen:not(.hidden) ~ .tool-block-temp,
-#home-screen:not(.hidden) ~ .thought-container,
-#home-screen:not(.hidden) ~ .aider-console-card,
-#home-screen:not(.hidden) ~ .cad-ai-stream-header,
-#home-screen:not(.hidden) ~ .chat-image-preview-card,
-#chat-log:has(#home-screen:not(.hidden)) > .msg,
-#chat-log:has(#home-screen:not(.hidden)) > .msg-group,
-#chat-log:has(#home-screen:not(.hidden)) > .tool-block-temp,
-#chat-log:has(#home-screen:not(.hidden)) > .thought-container,
-#chat-log:has(#home-screen:not(.hidden)) > .aider-console-card {
-  display: none !important;
-}
-
 .greeting {
   display: flex;
   align-items: center;

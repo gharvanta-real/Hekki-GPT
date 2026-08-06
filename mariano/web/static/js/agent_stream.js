@@ -161,6 +161,13 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
   const col = document.getElementById('chat-col') || document.getElementById('chat-log');
   if (!col) return;
 
+  const homeEl = document.getElementById('home-screen');
+  if (homeEl && !homeEl.classList.contains('hidden')) {
+    homeEl.classList.add('hidden');
+    document.getElementById('bottom-input-bar')?.classList.remove('hidden');
+    if (window.inConversationState) window.inConversationState.val = true;
+  }
+
   if (!_currentMessageActive && e.kind !== 'done' && e.kind !== 'error') {
     _currentMessageActive = true;
     _currentMessageToolRuns = [];

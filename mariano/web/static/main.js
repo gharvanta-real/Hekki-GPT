@@ -596,13 +596,14 @@ function bindShortcuts() {
 
 //  CONVERSATION MODE 
 function enterConversation() {
-  if (inConversationState.val) return;
-  inConversationState.val = true;
+  if (inConversationState) inConversationState.val = true;
   
   // Show convo pane, hide welcome pane
-  $('home-screen')?.classList.add('hidden');
-  $('bottom-input-bar')?.classList.remove('hidden');
-  $('chat-input-conv')?.focus();
+  const homeScreen = document.getElementById('home-screen');
+  if (homeScreen) homeScreen.classList.add('hidden');
+  const bottomBar = document.getElementById('bottom-input-bar');
+  if (bottomBar) bottomBar.classList.remove('hidden');
+  document.getElementById('chat-input-conv')?.focus();
 }
 
 //  LOG 
