@@ -294,7 +294,8 @@ export const ChatSessionManager = {
       const el = createMessageElement(
         msg.role === 'user' ? 'user' : 'ai',
         msg.text, msg.timestamp, idx,
-        this, () => _globalSendCallback
+        this, () => _globalSendCallback,
+        msg.metadata || msg
       );
       if (col && el) col.appendChild(el);
     });

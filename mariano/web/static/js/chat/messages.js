@@ -4,7 +4,7 @@ import { enhanceMarkdownContent } from './markdown.js';
 import { enhanceImagePreviews } from './media.js';
 
 /** Render a single message DOM node with full Claude-style actions */
-export function createMessageElement(type, text, timestamp, index, ChatSessionManager, globalSendCallbackRef) {
+export function createMessageElement(type, text, timestamp, index, ChatSessionManager, globalSendCallbackRef, metadata = null) {
   const timeStr = formatTime(timestamp);
 
   if (type === 'ai') {
@@ -213,8 +213,9 @@ export function createMessageElement(type, text, timestamp, index, ChatSessionMa
         // Extract web domains mentioned in response links/markdown AND tool runs
         const urlRegex = /(https?:\/\/[^\s"'<>\)]+)/gi;
         let allContent = text || '';
-        if (msg.toolRuns && Array.isArray(msg.toolRuns)) {
-          msg.toolRuns.forEach(tr => {
+        const toolRuns = (metadata && (metadata.tool_runs || metadata.toolRuns)) || [];
+        if (Array.isArray(toolRuns)) {
+          toolRuns.forEach(tr => {
             if (tr.result) allContent += ' ' + (typeof tr.result === 'string' ? tr.result : JSON.stringify(tr.result));
             if (tr.output) allContent += ' ' + (typeof tr.output === 'string' ? tr.output : JSON.stringify(tr.output));
             if (tr.data)   allContent += ' ' + (typeof tr.data === 'string' ? tr.data : JSON.stringify(tr.data));
