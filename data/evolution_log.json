@@ -1,5 +1,16 @@
 [
   {
+    "timestamp": "2026-08-06T16:22:30Z",
+    "version": "1.1.7-two-theme-streamline",
+    "category": "UI & Appearance",
+    "summary": "Streamlined visual themes to exclusively Light and OLED Black modes (removed middle slate dark theme)",
+    "details": "Completely removed 3-way dark slate theme cycle. System now features clean 2-way toggle between Light Mode ('light') and OLED Pure Black ('oled'). Standardized default theme to OLED Black, updated settings modal options, updated _applyTheme and bindThemeToggle functions in layout_controls.js, and migrated legacy 'dark' preference keys to 'oled'.",
+    "files": [
+      "mariano/web/static/index.html",
+      "mariano/web/static/js/components/layout_controls.js",
+      "mariano/web/static/js/settings.js"
+    ]
+  },
     "timestamp": "2026-08-06T12:00:00Z",
     "version": "1.0.5-red-team-dual-ops",
     "category": "Offensive + Defensive Security",
