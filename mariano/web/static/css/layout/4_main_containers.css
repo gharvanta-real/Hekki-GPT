@@ -1,0 +1,365 @@
+/* === MAIN CONTAINERS === */
+#main {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  position: relative; /* contain any absolutely-positioned children */
+}
+
+/* Premium smooth text fadeout overlay under titlebar */
+.main-fadeout-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 28px;
+  background: linear-gradient(to bottom, var(--bg) 0%, transparent 100%);
+  pointer-events: none;
+  z-index: 999;
+}
+
+#workspace[data-page="debate"] .main-fadeout-overlay {
+  display: none;
+}
+
+#workspace[data-page="debate"] #titlebar {
+  border-bottom: none !important;
+}
+
+#btn-toggle-sub-sidebar,
+#sub-sidebar-sep {
+  display: none;
+}
+#workspace[data-page="debate"] #btn-toggle-sub-sidebar {
+  display: inline-flex;
+}
+#workspace[data-page="debate"] #sub-sidebar-sep {
+  display: block;
+}
+
+#chat-pane {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0 !important;
+  background: var(--bg);
+  position: relative;
+}
+
+/* Chat pane hidden when workspace/debate/skills/changelog is active */
+#chat-pane.hidden {
+  display: none !important;
+}
+
+/* Debate pane — mirrors pattern of workspace/skills/changelog panes */
+#debate-pane {
+  display: none;
+  flex: 1;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0 !important;
+  background: var(--bg);
+  height: 100%;
+}
+#debate-pane.visible {
+  display: flex;
+}
+
+/* Workspace pane fills the full #main area when visible */
+#workspace-pane {
+  display: none;
+  flex: 1;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--bg);
+}
+#workspace-pane.visible {
+  display: flex;
+}
+
+/* Skills pane fills the full #main area when visible */
+#skills-pane {
+  display: none;
+  flex: 1;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--bg);
+}
+#skills-pane.visible {
+  display: flex;
+}
+
+/* Changelog pane fills the full #main area when visible */
+#changelog-pane {
+  display: none;
+  flex: 1;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--bg);
+}
+#changelog-pane.visible {
+  display: flex;
+}
+
+/* VERTICAL RESIZER DRAG BAR */
+.pane-resizer {
+  width: 8px;
+  margin: 0 -2px;
+  cursor: col-resize;
+  background: transparent;
+  z-index: 1000;
+  transition: background 0.12s;
+  flex-shrink: 0;
+}
+.pane-resizer:hover,
+.pane-resizer.dragging {
+  background: var(--border);
+}
+.pane-resizer.hidden-pane {
+  display: none !important;
+}
+
+/* APP PANE (Right column workspace — Floating Claude Canvas Card Style) */
+#app-pane {
+  width: 520px;
+  height: calc(100% - 54px);
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  overflow: hidden;
+  margin: 40px 14px 14px 4px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  box-shadow: none !important;
+  transition: width 0.25s ease, opacity 0.25s ease;
+}
+#app-pane.no-transition {
+  transition: none !important;
+}
+#app-pane.hidden-pane {
+  width: 0 !important;
+  min-width: 0 !important;
+  max-width: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+.pane-header {
+  height: 48px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  background: var(--bg);
+  overflow-x: auto;
+  align-items: center;
+  flex-shrink: 0;
+}
+#pane-content {
+  flex: 1;
+  overflow-y: auto;
+  position: relative;
+}
+
+/* Secondary toggle button visibility rules */
+#btn-sidebar-toggle-main {
+  display: none !important;
+}
+
+/* Chat Options Dropdown Menu */
+.section-item {
+  position: relative;
+}
+.section-item.dropdown-open {
+  z-index: 10;
+}
+.chat-dropdown {
+  position: absolute;
+  top: 30px;
+  right: 8px;
+  background: var(--card, #ffffff);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border, rgba(0, 0, 0, 0.08));
+  border-radius: 10px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  padding: 6px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  min-width: 135px;
+  transform-origin: top right;
+  animation: dropdownFadeIn 0.12s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body.dark .chat-dropdown,
+body.oled .chat-dropdown,
+[data-theme="dark"] .chat-dropdown,
+[data-theme="oled"] .chat-dropdown {
+  background: var(--card, #1c1c1e);
+  border-color: var(--border, rgba(255, 255, 255, 0.12));
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+.chat-dropdown-item {
+  height: 28px;
+  border: none;
+  background: transparent;
+  color: var(--text-2);
+  font-family: var(--font);
+  font-size: var(--fs-sm);     /* 12px */
+  padding: 0 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  border-radius: 6px;
+  text-align: left;
+  width: 100%;
+  transition: background 0.12s, color 0.12s;
+}
+
+body.dark .chat-dropdown-item,
+body.oled .chat-dropdown-item,
+[data-theme="dark"] .chat-dropdown-item,
+[data-theme="oled"] .chat-dropdown-item {
+  color: var(--text-primary, #f4f4f5);
+}
+
+.chat-dropdown-item:hover {
+  background: var(--hover);
+  color: var(--text);
+}
+.chat-dropdown-item .lucide {
+  width: 14px;
+  height: 14px;
+  color: currentColor;
+}
+.chat-dropdown-item.delete {
+  color: #dc2626; /* Red delete text */
+}
+.chat-dropdown-item.delete .lucide {
+  color: #dc2626; /* Red delete icon */
+}
+.chat-dropdown-item.delete:hover {
+  background: #fef2f2;
+}
+body.dark .chat-dropdown-item.delete:hover,
+body.oled .chat-dropdown-item.delete:hover,
+[data-theme="dark"] .chat-dropdown-item.delete:hover,
+[data-theme="oled"] .chat-dropdown-item.delete:hover {
+  background: rgba(220, 38, 38, 0.15);
+}
+
+/* Lucide Icons Styling — Full Theme Dependent, 100% Visible, Crisp 2.2px Stroke Weight */
+.lucide, svg.lucide {
+  width: 16px;
+  height: 16px;
+  stroke-width: 2.2px;
+  stroke: currentColor;
+  fill: none;
+  display: inline-block;
+  vertical-align: middle;
+  opacity: 1 !important;
+  transition: color 0.15s ease, stroke-width 0.15s ease;
+}
+.dock-item .lucide {
+  width: 20px;
+  height: 20px;
+  stroke-width: 2.2px;
+  color: var(--text-2);
+}
+.btn-new-chat-dock .lucide {
+  width: 15px;
+  height: 15px;
+  stroke-width: 2.2px;
+  color: var(--text-2);
+}
+.icon-btn .lucide {
+  width: 16px;
+  height: 16px;
+  stroke-width: 2.2px;
+  color: var(--text-2);
+}
+.recent-item .lucide, .section-item .lucide, #sidebar-nav .lucide {
+  width: 15px;
+  height: 15px;
+  stroke-width: 2.2px;
+  color: var(--text-2);
+  opacity: 1 !important;
+}
+.upgrade-btn .lucide {
+  width: 14px;
+  height: 14px;
+  stroke-width: 2.2px;
+}
+
+/* Tab Manager Buttons styling - Chip-like tabs */
+.tab-btn {
+  height: 32px;
+  margin: 8px 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 16px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  outline: none;
+  border-radius: 99px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tab-btn:hover {
+  background: var(--hover);
+  color: var(--text-primary);
+}
+
+.tab-btn.active {
+  background: #efeeeb !important;
+  color: var(--text-primary) !important;
+  border: none !important;
+  box-shadow: none !important;
+  font-weight: 600;
+}
+body.dark .tab-btn.active {
+  background: #202024 !important;
+}
+
+.tab-btn .lucide, .tab-btn svg, .tab-btn i {
+  width: 13px;
+  height: 13px;
+  stroke-width: 1.75px;
+  color: var(--text-3);
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.tab-btn .close-x {
+  margin-left: 2px;
+  opacity: 0.4;
+  font-size: 10px;
+  font-weight: 700;
+  transition: opacity 0.1s, color 0.1s;
+}
+
+.tab-btn .close-x:hover {
+  opacity: 1;
+  color: #ef4444;
+}
+

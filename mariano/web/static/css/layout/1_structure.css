@@ -1,0 +1,127 @@
+/* === STRUCTURAL LAYOUT === */
+
+#shell {
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+  width: 100vw;
+}
+
+/* === TITLEBAR === */
+#titlebar,
+#workspace #titlebar {
+  display: none !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  border: none !important;
+}
+
+.tb-group { 
+  display: flex; 
+  align-items: center; 
+  gap: 2px; 
+}
+.tb-sep { 
+  width: 1px; 
+  height: 16px; 
+  background: var(--border); 
+  margin: 0 6px; 
+}
+
+/* Titlebar breadcrumb — ProjectName / Chat Title */
+#titlebar-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 12px;
+  pointer-events: none;
+  user-select: none;
+  max-width: 420px;
+  overflow: hidden;
+}
+.tb-bc-project {
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--text-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.tb-bc-sep {
+  font-size: 15px;
+  color: var(--text-3);
+  flex-shrink: 0;
+}
+.tb-bc-chat {
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--text-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.icon-btn {
+  width: 28px; 
+  height: 28px;
+  border: none; 
+  background: transparent;
+  color: var(--text-2); 
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  display: flex; 
+  align-items: center; 
+  justify-content: center;
+  transition: background 0.12s, color 0.12s;
+  font-size: 16px;
+}
+.icon-btn:hover { 
+  background: var(--hover); 
+  color: var(--text); 
+}
+.icon-btn.close:hover { 
+  background: #dc2626; 
+  color: #fff; 
+}
+
+/* Submit/Send button styling — pill-like grey background, no outline */
+.submit-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--hover);
+  border: none;
+  color: var(--text-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+  padding: 0;
+  flex-shrink: 0;
+}
+.submit-btn:hover {
+  background: var(--hover-2);
+  color: var(--text);
+}
+.submit-btn i, .submit-btn svg {
+  width: 14px;
+  height: 14px;
+  stroke-width: 3px !important;
+}
+.submit-btn.hidden {
+  display: none !important;
+}
+
+/* === WORKSPACE === */
+#workspace {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--bg);
+}
+

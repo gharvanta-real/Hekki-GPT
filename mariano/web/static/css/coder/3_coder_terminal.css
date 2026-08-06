@@ -1,0 +1,327 @@
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 13.5px;
+  line-height: 1.6;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 8px;
+  overflow: hidden;
+  background: transparent;
+}
+
+.coder-msg-assistant th,
+.coder-msg-assistant td {
+  padding: 10px 14px;
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+}
+
+.coder-msg-assistant th {
+  background: transparent;
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 13.5px;
+  border-bottom: 1px solid var(--border);
+}
+
+.coder-msg-assistant td {
+  color: var(--text-primary);
+  font-size: 13.5px;
+  line-height: 1.6;
+  background: transparent;
+}
+
+.coder-msg-assistant tr:last-child td {
+  border-bottom: none !important;
+}
+
+.coder-msg-assistant tr:hover td {
+  background: var(--hover);
+}
+
+.coder-msg-assistant tr:nth-child(even) {
+  background: transparent;
+}
+
+[data-theme="light"] .coder-msg-assistant tr:nth-child(even) {
+  background: transparent;
+}
+
+.coder-msg-assistant tr:hover {
+  background: var(--hover);
+}
+
+/* Horizontal line */
+.coder-msg-assistant hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 20px 0;
+}
+
+/* Premium Inline Code blocks */
+.coder-msg code {
+  background: var(--hover);
+  padding: 2.5px 6.5px;
+  border-radius: 5px;
+  font-family: var(--font-mono), monospace;
+  font-size: 12.5px;
+  border: none !important;
+  outline: none !important;
+  color: var(--text-primary);
+}
+
+.coder-msg-user code {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="dark"] .coder-msg-user code {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Pre-wrap formatting support for raw directory lists */
+.coder-msg-assistant p,
+.coder-msg-assistant li,
+.coder-msg-assistant td {
+  white-space: pre-wrap;
+}
+
+/* Collapsible Coder Tool Cards */
+.coder-tool-card {
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  margin: 5px 0;
+  padding: 0;
+  font-family: var(--font), system-ui, -apple-system, sans-serif;
+  font-size: 13px;
+}
+.coder-tool-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+  padding: 1px 0;
+  font-weight: 400;
+  color: var(--text-secondary);
+}
+.coder-tool-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+}
+.coder-tool-detail {
+  font-weight: 400;
+  color: var(--text-3);
+  font-size: 13px;
+}
+.coder-tool-status {
+  font-size: 12px;
+  color: var(--text-3);
+  font-weight: 400;
+}
+.coder-tool-chevron {
+  font-size: 11px;
+  color: var(--text-3);
+  margin-left: 2px;
+}
+.coder-tool-body {
+  display: none;
+  margin: 2px 0;
+  padding: 0;
+}
+.coder-tool-body pre,
+.coder-tool-output {
+  margin: 0;
+  font-family: var(--font-mono), monospace;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--text-primary);
+  background: transparent;
+  padding: 4px 0;
+  border-radius: 0;
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: 250px;
+  white-space: pre-wrap;
+  word-break: break-all;
+  border: none;
+  opacity: 0.9;
+}
+
+/* Flat Monochromatic Inline Edit Lines */
+.coder-edit-card {
+  margin: 5px 0;
+  padding: 0;
+}
+.coder-edit-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font), system-ui, -apple-system, sans-serif;
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+.coder-edit-ext {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-family: var(--font-mono), monospace;
+  color: var(--text-primary);
+  font-weight: 400;
+  text-transform: lowercase;
+}
+.coder-edit-file {
+  font-weight: 400;
+  color: var(--text-primary);
+}
+.coder-edit-add {
+  color: #22c55e;
+  font-weight: 400;
+  font-family: var(--font-mono), monospace;
+  font-size: 13px;
+}
+.coder-edit-del {
+  color: #ef4444;
+  font-weight: 400;
+  font-family: var(--font-mono), monospace;
+  font-size: 13px;
+}
+
+/* End-of-response File Changes Summary Card */
+.coder-changes-summary {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--card, rgba(255,255,255,0.03));
+  margin: 16px 0 4px;
+  padding: 10px 14px;
+  font-family: var(--font), system-ui, -apple-system, sans-serif;
+  font-size: 13px;
+}
+.coder-changes-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  user-select: none;
+}
+.coder-changes-files {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+.coder-changes-file-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 6px;
+  border-radius: 6px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  transition: background 0.1s;
+}
+.coder-changes-file-row:hover {
+  background: var(--hover, rgba(255,255,255,0.05));
+}
+.coder-changes-filename {
+  font-weight: 400;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+/* ── Thought Process Accordion Cards ───────────────────────── */
+.coder-thought-card {
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  margin: 5px 0;
+  padding: 0;
+  font-family: var(--font), system-ui, -apple-system, sans-serif;
+  font-size: 13px;
+}
+
+.coder-thought-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+  padding: 1px 0;
+  font-weight: 400;
+  color: var(--text-secondary);
+}
+
+.coder-thought-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.coder-thought-status {
+  font-size: 12px;
+  color: var(--text-3);
+  font-weight: 400;
+}
+
+.coder-thought-chevron {
+  font-size: 11px;
+  color: var(--text-3);
+  margin-left: 2px;
+}
+
+.coder-thought-body {
+  margin: 2px 0;
+  padding: 0;
+}
+
+.coder-thought-text {
+  font-family: var(--font), system-ui, -apple-system, sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-primary);
+  white-space: pre-wrap;
+  word-break: break-word;
+  padding: 2px 0;
+  border: none;
+  opacity: 0.9;
+}
+
+.coder-thought-preview {
+  font-size: 13px;
+  color: var(--text-primary);
+  opacity: 0.75;
+  padding: 2px 0 0;
+  line-height: 1.45;
+  display: none;
+}
+
+/* ── Codex-style 3-layer execution feed styles ── */
+.action-label {
+  font-size: 12px;
+  color: var(--text-3);
+  font-family: var(--font);
+  margin: 10px 0 4px 0;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+  opacity: 0.85;
+}
+.finding-label {
+  font-size: 12px;
+  color: var(--text-2);
+  font-family: var(--font);
+  margin: 2px 0 10px 0;
+  line-height: 1.55;
+  max-width: 90%;
+}

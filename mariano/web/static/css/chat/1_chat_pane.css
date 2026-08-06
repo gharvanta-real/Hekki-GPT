@@ -1,0 +1,40 @@
+/* === CHAT PANE AND MESSAGES === */
+
+/* ── CHAT PANE STRUCTURE ────────────────────────────────
+   #chat-pane (flex-column, fills #main)
+     ├── #chat-log      (flex:1, scrolls)
+     │     └── #chat-col (max-width centered column)
+     │           ├── #home-screen
+     │           └── .msg, .think-label, .tool-block (dynamic)
+     └── #bottom-input-bar (flex-shrink:0, always bottom)
+   ──────────────────────────────────────────────────── */
+
+#chat-log {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 0 24px;
+  /* Scroll padding so last message isn't hidden behind input bar */
+  scroll-padding-bottom: 20px;
+}
+
+/* The centered message column — Claude-style max-width centered */
+#chat-col {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  padding: 32px 0 20px;
+  flex: 1;
+}
+
+.chat-container {
+  max-width: 720px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+

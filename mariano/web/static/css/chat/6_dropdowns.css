@@ -1,0 +1,419 @@
+/* === WAVE CANVAS BAR === */
+#wave-bar {
+  height: 40px;
+  background: var(--sidebar-bg);
+  border-top: 1px solid var(--border);
+  margin: 0 16px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+#wave-bar.hidden {
+  display: none !important;
+}
+#wave-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* === ATTACH DROPDOWN MENU (Claude Style) === */
+.attach-dropdown {
+  position: absolute;
+  bottom: 44px; /* Rendered above the plus button */
+  left: 12px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow-md);
+  padding: 6px;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  min-width: 230px;
+  animation: fadeIn 0.12s ease-out;
+}
+
+.attach-dropdown-item {
+  height: 34px;
+  border: none;
+  background: transparent;
+  color: var(--text-2);
+  font-family: var(--font);
+  font-size: var(--fs-base);   /* 13px */
+  font-weight: 400 !important;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  border-radius: 8px;
+  text-align: left;
+  width: 100%;
+  transition: background 0.12s, color 0.12s;
+  position: relative;
+}
+
+/* Compact model select items */
+.model-dropdown .attach-dropdown-item {
+  font-size: 12px;
+  height: 30px;
+  padding: 0 8px;
+}
+
+/* Auto height for permission selection items (avoids squishing two-line content) */
+.permission-dropdown .attach-dropdown-item {
+  height: auto !important;
+  padding: 6px 10px !important;
+}
+
+.attach-dropdown-item:hover {
+  background: var(--hover);
+  color: var(--text);
+}
+
+.attach-dropdown-item .lucide {
+  width: 15px;
+  height: 15px;
+  color: var(--text-3);
+  transition: color 0.12s;
+}
+
+.attach-dropdown-item:hover .lucide {
+  color: var(--text);
+}
+
+.attach-dropdown-item .shortcut-hint {
+  margin-left: auto;
+  font-size: var(--fs-xs);     /* 11px */
+  color: var(--text-3);
+  font-weight: normal;
+}
+
+.attach-dropdown-sep {
+  height: 1px;
+  background: var(--border);
+  margin: 5px 6px;
+}
+
+.attach-dropdown-item .submenu-arrow {
+  margin-left: auto;
+  color: var(--text-3);
+}
+
+/* Check icon status on items like web search & permission mode */
+.attach-dropdown-item .lucide-check-icon {
+  margin-left: auto;
+  color: var(--text-2) !important;
+  width: 14px;
+  height: 14px;
+}
+
+/* === SUB-DROPDOWN MENU FLYOUT (Matches Main Dropdown Typo & Spacing Exactly) === */
+.attach-sub-dropdown {
+  position: absolute;
+  bottom: -6px;
+  left: calc(100% + 8px);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow-md);
+  padding: 6px;
+  z-index: 10002;
+  display: flex;
+  flex-direction: column;
+  min-width: 260px !important;
+  width: max-content !important;
+  animation: fadeIn 0.12s ease-out;
+}
+
+.permission-sub-menu {
+  min-width: 260px !important;
+}
+
+.permission-sub-menu .attach-dropdown-item {
+  min-height: 36px !important;
+  height: auto !important;
+  padding: 6px 12px !important;
+  font-size: 12.5px !important;
+  font-weight: 400 !important;
+  white-space: nowrap !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin: 1px 0 !important;
+}
+
+/* === SEARCH HISTORY MODAL === */
+.search-modal-box {
+  display: flex !important;
+  flex-direction: column !important;
+  width: 95% !important;
+  max-width: 720px !important;
+  height: auto !important;
+  max-height: 80vh !important;
+  background: var(--card) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 24px !important;
+  box-shadow: 0 20px 25px -5px rgba(0,0,0,0.15), 0 10px 10px -5px rgba(0,0,0,0.08) !important;
+  overflow: hidden !important;
+}
+.search-header-container {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 10px 18px 4px !important;
+  border-bottom: none !important;
+  height: 42px !important;
+  box-sizing: border-box !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+.search-title-view {
+  display: flex;
+  align-items: center;
+  transition: opacity 0.22s cubic-bezier(0.4, 0, 0.2, 1), transform 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 1;
+  transform: translateX(0);
+}
+.search-header-container.search-active .search-title-view {
+  opacity: 0;
+  transform: translateX(-15px);
+  pointer-events: none;
+  width: 0;
+  overflow: hidden;
+}
+.search-input-view {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-grow: 1;
+  opacity: 0;
+  transform: translateX(15px);
+  pointer-events: none;
+  transition: opacity 0.22s cubic-bezier(0.4, 0, 0.2, 1), transform 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 0;
+  overflow: hidden;
+  margin-right: 24px;
+}
+.search-header-container.search-active .search-input-view {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
+  width: auto;
+}
+.search-field-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+}
+.search-field-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--text-3);
+  width: 14px;
+  height: 14px;
+  pointer-events: none;
+}
+#search-modal-input {
+  width: 100%;
+  padding: 8px 36px 8px 34px !important;
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 400;
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  color: var(--text);
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease-in-out;
+}
+#search-modal-input:focus {
+  border-color: var(--text-3);
+  box-shadow: none !important;
+}
+#search-input-clear {
+  position: absolute;
+  right: 8px;
+  padding: 4px;
+  background: transparent;
+  border: none;
+  color: var(--text-3);
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+#search-input-clear:hover {
+  color: var(--text);
+}
+#search-input-clear svg, #search-input-clear i {
+  width: 12px !important;
+  height: 12px !important;
+}
+.search-actions-view {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.search-header-container.search-active #search-trigger-btn {
+  display: none;
+}
+#search-input-back svg, #search-input-back i {
+  width: 14px !important;
+  height: 14px !important;
+}
+.search-modal-box .modal-header h3 {
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  margin: 0;
+}
+.search-modal-body {
+  padding: 2px 14px 14px !important;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.search-results-container {
+  max-height: 380px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border: none !important;
+  background: transparent !important;
+}
+.search-result-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  margin: 2px 0;
+  border-radius: 12px !important;
+  border-bottom: none !important;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  background: transparent !important;
+}
+.search-result-item:last-child {
+  border-bottom: none;
+}
+.search-result-item:hover {
+  background: var(--hover) !important;
+  border-radius: 12px !important;
+}
+.search-result-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+.search-result-badge {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--hover);
+  border: 1.5px solid var(--border);
+  color: var(--text-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+.search-result-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.search-result-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 2px;
+}
+.search-result-preview {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.search-result-delete-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-3);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  margin-left: 12px;
+  flex-shrink: 0;
+  opacity: 0.5;
+}
+.search-result-item:hover .search-result-delete-btn {
+  opacity: 1;
+}
+.search-result-delete-btn:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+.search-result-delete-btn svg, .search-result-delete-btn i {
+  width: 15px !important;
+  height: 15px !important;
+  display: block;
+}
+.search-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  color: var(--text-3);
+  font-size: var(--fs-base);   /* 13px */
+  gap: 12px;
+  text-align: center;
+}
+.search-empty-state .empty-icon {
+  width: 32px;
+  height: 32px;
+  color: var(--text-3);
+  opacity: 0.8;
+}
+
+/* Tool parameter chips */
+.tool-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--hover);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 2px 8px;
+  font-family: var(--font-mono), monospace;
+  font-size: var(--fs-xs);     /* 11px */
+  color: var(--text-2);
+  margin-left: 24px;
+  width: fit-content;
+  margin-top: 4px;
+}
+.tool-chip .material-icons {
+  font-size: 13px !important;
+  color: var(--text-3);
+  display: inline-flex;
+  align-items: center;
+}
+

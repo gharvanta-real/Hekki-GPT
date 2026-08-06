@@ -1,0 +1,362 @@
+/* === HOME SCREEN (Claude style dashboard) === */
+#home-screen {
+  margin: 12vh auto auto auto; /* vertically positioned slightly down from 8vh */
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 0 32px;
+}
+
+#home-screen.hidden {
+  display: none !important;
+}
+
+.greeting {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.greeting img {
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 6px !important;
+  margin-bottom: 0 !important;
+  box-shadow: none !important;
+  filter: none !important;
+  border: none !important;
+  outline: none !important;
+}
+.greeting-star {
+  color: var(--orange);
+  font-size: 24px;
+  line-height: 1;
+  animation: spin 10s linear infinite;
+}
+.greeting-text {
+  font-family: var(--font-serif);
+  font-size: 28px;
+  font-weight: 400;
+  color: var(--text);
+  letter-spacing: -0.3px;
+}
+
+/* ── HOME WELCOME INPUT CAPSULE (Centered on dashboard) ── */
+#input-capsule {
+  position: relative;
+  width: 100%;
+  background: var(--input-bg, #F4F4F6);
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  border-radius: 8px;
+  padding: 14px 16px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+#chat-input, #agent-task-input {
+  width: 100%;
+  border: none !important;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font);
+  font-size: var(--fs-md);     /* 14px */
+  resize: none;
+  outline: none !important;
+  line-height: 1.55;
+  min-height: 24px;
+  max-height: 200px;
+  overflow-y: hidden;
+}
+#chat-input::placeholder, #agent-task-input::placeholder {
+  color: var(--text-3);
+}
+
+
+/* ── BOTTOM CONVERSATION INPUT CAPSULE (Always pinned at bottom) ── */
+#input-capsule-conv {
+  width: 100%;
+  background: var(--input-bg, #F4F4F6);
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  border-radius: 8px;
+  padding: 10px 16px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+ 
+#chat-input-conv {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font);
+  font-size: var(--fs-md);     /* 14px */
+  resize: none;
+  outline: none;
+  line-height: 1.55;
+  min-height: 24px;
+  max-height: 200px;
+  overflow-y: hidden;
+  padding-top: 4px;
+}
+#chat-input-conv::placeholder {
+  color: var(--text-3);
+}
+
+
+/* Capsule bottom bar containing action pills & controls */
+.capsule-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 4px;
+}
+.capsule-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  position: relative; /* Position context for attach dropdown */
+}
+.capsule-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  position: relative; /* Position context for model dropdown */
+}
+
+
+/* Capsule buttons */
+.cap-icon-btn {
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  color: var(--text-3);
+  cursor: pointer;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.12s, color 0.12s;
+  font-size: 16px;
+}
+.cap-icon-btn:hover {
+  background: var(--hover);
+  color: var(--text);
+}
+.cap-icon-btn.active {
+  color: #dc2626;
+  animation: mic-pulse 1.5s infinite;
+}
+@keyframes mic-pulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(220,38,38,0.3); }
+  50% { box-shadow: 0 0 0 5px rgba(220,38,38,0); }
+}
+
+/* Pill groups (e.g. Chat/Cowork tab pills) */
+.pill-group {
+  display: flex;
+  background: var(--sidebar-bg);
+  border-radius: 20px;
+  padding: 2px;
+}
+.pill-btn {
+  height: 22px;
+  padding: 0 10px;
+  border: none;
+  background: transparent;
+  font-family: var(--font);
+  font-size: var(--fs-xs);     /* 11px */
+  font-weight: 500;
+  color: var(--text-3);
+  cursor: pointer;
+  border-radius: 18px;
+  transition: all 0.12s;
+}
+.pill-btn.active {
+  background: var(--card);
+  color: var(--text);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+}
+
+/* Model Selector (Clean Normal Flat Dropdown Trigger with Subtle Hover/Click Highlight) */
+.model-pill,
+#input-capsule-conv .model-pill {
+  height: 26px !important;
+  padding: 0 6px !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  font-family: var(--font) !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: var(--text-2) !important;
+  cursor: pointer;
+  border-radius: 6px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 3px !important;
+  transition: background 0.12s ease, color 0.12s ease !important;
+}
+.model-pill:hover,
+.model-pill:active,
+.model-pill.active,
+#input-capsule-conv .model-pill:hover,
+#input-capsule-conv .model-pill:active {
+  background: var(--hover) !important;
+  color: var(--text) !important;
+  opacity: 1 !important;
+}
+.model-pill .mi,
+.model-pill i,
+.model-pill svg,
+.model-pill .lucide {
+  font-size: 13px !important;
+  width: 14px !important;
+  height: 14px !important;
+  color: var(--text-3) !important;
+  transition: color 0.12s ease !important;
+}
+.model-pill:hover .mi,
+.model-pill:hover i,
+.model-pill:hover svg,
+.model-pill:hover .lucide,
+.model-pill:active .mi,
+.model-pill:active i,
+.model-pill:active svg,
+.model-pill:active .lucide {
+  color: var(--text) !important;
+}
+
+/* Permission Selector Button Pill */
+.permission-pill {
+  height: 24px;
+  padding: 0 10px;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: var(--hover);
+  font-family: var(--font);
+  font-size: var(--fs-xs);     /* 11px */
+  font-weight: 500;
+  color: var(--text-2);
+  cursor: pointer;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: background 0.12s;
+  vertical-align: middle;
+  outline: none;
+}
+.permission-pill:hover {
+  background: var(--hover);
+}
+
+/* Permission Custom Dropdown Menu overlay */
+.permission-dropdown {
+  position: absolute;
+  z-index: 10000;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow-md);
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  min-width: 170px;
+  bottom: 44px;
+}
+
+/* Stop Button */
+.stop-btn {
+  height: 28px;
+  padding: 0 12.5px;
+  border: none;
+  background: var(--hover);
+  color: var(--text-2);
+  cursor: pointer;
+  font-family: var(--font);
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: background 0.12s, color 0.12s;
+  flex-shrink: 0;
+}
+.stop-btn:hover {
+  background: var(--hover-2);
+  color: var(--text);
+}
+.stop-btn i, .stop-btn svg {
+  width: 10px;
+  height: 10px;
+  fill: var(--text-2);
+  stroke: var(--text-2);
+  transition: fill 0.12s, stroke 0.12s;
+}
+.stop-btn:hover i, .stop-btn:hover svg {
+  fill: var(--text);
+  stroke: var(--text);
+}
+.stop-dots {
+  letter-spacing: 1px;
+  opacity: 0.8;
+  animation: blink 1.2s step-end infinite;
+}
+
+/* === SHORTCUTS (Horizontal grid below capsule) === */
+.shortcuts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 14px;
+}
+.shortcut {
+  height: 32px;
+  padding: 0 14px;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: var(--hover);
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-family: var(--font);
+  font-size: var(--fs-base);   /* 13px */
+  font-weight: 500;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.12s, color 0.12s;
+}
+.shortcut .mi {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+.shortcut:hover {
+  background: var(--card);
+  color: var(--text);
+}
+body.dark .shortcut {
+  background-color: var(--hover);
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+body.dark .shortcut:hover {
+  background-color: var(--card);
+}
+

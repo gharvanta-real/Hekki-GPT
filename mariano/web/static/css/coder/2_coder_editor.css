@@ -1,0 +1,327 @@
+  justify-content: space-between;
+  padding: 8px 12px 6px;
+}
+
+.coder-sidebar-toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Icon Buttons in Coder Sidebar */
+.coder-icon-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-3);
+  padding: 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.12s, color 0.12s;
+}
+
+.coder-icon-btn:hover {
+  background: var(--hover);
+  color: var(--text-secondary);
+}
+
+.coder-icon-btn.active {
+  background: var(--hover);
+  color: var(--text-primary);
+}
+
+/* ─── Conversation item with hover actions ────────────────── */
+.coder-conv-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 32px;
+  padding: 0 8px;
+  border: none;
+  background: transparent;
+  color: var(--text-2);
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  font-family: var(--font);
+}
+
+.coder-conv-item:hover {
+  background: var(--hover);
+  transform: translateX(4px);
+}
+
+.coder-conv-item:active {
+  transform: scale(0.97);
+}
+
+.coder-conv-item.active {
+  background: var(--hover);
+}
+
+.coder-conv-item-left {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  overflow: hidden;
+  padding-right: 8px;
+}
+
+.coder-conv-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow: hidden;
+}
+
+.coder-conv-title-text {
+  font-size: 14px;
+  color: var(--text-2);
+  font-family: var(--font);
+  font-weight: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.coder-conv-item:hover .coder-conv-title-text,
+.coder-conv-item.active .coder-conv-title-text {
+  color: var(--text);
+}
+
+.coder-conv-item.active .coder-conv-title-text {
+  font-weight: normal;
+}
+
+.coder-conv-subtitle {
+  font-size: var(--fs-xs); /* 11px */
+  color: var(--text-3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.coder-conv-actions {
+  display: none;
+  align-items: center;
+  gap: 3px;
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--hover);
+  padding-left: 8px;
+}
+
+.coder-conv-item:hover .coder-conv-actions,
+.coder-conv-item.menu-active .coder-conv-actions {
+  display: flex;
+}
+
+.coder-conv-action-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-3);
+  padding: 3px;
+  border-radius: 3px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.1s, background 0.1s;
+}
+
+.coder-conv-action-btn:hover {
+  background: var(--border);
+  color: var(--text-secondary);
+}
+
+/* Pinned session style marker */
+.coder-conv-pin-badge {
+  color: #6366f1;
+}
+
+/* Unread indicator dot */
+.coder-conv-unread-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #6366f1;
+  margin-right: 2px;
+  flex-shrink: 0;
+}
+
+/* ─── Monochromatic Coder Context Menu ────────────────────── */
+.coder-context-menu {
+  position: absolute;
+  z-index: 1000;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
+  padding: 4px 0;
+  min-width: 150px;
+  font-family: var(--font);
+  font-size: 11.5px;
+}
+
+.coder-context-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  width: 100%;
+  border: none;
+  background: transparent;
+  text-align: left;
+  transition: background 0.1s, color 0.1s;
+}
+
+.coder-context-menu-item:hover {
+  background: var(--hover);
+  color: var(--text-primary);
+}
+
+.coder-context-menu-item.active {
+  background: var(--hover);
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.coder-context-menu-item i {
+  color: var(--text-3);
+  flex-shrink: 0;
+}
+.coder-context-menu-item.delete {
+  color: #dc2626;
+}
+.coder-context-menu-item.delete i {
+  color: #dc2626;
+}
+.coder-context-menu-item.delete:hover {
+  background: rgba(220, 38, 38, 0.12);
+  color: #dc2626;
+}
+.coder-context-menu-item.delete:hover i {
+  color: #dc2626;
+}
+
+.coder-context-menu-header {
+  padding: 4px 12px;
+  font-size: 9.5px;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+.coder-context-menu-separator {
+  height: 1px;
+  background: var(--border);
+  margin: 4px 0;
+}
+
+.coder-suggestion-card {
+  transition: all 0.15s ease-in-out;
+}
+.coder-suggestion-card:hover {
+  background: var(--hover) !important;
+  border-color: var(--accent) !important;
+  transform: translateY(-1px);
+}
+.coder-suggestion-card:active {
+  transform: translateY(0);
+}
+
+/* ── Markdown Typography (Clean & Premium Styling) ────────── */
+.coder-msg-assistant {
+  font-family: var(--font), system-ui, -apple-system, sans-serif;
+  font-size: 14.5px; /* ChatGPT comfortable body size */
+  font-weight: 400; /* Regular weight for crisp, readable body copy */
+  line-height: 1.75;
+  color: var(--text-secondary);
+}
+
+.coder-msg-assistant p {
+  margin: 0 0 14px 0;
+  line-height: 1.75;
+}
+.coder-msg-assistant p:last-child {
+  margin-bottom: 0;
+}
+
+.coder-msg-assistant h1,
+.coder-msg-assistant h2,
+.coder-msg-assistant h3,
+.coder-msg-assistant h4,
+.coder-msg-assistant h5,
+.coder-msg-assistant h6 {
+  font-family: var(--font), system-ui, -apple-system, sans-serif;
+  color: var(--text-primary);
+  font-weight: 600;
+  line-height: 1.4;
+  margin-top: 24px;
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+.coder-msg-assistant ul,
+.coder-msg-assistant ol {
+  margin: 0 0 8px 0;
+  padding-left: 22px;
+}
+
+.coder-msg-assistant li {
+  margin-top: 0;
+  margin-bottom: 4px;
+  line-height: 1.6;
+}
+
+.coder-msg-assistant li::marker {
+  color: var(--text-3);
+}
+
+/* Reset margins for nested elements in lists to prevent spacing inflation */
+.coder-msg-assistant li ul,
+.coder-msg-assistant li ol {
+  margin-top: 2px !important;
+  margin-bottom: 2px !important;
+}
+.coder-msg-assistant li p {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+
+.coder-msg-assistant strong,
+.coder-msg-assistant b {
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 13px;
+}
+
+/* Blockquotes */
+.coder-msg-assistant blockquote {
+  margin: 12px 0;
+  padding: 10px 16px;
+  border-left: 4px solid var(--accent, #6366f1);
+  background: var(--hover);
+  border-radius: 4px;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* Premium ChatGPT-Style Flat Markdown Tables */
+.coder-msg-assistant table {
+  width: 100%;

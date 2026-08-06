@@ -1,0 +1,241 @@
+/* === BOTTOM INPUT BAR — ALWAYS FIXED AT BOTTOM === */
+#bottom-input-bar {
+  /* flex-shrink:0 keeps it pinned at bottom of #chat-pane flex column */
+  flex-shrink: 0;
+  padding: 0 24px 4px;
+  background: var(--bg);
+  border-top: none;
+  box-shadow: none;
+  position: relative;
+}
+
+/* Premium smooth text fadeout overlay above input bar */
+.chat-bottom-fadeout {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  right: 0;
+  height: 36px;
+  background: linear-gradient(to top, var(--bg) 15%, transparent 100%);
+  pointer-events: none;
+  z-index: 10;
+}
+/* Premium smooth text fadeout overlay under top navigation bar */
+.chat-top-fadeout {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 28px;
+  background: linear-gradient(to bottom, var(--bg) 0%, transparent 100%);
+  pointer-events: none;
+  z-index: 10;
+}
+.bottom-col {
+  width: 100% !important;
+  max-width: 720px !important;
+  margin: 0 auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0 !important;
+  box-sizing: border-box !important;
+  position: relative !important;
+}
+.bottom-disclaimer {
+  text-align: center !important;
+  font-size: 10px !important; /* Very small, clean & subtle disclaimer */
+  color: var(--text-3) !important;
+  opacity: 0.7 !important;
+  margin: 6px auto 2px auto !important;
+  width: 100% !important;
+  max-width: 720px !important;
+  display: block !important;
+  letter-spacing: 0.01em !important;
+  box-sizing: border-box !important;
+  float: none !important;
+  clear: both !important;
+}
+
+/* === AGENT THOUGHTS (Reasoning timeline) === */
+.think-label {
+  align-self: flex-start;
+  font-size: var(--fs-sm);     /* 12px */
+  color: var(--text-3);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-style: italic;
+  opacity: 0.85;
+}
+.tl-icon {
+  font-size: 14px;
+  color: var(--text-3);
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+/* Tool execution blocks */
+.tool-block {
+  align-self: flex-start;
+  width: 100%;
+  max-width: 600px;
+  border: none;
+  border-radius: 0;
+  margin-bottom: 16px;
+  overflow: hidden;
+  background: transparent; /* Flat on background */
+}
+.tool-summary {
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px;
+  cursor: pointer;
+  background: transparent; /* No card background header */
+  user-select: none;
+}
+.ts-icon {
+  font-size: 14px;
+  color: var(--text-3);
+}
+.ts-text {
+  flex: 1;
+  font-size: var(--fs-sm);     /* 12px */
+  font-weight: 500;
+  color: var(--text-3);
+  margin-left: 0;
+}
+.ts-arrow {
+  font-size: 14px;
+  color: var(--text-3);
+  transition: transform 0.15s ease;
+}
+.tool-summary.open .ts-arrow {
+  transform: rotate(90deg);
+}
+.tool-steps {
+  border-top: none;
+  padding: 8px 4px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.tool-steps.collapsed {
+  display: none;
+}
+.tool-step {
+  position: relative;
+  padding-left: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.tool-step::before {
+  content: '';
+  position: absolute;
+  left: 6.5px;
+  top: 18px;
+  bottom: -22px;
+  width: 1px;
+  background: var(--border);
+  opacity: 0.6;
+}
+.tool-step:last-child::before {
+  display: none;
+}
+.tool-step-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+.tool-step-icon {
+  position: absolute;
+  left: 0;
+  top: 2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-3);
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+.tool-step-icon .material-icons {
+  font-size: 13px;
+  font-weight: 300;
+  opacity: 0.8;
+}
+.tool-step-text {
+  font-size: var(--fs-sm);     /* 12px */
+  color: var(--text-2);
+  line-height: 1.4;
+  word-break: break-word;
+}
+.tool-step-text.is-think {
+  color: var(--text-3);
+  font-style: italic;
+}
+.tool-code-pill {
+  font-family: var(--font), sans-serif;
+  font-size: var(--fs-sm);     /* 12px */
+  font-weight: 600;
+  color: var(--text-2);
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+  margin-right: 8px;
+  border: none;
+}
+/* Collapsible details for tool steps */
+.tool-step-details {
+  width: 100%;
+}
+.tool-step-summary {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  list-style: none; /* Hide default marker */
+}
+.tool-step-summary::-webkit-details-marker {
+  display: none; /* Hide Chrome/Safari marker */
+}
+.details-arrow {
+  width: 14px;
+  height: 14px;
+  color: var(--text-3);
+  transition: transform 0.15s ease;
+  margin-left: 4px;
+  display: inline-block;
+  stroke-width: 1.5px;
+}
+.tool-step-details[open] .details-arrow {
+  transform: rotate(90deg);
+}
+.tool-detail-text {
+  color: var(--text-3);
+  font-size: var(--fs-xs);     /* 11px */
+  margin-top: 4px;
+  padding-left: 2px;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+.tool-done {
+  position: relative;
+  padding-left: 24px;
+  font-size: var(--fs-sm);     /* 12px */
+  color: var(--text-3);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+}
+.tool-done .material-icons {
+  position: absolute;
+  left: 0;
+  font-size: 14px;
+  color: var(--text-3);
+}
+

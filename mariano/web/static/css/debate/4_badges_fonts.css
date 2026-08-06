@@ -1,0 +1,67 @@
+/* === FULL OPACITY & UNBOLD HIGHLIGHT FOR ACTION LINKS ONLY === */
+.debate-sidebar .debate-list-btn,
+.debate-sidebar .debate-list-btn span,
+.debate-sidebar-action-btn,
+.debate-nav-item,
+.debate-sidebar-item,
+.debate-hist-item {
+  color: var(--text) !important;
+  opacity: 1 !important;
+  font-weight: 400 !important;
+}
+
+.debate-sidebar .icon-btn,
+.debate-sidebar .icon-btn i,
+.debate-sidebar .icon-btn svg,
+.debate-sidebar .icon-btn .lucide,
+.debate-sidebar .debate-list-btn i,
+.debate-sidebar .debate-list-btn svg,
+.debate-sidebar .debate-list-btn .lucide,
+#btn-debate-sidebar-back,
+#btn-debate-search-nav,
+#btn-debate-sidebar-toggle {
+  color: var(--text) !important;
+  opacity: 1 !important;
+}
+
+/* === BADGE & CATEGORY COLOR (0.8 OPACITY) FOR ACTIONS, PARTICIPANTS, FLOW, DOCUMENTS === */
+.debate-sidebar .debate-sidebar-section-label,
+.debate-sidebar-section-label,
+.debate-sidebar-summary,
+.debate-sidebar-summary .summary-title,
+.debate-sidebar-summary span,
+.debate-sidebar .accordion-chevron,
+.debate-sidebar .badge {
+  color: var(--text-secondary, #d4d4d8) !important;
+  opacity: 0.8 !important;
+  font-size: 12px;
+  font-weight: 500 !important;
+  letter-spacing: 0.02em;
+}
+
+/* === FULL BRIGHT FONTS FOR INSIDE ACCORDION CONTENT (PARTICIPANT CARDS, AVATARS, NAMES, DROPDOWNS, STATUSES) === */
+.debate-sidebar .details-content,
+.debate-sidebar .debate-participant-card,
+.debate-sidebar .dp-avatar,
+.debate-sidebar .dp-name,
+.debate-sidebar .debate-model-select,
+.debate-sidebar .dp-status,
+.debate-sidebar .dp-model {
+  color: var(--text) !important;
+  opacity: 1 !important;
+}
+
+.debate-sidebar .dp-avatar {
+  background: var(--hover) !important;
+  color: var(--text) !important;
+  font-weight: 500 !important;
+}
+
+.debate-sidebar .debate-model-select {
+  background: transparent !important;
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+}
+
+
+

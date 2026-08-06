@@ -1,0 +1,525 @@
+/* === THOUGHT / REASONING PROCESS CARD === */
+.thought-container {
+  width: 100%;
+  margin-bottom: 18px;
+  align-self: flex-start;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+.thought-header {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font);
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text-3);
+  cursor: pointer;
+  user-select: none;
+  padding: 4px 0;
+  background: transparent;
+  border: none;
+  transition: color 0.12s ease-in-out;
+}
+.thought-header:hover {
+  color: var(--text-2);
+}
+.thought-chevron {
+  width: 12px;
+  height: 12px;
+  transition: transform 0.2s ease;
+  color: var(--text-3);
+}
+.thought-header:not(.open) .thought-chevron {
+  transform: rotate(-90deg);
+}
+.thought-body {
+  border-left: 2px solid var(--border);
+  padding-left: 14px;
+  margin-left: 8px;
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: transparent;
+}
+.thought-body.collapsed {
+  display: none !important;
+}
+.thought-step {
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--text-3);
+  line-height: 1.65;
+  white-space: pre-wrap;
+  font-style: italic;
+}
+.thought-spinner {
+  width: 11px;
+  height: 11px;
+  border: 1.5px solid var(--border);
+  border-top-color: var(--text-3);
+  border-radius: 50%;
+  animation: thought-spin 0.8s linear infinite;
+  display: inline-block;
+  margin-right: 2px;
+}
+@keyframes thought-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* === CHAT IMAGE PREVIEW CARD === */
+.chat-image-preview-card {
+  margin: 10px 0;
+  border: none !important;
+  border-radius: 12px;
+  overflow: hidden;
+  width: fit-content;
+  max-width: 210px; /* Reduced to ~half-size compact preview */
+  box-shadow: none !important;
+  transition: transform 0.18s;
+  display: inline-block;
+  position: relative;
+  background: transparent;
+  line-height: 0;
+}
+
+.img-preview-box {
+  position: relative;
+  width: 100%;
+}
+
+.chat-image-preview-card:hover {
+  transform: translateY(-2px);
+  box-shadow: none !important;
+}
+
+/* Header floats as overlay ON TOP of image — no background box */
+.chat-image-preview-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px 24px 12px;
+  background: transparent;
+  border: none;
+  font-size: 11.5px;
+  gap: 8px;
+  user-select: none;
+  box-sizing: border-box;
+  pointer-events: auto;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+/* Show overlay on hover */
+.chat-image-preview-card:hover .chat-image-preview-header {
+  opacity: 1;
+}
+
+/* Always show it (non-hover state, subtle) */
+.chat-image-preview-card .chat-image-preview-header {
+  opacity: 1;
+}
+
+.chat-image-preview-header span {
+  flex-grow: 1;
+  font-weight: 500;
+  font-family: var(--font);
+  color: rgba(255,255,255,0.95);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.9), 0 0px 2px rgba(0,0,0,0.7);
+  font-size: 11.5px;
+}
+
+.chat-image-preview-open {
+  color: rgba(255,255,255,0.88);
+  display: flex;
+  align-items: center;
+  transition: color 0.15s, transform 0.15s;
+  flex-shrink: 0;
+  filter: drop-shadow(0 1px 4px rgba(0,0,0,0.9));
+}
+
+.chat-image-preview-open:hover {
+  color: #ffffff;
+  transform: scale(1.15);
+}
+
+/* Body = image fills entire card from top-left corner, no extra padding */
+.chat-image-preview-body {
+  display: block;
+  width: 100%;
+  line-height: 0;
+  background: transparent;
+}
+
+.chat-image-preview-body img {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  max-height: 160px; /* Compact half-size height */
+  height: auto;
+  object-fit: contain;
+  border-radius: 11px;
+  transition: filter 0.2s;
+}
+
+/* === MEDIA PREVIEW GRID LAYOUT (Strict 1 Single Horizontal Row — Max 4 cards side-by-side) === */
+.media-preview-grid {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important; /* STRICT 1-ROW HORIZONTAL — NO WRAPPING */
+  gap: 10px !important;
+  margin: 16px 0 14px 0 !important; /* 16px above: clear break from intro text; 14px below: before body content */
+  width: 100% !important;
+  overflow-x: auto !important;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 4px;
+  box-sizing: border-box !important;
+}
+
+.media-preview-grid::-webkit-scrollbar {
+  height: 4px;
+}
+.media-preview-grid::-webkit-scrollbar-thumb {
+  background: var(--border, rgba(255, 255, 255, 0.2));
+  border-radius: 4px;
+}
+
+.media-preview-grid .yt-preview-card,
+.media-preview-grid .link-preview-card,
+.media-preview-grid .chat-image-preview-card {
+  flex: 1 1 0px !important; /* Equal column distribution */
+  min-width: 135px !important;
+  max-width: 25% !important; /* Max 4 cards side-by-side in 1 row */
+  margin: 0 !important;
+  box-sizing: border-box !important;
+  scroll-snap-align: start;
+}
+
+.media-preview-grid .yt-preview-play-btn {
+  width: 32px !important;
+  height: 32px !important;
+}
+
+.media-preview-grid .yt-preview-play-btn svg {
+  width: 20px !important;
+  height: 20px !important;
+}
+
+.media-preview-grid .yt-preview-title {
+  font-size: 11px !important;
+  line-height: 1.25 !important;
+}
+
+.media-preview-grid .yt-preview-meta {
+  padding: 6px 8px !important;
+}
+
+.media-preview-grid .yt-preview-domain {
+  font-size: 10px !important;
+}
+
+/* === YOUTUBE THUMBNAIL PREVIEW CARD === */
+.yt-preview-card {
+  margin: 10px 0;
+  border-radius: 12px;
+  overflow: hidden;
+  max-width: 380px;
+  background: var(--surface-2, rgba(255, 255, 255, 0.05));
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: inline-block;
+  width: 100%;
+}
+
+.yt-preview-card:hover {
+  transform: translateY(-2px);
+}
+
+.yt-preview-link {
+  text-decoration: none !important;
+  color: inherit !important;
+  display: flex;
+  flex-direction: column;
+}
+
+.yt-preview-thumb-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  overflow: hidden;
+}
+
+.yt-preview-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.yt-preview-card:hover .yt-preview-thumb {
+  transform: scale(1.04);
+}
+
+.yt-preview-play-btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 48px;
+  height: 48px;
+  background: rgba(255, 0, 0, 0.88);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  transition: transform 0.2s, background 0.2s;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+}
+
+.yt-preview-card:hover .yt-preview-play-btn {
+  transform: translate(-50%, -50%) scale(1.12);
+  background: #ff0000;
+}
+
+.yt-preview-badge {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background: rgba(0, 0, 0, 0.75);
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+  backdrop-filter: blur(4px);
+}
+
+.yt-preview-meta {
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.yt-preview-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary, #f4f4f5);
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.yt-preview-domain {
+  font-size: 11px;
+  color: var(--text-tertiary, #a1a1aa);
+}
+
+/* === GENERIC LINK PREVIEW CARD === */
+.link-preview-card {
+  margin: 8px 0;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: var(--surface-2, rgba(255, 255, 255, 0.05));
+  transition: background 0.15s, transform 0.15s;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-width: 520px;
+  text-decoration: none;
+}
+
+.link-preview-card:hover {
+  background: var(--hover-bg, rgba(255, 255, 255, 0.09));
+  transform: translateY(-1px);
+}
+
+.link-preview-loading {
+  opacity: 0.7;
+}
+
+.lp-favicon-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.lp-favicon {
+  width: 14px;
+  height: 14px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.lp-domain {
+  font-size: 11px;
+  color: var(--text-tertiary, #a1a1aa);
+  font-weight: 500;
+}
+
+.lp-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.lp-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary, #f4f4f5);
+  line-height: 1.35;
+}
+
+.lp-desc {
+  font-size: 11.5px;
+  color: var(--text-secondary, #d4d4d8);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.lp-og-image {
+  width: 100%;
+  max-height: 180px;
+  object-fit: cover;
+  border-radius: 6px;
+  margin-bottom: 6px;
+}
+
+
+/* ── AIDER EXECUTION TOGGLE CARD ────────────────────────────────
+   Flat card, same bg as chat area — never a pop color.
+   Appears inline in #chat-col when AI suggests code capabilities.
+   ─────────────────────────────────────────────────────────────── */
+.aider-toggle-card {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 16px;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 8px 0;
+  user-select: none;
+}
+
+.aider-toggle-card-left {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.aider-toggle-card-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: 0.01em;
+}
+
+.aider-toggle-card-desc {
+  font-size: 11px;
+  color: var(--text-3);
+  line-height: 1.4;
+}
+
+/* Plain toggle switch — monochromatic, no accent colors */
+.aider-toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 36px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.aider-toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.aider-toggle-track {
+  position: absolute;
+  inset: 0;
+  border-radius: 10px;
+  background: var(--border);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.aider-toggle-track::after {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--text-3);
+  transition: transform 0.15s, background 0.15s;
+}
+
+.aider-toggle-switch input:checked + .aider-toggle-track {
+  background: var(--text-2);
+}
+
+.aider-toggle-switch input:checked + .aider-toggle-track::after {
+  transform: translateX(16px);
+  background: var(--bg);
+}
+
+/* Inline "Switch to Code →" link — plain text, no button styling */
+.aider-switch-to-code {
+  display: inline;
+  font-size: 12px;
+  color: var(--text-2);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+}
+
+.aider-switch-to-code:hover {
+  color: var(--text-primary);
+}
+
+/* Conversation input bar pills styling (monochromatic, unbold, borderless) */
+#input-capsule-conv .model-pill,
+#input-capsule-conv .permission-pill {
+  border: none !important;
+  font-weight: 400 !important;
+  padding: 0 4px !important;
+  background: transparent !important;
+}
+
+#input-capsule-conv .model-pill:hover,
+#input-capsule-conv .permission-pill:hover {
+  background: transparent !important;
+  opacity: 0.8;
+}
+

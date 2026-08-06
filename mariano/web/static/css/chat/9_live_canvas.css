@@ -1,0 +1,401 @@
+/* === INTERACTIVE LIVE CANVAS ENGINE (Claude Canvas Style) === */
+.canvas-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  overflow: hidden;
+  border-radius: 12px;
+  border: none !important;
+}
+
+.canvas-header {
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 14px;
+  border-bottom: 1px solid var(--border) !important;
+  background: var(--bg);
+  gap: 10px;
+  user-select: none;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+.canvas-title-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow: hidden;
+  flex: 1;
+  min-width: 0;
+}
+
+.canvas-badge {
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: #2563eb;
+  color: #ffffff;
+  letter-spacing: 0.03em;
+  flex-shrink: 0;
+}
+
+.canvas-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.canvas-tabs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--hover);
+  padding: 3px;
+  border-radius: 7px;
+}
+
+.canvas-tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-2);
+  background: transparent;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.canvas-tab:hover {
+  color: var(--text);
+}
+
+.canvas-tab.active {
+  background: var(--bg);
+  color: var(--text);
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.canvas-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.canvas-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-2);
+  background: transparent;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.canvas-btn:hover {
+  background: var(--hover);
+  color: var(--text);
+}
+
+.canvas-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 6px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 4px;
+  min-width: 160px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.canvas-dropdown.hidden {
+  display: none !important;
+}
+
+.canvas-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text);
+  background: transparent;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  transition: background 0.15s ease;
+}
+
+.canvas-dropdown-item:hover {
+  background: var(--hover);
+}
+
+.canvas-body {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.canvas-preview-wrapper,
+.canvas-diagram-wrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.canvas-editor-wrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  overflow: hidden;
+}
+
+.canvas-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: #ffffff;
+}
+
+.canvas-line-numbers {
+  min-width: 30px;
+  max-width: 36px;
+  padding: 14px 6px 14px 2px;
+  text-align: right;
+  font-family: var(--font);
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--text-3);
+  background: var(--bg);
+  border-right: 1px solid var(--border);
+  user-select: none;
+  overflow: hidden;
+  pointer-events: none;
+  box-sizing: border-box;
+}
+
+.canvas-line-numbers div {
+  height: 20px;
+  line-height: 20px;
+}
+
+.canvas-code-textarea {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  padding: 14px;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 12.5px;
+  line-height: 1.6;
+  border: none;
+  outline: none;
+  resize: none;
+  white-space: pre;
+  overflow-x: auto;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.mermaid-container {
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+  overflow: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+}
+
+.mermaid-loading {
+  font-size: 13px;
+  color: var(--text-3);
+}
+
+.mermaid-error {
+  color: #ef4444;
+  font-size: 12.5px;
+  padding: 12px;
+  background: rgba(239, 68, 68, 0.08);
+  border-radius: 6px;
+}
+
+/* CLAUDE STYLE PDF / DOCUMENT PAPER PAGE VIEWER */
+.canvas-paper-viewport {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  background: var(--input-bg, #f1f5f9);
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.canvas-paper-page {
+  width: 100%;
+  max-width: 680px;
+  min-height: 800px;
+  background: #ffffff;
+  color: #1e293b;
+  padding: 40px 48px;
+  border-radius: 6px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  font-family: var(--font, 'Open Sans', sans-serif);
+  font-size: 13.5px;
+  line-height: 1.65;
+  box-sizing: border-box;
+  overflow-x: auto !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+}
+
+.canvas-paper-page pre,
+.canvas-paper-page code,
+.canvas-paper-page p,
+.canvas-paper-page div {
+  max-width: 100% !important;
+  white-space: pre-wrap !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  overflow-x: auto !important;
+  box-sizing: border-box !important;
+}
+
+.paper-resume-header {
+  text-align: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.paper-candidate-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: 0.04em;
+  margin: 0 0 6px 0;
+  text-transform: uppercase;
+}
+
+.paper-contact-info {
+  font-size: 12px;
+  color: #475569;
+  font-weight: 500;
+  word-spacing: 1px;
+}
+
+.canvas-paper-page h1,
+.canvas-paper-page h2,
+.canvas-paper-page h3,
+.paper-resume-body h2 {
+  color: #1e3a8a;
+  margin-top: 22px;
+  margin-bottom: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.canvas-paper-page h1 { font-size: 18px; border-bottom: 1.5px solid #cbd5e1; padding-bottom: 6px; }
+.canvas-paper-page h2, .paper-resume-body h2 { font-size: 14px; border-bottom: 1.5px solid #cbd5e1; padding-bottom: 4px; }
+.canvas-paper-page h3 { font-size: 13px; }
+
+.canvas-paper-page p, .paper-resume-body p { margin-bottom: 12px; }
+.canvas-paper-page ul, .canvas-paper-page ol, .paper-resume-body ul { padding-left: 24px; margin-bottom: 12px; }
+.canvas-paper-page li, .paper-resume-body li { margin-bottom: 4px; color: #334155; }
+
+[data-theme="dark"] .canvas-paper-page,
+[data-theme="oled"] .canvas-paper-page {
+  background: #1e293b;
+  color: #f8fafc;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .canvas-paper-page h1,
+[data-theme="dark"] .canvas-paper-page h2,
+[data-theme="dark"] .canvas-paper-page h3,
+[data-theme="oled"] .canvas-paper-page h1,
+[data-theme="oled"] .canvas-paper-page h2,
+[data-theme="oled"] .canvas-paper-page h3 {
+  color: #ffffff;
+}
+
+.canvas-page-counter {
+  position: absolute;
+  bottom: 16px;
+  right: 20px;
+  background: rgba(15, 23, 42, 0.75);
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 6px;
+  backdrop-filter: blur(8px);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Slash Popup Menu & Command Palette (Family UI matching + attach-dropdown) */
+.hekki-slash-popup {
+  position: fixed !important;
+  z-index: 999999 !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.hekki-slash-popup.hidden {
+  display: none !important;
+}
+
+.hekki-slash-popup .attach-dropdown-item span {
+  font-weight: 400 !important;
+}
+
+
+
+
+

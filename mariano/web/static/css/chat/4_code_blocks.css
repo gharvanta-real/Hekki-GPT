@@ -1,0 +1,148 @@
+/* === CODE BLOCK WRAPPER & ACTIONS (Modern Soft Rounded Theme-Adaptive Style) === */
+.code-block-wrapper {
+  background: var(--card, #ffffff);
+  border: 1px solid var(--border, #e5e7eb) !important;
+  border-radius: 16px !important;
+  margin: 12px 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: none !important;
+}
+
+body.dark .code-block-wrapper,
+body.oled .code-block-wrapper,
+[data-theme="dark"] .code-block-wrapper {
+  background: #121212 !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: none !important;
+}
+
+.code-block-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: transparent;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border, #e5e7eb) !important;
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+  color: var(--text-secondary);
+  user-select: none;
+}
+
+body.dark .code-block-header,
+body.oled .code-block-header,
+[data-theme="dark"] .code-block-header {
+  background: transparent;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.code-block-lang {
+  font-weight: 500;
+  text-transform: lowercase !important;
+  letter-spacing: 0;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+body.dark .code-block-lang,
+body.oled .code-block-lang,
+[data-theme="dark"] .code-block-lang {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.code-block-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.code-action-btn {
+  background: transparent;
+  border: none !important;
+  box-shadow: none !important;
+  color: var(--text-secondary, #111111);
+  cursor: pointer;
+  padding: 5px 7px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  opacity: 0.85;
+}
+
+.code-action-btn i,
+.code-action-btn svg,
+.code-action-btn .lucide {
+  stroke-width: 1.5px !important; /* Lighter icon stroke weight */
+  color: var(--text-primary, #111111) !important;
+  width: 14px;
+  height: 14px;
+}
+
+body.dark .code-action-btn i,
+body.dark .code-action-btn svg,
+body.dark .code-action-btn .lucide,
+body.oled .code-action-btn i,
+body.oled .code-action-btn svg,
+body.oled .code-action-btn .lucide,
+[data-theme="dark"] .code-action-btn i,
+[data-theme="dark"] .code-action-btn svg,
+[data-theme="dark"] .code-action-btn .lucide {
+  color: #ffffff !important; /* Pure white in dark/oled themes */
+}
+
+.code-action-btn:hover {
+  background: var(--hover, rgba(0,0,0,0.05));
+  opacity: 1;
+}
+
+body.dark .code-action-btn:hover,
+body.oled .code-action-btn:hover,
+[data-theme="dark"] .code-action-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.code-action-btn.active {
+  color: var(--primary, #2563eb) !important;
+}
+
+.code-block-wrapper pre {
+  margin: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  padding: 14px 16px !important;
+  overflow-x: auto !important;
+  font-size: 13px;
+  line-height: 1.6;
+  font-family: var(--font-mono), monospace;
+  white-space: pre-wrap !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  max-width: 100% !important;
+}
+
+.code-block-wrapper pre code {
+  background: transparent !important;
+  color: var(--text-primary) !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  border: none !important;
+  font-size: 13px !important;
+  line-height: 1.6 !important;
+  font-family: var(--font-mono), monospace !important;
+  white-space: pre !important;
+  word-break: normal !important;
+  display: block;
+}
+
+.code-block-wrapper pre.wrap-lines,
+.code-block-wrapper pre.wrap-lines code {
+  white-space: pre-wrap !important;
+  word-break: break-all !important;
+}
+
