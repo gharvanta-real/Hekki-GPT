@@ -210,9 +210,17 @@ export function createMessageElement(type, text, timestamp, index, ChatSessionMa
       group.appendChild(el);
 
       if (finalText && finalText.trim().length > 0) {
-        // Extract web domains mentioned in response links/markdown
+        // Extract web domains mentioned in response links/markdown AND tool runs
         const urlRegex = /(https?:\/\/[^\s"'<>\)]+)/gi;
-        const matches = text.match(urlRegex) || [];
+        let allContent = text || '';
+        if (msg.toolRuns && Array.isArray(msg.toolRuns)) {
+          msg.toolRuns.forEach(tr => {
+            if (tr.result) allContent += ' ' + (typeof tr.result === 'string' ? tr.result : JSON.stringify(tr.result));
+            if (tr.output) allContent += ' ' + (typeof tr.output === 'string' ? tr.output : JSON.stringify(tr.output));
+            if (tr.data)   allContent += ' ' + (typeof tr.data === 'string' ? tr.data : JSON.stringify(tr.data));
+          });
+        }
+        const matches = allContent.match(urlRegex) || [];
         const domains = new Set();
         matches.forEach(u => {
           try {

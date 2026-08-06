@@ -1455,15 +1455,31 @@ function _ensureResponseMsg(enterConversationCallback) {
   col.appendChild(_streamResponseEl);
 }
 
-function _attachAiActions(msgEl, text) {
+function _attachAiActions(msgEl, text, toolRuns = []) {
   if (!msgEl || !text || text.trim().length === 0) return;
 
-  const group = msgEl.closest('.msg-group') || msgEl.parentElement || msgEl;
-  if (!group || group.querySelector('.ai-actions')) return;
+  // Prevent duplicate actions on the same message element
+  if (msgEl.querySelector('.ai-actions') || 
+      (msgEl.parentElement && msgEl.parentElement.classList.contains('msg-actions')) ||
+      (msgEl.nextElementSibling && msgEl.nextElementSibling.classList && msgEl.nextElementSibling.classList.contains('ai-actions'))) {
+    return;
+  }
 
-  // Extract web domains mentioned in response links/markdown
+  // Target container element to append actions to
+  const container = msgEl.classList.contains('msg') ? msgEl : (msgEl.closest('.msg') || msgEl);
+
+  // Extract web domains mentioned in response links/markdown AND tool runs (web search outputs)
   const urlRegex = /(https?:\/\/[^\s"'<>\)]+)/gi;
-  const matches = text.match(urlRegex) || [];
+  let allContent = text || '';
+  if (Array.isArray(toolRuns)) {
+    toolRuns.forEach(tr => {
+      if (tr.result) allContent += ' ' + (typeof tr.result === 'string' ? tr.result : JSON.stringify(tr.result));
+      if (tr.output) allContent += ' ' + (typeof tr.output === 'string' ? tr.output : JSON.stringify(tr.output));
+      if (tr.data)   allContent += ' ' + (typeof tr.data === 'string' ? tr.data : JSON.stringify(tr.data));
+    });
+  }
+
+  const matches = allContent.match(urlRegex) || [];
   const domains = new Set();
   matches.forEach(u => {
     try {
@@ -1573,14 +1589,15 @@ function _attachAiActions(msgEl, text) {
     btn.style.color = btn.classList.contains('active-dislike') ? '#ef4444' : '';
   });
 
-  group.appendChild(actions);
+  container.appendChild(actions);
   if (window.lucide) setTimeout(() => lucide.createIcons({ parent: actions }), 0);
 }
 
 function _finalizeStreamResponse() {
   if (_streamResponseEl) {
-    _attachAiActions(_streamResponseEl, _streamResponseText);
-    ChatSessionManager.appendMessage('assistant', _streamResponseText, _consumeToolRuns());
+    const activeToolRuns = _consumeToolRuns();
+    _attachAiActions(_streamResponseEl, _streamResponseText, activeToolRuns);
+    ChatSessionManager.appendMessage('assistant', _streamResponseText, activeToolRuns);
   }
   _streamResponseEl = null;
   _streamResponseText = "";
