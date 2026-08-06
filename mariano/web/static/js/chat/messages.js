@@ -53,7 +53,15 @@ export function createMessageElement(type, text, timestamp, index, ChatSessionMa
     if (cleanText) {
       const bubble = document.createElement('div');
       bubble.className = 'msg user';
-      bubble.innerHTML = escapeHtml(cleanText);
+      
+      const slashMatch = cleanText.match(/^(\/(?:web|code|pdf|image|debate))\b([\s\S]*)/i);
+      if (slashMatch) {
+        const cmdTag = escapeHtml(slashMatch[1]);
+        const restText = escapeHtml(slashMatch[2]);
+        bubble.innerHTML = `<span class="user-cmd-highlight" style="display:inline-flex; align-items:center; background:rgba(37,99,235,0.16); color:#60a5fa; padding:2px 7px; border-radius:5px; font-weight:500; margin-right:6px; font-size:12.5px; font-family:var(--font); letter-spacing:0.2px;">${cmdTag}</span>${restText}`;
+      } else {
+        bubble.innerHTML = escapeHtml(cleanText);
+      }
 
       const lineCount = (cleanText.match(/\n/g) || []).length + 1;
       if (cleanText.length > 200 || lineCount > 4) {
@@ -202,14 +210,57 @@ export function createMessageElement(type, text, timestamp, index, ChatSessionMa
       group.appendChild(el);
 
       if (finalText && finalText.trim().length > 0) {
+        // Extract web domains mentioned in response links/markdown
+        const urlRegex = /(https?:\/\/[^\s"'<>\)]+)/gi;
+        const matches = text.match(urlRegex) || [];
+        const domains = new Set();
+        matches.forEach(u => {
+          try {
+            const parsed = new URL(u);
+            let host = parsed.hostname.replace(/^www\./, '');
+            if (host && host.includes('.') && !host.includes('localhost') && !host.includes('127.0.0.1')) {
+              domains.add(host);
+            }
+          } catch (err) {}
+        });
+
+        let faviconsHtml = '';
+        if (domains.size > 0) {
+          const domainList = Array.from(domains).slice(0, 5);
+          faviconsHtml = `
+            <div class="ai-bottom-right-sources" style="display:inline-flex; align-items:center; gap:5px; margin-right:auto; flex-wrap:wrap; opacity:0.9;">
+              ${domainList.map(dom => {
+                const faviconUrl = `https://www.google.com/s2/favicons?domain=${dom}&sz=32`;
+                return `
+                  <a href="https://${dom}" target="_blank" rel="noopener noreferrer" title="Verified Source: ${dom}" style="display:inline-flex; align-items:center; gap:4px; padding:2px 6px; border-radius:4px; background:rgba(255,255,255,0.05); font-size:11px; color:var(--text-secondary); font-family:var(--font); text-decoration:none; transition:background 0.15s;">
+                    <img src="${faviconUrl}" style="width:12px; height:12px; border-radius:2px;" onerror="this.style.display='none'">
+                    <span style="max-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:500;">${dom}</span>
+                  </a>
+                `;
+              }).join('')}
+            </div>
+          `;
+        }
+
         const actions = document.createElement('div');
         actions.className = 'msg-actions ai-actions';
+        actions.style.cssText = 'display:flex; align-items:center; justify-content:flex-end; gap:6px; margin-top:6px; flex-wrap:wrap; width:100%;';
         actions.innerHTML = `
-          <button class="action-btn btn-copy" title="Copy response"><i data-lucide="copy"></i></button>
-          <button class="action-btn btn-like" title="Good response"><i data-lucide="thumbs-up"></i></button>
-          <button class="action-btn btn-dislike" title="Bad response"><i data-lucide="thumbs-down"></i></button>
+          ${faviconsHtml}
+          <div style="display:flex; align-items:center; gap:6px; margin-left:auto;">
+            <button class="action-btn btn-copy" title="Copy response"><i data-lucide="copy"></i></button>
+            <button class="action-btn btn-like" title="Good response"><i data-lucide="thumbs-up"></i></button>
+            <button class="action-btn btn-dislike" title="Bad response"><i data-lucide="thumbs-down"></i></button>
+            <button class="action-btn btn-fork" title="Fork conversation branch from here"><i data-lucide="git-fork"></i></button>
+          </div>
         `;
         group.appendChild(actions);
+
+        actions.querySelector('.btn-fork')?.addEventListener('click', () => {
+          if (ChatSessionManager && ChatSessionManager.forkChat) {
+            ChatSessionManager.forkChat(index);
+          }
+        });
 
         // Check if message references web apps or files
         const fileMatch = text.match(/([\w\-_\/\\\.]+\.(html|js|css|py|json|md))/i);

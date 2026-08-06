@@ -509,16 +509,21 @@ body.dark .shortcut:hover {
   display: flex;
   flex-direction: column;
   width: 100%;
-  margin-bottom: 12px; /* reduced from 20px for tighter layout */
+  margin-bottom: 18px;
 }
 .msg-group.user {
   align-items: flex-end;
+  margin-top: 18px;
+}
+.msg-group.user:first-child {
+  margin-top: 6px;
 }
 .msg-group.user .msg.user {
   margin-bottom: 4px;
 }
 .msg-group.ai {
   align-items: flex-start;
+  margin-top: 6px;
 }
 .msg-group.ai .msg.ai {
   margin-bottom: 4px;
@@ -1616,15 +1621,26 @@ body.oled .code-action-btn:hover,
   z-index: 10002;
   display: flex;
   flex-direction: column;
-  min-width: 200px;
+  min-width: 260px !important;
+  width: max-content !important;
   animation: fadeIn 0.12s ease-out;
 }
 
+.permission-sub-menu {
+  min-width: 260px !important;
+}
+
 .permission-sub-menu .attach-dropdown-item {
-  height: 34px !important;
-  padding: 0 10px !important;
-  font-size: var(--fs-base) !important; /* 13px */
+  min-height: 36px !important;
+  height: auto !important;
+  padding: 6px 12px !important;
+  font-size: 12.5px !important;
   font-weight: 400 !important;
+  white-space: nowrap !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin: 1px 0 !important;
 }
 
 /* === SEARCH HISTORY MODAL === */
@@ -4591,6 +4607,24 @@ body.dark .cad-ai-header-title,
   pointer-events: none;
   user-select: none;
 }
+
+/* Slash Popup Menu & Command Palette (Family UI matching + attach-dropdown) */
+.hekki-slash-popup {
+  position: fixed !important;
+  z-index: 999999 !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.hekki-slash-popup.hidden {
+  display: none !important;
+}
+
+.hekki-slash-popup .attach-dropdown-item span {
+  font-weight: 400 !important;
+}
+
+
 
 
 

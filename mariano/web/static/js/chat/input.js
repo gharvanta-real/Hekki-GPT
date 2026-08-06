@@ -71,21 +71,43 @@ export function bindInputs(sendCallback, ChatSessionManager) {
     textarea.style.height = `${textarea.scrollHeight}px`;
   };
 
-  const handleInputToggle = (textarea, submitBtnId) => {
+  const handleInputToggle = (textarea, submitBtnId, stopBtnId) => {
     adjustHeight(textarea);
     const submitBtn = $(submitBtnId);
+    const stopBtn = $(stopBtnId);
+
+    if (window.isGenerating) {
+      submitBtn?.classList.add('hidden');
+      stopBtn?.classList.remove('hidden');
+      return;
+    }
+
+    stopBtn?.classList.add('hidden');
     if (textarea.value.trim() !== '' || attachmentManager.hasFiles()) {
       submitBtn?.classList.remove('hidden');
     } else {
       submitBtn?.classList.add('hidden');
     }
+  };
 
+  const getFullPromptText = (textareaId) => {
+    let text = $(textareaId)?.value.trim() || '';
+    const activeTag = window.slashMenu?.getActiveTag();
+    if (activeTag) {
+      text = activeTag.cmd + ' ' + text;
+      window.slashMenu.clearSlashTag();
+    }
+    return text.trim();
   };
 
   $('chat-input')?.addEventListener('keydown', e => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      let text = $('chat-input').value.trim();
+      if (window.isGenerating) {
+        $('btn-stop-gen')?.click();
+        return;
+      }
+      let text = getFullPromptText('chat-input');
       if (!text && !attachmentManager.hasFiles()) return;
       if (!text && attachmentManager.hasFiles()) text = "Analyze attached file(s)";
       sendCallback(text);
@@ -95,25 +117,29 @@ export function bindInputs(sendCallback, ChatSessionManager) {
   $('chat-input-conv')?.addEventListener('keydown', e => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      let text = $('chat-input-conv').value.trim();
+      if (window.isGenerating) {
+        $('btn-stop-gen-conv')?.click();
+        return;
+      }
+      let text = getFullPromptText('chat-input-conv');
       if (!text && !attachmentManager.hasFiles()) return;
       if (!text && attachmentManager.hasFiles()) text = "Analyze attached file(s)";
       sendCallback(text);
     }
   });
 
-  $('chat-input')?.addEventListener('input', () => handleInputToggle($('chat-input'), 'btn-submit-home'));
-  $('chat-input-conv')?.addEventListener('input', () => handleInputToggle($('chat-input-conv'), 'btn-submit-conv'));
+  $('chat-input')?.addEventListener('input', () => handleInputToggle($('chat-input'), 'btn-submit-home', 'btn-stop-gen'));
+  $('chat-input-conv')?.addEventListener('input', () => handleInputToggle($('chat-input-conv'), 'btn-submit-conv', 'btn-stop-gen-conv'));
 
   $('btn-submit-home')?.addEventListener('click', () => {
-    let text = $('chat-input').value.trim();
+    let text = getFullPromptText('chat-input');
     if (!text && !attachmentManager.hasFiles()) return;
     if (!text && attachmentManager.hasFiles()) text = "Analyze attached file(s)";
     sendCallback(text);
   });
 
   $('btn-submit-conv')?.addEventListener('click', () => {
-    let text = $('chat-input-conv').value.trim();
+    let text = getFullPromptText('chat-input-conv');
     if (!text && !attachmentManager.hasFiles()) return;
     if (!text && attachmentManager.hasFiles()) text = "Analyze attached file(s)";
     sendCallback(text);

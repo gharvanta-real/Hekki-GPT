@@ -64,6 +64,46 @@ export const ChatSessionManager = {
     return newChat;
   },
 
+  forkChat(msgIndex = null) {
+    const activeId = this.getActiveChatId();
+    const chats = this.getChats();
+    const sourceChat = chats.find(c => c.id === activeId);
+    if (!sourceChat || !sourceChat.messages || sourceChat.messages.length === 0) return;
+
+    const targetIdx = (msgIndex !== null && msgIndex >= 0) ? msgIndex : sourceChat.messages.length - 1;
+    const clonedMessages = JSON.parse(JSON.stringify(sourceChat.messages.slice(0, targetIdx + 1)));
+
+    const activeProj = localStorage.getItem('hekki_active_project');
+    const baseTitle = (sourceChat.title || 'Chat').replace(/^🔀 Branch: /i, '');
+    const newTitle = `🔀 Branch: ${baseTitle}`;
+
+    const newChat = {
+      id: 'chat_' + Date.now(),
+      title: newTitle,
+      messages: clonedMessages,
+      timestamp: new Date().toISOString(),
+      project: activeProj || null,
+      pinned: false,
+      archived: false,
+      forkedFrom: activeId
+    };
+
+    chats.unshift(newChat);
+    this.saveChats(chats);
+
+    if (window.inConversationState) window.inConversationState.val = true;
+    const homeScreen = document.getElementById('home-screen');
+    if (homeScreen) homeScreen.classList.add('hidden');
+    const inputBar = document.getElementById('bottom-input-bar');
+    if (inputBar) inputBar.classList.remove('hidden');
+
+    this.loadChat(newChat.id);
+
+    if (window.showToast) {
+      window.showToast('Thread Forked 🔀', `Created new branch with ${clonedMessages.length} message(s).`, 3000);
+    }
+  },
+
   appendMessage(role, text, metadata = null) {
     if (!_activeChatId) { this.createChat(text); }
     const chats = this.getChats();

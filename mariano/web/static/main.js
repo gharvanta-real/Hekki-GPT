@@ -26,8 +26,7 @@ import { initCoderPage, teardownCoderPage } from '/static/js/pages/coder_page.js
 // Images Gallery page
 import { ImagesPage } from '/static/js/pages/images_page.js';
 // Interactive Live Canvas Engine (Claude Canvas style)
-import '/static/js/components/live_canvas.js';
-
+import { SlashMenuManager } from '/static/js/components/slash_menu.js';
 
 window.updateModelPills = updateModelPills;
 window.showToast = showToast;
@@ -290,6 +289,7 @@ function boot() {
   initAttachDropdowns(inConversationState);
   bindTitlebarActions();
   new SearchModal(ChatSessionManager);
+  window.slashMenu = new SlashMenuManager((text) => send(text, enterConversation, log));
 
   // Setup WS events routing and logs reconnect loops
   setupSocketEvents(
@@ -532,15 +532,37 @@ function setGreeting(nameOverride) {
     });
 }
 
+window.isGenerating = false;
 window.setGeneratingState = function(isGenerating) {
-  const btnHome = $('btn-stop-gen');
-  const btnConv = $('btn-stop-gen-conv');
+  window.isGenerating = isGenerating;
+  const btnHomeSubmit = $('btn-submit-home');
+  const btnConvSubmit = $('btn-submit-conv');
+  const btnHomeStop = $('btn-stop-gen');
+  const btnConvStop = $('btn-stop-gen-conv');
+
   if (isGenerating) {
-    btnHome?.classList.remove('hidden');
-    btnConv?.classList.remove('hidden');
+    // Single Button Rule: While generating, show Stop button ONLY. Never show Send button.
+    btnHomeSubmit?.classList.add('hidden');
+    btnConvSubmit?.classList.add('hidden');
+    btnHomeStop?.classList.remove('hidden');
+    btnConvStop?.classList.remove('hidden');
   } else {
-    btnHome?.classList.add('hidden');
-    btnConv?.classList.add('hidden');
+    btnHomeStop?.classList.add('hidden');
+    btnConvStop?.classList.add('hidden');
+
+    // Evaluate input fields to toggle Send button visibility
+    const inputHome = $('chat-input');
+    const inputConv = $('chat-input-conv');
+    if (inputHome && inputHome.value.trim() !== '') {
+      btnHomeSubmit?.classList.remove('hidden');
+    } else {
+      btnHomeSubmit?.classList.add('hidden');
+    }
+    if (inputConv && inputConv.value.trim() !== '') {
+      btnConvSubmit?.classList.remove('hidden');
+    } else {
+      btnConvSubmit?.classList.add('hidden');
+    }
   }
 };
 

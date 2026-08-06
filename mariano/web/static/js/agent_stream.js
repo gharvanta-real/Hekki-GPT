@@ -892,6 +892,41 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
           }
         }
 
+        // ── Render Web Source Favicons & Domain Chips for search / web tools ──
+        if (e.data && typeof e.data === 'string') {
+          const toolTag = (_lastToolBlock.dataset.tool || toolName || '').toLowerCase();
+          if (toolTag.includes('search') || toolTag.includes('scrape') || toolTag.includes('read') || toolTag.includes('web') || toolTag.includes('url')) {
+            const urlRegex = /(https?:\/\/[^\s"'<>\)]+)/gi;
+            const matches = e.data.match(urlRegex) || [];
+            const domains = new Set();
+            matches.forEach(u => {
+              try {
+                const parsed = new URL(u);
+                let host = parsed.hostname.replace(/^www\./, '');
+                if (host && host.includes('.') && !host.includes('localhost') && !host.includes('127.0.0.1')) {
+                  domains.add(host);
+                }
+              } catch (err) {}
+            });
+            if (domains.size > 0) {
+              const chipsDiv = document.createElement('div');
+              chipsDiv.className = 'web-source-chips-row';
+              chipsDiv.style.cssText = 'width: 100%; margin-top: 6px; padding-left: 21px; display: flex; flex-wrap: wrap; gap: 6px; box-sizing: border-box;';
+              const domainList = Array.from(domains).slice(0, 10);
+              chipsDiv.innerHTML = domainList.map(dom => {
+                const faviconUrl = `https://www.google.com/s2/favicons?domain=${dom}&sz=32`;
+                return `
+                  <span class="source-domain-chip" title="Verified Source: ${dom}" style="display: inline-flex; align-items: center; gap: 5px; padding: 3px 8px; border-radius: 4px; background: rgba(255,255,255,0.05); font-size: 11px; font-family: var(--font); color: var(--text-secondary); font-weight: 500;">
+                    <img src="${faviconUrl}" style="width: 12px; height: 12px; border-radius: 2px; filter: grayscale(20%); opacity: 0.85;" onerror="this.style.display='none'">
+                    <span>${dom}</span>
+                  </span>
+                `;
+              }).join('');
+              _lastToolBlock.appendChild(chipsDiv);
+            }
+          }
+        }
+
         // ── Render Output Details / Terminal UI Block for commands and file ops ──
         if (e.data && typeof e.data === 'string' && e.data.trim().length > 0) {
           const hint = _lastToolBlock.querySelector('.tool-brief-hint');
@@ -1436,13 +1471,56 @@ function _attachAiActions(msgEl, text) {
   const group = msgEl.closest('.msg-group') || msgEl.parentElement || msgEl;
   if (!group || group.querySelector('.ai-actions')) return;
 
+  // Extract web domains mentioned in response links/markdown
+  const urlRegex = /(https?:\/\/[^\s"'<>\)]+)/gi;
+  const matches = text.match(urlRegex) || [];
+  const domains = new Set();
+  matches.forEach(u => {
+    try {
+      const parsed = new URL(u);
+      let host = parsed.hostname.replace(/^www\./, '');
+      if (host && host.includes('.') && !host.includes('localhost') && !host.includes('127.0.0.1')) {
+        domains.add(host);
+      }
+    } catch (err) {}
+  });
+
+  let faviconsHtml = '';
+  if (domains.size > 0) {
+    const domainList = Array.from(domains).slice(0, 5);
+    faviconsHtml = `
+      <div class="ai-bottom-right-sources" style="display:inline-flex; align-items:center; gap:5px; margin-right:auto; flex-wrap:wrap; opacity:0.9;">
+        ${domainList.map(dom => {
+          const faviconUrl = `https://www.google.com/s2/favicons?domain=${dom}&sz=32`;
+          return `
+            <a href="https://${dom}" target="_blank" rel="noopener noreferrer" title="Verified Source: ${dom}" style="display:inline-flex; align-items:center; gap:4px; padding:2px 6px; border-radius:4px; background:rgba(255,255,255,0.05); font-size:11px; color:var(--text-secondary); font-family:var(--font); text-decoration:none; transition:background 0.15s;">
+              <img src="${faviconUrl}" style="width:12px; height:12px; border-radius:2px;" onerror="this.style.display='none'">
+              <span style="max-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:500;">${dom}</span>
+            </a>
+          `;
+        }).join('')}
+      </div>
+    `;
+  }
+
   const actions = document.createElement('div');
   actions.className = 'msg-actions ai-actions';
+  actions.style.cssText = 'display:flex; align-items:center; justify-content:flex-end; gap:6px; margin-top:6px; flex-wrap:wrap; width:100%;';
   actions.innerHTML = `
-    <button class="action-btn btn-copy" title="Copy response"><i data-lucide="copy"></i></button>
-    <button class="action-btn btn-like" title="Good response"><i data-lucide="thumbs-up"></i></button>
-    <button class="action-btn btn-dislike" title="Bad response"><i data-lucide="thumbs-down"></i></button>
+    ${faviconsHtml}
+    <div style="display:flex; align-items:center; gap:6px; margin-left:auto;">
+      <button class="action-btn btn-copy" title="Copy response"><i data-lucide="copy"></i></button>
+      <button class="action-btn btn-like" title="Good response"><i data-lucide="thumbs-up"></i></button>
+      <button class="action-btn btn-dislike" title="Bad response"><i data-lucide="thumbs-down"></i></button>
+      <button class="action-btn btn-fork" title="Fork conversation branch from here"><i data-lucide="git-fork"></i></button>
+    </div>
   `;
+
+  actions.querySelector('.btn-fork')?.addEventListener('click', () => {
+    if (ChatSessionManager && ChatSessionManager.forkChat) {
+      ChatSessionManager.forkChat();
+    }
+  });
 
   const fileMatch = text.match(/([\w\-_\/\\\.]+\.(html|js|css|py|json|md))/i);
   if (fileMatch || text.includes('```html') || text.includes('```mermaid') || text.includes('```javascript') || text.includes('```py') || text.includes('```text') || text.includes('Resume')) {
