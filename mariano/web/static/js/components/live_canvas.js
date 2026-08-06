@@ -12,16 +12,22 @@
 
 export class LiveCanvasEngine {
   constructor() {
-    this._appPane = document.getElementById('app-pane');
-    this._resizer = document.getElementById('app-pane-resizer');
+    this._appPane = null;
+    this._resizer = null;
     this._activeArtifact = null;
     this._currentViewMode = 'preview'; // 'editor' | 'preview' | 'diagram' | 'doc'
     this._isInitialized = false;
 
-    this.init();
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => this.init());
+    } else {
+      this.init();
+    }
   }
 
   init() {
+    this._appPane = document.getElementById('app-pane');
+    this._resizer = document.getElementById('app-pane-resizer');
     if (this._isInitialized) return;
     this._isInitialized = true;
     this._setupResizer();
@@ -29,6 +35,8 @@ export class LiveCanvasEngine {
 
   /** Setup split-view resizer drag functionality between chat-pane and app-pane */
   _setupResizer() {
+    this._appPane = this._appPane || document.getElementById('app-pane');
+    this._resizer = this._resizer || document.getElementById('app-pane-resizer');
     if (!this._resizer || !this._appPane) return;
     let isDragging = false;
     let animationFrameId = null;
@@ -80,6 +88,8 @@ export class LiveCanvasEngine {
 
   /** Show and expand the side-by-side app-pane workspace */
   showPane() {
+    this._appPane = this._appPane || document.getElementById('app-pane');
+    this._resizer = this._resizer || document.getElementById('app-pane-resizer');
     if (this._appPane) {
       this._appPane.classList.remove('hidden-pane');
       if (this._resizer) this._resizer.classList.remove('hidden-pane');
@@ -89,6 +99,8 @@ export class LiveCanvasEngine {
 
   /** Hide the side-by-side app-pane workspace */
   hidePane() {
+    this._appPane = this._appPane || document.getElementById('app-pane');
+    this._resizer = this._resizer || document.getElementById('app-pane-resizer');
     if (this._appPane) {
       this._appPane.classList.add('hidden-pane');
       if (this._resizer) this._resizer.classList.add('hidden-pane');

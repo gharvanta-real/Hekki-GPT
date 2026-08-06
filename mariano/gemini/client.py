@@ -193,7 +193,12 @@ class GeminiClient:
                 loop.call_soon_threadsafe(on_chunk, c)
 
         def do_request():
-            url = f"{base_url.rstrip('/')}/api/chat"
+            clean_base = base_url.rstrip('/')
+            is_openai_style = "/v1" in clean_base or clean_base.endswith("/v1")
+            
+            target_url = f"{clean_base}/chat/completions" if is_openai_style else f"{clean_base}/v1/chat/completions"
+            fallback_url = f"{clean_base}/api/chat"
+
             ollama_messages = [{"role": "system", "content": dynamic_system_instruction}]
             for msg in history:
                 role = "assistant" if msg["role"] == "assistant" else msg["role"]
@@ -204,9 +209,7 @@ class GeminiClient:
                 "model": model,
                 "messages": ollama_messages,
                 "stream": True if on_chunk else False,
-                "options": {
-                    "temperature": current_temp
-                }
+                "temperature": current_temp
             }
             
             if self._tool_declarations:
@@ -216,18 +219,12 @@ class GeminiClient:
                     cleaned_properties = {}
                     for k, v in params.items():
                         ptype = v.get("type", "string").lower()
-                        if ptype in ("str", "string"):
-                            ptype = "string"
-                        elif ptype in ("int", "integer"):
-                            ptype = "integer"
-                        elif ptype in ("float", "number"):
-                            ptype = "number"
-                        elif ptype in ("bool", "boolean"):
-                            ptype = "boolean"
-                        elif ptype in ("list", "array"):
-                            ptype = "array"
-                        elif ptype in ("dict", "object"):
-                            ptype = "object"
+                        if ptype in ("str", "string"): ptype = "string"
+                        elif ptype in ("int", "integer"): ptype = "integer"
+                        elif ptype in ("float", "number"): ptype = "number"
+                        elif ptype in ("bool", "boolean"): ptype = "boolean"
+                        elif ptype in ("list", "array"): ptype = "array"
+                        elif ptype in ("dict", "object"): ptype = "object"
                             
                         cleaned_prop = {
                             "type": ptype,
@@ -251,37 +248,68 @@ class GeminiClient:
                     })
                 payload["tools"] = ollama_tools
 
-            req = urllib.request.Request(
-                url,
-                data=json.dumps(payload).encode("utf-8"),
-                headers={"Content-Type": "application/json"},
-                method="POST"
-            )
-            
-            try:
-                with urllib.request.urlopen(req, timeout=120) as response:
-                    if on_chunk:
-                        full_content = ""
-                        tool_calls = []
-                        for line in response:
-                            if not line.strip():
-                                continue
-                            chunk = json.loads(line.decode("utf-8"))
-                            msg = chunk.get("message", {})
-                            content = msg.get("content", "")
-                            if content:
-                                full_content += content
-                                thread_safe_on_chunk(content)
-                            if "tool_calls" in msg:
-                                tool_calls.extend(msg["tool_calls"])
-                        return {"message": {"role": "assistant", "content": full_content, "tool_calls": tool_calls}}
-                    else:
-                        return json.loads(response.read().decode("utf-8"))
-            except urllib.error.URLError as e:
-                raise RuntimeError(
-                    f"Ollama connection error: Failed to connect to local server at '{base_url}'. "
-                    f"Make sure Ollama is serving ('ollama serve') and you have pulled the model using 'ollama pull {model}'."
-                ) from e
+            urls = [target_url, fallback_url] if is_openai_style else [fallback_url, target_url]
+            last_error = None
+            for url in urls:
+                req = urllib.request.Request(
+                    url,
+                    data=json.dumps(payload).encode("utf-8"),
+                    headers={"Content-Type": "application/json"},
+                    method="POST"
+                )
+                try:
+                    with urllib.request.urlopen(req, timeout=120) as response:
+                        if on_chunk:
+                            full_content = ""
+                            tool_calls = []
+                            for raw_line in response:
+                                line = raw_line.decode("utf-8", errors="replace").strip()
+                                if not line:
+                                    continue
+                                if line.startswith("data: "):
+                                    line = line[6:].strip()
+                                if line == "[DONE]":
+                                    break
+                                try:
+                                    chunk = json.loads(line)
+                                    if "choices" in chunk and isinstance(chunk["choices"], list) and len(chunk["choices"]) > 0:
+                                        delta = chunk["choices"][0].get("delta", {})
+                                        content = delta.get("content", "")
+                                        if content:
+                                            full_content += content
+                                            thread_safe_on_chunk(content)
+                                        if "tool_calls" in delta:
+                                            tool_calls.extend(delta["tool_calls"])
+                                    elif "message" in chunk and isinstance(chunk["message"], dict):
+                                        msg = chunk["message"]
+                                        content = msg.get("content", "")
+                                        if content:
+                                            full_content += content
+                                            thread_safe_on_chunk(content)
+                                        if "tool_calls" in msg:
+                                            tool_calls.extend(msg["tool_calls"])
+                                except Exception:
+                                    continue
+                            return {"message": {"role": "assistant", "content": full_content, "tool_calls": tool_calls}}
+                        else:
+                            resp_json = json.loads(response.read().decode("utf-8"))
+                            if "choices" in resp_json and isinstance(resp_json["choices"], list) and len(resp_json["choices"]) > 0:
+                                msg = resp_json["choices"][0].get("message", {})
+                                return {"message": msg}
+                            return resp_json
+                except urllib.error.HTTPError as e:
+                    last_error = e
+                    if e.code == 404:
+                        continue
+                    raise
+                except urllib.error.URLError as e:
+                    last_error = e
+                    break
+
+            raise RuntimeError(
+                f"Local Gateway Connection error: Failed to connect to local server at '{base_url}'. "
+                f"Make sure your local model server (Ollama, LM Studio, vLLM, LiteLLM) is running."
+            ) from last_error
                 
         try:
             resp_data = await asyncio.to_thread(do_request)

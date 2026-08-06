@@ -144,13 +144,14 @@ export function initSettings(setGreetingCallback) {
         }
       }
 
-      // Ollama
+      // Ollama / Local Gateway
       const useOllama = $('settings-use-ollama');
       const ollamaModel = $('settings-ollama-model');
       const ollamaUrl = $('settings-ollama-url');
-      if (useOllama) useOllama.checked = !!cfg.use_ollama;
-      if (ollamaModel) ollamaModel.value = cfg.ollama_model || '';
-      if (ollamaUrl) ollamaUrl.value = cfg.ollama_base_url || 'http://localhost:11434';
+      if (useOllama) useOllama.checked = !!(cfg.use_local_gateway || cfg.use_ollama);
+      if (ollamaModel) ollamaModel.value = cfg.local_model || cfg.ollama_model || '';
+      if (ollamaUrl) ollamaUrl.value = cfg.local_base_url || cfg.ollama_base_url || 'http://localhost:11434';
+      fetchLocalModels(cfg.local_base_url || cfg.ollama_base_url);
 
       // Quick Voice Overlay toggle
       const quickVoice = $('settings-quick-voice');
@@ -165,6 +166,47 @@ export function initSettings(setGreetingCallback) {
 
     } catch (err) {
       console.error('[Settings] Load failed:', err);
+    }
+  }
+
+  async function fetchLocalModels(urlOverride = null) {
+    const baseUrl = urlOverride || $('settings-ollama-url')?.value.trim() || 'http://localhost:11434';
+    const dropdown = $('settings-local-model-dropdown');
+    if (!dropdown) return;
+
+    dropdown.innerHTML = '<option value="">Fetching installed models...</option>';
+    try {
+      const res = await fetch(`/api/local_models?base_url=${encodeURIComponent(baseUrl)}`);
+      if (!res.ok) throw new Error('Failed to fetch local models');
+      const data = await res.json();
+
+      dropdown.innerHTML = '';
+      if (data.models && data.models.length > 0) {
+        let activeVal = data.active_model || $('settings-ollama-model')?.value || '';
+        let matched = false;
+        data.models.forEach(m => {
+          const opt = document.createElement('option');
+          opt.value = m;
+          opt.textContent = m;
+          if (m === activeVal) {
+            opt.selected = true;
+            matched = true;
+          }
+          dropdown.appendChild(opt);
+        });
+        if (!matched && activeVal) {
+          const opt = document.createElement('option');
+          opt.value = activeVal;
+          opt.textContent = activeVal;
+          opt.selected = true;
+          dropdown.insertBefore(opt, dropdown.firstChild);
+        }
+      } else {
+        dropdown.innerHTML = '<option value="">No local models detected</option>';
+      }
+    } catch (err) {
+      console.error('[Settings] Fetch local models failed:', err);
+      dropdown.innerHTML = '<option value="">Error connecting to local server</option>';
     }
   }
 
@@ -220,15 +262,27 @@ export function initSettings(setGreetingCallback) {
     save({ reasoning_mode: e.target.value });
   });
 
-  // ── Ollama — on change ────────────────────────────────────────────────
+  // ── Local Gateway / Ollama — on change ────────────────────────────────
   $('settings-use-ollama')?.addEventListener('change', e => {
-    save({ use_ollama: e.target.checked });
+    save({ use_ollama: e.target.checked, use_local_gateway: e.target.checked });
   });
   $('settings-ollama-model')?.addEventListener('change', e => {
-    save({ ollama_model: e.target.value.trim() });
+    const val = e.target.value.trim();
+    save({ ollama_model: val, local_model: val });
+  });
+  $('settings-local-model-dropdown')?.addEventListener('change', e => {
+    const val = e.target.value;
+    const modelInput = $('settings-ollama-model');
+    if (modelInput) modelInput.value = val;
+    save({ ollama_model: val, local_model: val });
   });
   $('settings-ollama-url')?.addEventListener('change', e => {
-    save({ ollama_base_url: e.target.value.trim() });
+    const val = e.target.value.trim();
+    save({ ollama_base_url: val, local_base_url: val });
+    fetchLocalModels(val);
+  });
+  $('btn-fetch-local-models')?.addEventListener('click', () => {
+    fetchLocalModels();
   });
 
   // ── Quick Voice Overlay toggle ────────────────────────────────────────

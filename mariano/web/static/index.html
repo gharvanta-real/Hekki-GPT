@@ -122,19 +122,29 @@
           </select>
         </div>
 
-        <h2 class="section-title" style="margin-top:28px">Offline Model (Ollama)</h2>
-        <p class="section-sub">Run Hekki offline using a local Ollama model. No API key needed when enabled.</p>
+        <h2 class="section-title" style="margin-top:28px">Local Universal Model Gateway</h2>
+        <p class="section-sub">Connect Hekki to ANY local model (Ollama, LM Studio, vLLM, Jan.ai, LocalAI, LiteLLM) via standard OpenAI-compatible API. Zero files required per model.</p>
         <div class="settings-row border-b">
-          <span class="row-label">Use Ollama</span>
+          <span class="row-label" style="white-space:nowrap;">Enable Local Gateway</span>
           <label class="toggle-switch"><input type="checkbox" id="settings-use-ollama"><span class="toggle-track"></span></label>
         </div>
         <div class="settings-row border-b">
-          <span class="row-label">Ollama Model</span>
-          <input class="settings-input" id="settings-ollama-model" type="text" placeholder="e.g. qwen, llama3" style="width:160px;">
+          <span class="row-label" style="white-space:nowrap;">Local Server Base URL</span>
+          <div style="display:flex; gap:8px; align-items:center;">
+            <input class="settings-input" id="settings-ollama-url" type="text" placeholder="http://localhost:11434" style="width:200px;">
+            <button id="btn-fetch-local-models" type="button" style="padding:6px 12px; border-radius:8px; border:none; background:var(--hover); color:var(--text); cursor:pointer; font-size:12px; font-weight:500; display:flex; align-items:center; gap:6px;">
+              <i data-lucide="refresh-cw" style="width:13px;height:13px;"></i> Fetch
+            </button>
+          </div>
         </div>
         <div class="settings-row border-b">
-          <span class="row-label">Ollama API URL</span>
-          <input class="settings-input" id="settings-ollama-url" type="text" placeholder="http://localhost:11434" style="width:220px;">
+          <span class="row-label" style="white-space:nowrap;">Active Local Model</span>
+          <div style="display:flex; gap:8px; align-items:center; flex:1; justify-content:flex-end;">
+            <select class="settings-input" id="settings-local-model-dropdown" style="width:260px; font-size:12.5px;">
+              <option value="">Click Fetch or select model...</option>
+            </select>
+            <input id="settings-ollama-model" type="hidden">
+          </div>
         </div>
       </section>
 

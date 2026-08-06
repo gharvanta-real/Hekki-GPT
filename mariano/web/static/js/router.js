@@ -298,10 +298,11 @@ class Router {
 
     // Step 5: Re-apply theme from localStorage — safety net in case any
     // event listener was lost. Zero-cost; just a classList toggle.
-    const rawSaved = localStorage.getItem('hekki_theme');
-    const savedTheme = (rawSaved === 'light') ? 'light' : 'oled';
+    const savedTheme = localStorage.getItem('hekki_theme') || 'dark';
     document.body.classList.remove('dark', 'oled');
-    if (savedTheme === 'oled') {
+    if (savedTheme === 'dark') {
+      document.body.classList.add('dark');
+    } else if (savedTheme === 'oled') {
       document.body.classList.add('oled');
     }
   }

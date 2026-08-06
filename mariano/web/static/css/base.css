@@ -42,20 +42,39 @@
   --shadow-md:   0 4px 12px rgba(0,0,0,0.08);
 }
 
-/* OLED True Black Theme Overrides (#000000) */
-body.dark, body.oled {
-  --bg:          #000000; /* true black background */
-  --card:        #0E0E0E; /* extremely dark charcoal for cards/inputs */
+/* Dark mode overrides */
+body.dark {
+  --bg:          #1F1F1E; /* precise dark theme color requested */
+  --card:        #2C2C2B; /* slightly lighter for cards/inputs */
   --input-bg:    var(--card);
-  --sidebar-bg:  #000000;
-  --border:      #1F1F1F;
-  --hover:       #181818;
+  --sidebar-bg:  #1F1F1E;
+  --border:      #333332;
+  --hover:       #2A2A29;
 
   --text:        #FFFFFF; /* pure clean white text */
   --text-primary: var(--text);
   --text-2:      #a1a1aa;
   --text-secondary: var(--text-2);
   --text-3:      #71717a;
+
+  --shadow:      none;
+  --shadow-md:   none;
+}
+
+/* OLED true black overrides */
+body.oled {
+  --bg:          #000000; /* true black background */
+  --card:        #0E0E0E; /* extremely dark gray for cards/inputs */
+  --input-bg:    var(--card);
+  --sidebar-bg:  #000000;
+  --border:      #1F1F1F;
+  --hover:       #181818;
+
+  --text:        #e8e6e3;
+  --text-primary: var(--text);
+  --text-2:      #9d9b96;
+  --text-secondary: var(--text-2);
+  --text-3:      #757470;
 
   --shadow:      none;
   --shadow-md:   none;

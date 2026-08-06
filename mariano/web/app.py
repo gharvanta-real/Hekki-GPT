@@ -440,25 +440,25 @@ async def websocket_endpoint(websocket: WebSocket):
 
                 async def _debate_event_callback(event_dict):
                     ev_type = event_dict.get("type")
-                    if ev_type in ["turn_start", "searching", "search_results", "turn_complete", "round_complete"]:
-                        agent_name = event_dict.get("agent", "Expert")
-                        rnd = event_dict.get("round", 1)
-                        if ev_type == "searching":
-                            q = event_dict.get("query", "")
-                            msg = f"• Round {rnd} [{agent_name}]: Searching web for '{q}'..."
-                        elif ev_type == "turn_complete":
-                            msg = f"• Round {rnd} [{agent_name}]: Formulated technical stance & empirical evidence."
-                        elif ev_type == "round_complete":
-                            msg = f"• Round {rnd} Summary: Consensus reached on core architectural principles."
-                        else:
-                            msg = f"• Round {rnd} [{agent_name}]: Analyzing system constraints & trade-offs..."
-                        
-                        await websocket.send_json({
-                            "type": "agent_event",
-                            "kind": "reasoning_chunk",
-                            "data": msg + "\n",
-                            "metadata": {}
-                        })
+                    agent_name = event_dict.get("agent", "Expert")
+                    rnd = event_dict.get("round", 1)
+                    total_r = 2
+
+                    msg = ""
+                    if ev_type == "turn_start":
+                        msg = f"[Round {rnd}/{total_r}] [{agent_name}] Initiating technical analysis..."
+                    elif ev_type == "searching":
+                        q = event_dict.get("query", "")
+                        msg = f"  [Search] Round {rnd}/{total_r} [{agent_name}] Searching web for '{q}'"
+                    elif ev_type == "search_results":
+                        cnt = len(event_dict.get("results", []))
+                        msg = f"  [Results] Round {rnd}/{total_r} [{agent_name}] Retrieved {cnt} empirical sources."
+                    elif ev_type == "turn_complete":
+                        msg = f"[Round {rnd}/{total_r}] [{agent_name}] Formulated technical stance & evidence."
+                    elif ev_type == "round_complete":
+                        msg = f"[Round {rnd}/{total_r} Done] Consensus checkpoint reached."
+                    elif ev_type == "synthesis_start":
+                        msg = f"[Synthesis] Formulating Joint Synthesis & Consensus Summary..."
                     elif ev_type == "synthesis_chunk":
                         chunk = event_dict.get("text", "")
                         await websocket.send_json({
@@ -466,6 +466,14 @@ async def websocket_endpoint(websocket: WebSocket):
                             "kind": "chunk",
                             "data": chunk,
                             "metadata": {}
+                        })
+
+                    if msg:
+                        await websocket.send_json({
+                            "type": "agent_event",
+                            "kind": "tool_log",
+                            "data": msg,
+                            "metadata": {"tool": "expert_debate"}
                         })
 
                 await orchestrator.run_debate(topic=topic, send_event=_debate_event_callback)

@@ -125,15 +125,15 @@ class Settings(BaseSettings):
 
     @property
     def active_use_ollama(self) -> bool:
-        return self.dynamic_config.get("use_ollama", False)
+        return self.dynamic_config.get("use_local_gateway", self.dynamic_config.get("use_ollama", False))
 
     @property
     def active_ollama_model(self) -> str:
-        return self.dynamic_config.get("ollama_model", "qwen")
+        return self.dynamic_config.get("local_model", self.dynamic_config.get("ollama_model", "qwen2.5-coder"))
 
     @property
     def active_ollama_base_url(self) -> str:
-        return self.dynamic_config.get("ollama_base_url", "http://localhost:11434")
+        return self.dynamic_config.get("local_base_url", self.dynamic_config.get("ollama_base_url", "http://localhost:11434"))
 
 
 from functools import lru_cache

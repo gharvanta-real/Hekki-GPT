@@ -26,6 +26,7 @@ import { initCoderPage, teardownCoderPage } from '/static/js/pages/coder_page.js
 // Images Gallery page
 import { ImagesPage } from '/static/js/pages/images_page.js';
 // Interactive Live Canvas Engine (Claude Canvas style)
+import { LiveCanvasEngine } from '/static/js/components/live_canvas.js';
 import { SlashMenuManager } from '/static/js/components/slash_menu.js';
 
 window.updateModelPills = updateModelPills;
