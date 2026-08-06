@@ -59,6 +59,10 @@
   margin-bottom: 12px;
 }
 .greeting img {
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 6px !important;
+  margin-bottom: 0 !important;
   box-shadow: none !important;
   filter: none !important;
   border: none !important;
@@ -2487,6 +2491,50 @@ body.oled .code-action-btn:hover,
   color: var(--text-2);
 }
 
+/* Monochromatic Live Terminal Output Block */
+.tool-live-log,
+.tool-terminal-block {
+  width: 100%;
+  margin-top: 6px;
+  padding: 10px 12px;
+  background: var(--input-bg, #212226);
+  color: var(--text-primary, #e2e8f0);
+  border-radius: 8px;
+  font-family: var(--font-mono, "JetBrains Mono", monospace);
+  font-size: 11.5px;
+  line-height: 1.55;
+  max-height: 240px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  white-space: pre-wrap;
+  word-break: break-all;
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Light Theme: Soft neutral secondary light gray tint (NOT black) */
+body:not(.dark):not(.oled) .tool-live-log,
+body:not(.dark):not(.oled) .tool-terminal-block {
+  background: #F4F5F8 !important;
+  color: #1e293b !important;
+}
+
+/* Dark Theme: Soft monochromatic dark slate gray (NOT pitch black #000000, NOT white) */
+body.dark .tool-live-log,
+body.dark .tool-terminal-block {
+  background: #252528 !important;
+  color: #e2e8f0 !important;
+}
+
+/* OLED Theme: Soft dark charcoal surface on OLED pitch black (NOT white) */
+body.oled .tool-live-log,
+body.oled .tool-terminal-block {
+  background: #18181c !important;
+  color: #e4e4e7 !important;
+}
+
 /* Common and hover states */
 .main-plan-toggle-btn:hover {
   background: var(--hover);
@@ -3398,7 +3446,7 @@ body.dark .voice-recording-active {
 }
 
 .library-main-title {
-  font-size: 28px;
+  font-size: 18px;
   font-weight: 600;
   color: var(--text-primary);
   letter-spacing: -0.02em;
@@ -4542,7 +4590,7 @@ body.dark .cad-ai-header-title,
 }
 
 .paper-candidate-name {
-  font-size: 24px;
+  font-size: 18px;
   font-weight: 700;
   color: #0f172a;
   letter-spacing: 0.04em;
@@ -4569,7 +4617,7 @@ body.dark .cad-ai-header-title,
   letter-spacing: 0.04em;
 }
 
-.canvas-paper-page h1 { font-size: 20px; border-bottom: 1.5px solid #cbd5e1; padding-bottom: 6px; }
+.canvas-paper-page h1 { font-size: 18px; border-bottom: 1.5px solid #cbd5e1; padding-bottom: 6px; }
 .canvas-paper-page h2, .paper-resume-body h2 { font-size: 14px; border-bottom: 1.5px solid #cbd5e1; padding-bottom: 4px; }
 .canvas-paper-page h3 { font-size: 13px; }
 

@@ -114,8 +114,6 @@ GEMINI_MODELS: dict[str, GeminiModelDef] = {
     #     paid_tier = False,
     # ),
 
-}
-
 _MODEL_ID_INDEX: dict[str, GeminiModelDef] = {m.model_id: m for m in GEMINI_MODELS.values()}
 
 

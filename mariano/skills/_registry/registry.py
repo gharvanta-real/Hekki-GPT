@@ -107,6 +107,10 @@ class SkillRegistry:
             )
         return await skill.safe_execute(**kwargs)
 
+    def get_skill(self, name: str):
+        """Return the raw skill object by name (for stream_execute access)."""
+        return self._skills.get(name)
+
     @property
     def skill_count(self) -> int:
         return len(self._skills)

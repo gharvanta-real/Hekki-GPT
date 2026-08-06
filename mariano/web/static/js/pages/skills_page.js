@@ -174,10 +174,6 @@ export class SkillsPage {
               <i data-lucide="refresh-cw"></i>
               <span>Clean Stats</span>
             </button>
-            <button class="skills-btn primary" id="btn-skills-restore" title="Restore all skills to active">
-              <i data-lucide="rotate-ccw"></i>
-              <span>Enable All</span>
-            </button>
           </div>
         </div>
         <div class="skills-top-fadeout"></div>
@@ -207,10 +203,6 @@ export class SkillsPage {
         if (confirm('Clear statistics for all skills?')) this._cleanStats();
       }
     });
-
-    this._root.querySelector('#btn-skills-restore')?.addEventListener('click', () => {
-      this._enableAllSkills();
-    });
   }
 
   _renderLoading() {
@@ -235,9 +227,6 @@ export class SkillsPage {
             <div class="skeleton-shimmer skeleton-bar" style="width:55px; height:18px; border-radius:12px; opacity:0.08; margin:0"></div>
           </div>
         </div>
-        <div class="skills-col-metrics" style="display:flex; align-items:center; gap:6px;">
-          <div class="skeleton-shimmer skeleton-bar" style="width:120px; height:11px; opacity:0.08; margin:0"></div>
-        </div>
         <div class="skills-col-action">
           <div class="skeleton-shimmer" style="width:34px; height:18px; border-radius:10px; opacity:0.12"></div>
         </div>
@@ -249,7 +238,6 @@ export class SkillsPage {
         <div class="skills-row-header">
           <div class="skills-col-info">Skill Name & Description</div>
           <div class="skills-col-tags">Tags</div>
-          <div class="skills-col-metrics">Usage Metrics</div>
           <div class="skills-col-action">Toggle</div>
         </div>
         ${skeletonRows}
@@ -299,7 +287,6 @@ export class SkillsPage {
         <div class="skills-row-header">
           <div class="skills-col-info">Skill Name & Description</div>
           <div class="skills-col-tags">Tags</div>
-          <div class="skills-col-metrics">Usage Metrics</div>
           <div class="skills-col-action">Toggle</div>
         </div>
         ${filtered.map(s => this._buildSkillRow(s)).join('')}
@@ -323,9 +310,6 @@ export class SkillsPage {
     const isEnabled = s.enabled !== false; // Default to true if not specified
     const iconName = getSkillIcon(s.name);
     const friendlyName = formatSkillName(s.name);
-    const stats = s.stats || { call_count: 0, error_count: 0, avg_latency_ms: 0.0, success_rate: 1.0 };
-    const successPercent = Math.round(stats.success_rate * 100);
-    const rateClass = successPercent >= 90 ? 'rate-good' : (successPercent >= 50 ? 'rate-warn' : 'rate-error');
 
     // Build tags markup
     const tagsMarkup = (s.tags || []).slice(0, 3).map(tag => `
@@ -345,13 +329,6 @@ export class SkillsPage {
         </div>
         <div class="skills-col-tags">
           <div class="skills-tags-list">${tagsMarkup}</div>
-        </div>
-        <div class="skills-col-metrics">
-          <span class="metric-segment"><strong>${stats.call_count}</strong> calls</span>
-          <span class="metric-sep">·</span>
-          <span class="metric-segment"><strong>${Math.round(stats.avg_latency_ms)}ms</strong> latency</span>
-          <span class="metric-sep">·</span>
-          <span class="metric-segment"><strong class="${rateClass}">${successPercent}%</strong> success</span>
         </div>
         <div class="skills-col-action">
           <label class="skills-toggle">

@@ -1,0 +1,8 @@
+{
+  "name": "red_team_ops",
+  "description": "Dual-mode cyber competition operator (Red Team + Blue Team) with CTF participant persona — no side bias, no policy sermons",
+  "version": "1.0.0",
+  "author": "hekki-core",
+  "evolved": false,
+  "tags": ["red-team", "blue-team", "cyber", "competition", "ctf", "offensive", "defensive", "dual-mode"]
+}

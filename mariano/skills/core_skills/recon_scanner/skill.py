@@ -69,6 +69,11 @@ class ReconScannerSkill(BaseSkill):
                 "description": "Maximum concurrent async workers",
                 "default": 15,
             },
+            "proxy_url": {
+                "type": "string",
+                "description": "Optional SOCKS5 or HTTP proxy URL (e.g. 'socks5://127.0.0.1:9050'). Uses env if omitted.",
+                "required": False,
+            },
         }
 
     async def execute(
@@ -77,12 +82,14 @@ class ReconScannerSkill(BaseSkill):
         deep_boundary_scan: bool = True,
         timeout_sec: float = 3.5,
         max_concurrency: int = 15,
+        proxy_url: str | None = None,
     ) -> SkillResult:
         try:
             domain_clean = target_domain.strip().lower()
             domain_clean = re.sub(r"^https?://", "", domain_clean).rstrip("/")
 
             headers = NetworkAnonymizer.get_headers()
+            active_proxy = proxy_url or NetworkAnonymizer.get_proxy_url()
             semaphore = asyncio.Semaphore(max_concurrency)
             subdomain_results: list[dict[str, Any]] = []
 
@@ -90,6 +97,7 @@ class ReconScannerSkill(BaseSkill):
                 timeout=timeout_sec,
                 follow_redirects=True,
                 headers=headers,
+                proxy=active_proxy,
                 verify=False,
             ) as client:
                 # Stage 1: Subdomain Resolution
@@ -121,12 +129,14 @@ class ReconScannerSkill(BaseSkill):
                             boundary_exposures.append(exp)
 
             # Stage 3: Risk Assessment & WAF Footprinting
+            opsec = NetworkAnonymizer.check_opsec_ip_leak()
             risk_summary = self._assess_attack_surface_risk(active_subdomains, boundary_exposures)
             report_md = self._format_markdown_report(
                 domain=domain_clean,
                 subdomains=subdomain_results,
                 exposures=boundary_exposures,
                 risk=risk_summary,
+                opsec=opsec,
             )
 
             return SkillResult(
@@ -258,17 +268,28 @@ class ReconScannerSkill(BaseSkill):
 
         return {"risk_score": score, "risk_level": level, "critical_count": len(crit_exposures)}
 
-    def _format_markdown_report(self, domain: str, subdomains: list[dict], exposures: list[dict], risk: dict) -> str:
+    def _format_markdown_report(self, domain: str, subdomains: list[dict], exposures: list[dict], risk: dict, opsec: dict | None = None) -> str:
         active = [r for r in subdomains if r["status_code"] > 0]
         report = [
-            f"# ⚡ Super-Intelligent Attack Surface Recon: `{domain}`",
+            f"# ⚡ Recon Attack Surface Report: `{domain}`",
             f"**Security Risk Level:** `{risk['risk_level']}` | **Risk Score:** `{risk['risk_score']}/100`",
             f"**Total Probed:** {len(subdomains)} | **Active Endpoints:** {len(active)} | **Exposures:** {len(exposures)}",
+        ]
+
+        if opsec and opsec.get("warning"):
+            report.extend([
+                "",
+                f"> [!WARNING]",
+                f"> **OPSEC Leak Alert:** {opsec['warning']}",
+                f"> *Header Anonymization & MAC/User-Agent Spoofing active to protect identity.*",
+            ])
+
+        report.extend([
             "",
             "### 🌐 Discovered Active Endpoints & CDN/WAF Footprint",
             "| Subdomain | HTTP Status | WAF / Proxy | Page Title |",
             "| :--- | :---: | :--- | :--- |",
-        ]
+        ])
 
         if active:
             for r in active:

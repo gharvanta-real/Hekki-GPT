@@ -24,20 +24,21 @@ class ExpertDebateSkill(BaseSkill):
         "on any scientific, engineering, architectural, or technical topic to reach empirical "
         "consensus and generate a single joint solution."
     )
-    parameters = {
-        "type": "object",
-        "properties": {
-            "topic": {
-                "type": "string",
-                "description": "The exact technical topic, problem, or decision to debate."
+    def get_parameters_schema(self) -> dict:
+        return {
+            "type": "object",
+            "properties": {
+                "topic": {
+                    "type": "string",
+                    "description": "The exact technical topic, problem, or decision to debate."
+                },
+                "rounds": {
+                    "type": "integer",
+                    "description": "Number of debate rounds (default 2)."
+                }
             },
-            "rounds": {
-                "type": "integer",
-                "description": "Number of debate rounds (default 2)."
-            }
-        },
-        "required": ["topic"]
-    }
+            "required": ["topic"]
+        }
 
     async def execute(self, topic: str, rounds: int = 2, **kwargs: Any) -> SkillResult:
         try:

@@ -245,8 +245,25 @@ async def run_react_loop(
                     yield AgentEvent("reasoning", pre_reason, metadata={"phase": "pre", "tool": name})
 
                     yield AgentEvent("tool_call", name, metadata={"args": args})
-                    
-                    # Run the tool
+
+                    # ── LIVE STREAMING for skills that support stream_execute ──
+                    skill_obj = agent._registry.get_skill(name) if hasattr(agent._registry, 'get_skill') else None
+                    has_stream = skill_obj and hasattr(skill_obj, 'stream_execute')
+                    all_log_lines: list[str] = []
+                    exit_code_from_stream: int | None = None
+
+                    if has_stream:
+                        try:
+                            async for tag, val in skill_obj.stream_execute(**args):
+                                if tag == "log":
+                                    all_log_lines.append(str(val))
+                                    yield AgentEvent("tool_log", str(val), metadata={"tool": name})
+                                elif tag == "done":
+                                    exit_code_from_stream = int(val or 0)
+                        except Exception:
+                            pass
+
+                    # Run the tool (uses buffered execute for AI context)
                     result = await agent._registry.execute(name, **args)
                     tools_used.append(name)
                     result_text = result.to_text()

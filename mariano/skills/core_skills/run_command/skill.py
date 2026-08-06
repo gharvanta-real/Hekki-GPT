@@ -1,6 +1,7 @@
 """run_command — Execute terminal / CMD / PowerShell commands on Windows filesystem.
 
 Allows executing shell commands, batch scripts, and python scratch scripts.
+Supports real-time live stdout streaming via stream_execute().
 """
 from __future__ import annotations
 
@@ -8,7 +9,7 @@ import asyncio
 import os
 import subprocess
 from pathlib import Path
-from typing import Any
+from typing import Any, AsyncGenerator
 
 from mariano.skills._base.skill_interface import BaseSkill, SkillResult
 
@@ -20,9 +21,83 @@ class RunCommandSkill(BaseSkill):
         "Use this for shell commands like 'dir', 'del /f /q <path>', 'rmdir /s /q <path>', "
         "or running python scripts. Always specify valid Windows commands."
     )
-    version = "1.0.0"
+    version = "1.1.0"
     tags = ["system", "terminal", "cmd", "powershell", "execute"]
 
+    # ── Internal helpers ──────────────────────────────────────────────────────
+    async def _get_workdir(self, cwd_param: str) -> Path:
+        try:
+            from mariano.core.workspace import PathGuard
+            active_proj_path = PathGuard.get_active_project_path()
+            if cwd_param:
+                return PathGuard.secure_path(Path(cwd_param).resolve())
+            elif active_proj_path:
+                return PathGuard.secure_path(Path(active_proj_path).resolve())
+        except Exception:
+            pass
+        return Path.cwd().resolve()
+
+    def _check_delete_blocked(self, command: str) -> bool | None:
+        """Returns True if blocked, handles safe-recycle if super mode."""
+        from mariano.core.workspace import active_permission_policy
+        current_policy = active_permission_policy.get()
+        cmd_lower = command.lower()
+        blocked_terms = ["del ", "del/", "rmdir", "rd ", "rd/", "rm -", "remove-item", "erase ", "format "]
+        if not any(term in cmd_lower for term in blocked_terms):
+            return None  # Not a delete command
+        if current_policy in ("super", "auto", "everything"):
+            return False  # Allowed in super mode
+        return True  # Blocked
+
+    # ── stream_execute: real-time line-by-line stdout streaming ───────────────
+    async def stream_execute(self, **kwargs: Any) -> AsyncGenerator:
+        command = kwargs.get("command", kwargs.get("cmd", kwargs.get("command_line", "")))
+        cwd_param = kwargs.get("cwd", kwargs.get("path", ""))
+
+        if not command:
+            yield ("log", "ERROR: No command provided.")
+            yield ("done", 1)
+            return
+
+        # Security check
+        blocked = self._check_delete_blocked(command)
+        if blocked is True:
+            yield ("log", "Safety Policy: Deletion blocked. Use Super Permission mode.")
+            yield ("done", 1)
+            return
+
+        work_dir = await self._get_workdir(cwd_param)
+        yield ("log", f"$ {command}")
+        yield ("log", f"  cwd: {work_dir}")
+
+        try:
+            process = await asyncio.create_subprocess_shell(
+                command,
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.STDOUT,  # merge stderr → stdout for unified stream
+                cwd=str(work_dir)
+            )
+
+            try:
+                async with asyncio.timeout(120):
+                    async for raw in process.stdout:
+                        line = raw.decode("utf-8", errors="replace").rstrip("\r\n")
+                        yield ("log", line)
+            except asyncio.TimeoutError:
+                yield ("log", "ERROR: Command timed out after 120 seconds.")
+                try:
+                    process.kill()
+                except Exception:
+                    pass
+
+            await process.wait()
+            yield ("done", process.returncode or 0)
+
+        except Exception as e:
+            yield ("log", f"ERROR: {e}")
+            yield ("done", 1)
+
+    # ── execute: buffered (used as fallback / for AI result text) ────────────
     async def execute(self, **kwargs: Any) -> SkillResult:
         command = kwargs.get("command", kwargs.get("cmd", kwargs.get("command_line", "")))
         cwd_param = kwargs.get("cwd", kwargs.get("path", ""))
@@ -30,17 +105,15 @@ class RunCommandSkill(BaseSkill):
         if not command:
             return SkillResult(success=False, data=None, error="Parameter 'command' is required.")
 
-        # Security Policy check — if super/unrestricted mode is active, route deletion to Recycle Bin
+        # Security Policy check
         from mariano.core.workspace import active_permission_policy
         current_policy = active_permission_policy.get()
-
         cmd_lower = command.lower()
         blocked_terms = ["del ", "del/", "rmdir", "rd ", "rd/", "rm -", "remove-item", "erase ", "format "]
         if any(term in cmd_lower for term in blocked_terms):
             if current_policy in ("super", "auto", "everything"):
-                # Execute safe Recycle Bin deletion on target paths extracted from command
                 import re
-                paths = re.findall(r'["\']([^"\']+)["\']|(\S+)', command)
+                paths = re.findall(r'["\'"]([^"\']+)["\']|(\S+)', command)
                 recycled_items = []
                 for p_tuple in paths:
                     p_str = p_tuple[0] or p_tuple[1]
@@ -54,7 +127,6 @@ class RunCommandSkill(BaseSkill):
                             recycled_items.append(str(p_obj.name))
                         except Exception:
                             pass
-
                 if recycled_items:
                     return SkillResult(
                         success=True,
@@ -67,64 +139,22 @@ class RunCommandSkill(BaseSkill):
                 error="Safety Policy: Direct permanent deletion commands are disabled. Switch to 'Super Permission' mode in the + icon menu to safely delete files to the Recycle Bin."
             )
 
-        # Determine working directory
-        try:
-            from mariano.core.workspace import PathGuard
-            active_proj_path = PathGuard.get_active_project_path()
-
-            if cwd_param:
-                work_dir = PathGuard.secure_path(Path(cwd_param).resolve())
-            elif active_proj_path:
-                work_dir = PathGuard.secure_path(Path(active_proj_path).resolve())
-            else:
-                work_dir = Path.cwd().resolve()
-        except Exception as e:
-            work_dir = Path.cwd().resolve()
+        work_dir = await self._get_workdir(cwd_param)
 
         try:
-            # Run command asynchronously using asyncio subprocess
-            process = await asyncio.create_subprocess_shell(
-                command,
-                stdout=asyncio.subprocess.PIPE,
-                stderr=asyncio.subprocess.PIPE,
-                cwd=str(work_dir)
-            )
+            all_lines: list[str] = []
+            exit_code = 0
+            async for tag, val in self.stream_execute(**kwargs):
+                if tag == "log":
+                    all_lines.append(val)
+                elif tag == "done":
+                    exit_code = int(val or 0)
 
-            stdout_b, stderr_b = await asyncio.wait_for(process.communicate(), timeout=60.0)
-
-            stdout = stdout_b.decode("utf-8", errors="replace")
-            stderr = stderr_b.decode("utf-8", errors="replace")
-            exit_code = process.returncode
-
-            output_text = f"Exit code: {exit_code}\n"
-            if stdout:
-                output_text += f"STDOUT:\n{stdout}\n"
-            if stderr:
-                output_text += f"STDERR:\n{stderr}\n"
-
-            success = (exit_code == 0)
+            output_text = "\n".join(all_lines) if all_lines else "(no output)"
             return SkillResult(
-                success=success,
-                data=output_text.strip(),
+                success=(exit_code == 0),
+                data=f"Exit code: {exit_code}\nSTDOUT:\n{output_text}",
                 metadata={"command": command, "exit_code": exit_code, "cwd": str(work_dir)}
-            )
-
-        except asyncio.TimeoutError:
-            partial_text = ""
-            try:
-                process.kill()
-                out_b, err_b = await process.communicate()
-                partial_out = out_b.decode("utf-8", errors="replace") if out_b else ""
-                partial_err = err_b.decode("utf-8", errors="replace") if err_b else ""
-                if partial_out or partial_err:
-                    partial_text = f"STDOUT:\n{partial_out}\nSTDERR:\n{partial_err}".strip()
-            except Exception:
-                pass
-            err_msg = f"ERROR: Command execution timed out after 60 seconds: '{command}'"
-            return SkillResult(
-                success=False,
-                data=partial_text if partial_text else err_msg,
-                error=err_msg
             )
         except Exception as e:
             return SkillResult(

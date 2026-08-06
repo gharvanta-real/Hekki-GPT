@@ -1444,3 +1444,29 @@ async def api_security_audit(req: SecurityAuditRequest):
     )
     return {"success": res.success, "report": res.data, "metadata": res.metadata, "error": res.error}
 
+
+class RedTeamOpsRequest(BaseModel):
+    mode: str = "dual"  # red | blue | dual
+    target_domain: str = ""
+    target_url: str = ""
+    task_brief: str = ""
+    run_live_scan: bool = True
+    deep_boundary_scan: bool = True
+
+
+@app.post("/api/recon/red-team-ops")
+async def api_red_team_ops(req: RedTeamOpsRequest):
+    """Dual-mode cyber competition operator (Red / Blue / Dual) endpoint."""
+    from mariano.skills._registry.registry import SkillRegistry
+    registry = SkillRegistry.get_instance()
+    res = await registry.execute(
+        "red_team_ops",
+        mode=req.mode,
+        target_domain=req.target_domain,
+        target_url=req.target_url,
+        task_brief=req.task_brief,
+        run_live_scan=req.run_live_scan,
+        deep_boundary_scan=req.deep_boundary_scan,
+    )
+    return {"success": res.success, "report": res.data, "metadata": res.metadata, "error": res.error}
+

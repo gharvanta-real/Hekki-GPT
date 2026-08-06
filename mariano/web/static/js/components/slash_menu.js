@@ -78,8 +78,12 @@ export class SlashMenuManager {
   }
 
   createSlashMenuDOM() {
-    if (document.getElementById('hekki-slash-menu')) return;
-    const menu = document.createElement('div');
+    let menu = document.getElementById('hekki-slash-menu');
+    if (menu) {
+      this.menuEl = menu;
+      return;
+    }
+    menu = document.createElement('div');
     menu.id = 'hekki-slash-menu';
     menu.className = 'attach-dropdown hekki-slash-popup hidden';
     menu.style.cssText = [
@@ -95,7 +99,11 @@ export class SlashMenuManager {
   }
 
   createCommandPaletteDOM() {
-    if (document.getElementById('hekki-command-palette-modal')) return;
+    let modal = document.getElementById('hekki-command-palette-modal');
+    if (modal) {
+      this.paletteEl = modal;
+      return;
+    }
 
     const modalHTML = `
       <div id="hekki-command-palette-modal" class="modal-overlay hidden" style="z-index: 1000000;">
@@ -210,12 +218,12 @@ export class SlashMenuManager {
   handleInput(e, input) {
     const val = input.value;
 
-    // Check if user typed "/web" or "/web " or any registered slash command
-    const matchedCmd = this.commands.find(c => val === c.cmd || val.startsWith(c.cmd + ' '));
-    if (matchedCmd) {
-      const restText = val.startsWith(matchedCmd.cmd + ' ') ? val.slice(matchedCmd.cmd.length + 1) : '';
+    // Check if user typed "/web " (command followed by a space) -> convert to chip tag
+    const matchedCmdWithSpace = this.commands.find(c => val.startsWith(c.cmd + ' '));
+    if (matchedCmdWithSpace) {
+      const restText = val.slice(matchedCmdWithSpace.cmd.length + 1);
       input.value = restText;
-      this.setSlashTag(matchedCmd);
+      this.setSlashTag(matchedCmdWithSpace);
       this.hideSlashMenu();
       input.focus();
       return;
@@ -270,6 +278,7 @@ export class SlashMenuManager {
   }
 
   showSlashMenu(query, input) {
+    if (!this.menuEl) this.createSlashMenuDOM();
     this.currentQuery = query;
     const filtered = this.getFilteredCommands(query);
     if (filtered.length === 0) {
@@ -277,8 +286,8 @@ export class SlashMenuManager {
       return;
     }
 
-    // Find input container to position touched directly above it
-    const inputContainer = input.closest('.chat-input-container, .input-capsule, .chat-input-wrapper') || input;
+    // Find input container to position touched directly above it (supports home screen #input-capsule)
+    const inputContainer = input.closest('#input-capsule, .home-capsule, .chat-input-container, .input-capsule, .chat-input-wrapper') || input;
     const rect = inputContainer.getBoundingClientRect();
     
     // Calculate bottom offset so dropdown touches top edge of input container

@@ -49,6 +49,13 @@ class BaseSkill(ABC):
         """Execute the skill with given parameters. Must be overridden."""
         ...
 
+    async def stream_execute(self, **kwargs: Any):
+        """Optional async generator for skills that can stream live output.
+        Yields (tag, value) tuples where tag is 'log' or 'done'.
+        Default: not supported (returns None)."""
+        return
+        yield  # Make it an async generator
+
     @abstractmethod
     def get_parameters_schema(self) -> dict:
         """Return parameter schema dict. Used for Gemini tool registration."""

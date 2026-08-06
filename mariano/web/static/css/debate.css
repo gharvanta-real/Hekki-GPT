@@ -470,8 +470,9 @@
   margin-bottom: 4px;
 }
 .des-title {
-  font-size: 18px;
-  font-weight: 600;
+  font-family: var(--font-serif);
+  font-size: 28px;
+  font-weight: 400;
   color: var(--text-primary);
 }
 .des-subtitle {
@@ -1319,7 +1320,7 @@ body.dark .debate-input-wrapper:focus-within {
 }
 
 .doc-title {
-  font-size: 24px;
+  font-size: 18px;
   font-weight: 700;
   color: var(--text-primary);
   margin-bottom: 6px;
@@ -1471,7 +1472,7 @@ body.dark .debate-input-wrapper:focus-within {
   padding-bottom: 16px;
 }
 .directory-content-hdr .title {
-  font-size: 22px;
+  font-size: 18px;
   font-weight: 700;
   color: var(--text-primary);
   margin-bottom: 4px;

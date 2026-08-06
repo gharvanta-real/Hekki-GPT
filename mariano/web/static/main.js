@@ -14,7 +14,7 @@ import { handleChatAgentEvent } from '/static/js/agent_stream.js';
 
 // Modular UI component imports
 import { showToast } from '/static/js/components/toast.js';
-import { bindModelPills, updateModelPills } from '/static/js/components/model_selector.js';
+import { bindModelPills, updateModelPills, registerModelPillRefresh } from '/static/js/components/model_selector.js';
 import { initAttachDropdowns } from '/static/js/components/attach_dropdown.js';
 import { bindSidebarToggle, bindTitlebarActions, bindThemeToggle, bindImageLightbox } from '/static/js/components/layout_controls.js';
 import { bindVoice, resetVoiceUIInstance } from '/static/js/components/voice_controller.js';
@@ -278,8 +278,24 @@ function boot() {
 
   bindShortcuts();
   initSettings(setGreeting);
-  window.updateModelPills();
+  // Register model pill reactive refresh (auto-updates on every navigation, no hard refresh needed)
+  registerModelPillRefresh();
   bindModelPills();
+  window.updateModelPills = updateModelPills;
+
+  // Global router refresh hook — re-syncs all input bar UI state on every page switch
+  router.onRefresh((page) => {
+    // Re-sync bottom input bar vs home screen visibility
+    const homeScreen = document.getElementById('home-screen');
+    const bottomBar = document.getElementById('bottom-input-bar');
+    if (page === 'chat') {
+      // Let inConversationState decide which input to show — just re-trigger Lucide icons
+      if (window.lucide) lucide.createIcons();
+    }
+    // Re-init Lucide icons in case any were injected dynamically
+    if (window.lucide) lucide.createIcons();
+  });
+
   const handleStopGen = () => {
     socket.send(JSON.stringify({ type: 'stop' }));
     window.setGeneratingState(false);

@@ -29,9 +29,9 @@
   --fs-base: 14px;   /* body default, nav items, labels   */
   --fs-md:   15px;   /* primary content, chat bubbles     */
   --fs-lg:   16px;   /* AI responses, inputs              */
-  --fs-xl:   18px;   /* nav section titles                */
-  --fs-2xl:  22px;   /* sub-headings, h2                  */
-  --fs-3xl:  26px;   /* page headings, h1                 */
+  --fs-xl:   16px;   /* nav section titles                */
+  --fs-2xl:  18px;   /* sub-headings, h2                  */
+  --fs-3xl:  18px;   /* page headings, h1                 */
 
   --radius-sm:   6px;
   --radius-md:   10px;

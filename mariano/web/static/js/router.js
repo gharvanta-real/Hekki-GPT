@@ -18,6 +18,8 @@ class Router {
     this._onLeaveCallbacks = {};
     // Track right-panel open state so it survives page switches
     this._rightPanelOpen = false;
+    // Global component refresh hooks — run on EVERY navigation, even same-page
+    this._refreshHooks = [];
   }
 
   /**
@@ -27,6 +29,20 @@ class Router {
    */
   onNavigate(page, callback) {
     this._onNavigateCallbacks[page] = callback;
+  }
+
+  /**
+   * Register a component refresh hook that fires on EVERY navigation (same-page included).
+   * Use this to keep model pills, slash chips, input state synced without hard refresh.
+   * @param {Function} fn
+   */
+  onRefresh(fn) {
+    this._refreshHooks.push(fn);
+  }
+
+  /** Force all refresh hooks to run immediately (call after dynamic DOM changes). */
+  forceRefresh() {
+    this._refreshHooks.forEach(fn => { try { fn(this._currentPage); } catch(e) { console.warn('[Router] refresh hook error:', e); } });
   }
 
   /**
@@ -113,7 +129,11 @@ class Router {
    * @param {'chat'|'skills'|'changelog'|'debate'} page
    */
   navigateTo(page) {
-    if (this._currentPage === page) return;
+    // If same page: still fire refresh hooks so components re-sync (no hard refresh needed)
+    if (this._currentPage === page) {
+      this.forceRefresh();
+      return;
+    }
     const leavingPage = this._currentPage;
     this._currentPage = page;
 
@@ -268,10 +288,13 @@ class Router {
     // Step 3: Sync dock + nav button active states
     this._syncDockActiveState(page);
 
-    // Step 4: Fire registered callbacks
+    // Step 4: Fire registered navigate callbacks
     if (this._onNavigateCallbacks[page]) {
       this._onNavigateCallbacks[page]();
     }
+
+    // Step 4b: Fire all global refresh hooks
+    this.forceRefresh();
 
     // Step 5: Re-apply theme from localStorage — safety net in case any
     // event listener was lost. Zero-cost; just a classList toggle.

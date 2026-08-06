@@ -225,6 +225,16 @@ class SecurityHeaderAnalyzerSkill(BaseSkill):
                 report.append(f"# {r['header']}\n{r['nginx']}")
             report.append("```")
 
+            report.extend([
+                "",
+                "### 🔧 Recommended Apache (.htaccess) Remediation Snippets",
+                "```apache",
+            ])
+            for r in remediations:
+                header_name = r['header']
+                report.append(f"Header set {header_name} \"...\"")
+            report.append("```")
+
         report.extend([
             "",
             "---",

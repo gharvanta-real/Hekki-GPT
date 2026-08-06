@@ -707,8 +707,8 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
       }
 
       const slashContent = meta.detail
-        ? `<span style="font-weight:400;color:var(--text-secondary);white-space:nowrap;">${meta.label}</span><span style="color:var(--text-3);opacity:0.55;margin:0 1px;">/</span><span class="tool-detail" style="font-weight:400;color:var(--text-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:340px;">${meta.detail}</span>${diffBadgeHtml}`
-        : `<span style="font-weight:400;color:var(--text-secondary);white-space:nowrap;">${meta.label}</span>${diffBadgeHtml}`;
+        ? `<span style="font-weight:500;color:var(--text-secondary);white-space:nowrap;">${meta.label}</span><span style="color:var(--text-secondary);opacity:0.6;margin:0 2px;">/</span><span class="tool-detail" style="font-weight:400;color:var(--text-secondary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:340px;">${meta.detail}</span>${diffBadgeHtml}`
+        : `<span style="font-weight:500;color:var(--text-secondary);white-space:nowrap;">${meta.label}</span>${diffBadgeHtml}`;
 
       const card = document.createElement('div');
       card.className = 'tool-block-temp tool-log-card';
@@ -722,16 +722,16 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
         'background:transparent',
         'font-size:12px',
         'font-family:var(--font)',
-        'color:var(--text-3)',
+        'color:var(--text-secondary)',
         'gap:10px',
       ].join(';');
 
       card.innerHTML = `
         <div style="display:flex;align-items:center;gap:6px;overflow:hidden;">
-          <span style="flex-shrink:0;opacity:0.75;display:inline-flex;align-items:center;">${meta.icon}</span>
+          <span style="flex-shrink:0;opacity:0.85;display:inline-flex;align-items:center;">${meta.icon}</span>
           ${slashContent}
         </div>
-        <span class="tool-status" style="flex-shrink:0;font-size:11px;color:var(--text-3);white-space:nowrap;opacity:0.6;">running<span class="dots">.</span></span>
+        <span class="tool-status" style="flex-shrink:0;font-size:11px;color:var(--text-secondary);white-space:nowrap;opacity:0.85;">running<span class="dots">.</span></span>
       `;
 
       // Live brief execution hint line for transparent execution feedback
@@ -740,7 +740,7 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
         card.style.flexWrap = 'wrap';
         const hintEl = document.createElement('div');
         hintEl.className = 'tool-brief-hint';
-        hintEl.style.cssText = 'width: 100%; margin-top: 2px; padding-left: 21px; font-size: 11px; color: var(--text-3); font-family: var(--font-mono); opacity: 0.85; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; box-sizing: border-box;';
+        hintEl.style.cssText = 'width: 100%; margin-top: 2px; padding-left: 21px; font-size: 11px; color: var(--text-secondary); font-family: var(--font-mono); opacity: 0.9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; box-sizing: border-box;';
         hintEl.innerHTML = `▸ Executing: ${escapeHtml(String(briefCmd).slice(0, 90))}`;
         card.appendChild(hintEl);
       }
@@ -785,6 +785,34 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
         }, 400);
       }
 
+      scrollChat();
+      break;
+    }
+
+    case 'tool_log': {
+      // ── Live streaming terminal output lines ──────────────────────────────
+      if (!_lastToolBlock) break;
+      const logLine = e.data || '';
+
+      // Create or reuse the live-log container inside the tool card
+      let liveLog = _lastToolBlock.querySelector('.tool-live-log');
+      if (!liveLog) {
+        _lastToolBlock.style.flexWrap = 'wrap';
+        liveLog = document.createElement('div');
+        liveLog.className = 'tool-live-log tool-terminal-block';
+        _lastToolBlock.appendChild(liveLog);
+      }
+
+      // Append the new line (Monochromatic UI)
+      const lineEl = document.createElement('div');
+      lineEl.className = 'tool-log-line';
+      lineEl.style.color = 'inherit';
+      lineEl.style.opacity = logLine.startsWith('$ ') || logLine.startsWith('  cwd:') ? '0.95' : '0.85';
+      lineEl.textContent = logLine;
+      liveLog.appendChild(lineEl);
+
+      // Auto-scroll to bottom
+      liveLog.scrollTop = liveLog.scrollHeight;
       scrollChat();
       break;
     }
@@ -927,7 +955,7 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
           }
         }
 
-        // ── Render Output Details / Terminal UI Block for commands and file ops ──
+        // ── Render Output Details / Terminal UI Block (Enforce Single Terminal Log View) ──
         if (e.data && typeof e.data === 'string' && e.data.trim().length > 0) {
           const hint = _lastToolBlock.querySelector('.tool-brief-hint');
           if (hint) hint.remove();
@@ -935,25 +963,30 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
           
           const toolTag = _lastToolBlock.dataset.tool || toolName || 'action';
           const isTerminalCmd = toolTag.includes('shell') || toolTag.includes('run_command') || toolTag.includes('system_control');
-          const isSearchGrep = toolTag.includes('grep') || toolTag.includes('search');
-          const iconName = isTerminalCmd ? 'terminal' : (isSearchGrep ? 'search' : 'file-text');
-          const summaryLabel = isTerminalCmd ? '▸ Terminal Output' : '▸ View output details';
-          const maxLen = isTerminalCmd ? 6000 : 3000;
-          const previewText = e.data.length > maxLen ? e.data.slice(0, maxLen) + '\n... (truncated)' : e.data;
-          
-          const outputDetail = document.createElement('div');
-          outputDetail.style.cssText = 'width: 100%; margin-top: 4px; padding-left: 21px; box-sizing: border-box;';
-          outputDetail.innerHTML = `
-            <details style="margin: 0; opacity: 0.95; width: 100%;" ${isTerminalCmd ? 'open' : ''}>
-              <summary style="cursor:pointer; color:var(--text-3); font-size:11px; font-weight:500; outline:none; user-select:none; display:inline-flex; align-items:center; gap:4px; padding: 2px 0;">
-                <i data-lucide="${iconName}" style="width:12px;height:12px;color:var(--text-3);display:inline-block;vertical-align:middle;"></i>
-                <span>${summaryLabel}</span>
-              </summary>
-              <pre style="margin:6px 0 2px 0; padding:10px 12px; background:var(--card); color:var(--text-primary); border-radius:8px; font-size:11px; font-family:var(--font-mono); line-height:1.55; overflow-x:auto; border:none !important; box-shadow:none !important; max-height:220px; width:100%; box-sizing:border-box; white-space:pre-wrap; word-break:break-all;">${escapeHtml(previewText)}</pre>
-            </details>
-          `;
-          _lastToolBlock.appendChild(outputDetail);
-          if (window.lucide) lucide.createIcons({ parent: outputDetail });
+          const hasLiveLog = _lastToolBlock.querySelector('.tool-live-log');
+
+          // If a live streaming terminal box is active, skip adding a second duplicate details box
+          if (!hasLiveLog || !isTerminalCmd) {
+            const isSearchGrep = toolTag.includes('grep') || toolTag.includes('search');
+            const iconName = isTerminalCmd ? 'terminal' : (isSearchGrep ? 'search' : 'file-text');
+            const summaryLabel = isTerminalCmd ? '▸ Terminal Output' : '▸ View output details';
+            const maxLen = isTerminalCmd ? 6000 : 3000;
+            const previewText = e.data.length > maxLen ? e.data.slice(0, maxLen) + '\n... (truncated)' : e.data;
+            
+            const outputDetail = document.createElement('div');
+            outputDetail.style.cssText = 'width: 100%; margin-top: 4px; padding-left: 21px; box-sizing: border-box;';
+            outputDetail.innerHTML = `
+              <details style="margin: 0; opacity: 0.95; width: 100%;" ${isTerminalCmd ? 'open' : ''}>
+                <summary style="cursor:pointer; color:var(--text-3); font-size:11px; font-weight:500; outline:none; user-select:none; display:inline-flex; align-items:center; gap:4px; padding: 2px 0;">
+                  <i data-lucide="${iconName}" style="width:12px;height:12px;color:var(--text-3);display:inline-block;vertical-align:middle;"></i>
+                  <span>${summaryLabel}</span>
+                </summary>
+                <pre class="tool-terminal-block" style="margin:6px 0 2px 0; max-height:220px; width:100%; box-sizing:border-box;">${escapeHtml(previewText)}</pre>
+              </details>
+            `;
+            _lastToolBlock.appendChild(outputDetail);
+            if (window.lucide) lucide.createIcons({ parent: outputDetail });
+          }
         }
         
         _lastToolBlock.classList.remove('tool-block-temp');
@@ -1366,12 +1399,12 @@ function _ensureToolContainer(col, enterConversationCallback) {
   _streamToolContainer.innerHTML = `
     <div class="tool-group-header" style="display: flex; align-items: center; justify-content: space-between; padding: 4px 0; cursor: pointer; user-select: none;">
       <div style="display: flex; align-items: center; gap: 6px;">
-        <i data-lucide="chevron-right" class="chevron-icon" style="width:13px; height:13px; opacity:0.6; transition: transform 0.15s; display:inline-block; vertical-align:middle;"></i>
+        <i data-lucide="chevron-right" class="chevron-icon" style="width:13px; height:13px; opacity:0.7; transition: transform 0.15s; display:inline-block; vertical-align:middle; transform: rotate(90deg);"></i>
         <span class="tool-group-title" style="font-weight: 500; color: var(--text-secondary);">Executing actions (0s)</span>
       </div>
       <span class="tool-group-status" style="font-size: 11px; color:var(--blue); font-weight:600;">0s<span class="dots">...</span></span>
     </div>
-    <div class="tool-group-body" style="display: none; flex-direction: column; padding-left: 14px; border-left: 1px dashed var(--border); margin-left: 4px; margin-top: 2px; gap: 3px;">
+    <div class="tool-group-body" style="display: flex; flex-direction: column; padding-left: 14px; border-left: 1px dashed var(--border); margin-left: 4px; margin-top: 2px; gap: 3px;">
     </div>
   `;
 

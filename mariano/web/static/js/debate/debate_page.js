@@ -72,12 +72,6 @@ function _buildLayout() {
               <i data-lucide="book-open" style="width:15px; height:15px; margin-right:8px;"></i>
               <span>Research Directory</span>
             </button>
-            <button class="debate-list-btn" id="btn-sidebar-voice" title="Toggle Voice Speak">
-              <span id="btn-sidebar-voice-icon-wrap" style="display:inline-flex; align-items:center; margin-right:8px;">
-                <i data-lucide="volume-x" style="width:15px; height:15px;"></i>
-              </span>
-              <span id="lbl-sidebar-voice">Voice: Off</span>
-            </button>
             <button class="debate-list-btn" id="btn-sidebar-reset" title="Reset Debate Room">
               <i data-lucide="rotate-ccw" style="width:15px; height:15px; margin-right:8px;"></i>
               <span>Reset Room</span>

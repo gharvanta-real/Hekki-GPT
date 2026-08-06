@@ -20,6 +20,8 @@ class ReminderSkill(BaseSkill):
     async def execute(self, action: str, text: str = "", when: str = "") -> SkillResult:
         from mariano.memory.memory_manager import MemoryManager
         mem = MemoryManager.get_instance()
+        if not mem._initialized:
+            await mem.initialize()
         now = datetime.now().strftime("%Y-%m-%d %H:%M")
 
         if action == "set":

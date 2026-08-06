@@ -29,7 +29,18 @@ LANGUAGES = [
 
 
 class NetworkAnonymizer:
-    """Generates randomized browser fingerprints to prevent scrapers/searches from being tracked or blocked."""
+    """Generates randomized browser fingerprints and handles proxy configuration for privacy."""
+
+    @staticmethod
+    def get_proxy_url() -> str | None:
+        """Resolves proxy URL from environment variables (SOCKS5_PROXY, HTTP_PROXY, HTTPS_PROXY)."""
+        return (
+            os.getenv("SOCKS5_PROXY")
+            or os.getenv("HTTPS_PROXY")
+            or os.getenv("HTTP_PROXY")
+            or os.getenv("ALL_PROXY")
+            or None
+        )
 
     @staticmethod
     def get_headers() -> Dict[str, str]:
@@ -48,6 +59,19 @@ class NetworkAnonymizer:
             "Referer": random.choice(REFERERS),
             "Cache-Control": "max-age=0",
         }
+
+    @staticmethod
+    def check_opsec_ip_leak(exposed_ip: str | None = None) -> dict[str, str | bool]:
+        """OPSEC Check: Verifies current IP routing and generates safety status."""
+        proxy = NetworkAnonymizer.get_proxy_url()
+        is_protected = bool(proxy) or (exposed_ip and exposed_ip.startswith(("10.", "172.16.", "192.168.")))
+        status = {
+            "safe": is_protected,
+            "ip": exposed_ip or ("Proxy Active" if proxy else "Protected / Internal Interface"),
+            "proxy": proxy or "None",
+            "warning": None if is_protected else "⚠️ OPSEC NOTICE: Direct routing detected. Set SOCKS5_PROXY or HTTP_PROXY for full traffic masking."
+        }
+        return status
 
 
 class DataSanitizer:

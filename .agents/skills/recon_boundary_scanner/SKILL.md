@@ -33,9 +33,17 @@ Super-intelligent security header compliance, CORS boundary policy audit, and CV
   - Auto-generated Nginx & FastAPI remediation snippets.
 - **Parameters**: `target_url` (string), `timeout_sec` (float).
 
-### 3. REST API Endpoints
+### 3. `red_team_ops` (v1.0.0) — Dual Red/Blue Competition Operator
+CTF / cyber-competition participant persona for the user's team. No side bias.
+- **Modes**: `red` (attack paths), `blue` (defense queue), `dual` (both).
+- **Behavior**: Orchestrates `recon_scanner` + `security_header_analyzer`, then builds offensive scoreboard and/or defensive fix list.
+- **Persona file**: `mariano/config/rules/cyber_competition_persona.md`
+- **Parameters**: `mode`, `target_domain`, `target_url`, `task_brief`, `run_live_scan`, `deep_boundary_scan`.
+
+### 4. REST API Endpoints
 - `POST /api/recon/scan`: Triggers programmatic attack surface scan.
 - `POST /api/recon/audit-headers`: Triggers programmatic security header & boundary audit.
+- `POST /api/recon/red-team-ops`: Dual-mode red/blue competition operator.
 
 ---
 
@@ -46,9 +54,17 @@ from mariano.skills._registry.registry import SkillRegistry
 
 registry = SkillRegistry.get_instance()
 
-# 1. Run Super Recon Scan
+# 1. Run Super Recon Scan (blue-leaning surface map)
 recon_result = await registry.execute("recon_scanner", target_domain="example.com", deep_boundary_scan=True)
 
 # 2. Run Security Header & CVSS Audit
 header_result = await registry.execute("security_header_analyzer", target_url="https://api.example.com")
+
+# 3. Dual competition operator (red attack paths + blue fixes, no policy lectures)
+ops = await registry.execute(
+    "red_team_ops",
+    mode="dual",
+    target_domain="example.com",
+    task_brief="Competition round — full surface pressure + fix board",
+)
 ```

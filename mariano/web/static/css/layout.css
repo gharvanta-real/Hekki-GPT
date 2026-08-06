@@ -754,25 +754,30 @@ body.dark .btn-new-chat-dock:hover {
   position: absolute;
   top: 30px;
   right: 8px;
-  background: rgba(255, 255, 255, 0.85);
+  background: var(--card, #ffffff);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--border, rgba(0, 0, 0, 0.08));
   border-radius: 10px;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
   padding: 6px;
   z-index: 9999;
   display: flex;
   flex-direction: column;
-  min-width: 125px;
+  min-width: 135px;
   transform-origin: top right;
   animation: dropdownFadeIn 0.12s cubic-bezier(0.16, 1, 0.3, 1);
 }
-body.dark .chat-dropdown {
-  background: rgba(20, 20, 20, 0.85);
-  border-color: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.35), 0 8px 10px -6px rgba(0, 0, 0, 0.35);
+
+body.dark .chat-dropdown,
+body.oled .chat-dropdown,
+[data-theme="dark"] .chat-dropdown,
+[data-theme="oled"] .chat-dropdown {
+  background: var(--card, #1c1c1e);
+  border-color: var(--border, rgba(255, 255, 255, 0.12));
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
 }
+
 @keyframes dropdownFadeIn {
   from {
     opacity: 0;
@@ -800,6 +805,14 @@ body.dark .chat-dropdown {
   width: 100%;
   transition: background 0.12s, color 0.12s;
 }
+
+body.dark .chat-dropdown-item,
+body.oled .chat-dropdown-item,
+[data-theme="dark"] .chat-dropdown-item,
+[data-theme="oled"] .chat-dropdown-item {
+  color: var(--text-primary, #f4f4f5);
+}
+
 .chat-dropdown-item:hover {
   background: var(--hover);
   color: var(--text);
@@ -807,6 +820,7 @@ body.dark .chat-dropdown {
 .chat-dropdown-item .lucide {
   width: 14px;
   height: 14px;
+  color: currentColor;
 }
 .chat-dropdown-item.delete {
   color: #dc2626; /* Red delete text */
@@ -817,7 +831,10 @@ body.dark .chat-dropdown {
 .chat-dropdown-item.delete:hover {
   background: #fef2f2;
 }
-body.dark .chat-dropdown-item.delete:hover {
+body.dark .chat-dropdown-item.delete:hover,
+body.oled .chat-dropdown-item.delete:hover,
+[data-theme="dark"] .chat-dropdown-item.delete:hover,
+[data-theme="oled"] .chat-dropdown-item.delete:hover {
   background: rgba(220, 38, 38, 0.15);
 }
 
