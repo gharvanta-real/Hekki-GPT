@@ -346,9 +346,9 @@ export const ChatSessionManager = {
 
           let badgeContent = '';
           if (c.pinned) {
-            badgeContent = '<i data-lucide="pin" style="width:11px; height:11px; display:inline-block;"></i>';
+            badgeContent = '<i data-lucide="pin" style="width:14px; height:14px; stroke-width:2.2px; display:inline-block;"></i>';
           } else if (c.forkedFrom || cleanTitle.toLowerCase().startsWith('branch:')) {
-            badgeContent = '<i data-lucide="git-fork" style="width:11px; height:11px; display:inline-block;"></i>';
+            badgeContent = '<i data-lucide="git-fork" style="width:14px; height:14px; stroke-width:2.2px; display:inline-block;"></i>';
           } else {
             const firstChar = Array.from(cleanTitle)[0] || 'C';
             badgeContent = firstChar.toUpperCase();

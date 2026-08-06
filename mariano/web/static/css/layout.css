@@ -520,19 +520,24 @@ body.dark .btn-new-chat-dock:hover {
   /* removed font-weight 500 */
 }
 .section-item .badge {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
-  border: 1.5px solid var(--border);
+  border: 1px solid var(--border);
   background: var(--hover);
-  color: var(--text-2);
+  color: var(--text);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: var(--fs-xs);     /* 11px */
+  font-size: 11.5px;
   font-weight: 600;
   flex-shrink: 0;
   transition: all 0.12s;
+}
+.section-item .badge svg, .section-item .badge i {
+  width: 13.5px !important;
+  height: 13.5px !important;
+  stroke-width: 2.2px !important;
 }
 .section-item:hover .badge {
   border-color: var(--text-3);
