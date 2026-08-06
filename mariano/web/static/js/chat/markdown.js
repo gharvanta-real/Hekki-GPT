@@ -480,6 +480,82 @@ export function enhanceTaskLists(container) {
   });
 }
 
+export function getDomainCategoryBadge(domain) {
+  if (!domain) return { icon: '', label: '' };
+  const d = domain.toLowerCase();
+  if (d.includes('.gov') || d.includes('.edu') || d.includes('official') || d.includes('nseindia.com') || d.includes('bseindia.com') || d.includes('sebi.gov.in') || d.includes('rbi.org.in')) {
+    return { icon: '🏛️', label: 'Official' };
+  }
+  if (d.includes('news') || d.includes('reuters.com') || d.includes('bloomberg.com') || d.includes('economictimes') || d.includes('moneycontrol') || d.includes('ndtv') || d.includes('bbc') || d.includes('cnn') || d.includes('thehindu') || d.includes('livemint')) {
+    return { icon: '📰', label: 'News' };
+  }
+  if (d.includes('wikipedia') || d.includes('arxiv') || d.includes('github') || d.includes('quora') || d.includes('stackoverflow') || d.includes('medium')) {
+    return { icon: '📚', label: 'Reference' };
+  }
+  return { icon: '', label: '' };
+}
+
+/** Enhances inline markdown citations & links with hover snippet tooltips (Legacy Flat Monochromatic Style) */
+export function enhanceCitationsAndFootnotes(container) {
+  if (!container) return;
+  const externalLinks = container.querySelectorAll('a.external-link');
+
+  externalLinks.forEach(link => {
+    if (link.dataset.hasCitation) return;
+    link.dataset.hasCitation = 'true';
+
+    const href = link.getAttribute('href') || '';
+    let domain = '';
+    try {
+      const parsed = new URL(href);
+      domain = parsed.hostname.replace(/^www\./, '');
+    } catch (e) {}
+
+    if (!domain) return;
+
+    const category = getDomainCategoryBadge(domain);
+    const faviconUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=32`;
+    const linkText = link.textContent.trim();
+
+    let tooltipEl = null;
+
+    link.addEventListener('mouseenter', () => {
+      if (tooltipEl) tooltipEl.remove();
+
+      tooltipEl = document.createElement('div');
+      tooltipEl.className = 'ref-hover-tooltip';
+      tooltipEl.style.cssText = 'position: fixed; background: var(--card); color: var(--text); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; max-width: 280px; z-index: 10005; font-family: var(--font); pointer-events: none; opacity: 0; transition: opacity 0.12s ease-out; box-shadow: none; font-weight: 400;';
+
+      const catBadge = category.label ? `<span style="font-size: 10px; opacity: 0.75; background: var(--hover); padding: 1px 5px; border-radius: 4px; color: var(--text-3); font-weight: 500; margin-left: auto;">${category.icon} ${category.label}</span>` : '';
+
+      tooltipEl.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+          <img src="${faviconUrl}" style="width: 12px; height: 12px; border-radius: 2px;" onerror="this.style.display='none'" />
+          <span style="font-size: 11.5px; font-weight: 600; color: var(--text);">${domain}</span>
+          ${catBadge}
+        </div>
+        <div style="font-size: 11.5px; color: var(--text-3); font-weight: 400; line-height: 1.35; max-height: 48px; overflow: hidden; text-overflow: ellipsis;">${escapeHtmlLocal(linkText || domain)}</div>
+      `;
+
+      document.body.appendChild(tooltipEl);
+
+      const rect = link.getBoundingClientRect();
+      tooltipEl.style.left = `${Math.max(10, rect.left)}px`;
+      tooltipEl.style.top = `${Math.max(10, rect.top - tooltipEl.offsetHeight - 6)}px`;
+      requestAnimationFrame(() => {
+        if (tooltipEl) tooltipEl.style.opacity = '1';
+      });
+    });
+
+    link.addEventListener('mouseleave', () => {
+      if (tooltipEl) {
+        tooltipEl.style.opacity = '0';
+        setTimeout(() => { if (tooltipEl) tooltipEl.remove(); tooltipEl = null; }, 120);
+      }
+    });
+  });
+}
+
 /** Complete markdown response enhancement pipeline */
 export function enhanceMarkdownContent(container) {
   if (!container) return;
@@ -488,6 +564,7 @@ export function enhanceMarkdownContent(container) {
   try { enhanceCodeBlocks(container); } catch (e) { console.error(e); }
   try { enhanceTables(container); } catch (e) { console.error(e); }
   try { enhanceImagePreviews(container); } catch (e) { console.error(e); }
+  try { enhanceCitationsAndFootnotes(container); } catch (e) { console.error(e); }
   try { moveTipsToBottom(container); } catch (e) { console.error(e); }
   try { enhanceTaskLists(container); } catch (e) { console.error(e); }
   if (window.renderMathInElement) {

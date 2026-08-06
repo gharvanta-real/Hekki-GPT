@@ -1,5 +1,13 @@
 [
   {
+    "timestamp": "2026-08-06T09:11:50.000000",
+    "type": "ui_redesign",
+    "title": "Added Legacy Flat Citation Hover Tooltips & Domain Category Badges",
+    "description": "1. Updated markdown.js with enhanceCitationsAndFootnotes to show borderless, flat floating hover cards (Favicon + Domain + Category Badge + Link Text) when hovering over external link citations. 2. Added smart domain category badges (🏛️ Official, 📰 News, 📚 Ref) to all source domain chips in agent_stream.js and messages.js following 100% legacy flat monochromatic styling rules.",
+    "reason": "Fulfilled explicit user directive: Elevate web search references to peak level while strictly following legacy monochrome UI style rules.",
+    "impact": "100% peak reference citations with instant hover snippet previews and trust category badges."
+  },
+  {
     "timestamp": "2026-08-06T09:04:30.000000",
     "type": "ui_redesign",
     "title": "Added Top Gaping & Margin Separation Above User Message Bubbles",
