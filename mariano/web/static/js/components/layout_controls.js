@@ -89,27 +89,24 @@ function _notifyElectronTheme(isDark) {
 
 /** Apply dark/light/oled class, update the icon, and sync the native titlebar. */
 function _applyTheme(theme, btn) {
+  const effectiveTheme = (theme === 'light') ? 'light' : 'oled';
   document.body.classList.remove('dark', 'oled');
-  if (theme === 'dark') {
-    document.body.classList.add('dark');
-  } else if (theme === 'oled') {
+  if (effectiveTheme === 'oled') {
     document.body.classList.add('oled');
   }
   // Keep native Windows titlebar in sync
-  _notifyElectronTheme(theme !== 'light');
+  _notifyElectronTheme(effectiveTheme === 'oled');
   if (btn) {
     const icon = btn.querySelector('[data-lucide]');
     if (icon) {
-      let lucideName = 'moon';
-      if (theme === 'light') lucideName = 'sun';
-      else if (theme === 'oled') lucideName = 'zap';
+      const lucideName = (effectiveTheme === 'light') ? 'sun' : 'moon';
       icon.setAttribute('data-lucide', lucideName);
       if (window.lucide) lucide.createIcons();
     }
   }
   // Sync settings modal theme-opt pills if modal is open
   document.querySelectorAll('.theme-opt').forEach(b => {
-    if (b.dataset.theme === theme) {
+    if (b.dataset.theme === effectiveTheme) {
       b.classList.add('active');
     } else {
       b.classList.remove('active');
@@ -130,21 +127,17 @@ export function bindThemeToggle() {
   const btn = $('btn-user-theme');
   if (!btn) return;
 
-  // ── Restore persisted theme on page load ──────────────────────
-  const savedTheme = localStorage.getItem('hekki_theme') || 'dark';
+  // ── Restore persisted theme on page load (Default: OLED Black) ──
+  const rawSaved = localStorage.getItem('hekki_theme');
+  const savedTheme = (rawSaved === 'light') ? 'light' : 'oled';
   _applyTheme(savedTheme, btn);
 
-  // ── Toggle on button click (cycles: dark -> oled -> light) ─────
+  // ── Toggle on button click (cycles strictly: oled <-> light) ─────
   btn.addEventListener('click', () => {
-    const currentTheme = localStorage.getItem('hekki_theme') || 'dark';
-    let newTheme = 'dark';
-    if (currentTheme === 'dark') {
-      newTheme = 'oled';
-    } else if (currentTheme === 'oled') {
-      newTheme = 'light';
-    } else {
-      newTheme = 'dark';
-    }
+    const rawCurrent = localStorage.getItem('hekki_theme');
+    const currentTheme = (rawCurrent === 'light') ? 'light' : 'oled';
+    const newTheme = (currentTheme === 'light') ? 'oled' : 'light';
+
     localStorage.setItem('hekki_theme', newTheme);
     _applyTheme(newTheme, btn);
 

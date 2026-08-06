@@ -84,9 +84,9 @@ export function initSettings(setGreetingCallback) {
   });
 
   function applyTheme(theme) {
+    const effective = (theme === 'light') ? 'light' : 'oled';
     document.body.classList.remove('dark', 'oled');
-    if (theme === 'dark') document.body.classList.add('dark');
-    else if (theme === 'oled') document.body.classList.add('oled');
+    if (effective === 'oled') document.body.classList.add('oled');
   }
 
   // ── API key visibility toggle ─────────────────────────────────────────
