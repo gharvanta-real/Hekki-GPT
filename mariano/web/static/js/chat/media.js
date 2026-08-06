@@ -234,106 +234,36 @@ export function moveTipsToBottom(container) {
 export function enhanceImagePreviews(container) {
   if (!container) return;
 
-  // 1. Convert markdown inline images (![alt](url)) rendered as <img> tags into flat image cards
+  // ── Reference images from AI are BLOCKED (user preference) ──────────────
+  // Hide all inline <img> tags rendered from AI markdown (not user-uploaded)
   container.querySelectorAll('img').forEach(img => {
-    if (img.dataset.hasPreview || img.closest('.chat-image-preview-card') || img.closest('.yt-preview-card')) return;
-    let src = img.getAttribute('src') || '';
-    if (!src) return;
-
-    let displaySrc = src;
-    if ((src.startsWith('http://') || src.startsWith('https://')) && !src.includes('/api/')) {
-      displaySrc = `/api/image-proxy?url=${encodeURIComponent(src)}`;
-    }
-
-    img.dataset.hasPreview = 'img';
-
-    const targetUrl = img.closest('a')?.getAttribute('href') || src;
-    const altText = img.getAttribute('alt') || 'Image';
-
-    const card = document.createElement('div');
-    card.className = 'chat-image-preview-card';
-    card.innerHTML = `
-      <div class="img-preview-box" style="position:relative; width:100%; border-radius:10px; overflow:hidden; cursor:pointer; background:var(--hover);">
-        <img src="${displaySrc}" alt="${escapeHtmlLocal(altText)}" loading="lazy" style="width:100%; height:130px; object-fit:cover; display:block; border-radius:10px;" />
-        <a href="${targetUrl}" target="_blank" rel="noopener noreferrer" class="img-redirect-btn" style="position:absolute; bottom:6px; right:6px; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); color:#fff; width:22px; height:22px; border-radius:5px; display:flex; align-items:center; justify-content:center; text-decoration:none; z-index:5;" title="Open source">
-          <i data-lucide="external-link" style="width:11px; height:11px;"></i>
-        </a>
-      </div>
-    `;
-
-    const newImg = card.querySelector('img');
-    newImg.addEventListener('click', (e) => {
-      e.stopPropagation();
-      openImageLightbox(newImg.src || displaySrc, targetUrl);
-    });
-
-    newImg.onerror = () => {
-      // 1. Try direct raw src if proxy failed
-      if (!newImg.dataset.tryRaw && displaySrc.includes('/api/image-proxy')) {
-        newImg.dataset.tryRaw = 'true';
-        newImg.src = src;
-        return;
-      }
-
-      // 2. OpenGraph og:image attempt
-      if (!newImg.dataset.ogAttempted && targetUrl && targetUrl.startsWith('http')) {
-        newImg.dataset.ogAttempted = 'true';
-        fetch(`/api/link-preview?url=${encodeURIComponent(targetUrl)}`)
-          .then(res => res.json())
-          .then(data => {
-            if (data && data.image) {
-              newImg.src = data.image.startsWith('http') ? `/api/image-proxy?url=${encodeURIComponent(data.image)}` : data.image;
-            } else {
-              _trySearchImagesFallback(card, altText, targetUrl);
-            }
-          })
-          .catch(() => _trySearchImagesFallback(card, altText, targetUrl));
-        return;
-      }
-
-      _trySearchImagesFallback(card, altText, targetUrl);
-    };
-
-    // Replace the img's closest block parent (p tag usually)
+    if (img.closest('.chat-image-preview-card') || img.closest('.yt-preview-card')) return;
+    if (img.closest('.msg.user')) return; // Keep user-uploaded images
+    // Remove the wrapping <p> or the img itself
     const parent = img.closest('p') || img.parentNode;
     if (parent && parent.parentNode && parent !== container) {
-      parent.parentNode.replaceChild(card, parent);
+      parent.remove();
     } else if (img.parentNode) {
-      img.parentNode.replaceChild(card, img);
+      img.remove();
     }
-    if (window.lucide) lucide.createIcons({ parent: card });
   });
 
-  // 2. Scan all links for YouTube and image URLs
+  // 2. Scan all links — ONLY render YouTube cards, skip all other image links
   const links = container.querySelectorAll('a[href]');
   links.forEach(a => {
     const href = a.getAttribute('href');
     if (!href || a.dataset.hasPreview) return;
-
     if (href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('javascript:')) return;
     if (a.closest('table') || a.closest('.table-wrapper') || a.closest('h1,h2,h3,h4,h5,h6')) return;
     if (a.closest('.chat-image-preview-card') || a.closest('.yt-preview-card')) return;
 
+    // YouTube only ✅
     const ytId = _getYoutubeId(href);
     if (ytId) { _renderYoutubeCard(a, ytId); return; }
 
-    let srcUrl = href;
-    if (href.startsWith('file:///')) {
-      const decoded = decodeURIComponent(href.replace('file:///', ''));
-      if (!decoded.match(/\.(jpeg|jpg|gif|png|webp|svg)(?:\?.*)?$/i)) return;
-      srcUrl = `/api/workspace/render?path=${encodeURIComponent(decoded)}`;
-    }
-
-    if (srcUrl.match(/\.(jpeg|jpg|gif|png|webp|svg)(?:\?.*)?$/i) ||
-        srcUrl.includes('images.unsplash.com/') ||
-        srcUrl.includes('imgur.com/') ||
-        srcUrl.includes('media.giphy.com/') ||
-        srcUrl.includes('upload.wikimedia.org/')) {
-      _renderImageCard(a, srcUrl, href);
-      return;
-    }
+    // All other image link renders are BLOCKED ❌
   });
 
-  // 3. Group all visual media cards into grid
+  // 3. Group visual media cards into grid (only YT cards now)
   groupPreviewCardsIntoGrid(container);
 }
