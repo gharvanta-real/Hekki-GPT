@@ -1,5 +1,13 @@
 [
   {
+    "timestamp": "2026-08-06T09:16:55.000000",
+    "type": "bug_fix",
+    "title": "Fixed Left Sidebar Forked Chat Icon Badge & Title Rendering",
+    "description": "1. Updated renderChatsList in session.js to use sharp Lucide git-fork badge icon (<i data-lucide=\"git-fork\"></i>) for forked/branched chats instead of broken unicode surrogate pair question mark diamonds (). 2. Stripped raw emoji prefixes from chat titles so forked threads render as clean 'Branch: [Title]' in the sidebar.",
+    "reason": "Fulfilled user screenshot & UX fix request: replace broken diamond question mark badge with sharp Lucide git-fork icon on sidebar chat items.",
+    "impact": "100% clean sidebar chat items for forked threads."
+  },
+  {
     "timestamp": "2026-08-06T09:11:50.000000",
     "type": "ui_redesign",
     "title": "Added Legacy Flat Citation Hover Tooltips & Domain Category Badges",

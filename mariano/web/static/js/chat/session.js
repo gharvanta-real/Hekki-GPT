@@ -74,8 +74,8 @@ export const ChatSessionManager = {
     const clonedMessages = JSON.parse(JSON.stringify(sourceChat.messages.slice(0, targetIdx + 1)));
 
     const activeProj = localStorage.getItem('hekki_active_project');
-    const baseTitle = (sourceChat.title || 'Chat').replace(/^🔀 Branch: /i, '');
-    const newTitle = `🔀 Branch: ${baseTitle}`;
+    const baseTitle = (sourceChat.title || 'Chat').replace(/^🔀\s*/i, '').replace(/^Branch:\s*/i, '');
+    const newTitle = `Branch: ${baseTitle}`;
 
     const newChat = {
       id: 'chat_' + Date.now(),
@@ -340,11 +340,23 @@ export const ChatSessionManager = {
           const item = document.createElement('div');
           item.className = 'section-item';
           if (c.id === _activeChatId) item.classList.add('active');
-          item.title = c.title;
-          const badgeText = c.pinned ? '' : c.title.substring(0, 1).toUpperCase();
+
+          const cleanTitle = (c.title || '').replace(/^🔀\s*/, '');
+          item.title = cleanTitle;
+
+          let badgeContent = '';
+          if (c.pinned) {
+            badgeContent = '<i data-lucide="pin" style="width:11px; height:11px; display:inline-block;"></i>';
+          } else if (c.forkedFrom || cleanTitle.toLowerCase().startsWith('branch:')) {
+            badgeContent = '<i data-lucide="git-fork" style="width:11px; height:11px; display:inline-block;"></i>';
+          } else {
+            const firstChar = Array.from(cleanTitle)[0] || 'C';
+            badgeContent = firstChar.toUpperCase();
+          }
+
           item.innerHTML = `
-            <span class="badge" style="${c.pinned ? 'font-size:11px;' : ''}">${badgeText}</span>
-            <span class="lbl">${c.title}</span>
+            <span class="badge" style="display:inline-flex; align-items:center; justify-content:center;">${badgeContent}</span>
+            <span class="lbl">${escapeHtml(cleanTitle)}</span>
             <span class="opt" style="cursor:pointer; display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px">
               <i data-lucide="more-horizontal" style="width:14px; height:14px; pointer-events:none"></i>
             </span>
@@ -357,6 +369,7 @@ export const ChatSessionManager = {
           optBtn.addEventListener('click', (e) => { e.stopPropagation(); this.toggleDropdown(e, c.id, optBtn, c.pinned); });
           chatList.appendChild(item);
         });
+        if (window.lucide) lucide.createIcons({ parent: chatList });
       }
     }
 
