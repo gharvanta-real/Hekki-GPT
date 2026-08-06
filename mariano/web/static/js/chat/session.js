@@ -5,7 +5,7 @@ import { createMessageElement, createToolGroupCard } from './messages.js';
 import { enhanceImagePreviews } from './media.js';
 import { escapeHtml } from './input.js';
 
-let _activeChatId = localStorage.getItem('hekki_active_chat_id') || null;
+let _activeChatId = localStorage.getItem('hekki_active_chat_id') || localStorage.getItem('mariano_active_chat_id') || null;
 let _globalSendCallback = null;
 
 export const ChatSessionManager = {
@@ -15,11 +15,15 @@ export const ChatSessionManager = {
     _activeChatId = id;
     _setActive(id);
     if (id) {
+      localStorage.setItem('hekki_active_chat_id', id);
+      localStorage.setItem('mariano_active_chat_id', id);
       const chat = this.getChats().find(c => c.id === id);
       if (chat && window.updateTitleBreadcrumb) {
         window.updateTitleBreadcrumb(chat.project || localStorage.getItem('hekki_active_project'), chat.title);
       }
     } else {
+      localStorage.removeItem('hekki_active_chat_id');
+      localStorage.removeItem('mariano_active_chat_id');
       if (window.updateTitleBreadcrumb) {
         window.updateTitleBreadcrumb(localStorage.getItem('hekki_active_project'), '');
       }
@@ -35,6 +39,7 @@ export const ChatSessionManager = {
 
   saveChats(chats) {
     localStorage.setItem('hekki_chats', JSON.stringify(chats));
+    localStorage.setItem('mariano_chats', JSON.stringify(chats));
     if (window.isServerOffline) return;
     fetch('/api/chats/sync', {
       method: 'POST',
@@ -121,8 +126,7 @@ export const ChatSessionManager = {
     chats = chats.filter(c => c.id !== id);
     this.saveChats(chats);
     if (_activeChatId === id) {
-      _activeChatId = null;
-      localStorage.removeItem('hekki_active_chat_id');
+      this.setActiveChatId(null);
       const activeProj = localStorage.getItem('hekki_active_project');
       const btnId = activeProj ? 'btn-new-code-chat' : 'btn-new-chat';
       document.getElementById(btnId)?.click();
@@ -235,8 +239,7 @@ export const ChatSessionManager = {
     const chat = chats.find(c => c.id === id);
     if (!chat) return;
 
-    _activeChatId = id;
-    localStorage.setItem('hekki_active_chat_id', id);
+    this.setActiveChatId(id);
 
     if (window.socket && window.socket.readyState === WebSocket.OPEN) {
       try {
@@ -299,7 +302,6 @@ export const ChatSessionManager = {
     const isNewChat = chat.messages.length === 0;
     if (window.inConversationState) window.inConversationState.val = !isNewChat;
     if (isNewChat) {
-      clearChatLogs();
       document.getElementById('home-screen')?.classList.remove('hidden');
       document.getElementById('bottom-input-bar')?.classList.add('hidden');
     } else {

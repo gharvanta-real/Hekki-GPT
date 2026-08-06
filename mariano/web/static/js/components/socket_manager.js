@@ -16,10 +16,10 @@ export function rebindSocket(onMessageCallback, log) {
     reconnectAttempts = 0;
     window.isServerOffline = false;
     log('WS connected. Syncing active session...', 'ok');
-    const activeChatId = localStorage.getItem('mariano_active_chat_id');
+    const activeChatId = localStorage.getItem('hekki_active_chat_id') || localStorage.getItem('mariano_active_chat_id');
     if (activeChatId) {
       try {
-        const chats = JSON.parse(localStorage.getItem('mariano_chats') || '[]');
+        const chats = JSON.parse(localStorage.getItem('hekki_chats') || localStorage.getItem('mariano_chats') || '[]');
         const chat = chats.find(c => c.id === activeChatId);
         if (chat && chat.messages) {
           const simplified = chat.messages.map(m => ({
@@ -62,9 +62,9 @@ export function rebindSocket(onMessageCallback, log) {
 }
 
 export function send(text, enterConversation, log) {
-  const activeProj = localStorage.getItem('mariano_active_project');
-  const activePath = localStorage.getItem('mariano_active_project_path');
-  const activeChatId = localStorage.getItem('mariano_active_chat_id');
+  const activeProj = localStorage.getItem('hekki_active_project') || localStorage.getItem('mariano_active_project');
+  const activePath = localStorage.getItem('hekki_active_project_path') || localStorage.getItem('mariano_active_project_path');
+  const activeChatId = localStorage.getItem('hekki_active_chat_id') || localStorage.getItem('mariano_active_chat_id');
 
   const files = attachmentManager.getFiles();
   const attachments = files.map(f => ({

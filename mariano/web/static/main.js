@@ -394,10 +394,11 @@ function boot() {
   });
 
   // Restore active chat if stored in localStorage
-  const storedId = localStorage.getItem('mariano_active_chat_id');
+  const storedId = localStorage.getItem('hekki_active_chat_id') || localStorage.getItem('mariano_active_chat_id');
   if (storedId) {
     const chats = ChatSessionManager.getChats();
-    if (chats.some(c => c.id === storedId)) {
+    const activeChat = chats.find(c => c.id === storedId);
+    if (activeChat) {
       ChatSessionManager.loadChat(storedId);
       enterConversation();
     }
@@ -596,13 +597,11 @@ function bindShortcuts() {
 
 //  CONVERSATION MODE 
 function enterConversation() {
-  if (inConversationState) inConversationState.val = true;
+  inConversationState.val = true;
   
   // Show convo pane, hide welcome pane
-  const homeScreen = document.getElementById('home-screen');
-  if (homeScreen) homeScreen.classList.add('hidden');
-  const bottomBar = document.getElementById('bottom-input-bar');
-  if (bottomBar) bottomBar.classList.remove('hidden');
+  document.getElementById('home-screen')?.classList.add('hidden');
+  document.getElementById('bottom-input-bar')?.classList.remove('hidden');
   document.getElementById('chat-input-conv')?.focus();
 }
 
