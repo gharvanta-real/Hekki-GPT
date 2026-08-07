@@ -214,8 +214,13 @@
 }
 
 .canvas-line-numbers div {
-  height: 20px;
-  line-height: 20px;
+  font-size: 11px;
+  color: var(--text-3);
+  box-sizing: border-box;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding-right: 2px;
 }
 
 .canvas-code-textarea {
@@ -231,8 +236,9 @@
   border: none;
   outline: none;
   resize: none;
-  white-space: pre;
-  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-x: hidden;
   overflow-y: auto;
   box-sizing: border-box;
 }
@@ -318,7 +324,7 @@
   color: #0f172a;
   letter-spacing: 0.04em;
   margin: 0 0 6px 0;
-  text-transform: uppercase;
+  text-transform: none;
 }
 
 .paper-contact-info {
@@ -336,7 +342,7 @@
   margin-top: 22px;
   margin-bottom: 10px;
   font-weight: 700;
-  text-transform: uppercase;
+  text-transform: none;
   letter-spacing: 0.04em;
 }
 

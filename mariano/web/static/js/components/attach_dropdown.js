@@ -96,7 +96,7 @@ export function initAttachDropdowns(inConversationState) {
           const singleModel = ARENA_MODELS[0] || { id: 'gemini-3.1-flash-lite', name: 'Gemini 3.1 Flash Lite' };
 
           sub.innerHTML = `
-            <div class="sub-dropdown-header" style="font-size:10px; color:var(--text-3); font-weight:600; padding:4px 8px 2px; text-transform:uppercase; letter-spacing:0.04em;">PLAYGROUND MODE</div>
+            <div class="sub-dropdown-header" style="font-size:10px; color:var(--text-3); font-weight:600; padding:4px 8px 2px;">Playground Mode</div>
             <div class="attach-dropdown-item" style="opacity:0.75; cursor:default; justify-content:space-between; padding:6px 8px;">
               <div style="display:flex; align-items:center; gap:8px;">
                 <i data-lucide="check" style="width:13px; height:13px; color:var(--text-3);"></i>
@@ -151,7 +151,7 @@ export function initAttachDropdowns(inConversationState) {
           }).join('');
 
           sub.innerHTML = `
-            <div class="sub-dropdown-header" style="font-size:10px; color:var(--text-3); font-weight:600; padding:4px 8px 2px; text-transform:uppercase; letter-spacing:0.04em;">PLAYGROUND MODELS</div>
+            <div class="sub-dropdown-header" style="font-size:10px; color:var(--text-3); font-weight:600; padding:4px 8px 2px;">Playground Models</div>
             ${itemsHtml}
             <div class="attach-dropdown-sep" style="margin:2px 0;"></div>
             <button id="btn-activate-arena-plus" class="attach-dropdown-item" style="font-weight:500; color:var(--text); justify-content:center; padding:6px 8px; cursor:pointer; width:100%; border:none; background:transparent; border-radius:6px;">

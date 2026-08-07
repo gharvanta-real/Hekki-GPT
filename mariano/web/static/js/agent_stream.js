@@ -429,7 +429,8 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
 
       const card = document.createElement('div');
       card.className = 'permission-request-card';
-      card.style.border = 'none';
+      card.style.border = '1px solid var(--border)';
+      card.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.05)';
       card.style.borderRadius = '12px';
       card.style.background = 'var(--card)';
       card.style.margin = '14px 0';

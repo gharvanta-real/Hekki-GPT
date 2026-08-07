@@ -1,0 +1,245 @@
+/* === REDESIGNED MODAL PILL BUTTONS === */
+.modal-nav-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background-color: var(--sidebar-bg);
+  border: none !important;
+  border-radius: 20px;
+  box-shadow: none !important;
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 500;
+  font-family: var(--font);
+  cursor: pointer;
+  transition: all 0.12s ease;
+  height: 28px;
+}
+.modal-nav-pill:hover {
+  background-color: var(--hover);
+  color: var(--text-primary);
+}
+.modal-nav-pill.active {
+  background-color: var(--text-primary) !important;
+  color: var(--bg) !important;
+}
+body.dark .modal-nav-pill {
+  background-color: #1c1c1c;
+  border: none !important;
+  box-shadow: none !important;
+}
+body.dark .modal-nav-pill:hover {
+  background-color: #252525;
+}
+body.dark .modal-nav-pill.active {
+  background-color: #ffffff !important;
+  color: #101010 !important;
+}
+
+/* Outlined Cancel Pill for Modals */
+.btn-cancel-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 16px;
+  background: transparent !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 20px !important;
+  color: var(--text-secondary) !important;
+  font-size: 11px;
+  font-weight: 500;
+  font-family: var(--font);
+  cursor: pointer;
+  transition: all 0.12s ease;
+  height: 28px;
+}
+.btn-cancel-outline:hover {
+  border-color: var(--text-secondary) !important;
+}
+
+/* Modal header fade-out blur overlay below the top nav line */
+.modal-header {
+  position: relative !important;
+}
+.modal-header::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -16px; /* hangs below the header border line */
+  height: 16px;
+  background: linear-gradient(to bottom, var(--card), transparent);
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Projects Sidebar folder list styling */
+.project-group {
+  margin-top: 4px;
+}
+.project-group-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.12s;
+  position: relative;
+}
+.project-group-title:hover {
+  background: var(--hover) !important;
+}
+.project-group-title-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-2);
+  font-size: 13px;
+  font-weight: 500;
+}
+.project-group-title:hover .project-group-title-left {
+  color: var(--text);
+}
+.project-group-ops-btn {
+  opacity: 0; /* hidden by default, shown on hover */
+  transition: opacity 0.12s, color 0.12s;
+  background: none;
+  border: none;
+  color: var(--text-3);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  border-radius: 4px;
+}
+.project-group-title:hover .project-group-ops-btn,
+.project-group-ops-btn:focus,
+.project-group-ops-btn:active {
+  opacity: 1; /* show on hover */
+}
+.project-group-ops-btn:hover {
+  background: var(--hover-2) !important;
+  color: var(--text) !important;
+}
+.tree-chevron {
+  width: 14px;
+  height: 14px;
+  color: var(--text-3);
+  transition: transform 0.12s;
+}
+
+/* ── Sidebar User Profile (Settings Trigger Card) ── */
+.sidebar-user-profile {
+  display: flex;
+  align-items: center;
+  padding: 8px 10px;
+  border-top: none !important;
+  cursor: pointer;
+  background: var(--input-bg, #f6f7f9);
+  transition: background 0.15s ease, transform 0.12s ease;
+  flex-shrink: 0;
+  gap: 10px;
+  position: relative;
+  z-index: 100;
+  margin: 8px 10px 12px 10px;
+  border-radius: 10px;
+  border: none !important;
+  box-shadow: none !important;
+}
+.sidebar-user-profile:hover {
+  background: var(--hover, #e2e8f0);
+}
+.sidebar-user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: var(--hover);
+  padding: 2px;
+  border: none !important;
+  box-shadow: none !important;
+}
+body.dark .sidebar-user-avatar {
+  background: #27272a;
+}
+.sidebar-user-info {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  min-width: 0; /* truncate */
+}
+.sidebar-user-name {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+}
+.sidebar-user-plan {
+  display: none !important;
+}
+
+/* User Menu Dropdown — opens RIGHT side, outside leftbar into main content area with clean outline border */
+.user-menu-dropdown {
+  position: fixed;
+  bottom: 16px;
+  left: 268px; /* sidebar 260px + 8px gap — opens in main content area, not inside leftbar */
+  width: 240px;
+  background: var(--card) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 12px;
+  padding: 6px !important;
+  box-shadow: none !important;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+.user-menu-dropdown.hidden {
+  display: none;
+}
+.user-menu-header {
+  font-size: 12px;
+  color: var(--text-3);
+  padding: 6px 10px 4px;
+  font-weight: 500;
+}
+.user-menu-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 4px 0;
+}
+.user-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 6px !important;
+  background: transparent;
+  border: none !important;
+  cursor: pointer;
+  color: var(--text) !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  font-family: var(--font);
+  transition: background 0.12s;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: left;
+}
+.user-menu-item:hover {
+  background: var(--hover) !important;
+}
+.user-menu-item i,
+.user-menu-item svg,
+.user-menu-item .lucide {
+  width: 15px !important;
+  height: 15px !important;
+  color: var(--text-2) !important;
+  flex-shrink: 0;
+}

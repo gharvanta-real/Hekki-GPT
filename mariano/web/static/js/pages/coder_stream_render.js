@@ -97,7 +97,7 @@ function _enhanceCodeBlocks(container) {
     btn.addEventListener('click', () => {
       navigator.clipboard.writeText(block.textContent).then(() => {
         btn.textContent = 'Copied!';
-        setTimeout(() => { btn.textContent = 'Copy'; }, 1500);
+        setTimeout(() => { btn.textContent = 'Copy'; }, 3000);
       });
     });
     pre.appendChild(btn);

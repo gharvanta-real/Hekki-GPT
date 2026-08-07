@@ -22,9 +22,11 @@ export function createMessageElement(type, text, timestamp, index, ChatSessionMa
     group.dataset.index = index;
 
     const imgRegex = /\[Attached Image:\s*([^\(]+)\s*\(saved at ([^\]]+)\)\]/g;
+    const fileRegex = /\[Attached File:\s*([^\]]+)\]/g;
     let match;
-    const imageCards = [];
+    const attachmentCards = [];
 
+    // Extract images
     while ((match = imgRegex.exec(text)) !== null) {
       const fileName = match[1].trim();
       const rawPath = match[2].trim();
@@ -32,21 +34,40 @@ export function createMessageElement(type, text, timestamp, index, ChatSessionMa
         ? rawPath
         : `/api/workspace/render?path=${encodeURIComponent(rawPath)}`;
 
-      imageCards.push(`
+      attachmentCards.push(`
         <div style="align-self: flex-end; margin-bottom: 4px; border-radius: 12px; overflow: hidden; width: 120px; height: 120px; border: 1px solid var(--border); flex-shrink: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.12);">
           <img src="${renderUrl}" alt="${escapeHtml(fileName)}" style="width: 120px; height: 120px; object-fit: cover; display: block;" />
         </div>
       `);
     }
 
-    if (imageCards.length > 0) {
-      const imgContainer = document.createElement('div');
-      imgContainer.style.display = 'flex';
-      imgContainer.style.flexDirection = 'column';
-      imgContainer.style.alignItems = 'flex-end';
-      imgContainer.style.gap = '4px';
-      imgContainer.innerHTML = imageCards.join('');
-      group.appendChild(imgContainer);
+    // Extract non-image files (PDFs, DOCX, TXT, CSV, etc.)
+    while ((match = fileRegex.exec(text)) !== null) {
+      const fileName = match[1].trim();
+      const extMatch = fileName.match(/\.([a-z0-9]+)$/i);
+      const ext = extMatch ? extMatch[1].toUpperCase() : 'FILE';
+      let iconName = 'file-text';
+      if (['ZIP', 'RAR', '7Z', 'TAR', 'GZ'].includes(ext)) iconName = 'archive';
+      else if (['PY', 'JS', 'HTML', 'CSS', 'JSON', 'CPP', 'C', 'TS'].includes(ext)) iconName = 'file-code';
+
+      attachmentCards.push(`
+        <div class="user-file-attachment-card" style="align-self: flex-end; margin-bottom: 4px; padding: 7px 12px; border-radius: 12px; background: var(--card, #ffffff); border: 1px solid var(--border) !important; display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--text-primary); font-weight: 500; max-width: 280px; box-shadow: 0 2px 6px rgba(0,0,0,0.06);">
+          <i data-lucide="${iconName}" style="width: 16px; height: 16px; color: var(--accent, #2563eb); flex-shrink: 0;"></i>
+          <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1;">${escapeHtml(fileName)}</span>
+          <span style="font-size: 9.5px; background: rgba(37, 99, 235, 0.12); color: var(--accent, #2563eb); padding: 1px 6px; border-radius: 6px; text-transform: uppercase; font-weight: 600; flex-shrink: 0;">${ext}</span>
+        </div>
+      `);
+    }
+
+    if (attachmentCards.length > 0) {
+      const attachContainer = document.createElement('div');
+      attachContainer.style.display = 'flex';
+      attachContainer.style.flexDirection = 'column';
+      attachContainer.style.alignItems = 'flex-end';
+      attachContainer.style.gap = '4px';
+      attachContainer.style.width = '100%';
+      attachContainer.innerHTML = attachmentCards.join('');
+      group.appendChild(attachContainer);
     }
 
     let cleanText = text.replace(/\[Attached Image:[^\]]+\]/g, '').replace(/\[Attached File:[^\]]+\]/g, '').replace(/\[Active Workspace Context:[^\]]+\]/g, '').trim();
@@ -103,14 +124,15 @@ export function createMessageElement(type, text, timestamp, index, ChatSessionMa
     `;
     group.appendChild(actions);
 
-    actions.querySelector('.btn-copy').addEventListener('click', () => {
+    const userCopyBtn = actions.querySelector('.btn-copy');
+    userCopyBtn.addEventListener('click', () => {
       navigator.clipboard.writeText(text).then(() => {
-        const copyIcon = actions.querySelector('.btn-copy i');
-        if (copyIcon) {
-          copyIcon.setAttribute('data-lucide', 'check');
-          if (window.lucide) lucide.createIcons();
-          setTimeout(() => { copyIcon.setAttribute('data-lucide', 'copy'); if (window.lucide) lucide.createIcons(); }, 1500);
-        }
+        userCopyBtn.innerHTML = '<i data-lucide="check" style="color:#16a34a"></i>';
+        if (window.lucide) lucide.createIcons({ parent: userCopyBtn });
+        setTimeout(() => {
+          userCopyBtn.innerHTML = '<i data-lucide="copy"></i>';
+          if (window.lucide) lucide.createIcons({ parent: userCopyBtn });
+        }, 3000);
       });
     });
 
@@ -223,11 +245,13 @@ export function createMessageElement(type, text, timestamp, index, ChatSessionMa
         }
         const matches = allContent.match(urlRegex) || [];
         const domains = new Set();
+        const ignoreList = ['localhost', '127.0.0.1', 'cloudflare.com', 'cloudflare.net', 'nel.cloudflare.com', 'w3.org', 'schema.org', 'gstatic.com', 'googleapis.com'];
         matches.forEach(u => {
           try {
-            const parsed = new URL(u);
-            let host = parsed.hostname.replace(/^www\./, '');
-            if (host && host.includes('.') && !host.includes('localhost') && !host.includes('127.0.0.1')) {
+            const cleanUrl = u.replace(/[`'"><\)]+$/, '');
+            const parsed = new URL(cleanUrl);
+            let host = parsed.hostname.toLowerCase().replace(/^www\./, '').trim();
+            if (host && host.includes('.') && !ignoreList.some(ig => host === ig || host.endsWith('.' + ig))) {
               domains.add(host);
             }
           } catch (err) {}
@@ -247,12 +271,12 @@ export function createMessageElement(type, text, timestamp, index, ChatSessionMa
           faviconsHtml = `
             <div class="ai-bottom-right-sources" style="display:inline-flex; align-items:center; gap:5px; margin-right:auto; flex-wrap:wrap; opacity:0.9;">
               ${domainList.map(dom => {
-                const faviconUrl = `https://www.google.com/s2/favicons?domain=${dom}&sz=32`;
+                const faviconUrl = `https://www.google.com/s2/favicons?domain=${encodeURIComponent(dom)}&sz=32`;
                 const cat = getCat(dom);
                 const catSpan = cat ? `<span style="font-size:10px; opacity:0.75; margin-left:2px; font-weight:400;">${cat}</span>` : '';
                 return `
                   <a href="https://${dom}" target="_blank" rel="noopener noreferrer" title="Verified Source: ${dom}" style="display:inline-flex; align-items:center; gap:4px; padding:2px 7px; border-radius:4px; background:rgba(255,255,255,0.05); font-size:11px; color:var(--text-secondary); font-family:var(--font); text-decoration:none; transition:background 0.15s;">
-                    <img src="${faviconUrl}" style="width:12px; height:12px; border-radius:2px;" onerror="this.style.display='none'">
+                    <img src="${faviconUrl}" style="width:12px; height:12px; border-radius:2px;" onerror="this.onerror=null; this.style.display='none';">
                     <span style="max-width:110px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:500;">${dom}</span>
                     ${catSpan}
                   </a>
@@ -306,15 +330,16 @@ export function createMessageElement(type, text, timestamp, index, ChatSessionMa
           actions.insertBefore(canvasActionBtn, actions.firstChild);
         }
 
-        actions.querySelector('.btn-copy').addEventListener('click', () => {
+        const aiCopyBtn = actions.querySelector('.btn-copy');
+        aiCopyBtn.addEventListener('click', () => {
           const cleanText = text.replace(/<think>[\s\S]*?<\/think>/i, '').trim();
           navigator.clipboard.writeText(cleanText).then(() => {
-            const copyIcon = actions.querySelector('.btn-copy i');
-            if (copyIcon) {
-              copyIcon.setAttribute('data-lucide', 'check');
-              if (window.lucide) lucide.createIcons();
-              setTimeout(() => { copyIcon.setAttribute('data-lucide', 'copy'); if (window.lucide) lucide.createIcons(); }, 1500);
-            }
+            aiCopyBtn.innerHTML = '<i data-lucide="check" style="color:#16a34a"></i>';
+            if (window.lucide) lucide.createIcons({ parent: aiCopyBtn });
+            setTimeout(() => {
+              aiCopyBtn.innerHTML = '<i data-lucide="copy"></i>';
+              if (window.lucide) lucide.createIcons({ parent: aiCopyBtn });
+            }, 3000);
           });
         });
 

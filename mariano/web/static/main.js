@@ -28,10 +28,13 @@ import { ImagesPage } from '/static/js/pages/images_page.js';
 // Interactive Live Canvas Engine (Claude Canvas style)
 import { LiveCanvasEngine } from '/static/js/components/live_canvas.js';
 import { SlashMenuManager } from '/static/js/components/slash_menu.js';
+import { ChatMinimapManager } from '/static/js/components/chat_minimap.js';
 
 window.updateModelPills = updateModelPills;
 window.showToast = showToast;
 window.handleDebateEvent = handleDebateEvent;
+window.ChatMinimapManager = ChatMinimapManager;
+
 
 
 
@@ -307,6 +310,19 @@ function boot() {
   bindTitlebarActions();
   new SearchModal(ChatSessionManager);
   window.slashMenu = new SlashMenuManager((text) => send(text, enterConversation, log));
+
+  // Initialize Chat and Debate Minimaps
+  window.chatMinimap = new ChatMinimapManager({ containerSelector: '#chat-log', paneSelector: '#chat-pane', isDebate: false });
+  window.debateMinimap = new ChatMinimapManager({ containerSelector: '#debate-stream-container', paneSelector: '#debate-pane', isDebate: true });
+
+  router.onRefresh((page) => {
+    if (page === 'chat' && window.chatMinimap) {
+      window.chatMinimap.refresh();
+    } else if ((page === 'debate' || page === 'playground') && window.debateMinimap) {
+      window.debateMinimap.refresh();
+    }
+  });
+
 
   // Setup WS events routing and logs reconnect loops
   setupSocketEvents(

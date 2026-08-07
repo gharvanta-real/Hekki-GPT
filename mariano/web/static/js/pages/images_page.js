@@ -306,15 +306,6 @@ export class ImagesPage {
       <div class="library-container">
         <h1 class="library-main-title">Library</h1>
 
-        <!-- Documents Section -->
-        <div class="library-section">
-          <h2 class="library-section-title">Documents</h2>
-          <div class="library-empty-box">
-            <i data-lucide="file-plus-2" class="library-empty-icon"></i>
-            <div class="library-empty-text">Documents that you create will appear here</div>
-          </div>
-        </div>
-
         <!-- Media Section -->
         <div class="library-section">
           <h2 class="library-section-title">Media</h2>

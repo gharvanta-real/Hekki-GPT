@@ -3,37 +3,43 @@
 <!-- SETTINGS MODAL -->
 <div id="settings-modal" class="modal-overlay hidden">
   <div class="modal-box">
-    <!-- Left nav -->
+    <!-- Left nav (Always secondary background tint) -->
     <div class="modal-nav">
-      <div style="display:flex;align-items:center;gap:10px;padding:12px 14px 8px;">
+      <div style="display:flex;align-items:center;gap:10px;padding:12px 14px 12px;">
         <img src="/static/hekki.png" alt="Hekki" style="width:28px;height:28px;border-radius:8px;">
         <span style="font-weight:600;font-size:15px;color:var(--text-primary);">Hekki</span>
       </div>
-      <div class="modal-search">
-        <i data-lucide="search" style="color:var(--text-3)"></i>
-        <input type="text" placeholder="Search settings" id="settings-search">
-      </div>
-      <div class="nav-group-label">General</div>
+
       <button class="modal-nav-item active" data-section="general">
         <i class="mi" data-lucide="user"></i> Identity
       </button>
       <button class="modal-nav-item" data-section="appearance">
         <i class="mi" data-lucide="palette"></i> Appearance
       </button>
-      <div class="nav-group-label">AI & Model</div>
-      <button class="modal-nav-item" data-section="account">
-        <i class="mi" data-lucide="key"></i> API &amp; Model
+
+      <button class="modal-nav-item" data-section="gemini">
+        <i class="mi" data-lucide="sparkles"></i> Gemini API
+      </button>
+      <button class="modal-nav-item" data-section="gateway">
+        <i class="mi" data-lucide="server"></i> Local Gateway
+      </button>
+      <button class="modal-nav-item" data-section="reasoning">
+        <i class="mi" data-lucide="brain"></i> Reasoning Mode
       </button>
       <button class="modal-nav-item" data-section="kaggle">
         <i class="mi" data-lucide="cpu"></i> Kaggle GPU
       </button>
-      <div class="nav-group-label">Tools</div>
+
       <button class="modal-nav-item" data-section="skills">
-        <i class="mi" data-lucide="compass"></i> Skills
+        <i class="mi" data-lucide="compass"></i> Skills &amp; Plugins
+      </button>
+      <button class="modal-nav-item" data-section="about">
+        <i class="mi" data-lucide="info"></i> About Hekki
       </button>
     </div>
 
-    <!-- Right content -->
+
+    <!-- Right content (Always main page background color) -->
     <div class="modal-content">
       <button class="modal-close" id="btn-close-settings"><i data-lucide="x"></i></button>
 
@@ -84,8 +90,8 @@
         </div>
       </section>
 
-      <!-- API & MODEL -->
-      <section class="settings-section" id="section-account">
+      <!-- GEMINI API -->
+      <section class="settings-section" id="section-gemini">
         <h2 class="section-title">Gemini API Key</h2>
         <p class="section-sub">Required to use Hekki with Gemini. Get your key from <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:var(--text-primary);text-decoration:underline;">Google AI Studio &rarr;</a></p>
         <div class="settings-row border-b" style="flex-direction:column;align-items:flex-start;gap:8px;">
@@ -109,20 +115,11 @@
             <option value="openrouter_nemotron">Nemotron 3 Ultra (OpenRouter)</option>
           </select>
         </div>
+      </section>
 
-        <h2 class="section-title" style="margin-top:28px">Reasoning Mode</h2>
-        <p class="section-sub">How deeply Hekki thinks before responding.</p>
-        <div class="settings-row border-b">
-          <span class="row-label">Mode</span>
-          <select class="settings-select" id="settings-reasoning-mode">
-            <option value="fast">Fast — Quick, direct answers</option>
-            <option value="normal">Normal — Balanced</option>
-            <option value="pro">Pro — Research and deep analysis</option>
-            <option value="thinking">Thinking — Full chain-of-thought</option>
-          </select>
-        </div>
-
-        <h2 class="section-title" style="margin-top:28px">Local Universal Model Gateway</h2>
+      <!-- LOCAL GATEWAY -->
+      <section class="settings-section" id="section-gateway">
+        <h2 class="section-title">Local Universal Model Gateway</h2>
         <p class="section-sub">Connect Hekki to ANY local model (Ollama, LM Studio, vLLM, Jan.ai, LocalAI, LiteLLM) via standard OpenAI-compatible API. Zero files required per model.</p>
         <div class="settings-row border-b">
           <span class="row-label" style="white-space:nowrap;">Enable Local Gateway</span>
@@ -141,10 +138,25 @@
           <span class="row-label" style="white-space:nowrap;">Active Local Model</span>
           <div style="display:flex; gap:8px; align-items:center; flex:1; justify-content:flex-end;">
             <select class="settings-input" id="settings-local-model-dropdown" style="width:260px; font-size:12.5px;">
-              <option value="">Click Fetch or select model...</option>
+              <option value="">Click Fetch or type Base URL...</option>
             </select>
             <input id="settings-ollama-model" type="hidden">
           </div>
+        </div>
+      </section>
+
+      <!-- REASONING MODE -->
+      <section class="settings-section" id="section-reasoning">
+        <h2 class="section-title">Reasoning Mode</h2>
+        <p class="section-sub">How deeply Hekki thinks and plans before responding.</p>
+        <div class="settings-row border-b">
+          <span class="row-label">Thinking Depth</span>
+          <select class="settings-select" id="settings-reasoning-mode">
+            <option value="fast">Fast — Quick, direct answers</option>
+            <option value="normal">Normal — Balanced</option>
+            <option value="pro">Pro — Research and deep analysis</option>
+            <option value="thinking">Thinking — Full chain-of-thought</option>
+          </select>
         </div>
       </section>
 
@@ -184,9 +196,37 @@
 
       <!-- SKILLS -->
       <section class="settings-section" id="section-skills">
-        <h2 class="section-title">Active Skills</h2>
+        <h2 class="section-title">Active Skills &amp; Plugins</h2>
         <p class="section-sub">All skills registered and available to Hekki. Each runs as an isolated module.</p>
         <div class="skills-grid" id="skills-grid"></div>
+      </section>
+
+      <!-- ABOUT HEKKI -->
+      <section class="settings-section" id="section-about">
+        <h2 class="section-title">About Hekki</h2>
+        <p class="section-sub">System specifications &amp; architecture ledger.</p>
+        <div style="display:flex;flex-direction:column;gap:12px;background:var(--hover);padding:16px;border-radius:12px;margin-top:12px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;">
+            <span style="color:var(--text-3);">Version</span>
+            <span style="font-weight:600;color:var(--text-primary);font-family:monospace;">v1.4.1-unclustered-settings</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;">
+            <span style="color:var(--text-3);">CPU</span>
+            <span style="color:var(--text-2);">Intel 11th Gen Core i5-1135G7</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;">
+            <span style="color:var(--text-3);">System RAM</span>
+            <span style="color:var(--text-2);">8.0 GB DDR4</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;">
+            <span style="color:var(--text-3);">GPU Acceleration</span>
+            <span style="color:var(--text-2);">Intel Iris Xe Graphics (2GB Shared) + Kaggle Cloud</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;">
+            <span style="color:var(--text-3);">Architecture Rules</span>
+            <span style="color:var(--text-2);">Rule #1 (Ledger), Rule #2 (&lt;500 Lines), Rule #3 (Flat), Rule #5 (Title Case)</span>
+          </div>
+        </div>
       </section>
 
     </div><!-- end modal-content -->
@@ -367,12 +407,17 @@
           </div>
         </div>
 
-        <!-- Playground Chats Group -->
-        <div class="nav-section" id="nav-section-playground" style="display:none; margin-top: 6px;">
-          <div class="section-hdr" style="display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: var(--text-3); letter-spacing: 0.02em; font-weight: 500; margin-bottom: 2px; padding: 0 4px;">
-            <span>Playground Chats</span>
+        <!-- Playground & Debate Chats Group (Collapsible) -->
+        <div class="nav-section" id="nav-section-playground" style="display:none; margin-top: 8px;">
+          <div class="section-hdr collapsible-hdr" id="hdr-section-playground" style="display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: var(--text-3); letter-spacing: 0.02em; font-weight: 600; margin-bottom: 4px; padding: 4px 6px; cursor: pointer; user-select: none; border-radius: 6px; transition: background 0.15s ease;">
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <i data-lucide="swords" style="width: 13px; height: 13px; color: var(--accent, #2563eb);"></i>
+              <span>Debates & Playgrounds</span>
+              <span class="badge-count" id="playground-count" style="font-size: 10px; background: rgba(37, 99, 235, 0.1); color: var(--accent, #2563eb); padding: 1px 6px; border-radius: 10px; font-weight: 500;">0</span>
+            </div>
+            <i data-lucide="chevron-down" class="section-chevron" id="chevron-playground" style="width: 12px; height: 12px; transition: transform 0.2s ease;"></i>
           </div>
-          <div class="section-list" id="playground-list">
+          <div class="section-list" id="playground-list" style="transition: all 0.2s ease;">
             <!-- Injected dynamically by chat.js -->
           </div>
         </div>
@@ -761,7 +806,7 @@
           <h4 style="margin: 0; font-size: 13px; font-weight: 600; color: var(--text-primary);">New Workspace</h4>
           
           <div>
-            <label style="display:block; font-size:11px; color:var(--text-secondary); margin-bottom:6px; text-transform:uppercase; letter-spacing:0.04em;">Workspace Name</label>
+            <label style="display:block; font-size:11px; font-weight:600; color:var(--text-secondary); margin-bottom:6px;">Workspace Name</label>
             <input type="text" id="input-new-name" placeholder="e.g. coffee-brand" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; font-size:12px; background: var(--bg); color: var(--text-primary); outline: none;">
           </div>
           
@@ -781,7 +826,7 @@
           <h4 style="margin: 0; font-size: 13px; font-weight: 600; color: var(--text-primary);">Open Existing</h4>
           
           <div>
-            <label style="display:block; font-size:11px; color:var(--text-secondary); margin-bottom:6px; text-transform:uppercase; letter-spacing:0.04em;">Local Folder Path</label>
+            <label style="display:block; font-size:11px; font-weight:600; color:var(--text-secondary); margin-bottom:6px;">Local Folder Path</label>
             <div style="display:flex; gap:8px;">
               <input type="text" id="input-exist-path" placeholder="e.g. C:\Projects\my-site" style="flex:1; padding:8px 12px; border:1px solid var(--border); border-radius:6px; font-size:12px; background:var(--bg); color:var(--text-primary); outline: none;">
               <button id="btn-browse-folder" style="padding:0 12px; background:var(--hover); color:var(--text-primary); border:1px solid var(--border); border-radius:6px; font-size:11px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:6px;">
@@ -850,13 +895,13 @@
       </div>
 
       <div>
-        <label style="display:block; font-size:11px; color:var(--text-3); text-transform:uppercase; letter-spacing:0.04em; margin-bottom:6px;">Project Name</label>
+        <label style="display:block; font-size:11px; font-weight:600; color:var(--text-3); margin-bottom:6px;">Project Name</label>
         <input id="coder-new-project-name" type="text" placeholder="e.g. coffee-brand"
           style="width:100%; padding:8px 12px; border:1px solid var(--border); border-radius:6px; font-size:13px; background:var(--bg); color:var(--text); outline:none; box-sizing:border-box; font-family:var(--font);">
       </div>
 
       <div style="background:var(--hover); border-radius:6px; padding:8px 12px; font-size:11px; line-height:1.4;">
-        <div style="color:var(--text-3); font-size:10px; text-transform:uppercase; margin-bottom:2px;">Target Path</div>
+        <div style="color:var(--text-3); font-size:10px; font-weight:600; margin-bottom:2px;">Target Path</div>
         <div style="font-family:monospace; color:var(--text-2);">data/workspaces/&lt;name&gt;</div>
       </div>
 
@@ -876,7 +921,7 @@
       </div>
 
       <div>
-        <label style="display:block; font-size:11px; color:var(--text-3); text-transform:uppercase; letter-spacing:0.04em; margin-bottom:6px;">Local Folder Path</label>
+        <label style="display:block; font-size:11px; font-weight:600; color:var(--text-3); margin-bottom:6px;">Local Folder Path</label>
         <div style="display:flex; gap:8px;">
           <input id="coder-exist-path" type="text" placeholder="e.g. D:\\Projects\\my-site"
             style="flex:1; padding:8px 12px; border:1px solid var(--border); border-radius:6px; font-size:13px; background:var(--bg); color:var(--text); outline:none; font-family:monospace; box-sizing:border-box;">
@@ -888,7 +933,7 @@
       </div>
 
       <div style="background:var(--hover); border-radius:6px; padding:8px 12px; font-size:11px; line-height:1.4;">
-        <div style="color:var(--text-3); font-size:10px; text-transform:uppercase; margin-bottom:2px;">Selected Path Preview</div>
+        <div style="color:var(--text-3); font-size:10px; font-weight:600; margin-bottom:2px;">Selected Path Preview</div>
     </div>
     <div class="modal-body" style="padding: 14px 0 0 0; width: 100%;">
       <div class="select-folder-label" style="font-size: 13px; color: var(--text-2); margin-bottom: 12px; text-align: left;">Select Folder(s)</div>
@@ -952,13 +997,13 @@
       </div>
 
       <div>
-        <label style="display:block; font-size:11px; color:var(--text-3); text-transform:uppercase; letter-spacing:0.04em; margin-bottom:6px;">Project Name</label>
+        <label style="display:block; font-size:11px; font-weight:600; color:var(--text-3); margin-bottom:6px;">Project Name</label>
         <input id="coder-new-project-name" type="text" placeholder="e.g. coffee-brand"
           style="width:100%; padding:8px 12px; border:1px solid var(--border); border-radius:6px; font-size:13px; background:var(--bg); color:var(--text); outline:none; box-sizing:border-box; font-family:var(--font);">
       </div>
 
       <div style="background:var(--hover); border-radius:6px; padding:8px 12px; font-size:11px; line-height:1.4;">
-        <div style="color:var(--text-3); font-size:10px; text-transform:uppercase; margin-bottom:2px;">Target Path</div>
+        <div style="color:var(--text-3); font-size:10px; font-weight:600; margin-bottom:2px;">Target Path</div>
         <div style="font-family:monospace; color:var(--text-2);">data/workspaces/&lt;name&gt;</div>
       </div>
 
@@ -978,7 +1023,7 @@
       </div>
 
       <div>
-        <label style="display:block; font-size:11px; color:var(--text-3); text-transform:uppercase; letter-spacing:0.04em; margin-bottom:6px;">Local Folder Path</label>
+        <label style="display:block; font-size:11px; font-weight:600; color:var(--text-3); margin-bottom:6px;">Local Folder Path</label>
         <div style="display:flex; gap:8px;">
           <input id="coder-exist-path" type="text" placeholder="e.g. D:\\Projects\\my-site"
             style="flex:1; padding:8px 12px; border:1px solid var(--border); border-radius:6px; font-size:13px; background:var(--bg); color:var(--text); outline:none; font-family:monospace; box-sizing:border-box;">
@@ -990,7 +1035,7 @@
       </div>
 
       <div style="background:var(--hover); border-radius:6px; padding:8px 12px; font-size:11px; line-height:1.4;">
-        <div style="color:var(--text-3); font-size:10px; text-transform:uppercase; margin-bottom:2px;">Selected Path Preview</div>
+        <div style="color:var(--text-3); font-size:10px; font-weight:600; margin-bottom:2px;">Selected Path Preview</div>
         <div id="coder-exist-path-preview" style="font-family:monospace; color:var(--text-2); word-break:break-all;">—</div>
       </div>
 

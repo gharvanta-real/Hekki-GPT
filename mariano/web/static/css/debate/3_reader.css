@@ -16,7 +16,7 @@
   height: 48px;
   background: var(--bg);
   border-bottom: 1px solid var(--border);
-  padding: 0 16px;
+  padding: 0 140px 0 16px !important;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -131,10 +131,9 @@
 .doc-sec-badge {
   display: inline-flex;
   align-items: center;
-  font-size: 9px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: none;
   padding: 3px 10px;
   border-radius: 20px; /* pill shape - same as all other chips */
   color: var(--text-secondary);
@@ -337,7 +336,7 @@
   height: 24px; /* fixed height for alignment */
 }
 
-/* The dashed line running behind the buttons */
+/* Subtle dashed line running behind the buttons */
 .bubble-control-bar::before {
   content: '';
   position: absolute;
@@ -355,18 +354,17 @@
 .btn-bubble-copy {
   position: relative;
   z-index: 2;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   background-color: var(--sidebar-bg); /* bg secondary */
-  border: none !important; /* outline/border remove */
+  border: 1px solid var(--border) !important;
   border-radius: 20px; /* pill round shape */
-  padding: 5px 12px;
+  padding: 4px 14px;
   color: var(--text-secondary);
   font-size: 11px;
   font-family: var(--font);
   cursor: pointer;
-  transition: background-color 0.12s, color 0.12s;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); /* subtle shadow to stand out */
+  transition: background-color 0.12s, color 0.12s, border-color 0.12s;
 }
 
 .btn-bubble-toggle:hover,

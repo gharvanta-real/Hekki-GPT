@@ -287,7 +287,7 @@ export class LiveCanvasEngine {
     return `
       <div class="canvas-editor-wrapper">
         <div class="canvas-line-numbers" id="canvas-line-numbers"></div>
-        <textarea id="canvas-code-input" class="canvas-code-textarea" spellcheck="false" wrap="off">${this._escapeHtml(art.code)}</textarea>
+        <textarea id="canvas-code-input" class="canvas-code-textarea" spellcheck="false" wrap="soft">${this._escapeHtml(art.code)}</textarea>
       </div>
     `;
   }
@@ -334,7 +334,7 @@ export class LiveCanvasEngine {
           setTimeout(() => {
             btn.innerHTML = `<i data-lucide="copy" style="width:13px;height:13px;"></i> Copy`;
             if (window.lucide) lucide.createIcons({ parent: btn });
-          }, 1500);
+          }, 3000);
         }
       });
     });
@@ -393,18 +393,45 @@ export class LiveCanvasEngine {
     const codeInput = this._appPane.querySelector('#canvas-code-input');
     const lineNumbers = this._appPane.querySelector('#canvas-line-numbers');
 
+    let mirrorContainer = document.getElementById('canvas-editor-mirror');
+    if (!mirrorContainer) {
+      mirrorContainer = document.createElement('div');
+      mirrorContainer.id = 'canvas-editor-mirror';
+      mirrorContainer.style.cssText = 'position:absolute; visibility:hidden; height:auto; white-space:pre-wrap; word-break:break-word; font-family:var(--font); font-size:12.5px; line-height:1.6; padding:14px; box-sizing:border-box; top:-9999px; left:-9999px; pointer-events:none;';
+      document.body.appendChild(mirrorContainer);
+    }
+
     const updateLineNumbers = () => {
       if (!codeInput || !lineNumbers) return;
-      const count = (codeInput.value.match(/\n/g) || []).length + 1;
-      let html = '';
-      for (let i = 1; i <= count; i++) {
-        html += `<div>${i}</div>`;
+
+      const clientWidth = codeInput.clientWidth;
+      if (clientWidth > 0) {
+        mirrorContainer.style.width = `${clientWidth}px`;
       }
-      lineNumbers.innerHTML = html;
+
+      const textValue = codeInput.value;
+      const lines = textValue.split('\n');
+
+      let mirrorHtml = '';
+      lines.forEach((l) => {
+        const escaped = this._escapeHtml(l) || '&nbsp;';
+        mirrorHtml += `<div class="mirror-line" style="min-height:20px;">${escaped}</div>`;
+      });
+      mirrorContainer.innerHTML = mirrorHtml;
+
+      const mirrorLines = mirrorContainer.querySelectorAll('.mirror-line');
+      let lineNumHtml = '';
+
+      mirrorLines.forEach((mLine, idx) => {
+        const h = mLine.getBoundingClientRect().height || 20;
+        lineNumHtml += `<div style="height:${h}px; line-height:20px;">${idx + 1}</div>`;
+      });
+
+      lineNumbers.innerHTML = lineNumHtml;
     };
 
     if (codeInput) {
-      updateLineNumbers();
+      setTimeout(updateLineNumbers, 50);
 
       codeInput.addEventListener('input', (e) => {
         if (this._activeArtifact) {
@@ -412,6 +439,8 @@ export class LiveCanvasEngine {
         }
         updateLineNumbers();
       });
+
+      window.addEventListener('resize', updateLineNumbers);
 
       if (lineNumbers) {
         codeInput.addEventListener('scroll', () => {

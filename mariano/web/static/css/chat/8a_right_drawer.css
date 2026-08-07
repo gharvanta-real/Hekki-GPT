@@ -1,0 +1,462 @@
+/* ==========================================================================
+   RIGHT DRAWER PANEL & FLOATING PLAN TOGGLE
+   ========================================================================== */
+
+/* When drawer is closed (right-drawer has class hidden) */
+#main:has(#right-drawer.hidden) .main-plan-toggle-btn {
+  position: absolute;
+  top: 14px;
+  right: 24px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%; /* circular bg */
+  border: none; /* no border, secondary chip style */
+  background: var(--sidebar-bg); /* secondary background color */
+  box-shadow: none; /* no heavy shadow */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 999;
+  transition: all 0.15s ease;
+  color: var(--text-2);
+}
+
+/* When drawer is open (right-drawer does NOT have class hidden) */
+#main:has(#right-drawer:not(.hidden)) .main-plan-toggle-btn {
+  position: absolute;
+  top: 24px; /* aligned with the tabs area row */
+  right: 420px; /* sit perfectly centered horizontally on the split border line of the drawer */
+  transform: translate(50%, -50%);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%; /* circular styling */
+  border: 1px solid var(--border); /* subtle border to separate from drawer panel split line */
+  background: var(--sidebar-bg); /* secondary background */
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10001; /* make sure it's above the drawer left border */
+  transition: all 0.15s ease;
+  color: var(--text-2);
+}
+
+/* Monochromatic Live Terminal Output Block */
+.tool-live-log,
+.tool-terminal-block {
+  width: 100%;
+  margin-top: 6px;
+  padding: 10px 12px;
+  background: var(--input-bg, #212226);
+  color: var(--text-primary, #e2e8f0);
+  border-radius: 8px;
+  font-family: var(--font-mono, "JetBrains Mono", monospace);
+  font-size: 11.5px;
+  line-height: 1.55;
+  max-height: 240px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  white-space: pre-wrap;
+  word-break: break-all;
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Light Theme: Soft neutral secondary light gray tint (NOT black) */
+body:not(.dark):not(.oled) .tool-live-log,
+body:not(.dark):not(.oled) .tool-terminal-block {
+  background: #F4F5F8 !important;
+  color: #1e293b !important;
+}
+
+/* Dark Theme: Soft monochromatic dark slate gray (NOT pitch black #000000, NOT white) */
+body.dark .tool-live-log,
+body.dark .tool-terminal-block {
+  background: #252528 !important;
+  color: #e2e8f0 !important;
+}
+
+/* OLED Theme: Soft dark charcoal surface on OLED pitch black (NOT white) */
+body.oled .tool-live-log,
+body.oled .tool-terminal-block {
+  background: #18181c !important;
+  color: #e4e4e7 !important;
+}
+
+/* Common and hover states */
+.main-plan-toggle-btn:hover {
+  background: var(--hover);
+  border-color: var(--border);
+  transform: scale(1.05); /* subtle micro-animation hover */
+}
+
+/* Handle open state translate scale combination */
+#main:has(#right-drawer:not(.hidden)) .main-plan-toggle-btn:hover {
+  transform: translate(50%, -50%) scale(1.08);
+}
+
+.main-plan-toggle-btn.hidden {
+  display: none !important;
+}
+
+.main-plan-toggle-btn svg {
+  width: 15px;
+  height: 15px;
+  color: var(--text-2);
+}
+
+/* Right Drawer Panel container */
+.right-drawer-panel {
+  width: 420px;
+  height: 100%;
+  background: var(--card);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+  overflow: hidden;
+  opacity: 1;
+}
+
+.right-drawer-panel.hidden {
+  width: 0 !important;
+  opacity: 0 !important;
+  border-left: none !important;
+  pointer-events: none;
+}
+
+.right-drawer-header,
+.right-drawer-body {
+  min-width: 420px;
+}
+
+/* Drawer Header */
+.right-drawer-header {
+  height: 48px;
+  padding: 0 16px;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.15); /* narrow horizontal line height style */
+  display: flex;
+  align-items: flex-end; /* Align tabs to bottom to allow space beneath */
+  padding-bottom: 6px; /* halka space under the tabs */
+  background: var(--card); /* white background in light mode */
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.right-drawer-tabs {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto; /* horizontal scrolling */
+  white-space: nowrap;
+  scrollbar-width: none; /* hide Firefox scrollbar */
+  width: 100%;
+}
+
+.right-drawer-tabs::-webkit-scrollbar {
+  display: none; /* hide Chrome/Safari scrollbar */
+}
+
+.drawer-tab {
+  height: 26px; /* sleek tab height */
+  flex-shrink: 0; /* prevent squishing in scroll container */
+  padding: 0 10px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-2);
+  font-family: var(--font);
+  font-size: 13.5px;
+  font-weight: 400;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: all 0.12s;
+}
+
+.drawer-tab:hover {
+  background: var(--hover);
+  color: var(--text);
+}
+
+.drawer-tab.active {
+  background: var(--hover); /* secondary color active state */
+  border-color: var(--border);
+  color: var(--text);
+}
+
+/* Close button inside each tab - visible only on active or hovered states */
+.tab-close-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  margin-left: 8px;
+  border-radius: 50%;
+  color: var(--text-3);
+  font-size: 9px;
+  font-weight: normal;
+  line-height: 1;
+  opacity: 0.6;
+  transition: opacity 0.12s, background 0.12s, color 0.12s;
+}
+
+.drawer-tab:hover .tab-close-btn,
+.drawer-tab.active .tab-close-btn {
+  opacity: 1;
+}
+
+.tab-close-btn:hover {
+  background: rgba(0, 0, 0, 0.1);
+  color: var(--text);
+}
+
+[data-theme="dark"] .tab-close-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+
+/* Drawer Body */
+.right-drawer-body {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 20px;
+  font-family: var(--font);
+  color: var(--text);
+  min-height: 0;
+}
+
+.drawer-tab-content {
+  display: none;
+}
+
+.drawer-tab-content.active {
+  display: block;
+}
+
+/* Diff formatting */
+.diff-body {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--text-2);
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  line-height: 1.5;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  border: none;
+}
+
+/* Colors for git diff lines */
+.diff-line-add {
+  color: #16a34a !important;
+  background: rgba(22, 163, 74, 0.05);
+}
+
+.diff-line-del {
+  color: #ea4335 !important;
+  background: rgba(234, 67, 53, 0.05);
+}
+
+.diff-line-meta {
+  color: #2563eb !important;
+  font-weight: 600;
+}
+
+/* Right Drawer Markdown overrides for clean, organized, compact content */
+#right-drawer .markdown-body {
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--text-2);
+}
+
+#right-drawer .markdown-body h1 {
+  font-size: 14.5px; /* Mid-sized heading */
+  font-weight: 500;  /* Medium weight, not bold */
+  margin-top: 0;
+  margin-bottom: 12px;
+  color: var(--text);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 8px;
+}
+
+#right-drawer .markdown-body h2 {
+  font-size: 13px;
+  font-weight: 500;
+  margin-top: 18px;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+
+#right-drawer .markdown-body h3 {
+  font-size: 12px;
+  font-weight: 500;
+  margin-top: 14px;
+  margin-bottom: 6px;
+  color: var(--text);
+}
+
+#right-drawer .markdown-body p,
+#right-drawer .markdown-body ul,
+#right-drawer .markdown-body ol {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+#right-drawer .markdown-body li {
+  margin-bottom: 4px;
+}
+
+#right-drawer .markdown-body hr {
+  margin: 16px 0;
+  border: none;
+  border-top: 1px solid var(--border);
+}
+
+
+/* ==========================================================================
+   DRAWER — SESSION SELECTOR ROW
+   ========================================================================== */
+
+.drawer-session-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 16px 6px 14px;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.1);
+  background: var(--card);
+  min-width: 420px;
+  flex-shrink: 0;
+}
+
+.drawer-session-label {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--text-3);
+  text-transform: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.drawer-session-sep {
+  color: var(--text-3);
+  font-size: 10px;
+  flex-shrink: 0;
+}
+
+.drawer-session-select {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--font-mono, monospace);
+  font-size: 10.5px;
+  color: var(--text-2);
+  background: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.drawer-session-select:hover { color: var(--text); }
+
+.drawer-session-badge {
+  flex-shrink: 0;
+  font-size: 10px;
+  color: var(--text-3);
+  font-family: var(--font-mono, monospace);
+  white-space: nowrap;
+}
+
+
+/* ==========================================================================
+   DRAWER — LOADING / EMPTY / ERROR STATES
+   ========================================================================== */
+
+.drawer-loading {
+  color: var(--text-3);
+  font-size: 12px;
+  padding: 24px 0;
+  text-align: center;
+  animation: drawer-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes drawer-pulse {
+  0%, 100% { opacity: 0.5; }
+  50%       { opacity: 1;   }
+}
+
+.drawer-empty-msg {
+  color: var(--text-3);
+  font-size: 12px;
+  line-height: 1.6;
+  padding: 16px 0;
+  margin: 0;
+}
+
+.drawer-empty-msg code {
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  background: var(--hover);
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
+.drawer-error {
+  color: #ea4335 !important;
+}
+
+.diff-empty {
+  color: var(--text-3);
+  font-size: 12px;
+  padding: 16px 0;
+}
+
+
+/* ==========================================================================
+   DRAWER — TASK CHECKBOXES
+   Cursor / industry standard: [ ] pending  [/] in-progress  [x] done
+   ========================================================================== */
+
+.drawer-tasks-body input[type="checkbox"] {
+  display: none; /* We replace them with .task-cb spans via JS */
+}
+
+/* Our custom rendered checkbox status indicator */
+.task-cb {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  font-size: 12px;
+  vertical-align: middle;
+  margin-right: 6px;
+  flex-shrink: 0;
+  background: transparent !important;
+  border: none !important;
+}
+
+/* ✓ Done — simple green */
+.task-cb--done {
+  color: #16a34a;
+}
+
+/* ⟳ In Progress — simple amber */
+.task-cb--wip {
+  color: #d97706;
+}
+
+/* ○ Pending — simple dim gray */
+.task-cb--todo {
+  color: var(--text-3);
+}

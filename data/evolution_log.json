@@ -1,296 +1,45 @@
 [
   {
-    "timestamp": "2026-08-06T21:30:30Z",
-    "version": "1.3.1-local-gateway-ux-refinement",
-    "category": "UX & Layout",
-    "summary": "Fixed Settings Modal Local Gateway layout: single dropdown select and non-wrapping labels",
-    "details": "Cleaned up Local Gateway settings row in index.html and settings.js. Converted active local model selector into a single unified dropdown, hid duplicate text input, enforced white-space:nowrap on row labels to prevent multi-line vertical text wrapping, and updated Fetch button styling to flat borderless theme tokens.",
+    "timestamp": "2026-08-07T09:56:45Z",
+    "version": "1.9.0-hide-scroll-arrow-on-welcome-home-screen",
+    "category": "UX & Conditional Visibility",
+    "summary": "Scroll-to-bottom arrow now only shows on active chat page, not on home/welcome screen",
+    "details": "Added home-screen visibility check in chat_minimap.js updateScrollTracking(). Arrow button only shows when #home-screen has class 'hidden' (i.e., user is in an active conversation).",
     "files": [
-      "mariano/web/static/index.html",
-      "mariano/web/static/js/settings.js"
+      "mariano/web/static/js/components/chat_minimap.js"
     ]
   },
   {
-    "timestamp": "2026-08-06T21:28:50Z",
-    "version": "1.3.0-universal-local-gateway",
-    "category": "Architecture & Integration",
-    "summary": "Implemented Universal OpenAI-Compatible Local Gateway with dynamic model auto-discovery",
-    "details": "Upgraded Hekki to support any local model server (Ollama, LM Studio, vLLM, Jan.ai, LocalAI, LiteLLM) via standard OpenAI /v1/chat/completions REST streaming protocol. Added /api/local_models backend auto-discovery route and interactive 'Fetch Models' dropdown UI in Settings so users can run any local model without creating model-specific code files.",
+    "timestamp": "2026-08-07T09:51:00Z",
+    "version": "1.8.9-remove-documents-section-and-media-card-box",
+    "category": "UX & Layout Simplification",
+    "summary": "Removed Documents section from Library and removed background card box from Media empty state",
+    "details": "Removed Documents section accordion from images_page.js, and set background: transparent !important and border: none !important on .img-gallery-empty in 8c_image_gallery.css.",
     "files": [
-      "mariano/config/settings.py",
-      "mariano/web/routes/settings.py",
-      "mariano/gemini/client.py",
-      "mariano/web/static/index.html",
-      "mariano/web/static/js/settings.js"
+      "mariano/web/static/js/pages/images_page.js",
+      "mariano/web/static/css/chat/8c_image_gallery.css"
     ]
   },
   {
-    "timestamp": "2026-08-06T21:19:50Z",
-    "version": "1.2.1-nsis-build",
-    "category": "Packaging & Release",
-    "summary": "Recompiled standalone executable backend and built updated NSIS installer",
-    "details": "Recompiled backend Python engine into single standalone binary backend_dist/hekki_backend.exe (110.32 MB) via PyInstaller. Packaged production Electron desktop app using electron-builder into standalone Windows NSIS setup installer dist/Hekki Setup 1.0.0.exe (193.52 MB).",
+    "timestamp": "2026-08-07T09:49:20Z",
+    "version": "1.8.8-library-empty-box-light-mode-card-visibility",
+    "category": "UX & Theme Styling",
+    "summary": "Fixed Library empty state cards (Documents & Media) visibility in Light Mode",
+    "details": "Updated .library-empty-box and .img-gallery-empty in 8c_image_gallery.css by setting background: var(--hover) and border: 1px solid var(--border), ensuring soft grey card container contrast against white background in Light mode.",
     "files": [
-      "backend_dist/hekki_backend.exe",
-      "dist/Hekki Setup 1.0.0.exe"
+      "mariano/web/static/css/chat/8c_image_gallery.css"
     ]
   },
   {
-    "timestamp": "2026-08-06T21:15:20Z",
-    "version": "1.2.0-live-canvas-mount-fix",
-    "category": "UX & Bug Fix",
-    "summary": "Fixed LiveCanvasEngine script import in main.js to activate side-by-side Canvas panel",
-    "details": "Imported LiveCanvasEngine in main.js to instantiate window.liveCanvas globally on load. Added lazy DOM element resolution in LiveCanvasEngine (showPane, hidePane, _setupResizer) to ensure side-by-side Canvas workspace (#app-pane) opens smoothly when clicking Canvas or preview buttons.",
-    "files": [
-      "mariano/web/static/main.js",
-      "mariano/web/static/js/components/live_canvas.js"
-    ]
-  },
-  {
-    "timestamp": "2026-08-06T21:08:00Z",
-    "version": "1.1.9-expert-debate-progress-logs",
-    "category": "UX & Bug Fix",
-    "summary": "Fixed SkillResult TypeError and introduced round-by-round progress log streaming for Expert Debate",
-    "details": "Fixed positional argument data mismatch in SkillResult constructor inside ExpertDebateSkill. Added stream_execute async generator to ExpertDebateSkill and updated WebSocket event callback in app.py to emit clean, flat, line-by-line tool_log events for each debate round (Round 1/N, Round 2/N, Synthesis & Summary) for complete execution transparency without heavy visual clutter.",
-    "files": [
-      "mariano/skills/core_skills/expert_debate/skill.py",
-      "mariano/web/app.py"
-    ]
-  },
-  {
-    "timestamp": "2026-08-06T16:26:45Z",
-    "version": "1.1.8-exe-nsis-bundle",
-    "category": "Packaging & Release",
-    "summary": "Compiled standalone executable backend and packaged Electron NSIS installer",
-    "details": "Compiled backend Python engine into single standalone binary backend_dist/hekki_backend.exe (110.32 MB) with PyInstaller (bundled static, routes, skills, rules data). Packaged production Electron desktop application using electron-builder into standalone Windows NSIS setup installer dist/Hekki Setup 1.0.0.exe (184.55 MB).",
-    "files": [
-      "build_backend.py",
-      "package.json",
-      "backend_dist/hekki_backend.exe",
-      "dist/Hekki Setup 1.0.0.exe"
-    ]
-  },
-    "timestamp": "2026-08-06T16:22:30Z",
-    "version": "1.1.7-two-theme-streamline",
-    "category": "UI & Appearance",
-    "summary": "Streamlined visual themes to exclusively Light and OLED Black modes (removed middle slate dark theme)",
-    "details": "Completely removed 3-way dark slate theme cycle. System now features clean 2-way toggle between Light Mode ('light') and OLED Pure Black ('oled'). Standardized default theme to OLED Black, updated settings modal options, updated _applyTheme and bindThemeToggle functions in layout_controls.js, and migrated legacy 'dark' preference keys to 'oled'.",
-    "files": [
-      "mariano/web/static/index.html",
-      "mariano/web/static/js/components/layout_controls.js",
-      "mariano/web/static/js/settings.js"
-    ]
-  },
-    "timestamp": "2026-08-06T12:00:00Z",
-    "version": "1.0.5-red-team-dual-ops",
-    "category": "Offensive + Defensive Security",
-    "summary": "Added dual-mode Red/Blue cyber competition operator skill (red_team_ops)",
-    "details": "New red_team_ops skill with CTF/competition participant persona for the user's team. Modes: red (attack-path scoreboard), blue (defense work queue), dual (both). No side bias, no policy sermons. Orchestrates recon_scanner + security_header_analyzer. Persona directive at mariano/config/rules/cyber_competition_persona.md. Blue directive mirrored into repo. REST: POST /api/recon/red-team-ops. Agents skill: cyber_competition_ops.",
-    "files": [
-      "mariano/skills/core_skills/red_team_ops/skill.py",
-      "mariano/skills/core_skills/red_team_ops/manifest.json",
-      "mariano/config/rules/cyber_competition_persona.md",
-      "mariano/config/rules/blue_team_system_directive.md",
-      "mariano/skills/_registry/discovery.py",
-      "mariano/web/app.py",
-      ".agents/skills/cyber_competition_ops/SKILL.md",
-      ".agents/skills/recon_boundary_scanner/SKILL.md"
-    ]
-  },
-  {
-    "timestamp": "2026-08-06T09:47:11Z",
-    "version": "1.0.1-live-logs",
-    "category": "Feature",
-    "summary": "Real-time live terminal log streaming added",
-    "details": "run_command skill now uses stream_execute() async generator to yield stdout lines one-by-one as tool_log SSE events. react.py hooks stream_execute before buffered execute. registry.py gets get_skill(). agent_stream.js renders live lines in a monospace scrollable log block inside the tool card with color-coding for errors (red), commands (blue), and success (green).",
-    "files": [
-      "mariano/skills/core_skills/run_command/skill.py",
-      "mariano/skills/_base/skill_interface.py",
-      "mariano/skills/_registry/registry.py",
-      "mariano/core/agent/react.py",
-      "mariano/web/static/js/agent_stream.js"
-    ]
-  },
-  {
-    "timestamp": "2026-08-06T05:27:45.683681+00:00",
-    "version": "1.0.2-audit-fixed",
-    "category": "Audit & Bug Fix",
-    "summary": "Deep scan codebase audit completed with 0 errors remaining",
-    "details": "Fixed gemini_models.py brace syntax error, ExpertDebateSkill get_parameters_schema, slash_menu unassigned menuEl, OLED dark theme context menu background, Skills page responsiveness & metrics removal, and standardized font scale.",
-    "files": [
-      "mariano/providers/gemini_models.py",
-      "mariano/skills/core_skills/expert_debate/skill.py",
-      "mariano/web/static/js/components/slash_menu.js",
-      "mariano/web/static/css/layout.css",
-      "mariano/web/static/css/skills_page.css",
-      "mariano/web/static/js/pages/skills_page.js",
-      "mariano/web/static/js/debate/debate_page.js"
-    ]
-  },
-  {
-    "timestamp": "2026-08-06T05:37:49.010988+00:00",
-    "version": "1.0.3-opsec-guard",
-    "category": "Security & OPSEC",
-    "summary": "Added OPSEC IP leak checking & warning alerts to NetworkAnonymizer and ReconScannerSkill",
-    "details": "NetworkAnonymizer now includes check_opsec_ip_leak() to verify IP routing. ReconScannerSkill automatically injects an OPSEC Warning Alert Banner into markdown reports when scanning targets to flag potential IP exposure and confirm header masking.",
-    "files": [
-      "mariano/core/anonymizer.py",
-      "mariano/skills/core_skills/recon_scanner/skill.py"
-    ]
-  },
-  {
-    "timestamp": "2026-08-06T05:40:34.902032+00:00",
-    "version": "1.0.4-blue-team-defense",
-    "category": "Defensive Security",
-    "summary": "Activated Blue Team Defensive Security Specialist System Directive",
-    "details": "Configured system directive for defensive security, server hardening, security header auditing (CSP, HSTS, X-Frame-Options), log threat diagnostics, auto-remediation snippet generation, and OPSEC privacy enforcement.",
-    "files": [
-      "C:/Users/anshu/.gemini/antigravity/brain/b7e6b604-c777-45f3-ab76-86302dd7d865/blue_team_system_directive.md",
-      "mariano/skills/core_skills/security_header_analyzer/skill.py"
-    ]
-  }
-  ,
-  {
-    "timestamp": "2026-08-06T11:23:00+05:30",
-    "version": "1.0.6-red-team-validated",
-    "category": "Quality Assurance",
-    "summary": "Full red team skill chain tested and validated — 6/6 tests passed",
-    "details": "Ran complete end-to-end test suite (scratch/test_red_team.py). All 6 tests passed: (1) import chain BaseSkill/SkillRegistry/SkillLoader, (2) skill loading into registry for recon_scanner v3.0.0 + security_header_analyzer v3.0.0 + red_team_ops v1.0.0, (3) red_team_ops persona-only mode with correct structure output, (4) security_header_analyzer live on example.com returned grade F / CVSS 10.0 / 6 missing headers correctly, (5) recon_scanner live on example.com: 40 subdomains probed / 0 active / risk score 100/100, (6) full dual red+blue live run on example.com: 2 attack paths generated + 7 defense items. Identified recon_scanner active_endpoints=0 issue with example.com (expected — no *.example.com subdomains exist) — wordlist working correctly.",
-    "files": [
-      "scratch/test_red_team.py",
-      "mariano/skills/core_skills/recon_scanner/skill.py",
-      "mariano/skills/core_skills/security_header_analyzer/skill.py",
-      "mariano/skills/core_skills/red_team_ops/skill.py"
-    ]
-  }
-  ,
-  {
-    "timestamp": "2026-08-06T11:27:00+05:30",
-    "version": "1.0.7-anonymizer-proxy-upgrade",
-    "category": "Anonymity & Security",
-    "summary": "Enhanced NetworkAnonymizer proxy routing & added Apache remediations",
-    "details": "Added get_proxy_url() to NetworkAnonymizer to resolve SOCKS5_PROXY/HTTP_PROXY/HTTPS_PROXY environment variables. Integrated optional proxy_url parameter into recon_scanner skill. Added Apache (.htaccess) remediation code blocks to security_header_analyzer. Re-tested full suite with 6/6 PASS.",
-    "files": [
-      "mariano/core/anonymizer.py",
-      "mariano/skills/core_skills/recon_scanner/skill.py",
-      "mariano/skills/core_skills/security_header_analyzer/skill.py"
-    ]
-  }
-  ,
-  {
-    "timestamp": "2026-08-06T11:39:00+05:30",
-    "version": "1.0.8-single-monochrome-terminal",
-    "category": "UI & UX Optimization",
-    "summary": "Unified single live terminal view & monochromatic theme styling",
-    "details": "Removed duplicate 'Terminal Output' collapsible details box during command tool executions, enforcing a single unified live streaming terminal log block (.tool-live-log). Added monochromatic soft dark slate gray styling (#252528) for dark mode and soft neutral light gray tint (#F4F5F8) for light mode, eliminating pure black hardcoding.",
-    "files": [
-      "mariano/web/static/css/chat.css",
-      "mariano/web/static/js/agent_stream.js",
-      "mariano/web/static/js/chat/messages.js"
-    ]
-  }
-  ,
-  {
-    "timestamp": "2026-08-06T11:50:00+05:30",
-    "version": "1.0.9-theme-adaptive-terminal",
-    "category": "UI & UX Optimization",
-    "summary": "Fixed theme class selectors for terminal blocks (Dark/OLED/Light)",
-    "details": "Corrected CSS selectors for terminal containers from .dark-mode to body.dark and body.oled. Now Dark theme displays soft dark slate gray (#252528), OLED theme displays dark charcoal (#18181c), and Light theme displays soft neutral light gray (#F4F5F8), eliminating white box flashes in dark/OLED modes.",
-    "files": [
-      "mariano/web/static/css/chat.css"
-    ]
-  }
-  ,
-  {
-    "timestamp": "2026-08-06T11:53:00+05:30",
-    "version": "1.1.0-fresh-nsis-build",
-    "category": "Build & Distribution",
-    "summary": "Generated fresh Windows NSIS Installer (Hekki Setup 1.0.0.exe)",
-    "details": "Compiled standalone FastAPI backend executable (backend_dist/hekki_backend.exe, 110.27 MB) and bundled Electron desktop application into a fresh NSIS installer wizard package at dist/Hekki Setup 1.0.0.exe (193.48 MB). Configured desktop shortcuts, start menu entry, custom install path selection, and post-install auto-launch.",
-    "files": [
-      "dist/Hekki Setup 1.0.0.exe",
-      "backend_dist/hekki_backend.exe",
-      "package.json",
-      "build_backend.py"
-    ]
-  }
-  ,
-  {
-    "timestamp": "2026-08-06T12:01:00+05:30",
-    "version": "1.1.1-rebuild-verified",
-    "category": "Build & Distribution",
-    "summary": "Executed clean full rebuild with 0 errors",
-    "details": "Purged previous build caches and compiled clean backend executable (backend_dist/hekki_backend.exe, 110.28 MB) and fresh NSIS wizard installer package (dist/Hekki Setup 1.0.0.exe, 193.48 MB) via Task 242. All components verified clean and ready.",
-    "files": [
-      "dist/Hekki Setup 1.0.0.exe",
-      "backend_dist/hekki_backend.exe",
-      "data/evolution_log.json"
-    ]
-  }
-  ,
-  {
-    "timestamp": "2026-08-06T15:14:00+05:30",
-    "version": "1.1.2-light-theme-contrast-fix",
-    "category": "UI & UX Optimization",
-    "summary": "Fixed Light Theme text contrast & tool execution container visibility",
-    "details": "Replaced low-contrast --text-3 (#a1a1aa with 55% opacity) in agent_stream.js with --text-secondary (#52525b in Light Mode, #a1a1aa in Dark Mode) for crisp legibility across Light and Dark themes. Ensured tool-group-body defaults to display:flex so active tool actions are immediately visible when running.",
+    "timestamp": "2026-08-07T09:46:20Z",
+    "version": "1.8.7-permission-card-border-outline-and-artifact-text-wrap-sync",
+    "category": "UX & Editor Code Mirror",
+    "summary": "Added 1px border outline to permission request card and enabled soft line wrapping with height-synced line numbers in Live Canvas",
+    "details": "Updated permission-request-card in agent_stream.js with border: 1px solid var(--border) and box-shadow. Updated Live Canvas code editor in live_canvas.js and 9_live_canvas.css to set wrap='soft', white-space: pre-wrap, overflow-x: hidden (eliminating horizontal scrollbars), and implemented a hidden DOM mirror height calculation in updateLineNumbers() so line numbers stay 100% synchronized with wrapped lines.",
     "files": [
       "mariano/web/static/js/agent_stream.js",
-      "data/evolution_log.json"
-    ]
-  }
-  ,
-  {
-    "timestamp": "2026-08-06T15:31:00+05:30",
-    "version": "1.1.3-reactive-ui-refresh",
-    "category": "UI & UX Optimization",
-    "summary": "Fixed SPA stale component bug: no more hard refresh needed for selectors/model pill/slash chips",
-    "details": "Root cause: router.js same-page guard (line 116) was blocking all component re-initialization on same-page navigations. Fix: Added router.onRefresh() hook system and forceRefresh() API. model_selector.js now registers itself via registerModelPillRefresh() which auto-re-syncs model pills, lucide icons, and input bar state on every navigation. No more hard browser refresh required to see /web, model pill, or log updates.",
-    "files": [
-      "mariano/web/static/js/router.js",
-      "mariano/web/static/js/components/model_selector.js",
-      "mariano/web/static/main.js",
-      "data/evolution_log.json"
-    ]
-  }
-  ,
-  {
-    "timestamp": "2026-08-06T15:33:00+05:30",
-    "version": "1.1.4-swe-agent-mode-prompt",
-    "category": "AI Core & Prompting",
-    "summary": "Injected Full-Stack SWE Agent Mode into system prompt — eliminates partial 25-30 line code snippets",
-    "details": "Added FULL-STACK SWE AGENT MODE section to SYSTEM_PROMPT: forces complete production-ready file output every time, smart assumptions without clarification questions, one-shot full builds, minimum viable awesome design quality, and reprompt recovery with full file re-output. Also upgraded PLANNER_PROMPT with SWE Agent Code Quality Rules to ensure complete file generation at planning stage.",
-    "files": [
-      "mariano/config/system_prompt.py",
-      "data/evolution_log.json"
-    ]
-  }
-  ,
-  {
-    "timestamp": "2026-08-06T15:40:00+05:30",
-    "version": "1.1.5-fresh-exe-nsis-build",
-    "category": "Build & Distribution",
-    "summary": "Generated fresh Windows NSIS Installer & Standalone Backend EXE with SWE Agent Mode",
-    "details": "Successfully compiled standalone FastAPI backend binary at backend_dist/hekki_backend.exe (110.28 MB) with SWE Agent Mode system prompt, reactive UI refresh system, and security skills included. Bundled into fresh Windows installer wizard package at dist/Hekki Setup 1.0.0.exe (193.48 MB) with 0 errors.",
-    "files": [
-      "dist/Hekki Setup 1.0.0.exe",
-      "backend_dist/hekki_backend.exe",
-      "data/evolution_log.json"
-    ]
-  }
-  ,
-  {
-    "timestamp": "2026-08-06T15:52:00+05:30",
-    "version": "1.1.6-modular-arch-split",
-    "category": "Architecture & Refactoring",
-    "summary": "Modularized God CSS files and web/app.py into clean 5-Layer token sub-modules and FastAPI APIRouters",
-    "details": "Split chat.css (4,678 lines -> 10 lines with 9 @import sub-modules), layout.css (1,621 -> 7 lines), debate.css (1,759 -> 5 lines), coder.css (981 -> 4 lines). Modularized web/app.py (1,472 lines -> 927 lines) into 6 sub-router packages in mariano/web/routes/ (settings, chats, skills, canvas, images, recon). Extracted stream_utils.js into mariano/web/static/js/stream/. All 50 API routes verified working.",
-    "files": [
-      "mariano/web/app.py",
-      "mariano/web/routes/",
-      "mariano/web/static/css/",
-      "mariano/web/static/js/stream/stream_utils.js",
-      "data/evolution_log.json"
+      "mariano/web/static/js/components/live_canvas.js",
+      "mariano/web/static/css/chat/9_live_canvas.css"
     ]
   }
 ]

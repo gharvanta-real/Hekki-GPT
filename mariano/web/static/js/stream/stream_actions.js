@@ -26,11 +26,13 @@ export function attachAiActions(msgEl, text, toolRuns = []) {
 
   const matches = allContent.match(urlRegex) || [];
   const domains = new Set();
+  const ignoreList = ['localhost', '127.0.0.1', 'cloudflare.com', 'cloudflare.net', 'nel.cloudflare.com', 'w3.org', 'schema.org', 'gstatic.com', 'googleapis.com'];
   matches.forEach(u => {
     try {
-      const parsed = new URL(u);
-      let host = parsed.hostname.replace(/^www\./, '');
-      if (host && host.includes('.') && !host.includes('localhost') && !host.includes('127.0.0.1')) {
+      const cleanUrl = u.replace(/[`'"><\)]+$/, '');
+      const parsed = new URL(cleanUrl);
+      let host = parsed.hostname.toLowerCase().replace(/^www\./, '').trim();
+      if (host && host.includes('.') && !ignoreList.some(ig => host === ig || host.endsWith('.' + ig))) {
         domains.add(host);
       }
     } catch (err) {}
@@ -50,12 +52,12 @@ export function attachAiActions(msgEl, text, toolRuns = []) {
     faviconsHtml = `
       <div class="ai-bottom-right-sources" style="display:inline-flex; align-items:center; gap:5px; margin-right:auto; flex-wrap:wrap; opacity:0.9;">
         ${domainList.map(dom => {
-          const faviconUrl = `https://www.google.com/s2/favicons?domain=${dom}&sz=32`;
+          const faviconUrl = `https://www.google.com/s2/favicons?domain=${encodeURIComponent(dom)}&sz=32`;
           const cat = getCat(dom);
           const catSpan = cat ? `<span style="font-size:10px; opacity:0.75; margin-left:2px; font-weight:400;">${cat}</span>` : '';
           return `
             <a href="https://${dom}" target="_blank" rel="noopener noreferrer" title="Verified Source: ${dom}" style="display:inline-flex; align-items:center; gap:4px; padding:2px 7px; border-radius:4px; background:rgba(255,255,255,0.05); font-size:11px; color:var(--text-secondary); font-family:var(--font); text-decoration:none; transition:background 0.15s;">
-              <img src="${faviconUrl}" style="width:12px; height:12px; border-radius:2px;" onerror="this.style.display='none'">
+              <img src="${faviconUrl}" style="width:12px; height:12px; border-radius:2px;" onerror="this.onerror=null; this.style.display='none';">
               <span style="max-width:110px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:500;">${dom}</span>
               ${catSpan}
             </a>
@@ -107,18 +109,16 @@ export function attachAiActions(msgEl, text, toolRuns = []) {
     actions.insertBefore(canvasActionBtn, actions.firstChild);
   }
 
-  actions.querySelector('.btn-copy')?.addEventListener('click', () => {
+  const streamCopyBtn = actions.querySelector('.btn-copy');
+  streamCopyBtn?.addEventListener('click', () => {
     const cleanText = text.replace(/<think>[\s\S]*?<\/think>/i, '').trim();
     navigator.clipboard.writeText(cleanText).then(() => {
-      const copyIcon = actions.querySelector('.btn-copy i');
-      if (copyIcon) {
-        copyIcon.setAttribute('data-lucide', 'check');
-        if (window.lucide) lucide.createIcons({ parent: actions });
-        setTimeout(() => {
-          copyIcon.setAttribute('data-lucide', 'copy');
-          if (window.lucide) lucide.createIcons({ parent: actions });
-        }, 1500);
-      }
+      streamCopyBtn.innerHTML = '<i data-lucide="check" style="color:#16a34a"></i>';
+      if (window.lucide) lucide.createIcons({ parent: streamCopyBtn });
+      setTimeout(() => {
+        streamCopyBtn.innerHTML = '<i data-lucide="copy"></i>';
+        if (window.lucide) lucide.createIcons({ parent: streamCopyBtn });
+      }, 3000);
     });
   });
 

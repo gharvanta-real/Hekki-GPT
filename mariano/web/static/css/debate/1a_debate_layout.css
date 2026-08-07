@@ -1,0 +1,420 @@
+/* ============================================================
+   DEBATE LAYOUT & TOPBAR
+   ============================================================ */
+
+.debate-layout {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  overflow: hidden;
+}
+.debate-main-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  height: 100%;
+}
+
+/* ── Topbar ── */
+.debate-topbar {
+  height: 48px;
+  padding: 0 140px 0 18px !important;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg);
+  flex-shrink: 0;
+  gap: 12px;
+  position: relative;
+}
+.debate-topbar::after {
+  content: '';
+  position: absolute;
+  top: 48px; /* starts at bottom of topbar */
+  left: 0;
+  right: 0;
+  height: 30px;
+  background: linear-gradient(to top, transparent, var(--bg));
+  pointer-events: none;
+  z-index: 10;
+}
+
+.debate-topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.debate-topbar-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+.debate-model-tags {
+  display: none !important;
+}
+
+.debate-model-tag {
+  display: inline-flex;
+  align-items: center;
+  font-size: 10px;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 20px;
+  border: 1px solid var(--border) !important;
+  color: var(--text-secondary);
+  background-color: var(--card);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  transition: background-color 0.12s, color 0.12s;
+}
+.debate-model-tag .tag-name {
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.debate-model-tag .tag-model {
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 0;
+  opacity: 0;
+  transition: max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease, margin-left 0.2s ease;
+  vertical-align: bottom;
+}
+.debate-model-tags:hover .debate-model-tag .tag-model {
+  max-width: 180px;
+  opacity: 1;
+  margin-left: 4px;
+}
+.debate-model-vs {
+  font-size: 10px;
+  color: var(--text-3);
+  font-weight: 600;
+}
+.debate-topbar-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+.debate-status-pill,
+#btn-debate-pause {
+  display: none !important;
+}
+
+.debate-status-pill .dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--text-3);
+  flex-shrink: 0;
+}
+.debate-status-pill.running {
+  color: var(--text-secondary);
+  border-color: var(--text-secondary);
+}
+.debate-status-pill.running .dot {
+  background: var(--text-primary);
+}
+.debate-round-pill {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  padding: 3px 12px;
+  border: 1px solid var(--border) !important;
+  border-radius: 20px; /* pill shape */
+  background-color: var(--card);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+.debate-topbar-btn {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  padding: 4px 12px;
+  border: none !important;
+  border-radius: 20px; /* pill shape - same as bubble */
+  cursor: pointer;
+  background: var(--sidebar-bg);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  transition: background 0.12s, color 0.12s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font);
+}
+.debate-topbar-btn:hover {
+  background: var(--hover);
+  color: var(--text-primary);
+}
+.debate-back-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  margin-right: 4px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 6px; /* standard button ratio */
+  color: var(--text-secondary);
+  transition: background 0.12s, color 0.12s;
+}
+.debate-back-btn:hover {
+  background: var(--hover);
+  color: var(--text-primary);
+}
+
+.debate-content-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  height: 100%;
+  position: relative; /* contains .debate-doc-viewer (position:absolute) */
+}
+
+.debate-sidebar {
+  width: 260px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--border);
+  background: var(--bg);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  transition: width 0.25s ease, opacity 0.25s ease, border-right-width 0.25s ease;
+}
+.debate-layout.collapsed-sidebar .debate-sidebar {
+  width: 52px !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+.debate-sidebar-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow-y: auto;
+  flex-grow: 1;
+  padding: 0 8px;
+  font-family: var(--font);
+}
+.debate-layout.collapsed-sidebar .debate-sidebar-inner {
+  padding: 4px 6px !important;
+  align-items: center;
+}
+.debate-layout.collapsed-sidebar .debate-sidebar-section-label,
+.debate-layout.collapsed-sidebar .debate-sidebar-divider,
+.debate-layout.collapsed-sidebar .debate-sidebar-details,
+.debate-layout.collapsed-sidebar #btn-debate-sidebar-back,
+.debate-layout.collapsed-sidebar #btn-debate-search-nav,
+.debate-layout.collapsed-sidebar .nav-header-title {
+  display: none !important;
+}
+.debate-layout.collapsed-sidebar .nav-header {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: auto !important;
+  padding: 10px 0 6px !important;
+  gap: 8px !important;
+}
+.debate-layout.collapsed-sidebar .nav-header-logo-wrapper {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 36px !important;
+  height: 36px !important;
+  margin: 0 auto !important;
+}
+.debate-layout.collapsed-sidebar #btn-debate-sidebar-toggle {
+  width: 36px !important;
+  height: 36px !important;
+  min-width: 36px !important;
+  border-radius: 8px !important;
+  margin: 0 auto !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+.debate-layout.collapsed-sidebar .debate-sidebar-controls-list {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.debate-layout.collapsed-sidebar .debate-list-btn {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  padding: 0 !important;
+  justify-content: center;
+  border-radius: 8px;
+  margin: 0 auto;
+}
+.debate-layout.collapsed-sidebar .debate-list-btn span:not(#btn-sidebar-voice-icon-wrap) {
+  display: none !important;
+}
+.debate-layout.collapsed-sidebar #btn-sidebar-voice-icon-wrap {
+  margin: 0 !important;
+  display: inline-flex !important;
+}
+.debate-layout.collapsed-sidebar .debate-list-btn i,
+.debate-layout.collapsed-sidebar .debate-list-btn svg {
+  margin: 0 !important;
+  flex-shrink: 0;
+}
+
+#btn-debate-sidebar-toggle-main {
+  display: none !important;
+}
+.debate-sidebar-controls-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+}
+.debate-list-btn {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  height: 32px;
+  padding: 0 8px;
+  background-color: transparent;
+  border: none !important;
+  border-radius: 8px;
+  color: var(--text-2);
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+.debate-list-btn:hover {
+  background-color: var(--hover);
+  color: var(--text-primary);
+}
+.debate-list-btn i, .debate-list-btn svg {
+  color: var(--text-2);
+  stroke-width: 2.2px;
+  transition: color 0.12s ease, stroke-width 0.12s ease;
+}
+.debate-list-btn:hover i, .debate-list-btn:hover svg {
+  color: var(--text-primary);
+  stroke-width: 2.4px;
+}
+.debate-sidebar-section-label {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  font-family: var(--font);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-3);
+  margin-top: 4px;
+  margin-bottom: 2px;
+  letter-spacing: 0.02em;
+  padding: 0 8px !important;
+}
+.debate-sidebar-inner > .debate-sidebar-section-label:first-of-type {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+/* Cloud Message Style Droplist Menu with Direct Button Connection Node */
+.cloud-droplist-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 10px);
+  min-width: 140px;
+  background: var(--card, #1c1c1e);
+  border: 1px solid var(--border) !important;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25), 0 2px 8px rgba(0, 0, 0, 0.12);
+  z-index: 1000;
+  padding: 6px;
+  opacity: 0;
+  transform: translateY(-6px) scale(0.96);
+  transform-origin: top right;
+  transition: opacity 0.18s ease, transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+  display: none;
+}
+
+.cloud-droplist-menu.show {
+  display: block !important;
+  opacity: 1 !important;
+  transform: translateY(0) scale(1) !important;
+  pointer-events: auto !important;
+}
+
+/* Caret node pointing directly up to trigger button */
+.cloud-node-pointer {
+  position: absolute;
+  top: -6px;
+  right: 22px;
+  width: 10px;
+  height: 10px;
+  background: var(--card, #1c1c1e);
+  border-left: 1px solid var(--border);
+  border-top: 1px solid var(--border);
+  transform: rotate(45deg);
+  z-index: 1001;
+  border-top-left-radius: 2px;
+}
+
+.cloud-droplist-header {
+  font-size: 11px;
+  font-weight: 400 !important;
+  color: var(--text-3);
+  padding: 4px 8px 6px 8px;
+  letter-spacing: 0;
+  text-transform: none !important;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 4px;
+}
+
+.cloud-option-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text);
+  background: transparent;
+  border: none !important;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+  box-sizing: border-box;
+}
+
+.cloud-option-item:hover {
+  background: var(--hover);
+  color: var(--text-primary);
+}
+
+.cloud-option-item.active {
+  background: rgba(37, 99, 235, 0.12);
+  color: var(--accent, #2563eb);
+  font-weight: 500;
+}
+
+.cloud-option-item .cloud-check-icon,
+.cloud-option-item svg.cloud-check-icon {
+  width: 13px;
+  height: 13px;
+  display: none !important;
+  color: var(--accent, #2563eb);
+}
+
+.cloud-option-item.active .cloud-check-icon,
+.cloud-option-item.active svg.cloud-check-icon {
+  display: inline-block !important;
+  opacity: 1 !important;
+}

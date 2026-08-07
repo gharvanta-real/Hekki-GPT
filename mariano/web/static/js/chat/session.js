@@ -116,8 +116,11 @@ export const ChatSessionManager = {
     if (chat) {
       const lastMsg = chat.messages[chat.messages.length - 1];
       if (lastMsg && lastMsg.role === role && lastMsg.text === text) return;
-      chat.messages.push({ role, text, timestamp: new Date().toISOString(), metadata });
+      const nowIso = new Date().toISOString();
+      chat.messages.push({ role, text, timestamp: nowIso, metadata });
+      chat.timestamp = nowIso;
       this.saveChats(chats);
+      this.renderChatsList();
     }
   },
 
@@ -219,8 +222,11 @@ export const ChatSessionManager = {
     const chats = this.getChats();
     const chat = chats.find(c => c.id === _activeChatId);
     if (chat && chat.isPlayground) {
-      chat.messages.push({ role, text, timestamp: new Date().toISOString(), ...extra });
+      const nowIso = new Date().toISOString();
+      chat.messages.push({ role, text, timestamp: nowIso, ...extra });
+      chat.timestamp = nowIso;
       this.saveChats(chats);
+      this.renderChatsList();
     }
   },
 
@@ -229,8 +235,11 @@ export const ChatSessionManager = {
     const chats = this.getChats();
     const chat = chats.find(c => c.id === _activeChatId);
     if (chat && chat.isPlayground && chat.messages.length > 0) {
+      const nowIso = new Date().toISOString();
       chat.messages[chat.messages.length - 1].text = text;
+      chat.timestamp = nowIso;
       this.saveChats(chats);
+      this.renderChatsList();
     }
   },
 
@@ -319,14 +328,27 @@ export const ChatSessionManager = {
     const playgroundList = document.getElementById('playground-list');
     const playgroundSection = document.getElementById('nav-section-playground');
 
-    const formatTimeDiff = (timestamp) => {
-      if (!timestamp) return '';
-      const diffMs = Date.now() - new Date(timestamp).getTime();
-      const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-      if (diffHours < 1) { const diffMins = Math.floor(diffMs / (1000 * 60)); return `${diffMins || 1}m`; }
-      if (diffHours < 24) return `${diffHours}h`;
-      const diffDays = Math.floor(diffHours / 24);
-      return `${diffDays}d`;
+    const getLatestActivityTime = (c) => {
+      if (!c) return 0;
+      if (c.messages && c.messages.length > 0) {
+        for (let i = c.messages.length - 1; i >= 0; i--) {
+          const m = c.messages[i];
+          if (m && m.timestamp) {
+            const t = new Date(m.timestamp).getTime();
+            if (!isNaN(t) && t > 0) return t;
+          }
+        }
+      }
+      if (c.timestamp) {
+        const t = new Date(c.timestamp).getTime();
+        if (!isNaN(t) && t > 0) return t;
+      }
+      if (c.id && c.id.includes('_')) {
+        const parts = c.id.split('_');
+        const tsFromId = parseInt(parts[parts.length - 1], 10);
+        if (!isNaN(tsFromId) && tsFromId > 1000000000) return tsFromId;
+      }
+      return 0;
     };
 
     if (chatList) {
@@ -334,7 +356,7 @@ export const ChatSessionManager = {
       chats.sort((a, b) => {
         const aPinned = a.pinned ? 1 : 0, bPinned = b.pinned ? 1 : 0;
         if (aPinned !== bPinned) return bPinned - aPinned;
-        return new Date(b.timestamp) - new Date(a.timestamp);
+        return getLatestActivityTime(b) - getLatestActivityTime(a);
       });
       chatList.innerHTML = '';
       if (chats.length === 0) {
@@ -359,8 +381,7 @@ export const ChatSessionManager = {
           }
 
           item.innerHTML = `
-            <span class="badge" style="display:inline-flex; align-items:center; justify-content:center;">${badgeContent}</span>
-            <span class="lbl">${escapeHtml(cleanTitle)}</span>
+            <span class="lbl">${c.pinned ? '<i data-lucide="pin" style="width:12px; height:12px; margin-right:6px; color:var(--text-3); vertical-align:-1px;"></i>' : ''}${escapeHtml(cleanTitle)}</span>
             <span class="opt" style="cursor:pointer; display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px">
               <i data-lucide="more-horizontal" style="width:14px; height:14px; pointer-events:none"></i>
             </span>
@@ -382,23 +403,47 @@ export const ChatSessionManager = {
       pChats.sort((a, b) => {
         const aPinned = a.pinned ? 1 : 0, bPinned = b.pinned ? 1 : 0;
         if (aPinned !== bPinned) return bPinned - aPinned;
-        return new Date(b.timestamp) - new Date(a.timestamp);
+        return getLatestActivityTime(b) - getLatestActivityTime(a);
       });
       playgroundList.innerHTML = '';
+      const countBadge = document.getElementById('playground-count');
+      if (countBadge) countBadge.textContent = pChats.length;
+
       if (pChats.length > 0) {
         if (playgroundSection) playgroundSection.style.display = 'block';
+
+        // Collapsible header toggle setup
+        const pgHdr = document.getElementById('hdr-section-playground');
+        const pgChevron = document.getElementById('chevron-playground');
+        if (pgHdr && !pgHdr._boundCollapse) {
+          pgHdr._boundCollapse = true;
+          pgHdr.addEventListener('click', () => {
+            const currentlyHidden = playgroundList.style.display === 'none';
+            playgroundList.style.display = currentlyHidden ? 'block' : 'none';
+            if (pgChevron) pgChevron.style.transform = currentlyHidden ? 'rotate(0deg)' : 'rotate(-90deg)';
+            localStorage.setItem('hekki_pg_collapsed', currentlyHidden ? 'false' : 'true');
+          });
+        }
+
+        const isCollapsed = localStorage.getItem('hekki_pg_collapsed') === 'true';
+        playgroundList.style.display = isCollapsed ? 'none' : 'block';
+        if (pgChevron) pgChevron.style.transform = isCollapsed ? 'rotate(-90deg)' : 'rotate(0deg)';
+
         pChats.forEach(c => {
           const item = document.createElement('div');
           item.className = 'section-item';
           if (c.id === _activeChatId) item.classList.add('active');
           item.title = c.title;
           item.innerHTML = `
-            <span class="badge" style="font-size:10px; background:var(--border); display:flex; align-items:center; justify-content:center"></span>
-            <span class="lbl">${c.title}</span>
+            <span class="lbl" style="display:flex; align-items:center; gap:6px;">
+              <i data-lucide="swords" style="width:13px; height:13px; color:var(--accent, #2563eb); flex-shrink:0;"></i>
+              <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(c.title)}</span>
+            </span>
             <span class="opt" style="cursor:pointer; display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px">
               <i data-lucide="more-horizontal" style="width:14px; height:14px; pointer-events:none"></i>
             </span>
           `;
+
           item.addEventListener('click', (e) => {
             if (e.target.classList.contains('opt') || e.target.closest('.opt')) return;
             this.loadChat(c.id);

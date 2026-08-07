@@ -175,10 +175,10 @@ class EpisodicStore:
     # ---- Chat Sessions & Messages ----
 
     async def get_all_chats(self) -> list[dict]:
-        """Fetch all chat sessions along with their messages."""
+        """Fetch all chat sessions along with their messages, sorted by latest activity time."""
         async with self._connect() as db:
             db.row_factory = aiosqlite.Row
-            cursor = await db.execute("SELECT * FROM chat_sessions ORDER BY created_at DESC")
+            cursor = await db.execute("SELECT * FROM chat_sessions")
             sessions = [dict(r) for r in await cursor.fetchall()]
             
             for s in sessions:
@@ -203,6 +203,15 @@ class EpisodicStore:
                         "timestamp": m["timestamp"],
                         "metadata": m_meta
                     })
+
+            def get_sort_key(s):
+                if s.get("messages") and len(s["messages"]) > 0:
+                    last_ts = s["messages"][-1].get("timestamp")
+                    if last_ts:
+                        return str(last_ts)
+                return str(s.get("created_at") or s.get("timestamp") or "")
+
+            sessions.sort(key=get_sort_key, reverse=True)
             return sessions
 
     async def sync_chats(self, chats: list[dict]) -> None:
@@ -230,18 +239,24 @@ class EpisodicStore:
     async def save_single_message(self, chat_id: str, role: str, text: str, metadata: dict | None = None) -> None:
         """Saves a single message under an existing chat session. Auto-creates the session if missing."""
         async with self._connect() as db:
+            now_iso = datetime.utcnow().isoformat()
             cursor = await db.execute("SELECT 1 FROM chat_sessions WHERE id = ?", (chat_id,))
             exists = await cursor.fetchone()
             if not exists:
                 await db.execute(
                     "INSERT INTO chat_sessions (id, title, project, created_at) VALUES (?, ?, ?, ?)",
-                    (chat_id, text[:30] + "..." if len(text) > 30 else text, None, datetime.utcnow().isoformat())
+                    (chat_id, text[:30] + "..." if len(text) > 30 else text, None, now_iso)
+                )
+            else:
+                await db.execute(
+                    "UPDATE chat_sessions SET created_at = ? WHERE id = ?",
+                    (now_iso, chat_id)
                 )
             
             meta_str = json.dumps(metadata) if metadata else "{}"
             await db.execute(
                 "INSERT INTO chat_messages (chat_id, role, text, metadata, timestamp) VALUES (?, ?, ?, ?, ?)",
-                (chat_id, role, text, meta_str, datetime.utcnow().isoformat())
+                (chat_id, role, text, meta_str, now_iso)
             )
             await db.commit()
 

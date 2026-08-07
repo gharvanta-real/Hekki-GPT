@@ -1,0 +1,352 @@
+/* === CHAT MESSAGES === */
+.msg {
+  width: 100%;
+  max-width: 100%;
+  align-self: center;
+  margin-bottom: 20px;
+  font-size: var(--fs-base);   /* 14px */
+  font-weight: 300;            /* lighter weight */
+  line-height: 1.65;
+  animation: fadeIn 0.2s ease;
+}
+.msg hr {
+  margin: 20px 0;
+  border: none;
+  border-top: 1px solid var(--border);
+  opacity: 0.45;
+}
+.msg.user {
+  background: var(--hover);
+  padding: 10px 16px;
+  border-radius: 16px;
+  border-bottom-right-radius: 4px;
+  max-width: 85%;
+  width: fit-content;
+  align-self: flex-end;
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 14.5px;
+  font-weight: 400; /* Same regular weight matching AI response body */
+  line-height: 1.6;
+  word-break: break-word;
+  white-space: pre-wrap;
+  position: relative;
+}
+
+/* Collapsible User Message Prompt (Max 4-5 lines with fade-out overlay) */
+.msg.user.collapsible {
+  max-height: 115px; /* Max ~4-5 lines of text */
+  overflow: hidden;
+  padding-bottom: 32px;
+  transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Faded Out Overlay on lines 5-6 */
+.msg.user.collapsible::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 55px;
+  background: linear-gradient(to bottom, rgba(246, 247, 249, 0) 0%, var(--hover) 85%);
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+  border-radius: 0 0 16px 16px;
+}
+
+/* Dark Mode Fade Overlay */
+[data-theme="dark"] .msg.user.collapsible::after {
+  background: linear-gradient(to bottom, rgba(30, 41, 59, 0) 0%, var(--hover) 85%);
+}
+
+/* Expanded state */
+.msg.user.collapsible.expanded {
+  max-height: 3000px !important;
+  padding-bottom: 34px;
+}
+
+.msg.user.collapsible.expanded::after {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Bottom Right Circular Icon Button for Collapsible Toggle */
+.msg-expand-pill-wrapper {
+  position: absolute;
+  bottom: 6px;
+  right: 10px;
+  left: auto;
+  transform: none;
+  z-index: 5;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.msg-expand-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--bg-surface);
+  color: var(--text-3);
+  border: none !important;
+  box-shadow: none !important;
+  cursor: pointer;
+  user-select: none;
+  padding: 0;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
+}
+
+.msg-expand-btn:hover {
+  background: var(--hover);
+  color: var(--text);
+  transform: scale(1.05);
+}
+
+/* User & AI Message Group Containers (Bubble + Actions Bar below it) */
+.msg-group {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: 18px;
+}
+.msg-group.user {
+  align-items: flex-end;
+  margin-top: 18px;
+}
+.msg-group.user:first-child {
+  margin-top: 6px;
+}
+.msg-group.user .msg.user {
+  margin-bottom: 4px;
+}
+.msg-group.ai {
+  align-items: flex-start;
+  margin-top: 6px;
+}
+.msg-group.ai .msg.ai {
+  margin-bottom: 4px;
+}
+
+/* Actions bar under message bubbles */
+.msg-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-right: 4px;
+  color: var(--text-3);
+  font-size: var(--fs-xs);     /* 11px */
+  user-select: none;
+  transition: opacity 0.15s ease-in-out, max-height 0.15s ease-in-out, margin-top 0.15s ease-in-out;
+}
+
+/* Align AI actions to the right of the bubble as requested */
+.ai-actions {
+  align-self: flex-end;
+  margin-right: 4px;
+}
+
+/* USER bubbles: Hidden & collapsed by default, slides open on hover */
+.msg-group.user .msg-actions {
+  opacity: 0;
+  pointer-events: none;
+  max-height: 0;
+  margin-top: 0;
+  overflow: hidden;
+}
+
+.msg-group.user:hover .msg-actions {
+  opacity: 1;
+  pointer-events: auto;
+  max-height: none;
+  margin-top: 4px;
+}
+
+/* AGENT/AI bubbles: Always visible by default (no hover required) */
+.msg-group.ai .msg-actions {
+  opacity: 1;
+  pointer-events: auto;
+  max-height: none;
+  margin-top: 4px;
+}
+
+.action-time {
+  margin-right: 6px;
+  font-size: var(--fs-xs);     /* 11px */
+}
+.action-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-3);
+  cursor: pointer;
+  padding: 3px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.12s, color 0.12s;
+}
+.action-btn:hover {
+  background: var(--hover);
+  color: var(--text);
+}
+.action-btn.active {
+  color: #6366f1; /* active action highlight */
+  background: var(--hover);
+}
+.action-btn .lucide {
+  width: 12px;
+  height: 12px;
+  stroke-width: 2.2px;
+}
+
+/* executed tools list - always visible by default (no hover-hiding) */
+.tool-group-card {
+  margin: 6px 0 !important;
+  display: flex;
+  flex-direction: column;
+  opacity: 1;
+  max-height: none;
+  overflow: visible;
+}
+
+/* ALL text in tool logs stream — STRICTLY UNBOLD (font-weight: 400) */
+.tool-group-card,
+.tool-group-card *,
+.tool-group-header,
+.tool-group-title,
+.tool-group-status,
+.tool-log-card,
+.tool-log-card *,
+.tool-block-temp,
+.tool-block-temp *,
+.tool-detail,
+details summary,
+summary {
+  font-weight: 400 !important;
+}
+
+/* Inline Edit Bubble Styles */
+.msg-edit-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  max-width: 500px;
+  align-self: flex-end;
+}
+.msg-edit-textarea {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: var(--fs-md);     /* 14px */
+  padding: 10px 14px;
+  resize: vertical;
+  outline: none;
+  line-height: 1.55;
+  box-shadow: var(--shadow);
+}
+.msg-edit-textarea:focus {
+  border-color: var(--text-3);
+}
+.msg-edit-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+}
+.msg-edit-btn {
+  height: 28px;
+  padding: 0 12px;
+  border-radius: 6px;
+  font-size: var(--fs-sm);     /* 12px */
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-2);
+  transition: all 0.12s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.msg-edit-btn.save {
+  background: var(--text);
+  color: var(--bg);
+  border-color: var(--text);
+}
+.msg-edit-btn:hover {
+  opacity: 0.9;
+}
+
+.msg.ai {
+  padding-left: 0;
+  position: relative;
+  align-self: flex-start;
+  color: var(--text);
+  font-family: var(--font-ai, var(--font));
+  font-size: 14.5px; /* ChatGPT comfortable body reading size */
+  font-weight: 400; /* Regular weight for crisp, readable body text */
+  line-height: 1.75; /* Luxurious reading line-height */
+}
+.msg.ai h1, .msg.ai h2, .msg.ai h3, .msg.ai h4, .msg.ai h5, .msg.ai h6 {
+  font-family: var(--font), sans-serif;
+  color: var(--text);
+  margin-top: 14px;
+  margin-bottom: 6px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.msg.ai h1:first-child, .msg.ai h2:first-child, .msg.ai h3:first-child, .msg.ai h4:first-child {
+  margin-top: 4px;
+}
+
+.msg.ai p {
+  margin-top: 0;
+  margin-bottom: 8px; /* Clean, compact paragraph separation */
+  line-height: 1.65;
+}
+.msg.ai ul, .msg.ai ol {
+  margin-top: 4px;
+  margin-bottom: 8px;
+  padding-left: 20px;
+}
+.msg.ai li {
+  margin-top: 0;
+  margin-bottom: 6px;
+  line-height: 1.7;
+}
+.msg.ai li p {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+.msg.ai li ul,
+.msg.ai li ol {
+  margin-top: 4px !important;
+  margin-bottom: 4px !important;
+}
+.msg.ai strong, .msg.ai b {
+  font-weight: 600;
+  color: var(--text);
+  font-size: 14.5px;
+}
+.msg.ai code {
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+  font-weight: 500;
+  background: #e5e7eb;
+  color: #991b1b;
+  padding: 2px 6px;
+  border-radius: 5px;
+  border: none !important;
+  outline: none !important;
+  white-space: nowrap;
+}

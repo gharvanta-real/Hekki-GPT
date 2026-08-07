@@ -1,0 +1,237 @@
+/* === CLAUDE-STYLE SETTINGS MODAL === */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 8000;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(1px);
+  animation: fade-in 0.2s ease;
+}
+.modal-overlay.hidden {
+  display: none !important;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-box {
+  width: 740px;
+  max-width: 92vw;
+  height: 560px;
+  max-height: 88vh;
+  background: var(--bg);
+  border: none !important;
+  outline: none !important;
+  border-radius: 18px;
+  box-shadow: none !important;
+  display: flex;
+  overflow: hidden;
+  animation: scale-in 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+/* OLED black & Dark mode: subtle outline border for clean container demarcation */
+body.oled .modal-box,
+body.dark .modal-box {
+  border: 1px solid var(--border, #262626) !important;
+}
+@keyframes scale-in {
+  from { transform: scale(0.96); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* === LEFT NAVIGATION PANEL (Secondary Tint) === */
+.modal-nav {
+  width: 215px;
+  flex-shrink: 0;
+  background: var(--sidebar-bg) !important; /* Secondary background tint */
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: 16px 10px;
+  overflow-y: auto;
+  gap: 3px;
+}
+
+/* Search Box inside Nav (Removed per design) */
+.modal-search {
+  display: none !important;
+}
+
+/* Nav Headers & Items (Categories removed per design) */
+.nav-group-label {
+  display: none !important;
+}
+
+}
+
+.modal-nav-item {
+  height: 34px;
+  width: 100%;
+  border: none;
+  background: transparent;
+  color: var(--text-2);
+  cursor: pointer;
+  font-family: var(--font);
+  font-size: var(--fs-base);   /* 13px */
+  font-weight: 400;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  text-align: left;
+  transition: background 0.12s, color 0.12s;
+}
+.modal-nav-item .lucide {
+  width: 15px;
+  height: 15px;
+  color: var(--text-3);
+  flex-shrink: 0;
+  transition: color 0.12s;
+}
+.modal-nav-item:hover {
+  background: var(--hover);
+  color: var(--text);
+}
+.modal-nav-item:hover .lucide {
+  color: var(--text-2);
+}
+.modal-nav-item.active {
+  background: var(--hover);
+  color: var(--text);
+  font-weight: 400;
+}
+.modal-nav-item.active .lucide {
+  color: var(--text-primary);
+}
+
+/* === RIGHT CONTENT PANEL (Main Page BG) === */
+.modal-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 36px 40px;
+  position: relative;
+  background: var(--bg) !important; /* Main page background color */
+}
+
+.modal-close {
+  position: absolute;
+  top: 18px;
+  right: 20px;
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  color: var(--text-3);
+  cursor: pointer;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.12s, color 0.12s;
+}
+.modal-close .lucide {
+  width: 16px;
+  height: 16px;
+}
+.modal-close:hover {
+  background: var(--hover);
+  color: var(--text);
+}
+
+/* Settings Sections */
+.settings-section {
+  display: none;
+}
+.settings-section.active {
+  display: block;
+  animation: fadeIn 0.2s ease;
+}
+
+/* Content Typography */
+.section-title {
+  font-family: var(--font-sans);
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 24px 0 10px;
+  letter-spacing: -0.01em;
+}
+.section-title:first-of-type {
+  margin-top: 0;
+}
+.section-sub {
+  font-size: 12px;
+  color: var(--text-3);
+  margin-bottom: 12px;
+  line-height: 1.45;
+}
+
+/* Rows and Options */
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  gap: 20px;
+}
+.settings-row.border-b {
+  border-bottom: 1px solid var(--border);
+}
+
+.row-label {
+  font-size: 12.5px;
+  color: var(--text-2);
+}
+
+/* Controls */
+.settings-input {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: var(--hover);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 12.5px !important;
+  padding: 6px 10px;
+  border-radius: 8px;
+  min-width: 220px;
+  transition: all 0.12s;
+  text-align: left !important;
+}
+.settings-input:focus {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.settings-select {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: var(--hover);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 12.5px !important;
+  padding: 6px 28px 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  min-width: 150px;
+  transition: all 0.12s;
+  appearance: none; /* Custom arrow fallback */
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238e8e89' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 13px;
+}
+.settings-select:hover {
+  background-color: var(--hover);
+}
+.settings-select:focus {
+  border: none !important;
+  box-shadow: none !important;
+}

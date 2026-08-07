@@ -90,7 +90,7 @@ function _buildLayout() {
               <div class="debate-participants-list" style="display:flex; flex-direction:column; gap:4px;">
                 
                 <!-- Participant 1 -->
-                <div class="debate-participant-card" id="dp-alpha" style="display:flex; align-items:center; justify-content:space-between; padding:4px 6px 4px 2px; background:transparent; border:none; border-bottom: 1px solid var(--border);">
+                <div class="debate-participant-card" id="dp-alpha" style="display:flex; align-items:center; justify-content:space-between; padding:4px 6px 4px 2px; background:transparent; border:none;">
                   <div class="dp-avatar dp-alpha" style="width:24px; height:24px; border-radius:50%; background:var(--hover); color:var(--text); display:flex; align-items:center; justify-content:center; font-weight:500; font-size:11.5px;">T</div>
                   <div class="dp-info" style="flex-grow:1; min-width:0; margin-left:8px; display:flex; flex-direction:column; gap:1px;">
                     <div class="dp-name" style="font-size:12px; font-weight:600; color:var(--text); line-height: 1.1;">Tony Stark</div>
@@ -104,7 +104,7 @@ function _buildLayout() {
                 </div>
 
                 <!-- Participant 2 -->
-                <div class="debate-participant-card" id="dp-beta" style="display:flex; align-items:center; justify-content:space-between; padding:4px 6px 4px 2px; background:transparent; border:none; border-bottom: 1px solid var(--border);">
+                <div class="debate-participant-card" id="dp-beta" style="display:flex; align-items:center; justify-content:space-between; padding:4px 6px 4px 2px; background:transparent; border:none;">
                   <div class="dp-avatar dp-beta" style="width:24px; height:24px; border-radius:50%; background:var(--hover); color:var(--text); display:flex; align-items:center; justify-content:center; font-weight:500; font-size:11.5px;">B</div>
                   <div class="dp-info" style="flex-grow:1; min-width:0; margin-left:8px; display:flex; flex-direction:column; gap:1px;">
                     <div class="dp-name" style="font-size:12px; font-weight:600; color:var(--text); line-height: 1.1;">Bruce Banner</div>
@@ -128,24 +128,6 @@ function _buildLayout() {
                   <div class="dp-indicator active" id="dp-user-dot" style="width:6px; height:6px; border-radius:50%; background:var(--green); margin-left:6px;"></div>
                 </div>
 
-              </div>
-            </div>
-          </details>
-
-          <div class="debate-sidebar-divider"></div>
-
-          <!-- Flow Section -->
-          <details class="debate-sidebar-details">
-            <summary class="debate-sidebar-summary">
-              <span class="summary-title">Flow</span>
-              <i data-lucide="chevron-right" class="accordion-chevron"></i>
-            </summary>
-            <div class="details-content">
-              <div class="debate-flow-steps" id="debate-flow-steps">
-                <div class="dfs dfs-idle" id="dfs-1">Round 1</div>
-                <div class="dfs dfs-idle" id="dfs-2">Round 2</div>
-                <div class="dfs dfs-idle" id="dfs-3">Round 3</div>
-                <div class="dfs dfs-idle" id="dfs-s">Summary</div>
               </div>
             </div>
           </details>
@@ -241,33 +223,49 @@ function _buildLayout() {
               <div class="debate-topbar-title" style="display: flex; align-items: center; gap: 8px;">
                 <span>Debate Playground</span>
               </div>
-              <span style="color: var(--border); font-weight: 300; margin-left: 8px;">|</span>
-              <button class="debate-topbar-btn" id="btn-debate-copy-all" title="Copy All Debate Content" style="display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; padding: 0; border: none !important; background: transparent; border-radius: 4px; cursor: pointer; color: var(--text-secondary); transition: color 0.12s, background-color 0.12s; margin-left: 4px;">
-                <i data-lucide="copy" style="width: 14px; height: 14px;"></i>
-              </button>
             </div>
             <div class="debate-topbar-controls">
-              <div class="debate-status-pill" id="debate-status-pill">
+              <!-- Top-right Rounds Dropdown Button with Cloud Message Droplist -->
+              <div class="doc-dropdown" id="debate-topbar-rounds-dropdown" style="position: relative;">
+                <button class="debate-topbar-btn" id="btn-topbar-rounds-toggle" title="Select Rounds" style="display: flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 20px; background: var(--card); border: 1px solid var(--border) !important; cursor: pointer; color: var(--text-secondary); font-size: 11.5px; font-weight: 500;">
+                  <i data-lucide="layers" style="width: 13px; height: 13px;"></i>
+                  <span id="topbar-rounds-label">3 Rounds</span>
+                  <i data-lucide="chevron-down" style="width: 12px; height: 12px;"></i>
+                </button>
+                <div class="cloud-droplist-menu" id="topbar-rounds-menu">
+                  <div class="cloud-node-pointer"></div>
+                  <div class="cloud-droplist-header">Select Rounds</div>
+                  <div class="cloud-options-group">
+                    <button class="cloud-option-item round-option" data-value="2">
+                      <span>2 Rounds</span>
+                      <i data-lucide="check" class="cloud-check-icon"></i>
+                    </button>
+                    <button class="cloud-option-item round-option active" data-value="3">
+                      <span>3 Rounds</span>
+                      <i data-lucide="check" class="cloud-check-icon"></i>
+                    </button>
+                    <button class="cloud-option-item round-option" data-value="4">
+                      <span>4 Rounds</span>
+                      <i data-lucide="check" class="cloud-check-icon"></i>
+                    </button>
+                    <button class="cloud-option-item round-option" data-value="5">
+                      <span>5 Rounds</span>
+                      <i data-lucide="check" class="cloud-check-icon"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <!-- Hidden placeholders for JS element safety -->
+              <div class="debate-status-pill" id="debate-status-pill" style="display:none !important;">
                 <span class="dot"></span>
                 <span id="debate-status-text">Ready</span>
               </div>
-              <div class="debate-round-pill" id="debate-round-pill" style="display:none">
+              <div class="debate-round-pill" id="debate-round-pill" style="display:none !important;">
                 Round <strong id="debate-round-num">1</strong> / <span id="debate-round-total">3</span>
               </div>
-              <button class="debate-topbar-btn" id="btn-debate-pause" style="display:none">
-                <i data-lucide="pause" style="width:14px; height:14px; margin-right:4px;"></i><span>Pause</span>
+              <button class="debate-topbar-btn" id="btn-debate-pause" style="display:none !important;">
+                <i data-lucide="pause"></i><span>Pause</span>
               </button>
-              
-              <!-- VS chips added at right end -->
-              <div class="debate-model-tags">
-                <span class="debate-model-tag alpha-tag">
-                  <span class="tag-name">Tony Stark</span><span class="tag-model"> · Iron Man</span>
-                </span>
-                <span class="debate-model-vs">vs</span>
-                <span class="debate-model-tag beta-tag">
-                  <span class="tag-name">Bruce Banner</span><span class="tag-model"> · Hulk</span>
-                </span>
-              </div>
             </div>
           </div>
 
@@ -291,20 +289,21 @@ function _buildLayout() {
                 <button class="debate-back-btn" id="btn-doc-close" title="Back to Debate">
                   <i data-lucide="chevron-left" style="width:18px; height:18px;"></i>
                 </button>
-                <div class="doc-viewer-controls">
-                  <button class="doc-viewer-btn" id="btn-doc-go-chat" title="View Chat Transcript" style="display: none; margin-right: 6px;">
-                    <i data-lucide="message-square" style="width:14px; height:14px; margin-right:4px;"></i><span>Chat</span>
+                <div class="doc-viewer-controls" style="display: flex; align-items: center; gap: 4px;">
+                  <button class="doc-icon-btn" id="btn-doc-go-chat" title="View Chat" style="display: none; background: transparent; border: none !important; box-shadow: none !important; cursor: pointer; padding: 6px; border-radius: 6px; color: var(--text-secondary); align-items: center; justify-content: center;">
+                    <i data-lucide="square-pen" style="width:15px; height:15px;"></i>
                   </button>
-                  <button class="doc-viewer-btn" id="btn-doc-copy" title="Copy to Clipboard">
-                    <i data-lucide="copy" style="width:14px; height:14px; margin-right:4px;"></i><span>Copy</span>
+                  <div class="doc-hdr-sep" id="sep-doc-chat" style="display: none; width: 1px; height: 16px; background: var(--border); margin: 0 4px;"></div>
+                  
+                  <button class="doc-icon-btn" id="btn-doc-copy" title="Copy to Clipboard" style="background: transparent; border: none !important; box-shadow: none !important; cursor: pointer; padding: 6px; border-radius: 6px; color: var(--text-secondary); display: inline-flex; align-items: center; justify-content: center;">
+                    <i data-lucide="copy" style="width:15px; height:15px;"></i>
                   </button>
-                  <button class="doc-viewer-btn" id="btn-doc-voice">
-                    <i data-lucide="volume-x" style="width:14px; height:14px; margin-right:4px;"></i><span>Voice: Off</span>
-                  </button>
+
+                  <div class="doc-hdr-sep" style="width: 1px; height: 16px; background: var(--border); margin: 0 4px;"></div>
+
                   <div class="doc-dropdown">
-                    <button class="doc-viewer-btn dropdown-toggle" id="btn-doc-export">
-                      <i data-lucide="download" style="width:14px; height:14px; margin-right:4px;"></i><span>Export</span>
-                      <i data-lucide="chevron-down" style="width:12px; height:12px; margin-left:4px;"></i>
+                    <button class="doc-icon-btn dropdown-toggle" id="btn-doc-export" title="Export Document" style="background: transparent; border: none !important; box-shadow: none !important; cursor: pointer; padding: 6px; border-radius: 6px; color: var(--text-secondary); display: inline-flex; align-items: center; justify-content: center;">
+                      <i data-lucide="download" style="width:15px; height:15px;"></i>
                     </button>
                     <div class="doc-dropdown-menu" id="doc-export-menu">
                       <button class="dropdown-item" data-format="pdf">Export to PDF</button>
@@ -331,15 +330,15 @@ function _buildLayout() {
                   </div>
                 </div>
                 <div class="doc-viewer-controls">
-                  <button class="doc-viewer-btn" id="btn-dir-copy" title="Copy to Clipboard">
-                    <i data-lucide="copy" style="width:14px; height:14px; margin-right:4px;"></i><span>Copy</span>
+                  <button class="doc-icon-btn" id="btn-dir-copy" title="Copy to Clipboard" style="background: transparent; border: none !important; box-shadow: none !important; cursor: pointer; padding: 6px; border-radius: 6px; color: var(--text-secondary); display: inline-flex; align-items: center; justify-content: center;">
+                    <i data-lucide="copy" style="width:15px; height:15px;"></i>
                   </button>
                 </div>
               </div>
               <div class="directory-container" style="display: flex; flex: 1; overflow: hidden; height: calc(100% - 48px);">
                 <!-- Left Panel: Index Page (ToC) -->
                 <div class="directory-sidebar">
-                  <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-3); margin-bottom: 12px; letter-spacing: 0.04em; padding: 0 2px;">Topics Index</div>
+                  <div style="font-size: 11px; font-weight: 600; color: var(--text-3); margin-bottom: 12px; padding: 0 2px;">Topics Index</div>
                   <div class="directory-topics-list" id="directory-topics-list" style="display: flex; flex-direction: column; gap: 8px;">
                     <!-- Injected dynamically -->
                   </div>
@@ -358,34 +357,34 @@ function _buildLayout() {
             <!-- Input area -->
             <div class="debate-input-area" id="debate-input-area">
               <!-- Active status indicator card (attached to input area, floats above it) -->
-              <div class="debate-active-search-card" id="debate-active-search-card" style="display: none; align-items: center; justify-content: space-between; width: 100%; max-width: 720px; box-sizing: border-box; margin: 0 auto -12px auto; padding: 10px 16px 20px 16px; background: var(--bg); border: 1px solid var(--border); border-bottom: none; border-radius: var(--radius-lg) var(--radius-lg) 0 0; box-shadow: var(--shadow); font-size: 11.5px; opacity: 0; transform: translateY(15px); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); position: relative; z-index: 1;">
+              <!-- Active status indicator card (attached to input area, floats above it) -->
+              <!-- Active status indicator card (attached to input area, floats above it) -->
+              <div class="debate-active-search-card" id="debate-active-search-card" style="display: none; align-items: center; justify-content: space-between; width: 100%; max-width: 720px; box-sizing: border-box; margin: 0 auto 8px auto; padding: 8px 16px; background: var(--card); border: none !important; outline: none !important; border-radius: 24px; font-size: 12px; opacity: 0; transform: translateY(8px); transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); position: relative; z-index: 1;">
                 <div style="display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1;">
-                  <span class="status-spinner-wrap" style="display: inline-flex; align-items: center; justify-content: center; color: var(--text-secondary); animation: spin 1.2s linear infinite;">
+                  <span class="status-spinner-wrap" style="display: inline-flex; align-items: center; justify-content: center; color: var(--text-3); animation: spin 1.2s linear infinite; flex-shrink: 0;">
                     <i data-lucide="loader-2" style="width: 14px; height: 14px;"></i>
                   </span>
-                  <div style="display: flex; flex-direction: column; gap: 1px; min-width: 0; flex: 1;">
-                    <span class="status-title" style="font-weight: 500; color: var(--text-3); font-size: 9.5px; letter-spacing: 0.02em;">Research task</span>
-                    <span class="status-query" id="debate-active-search-query" style="color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; font-weight: 400;">Searching...</span>
+                  <div style="display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1;">
+                    <span class="status-query" id="debate-active-search-query" style="color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; font-weight: 400; font-size: 12.5px;">Searching...</span>
                   </div>
                 </div>
-                <div class="status-badge" id="debate-active-search-badge" style="font-size: 9.5px; font-weight: 600; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.02em;">ALPHA</div>
+                <div class="status-badge" id="debate-active-search-badge" style="font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 20px; border: none !important; background: var(--hover); color: var(--text-secondary);">Research</div>
               </div>
 
               <!-- Active progress indicator card (attached to input area, floats above it) -->
-              <div class="debate-active-progress-card" id="debate-active-progress-card" style="display: none; align-items: center; justify-content: space-between; width: 100%; max-width: 720px; box-sizing: border-box; margin: 0 auto -12px auto; padding: 10px 16px 20px 16px; background: var(--sidebar-bg); border: 1px solid var(--border); border-bottom: none; border-radius: var(--radius-lg) var(--radius-lg) 0 0; box-shadow: var(--shadow); font-size: 11.5px; opacity: 0; transform: translateY(15px); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); position: relative; z-index: 1;">
-                <div style="display: flex; align-items: center; gap: 12px; min-width: 0; flex: 1;">
-                  <!-- Left side: Monochromatic progress bar line container -->
-                  <div style="width: 80px; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; position: relative; flex-shrink: 0;">
-                    <div id="debate-progress-bar-fill" style="width: 5%; height: 100%; background: var(--text-primary); border-radius: 2px; position: absolute; left: 0; top: 0; transition: width 0.4s ease;"></div>
-                  </div>
-                  <!-- Middle: Status text and percentage -->
+              <div class="debate-active-progress-card" id="debate-active-progress-card" style="display: none; align-items: center; justify-content: space-between; width: 100%; max-width: 720px; box-sizing: border-box; margin: 0 auto 8px auto; padding: 8px 16px; background: var(--card); border: none !important; outline: none !important; border-radius: 24px; font-size: 12px; opacity: 0; transform: translateY(8px); transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); position: relative; z-index: 1;">
+                <div style="display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1;">
+                  <span class="status-spinner-wrap" style="display: inline-flex; align-items: center; justify-content: center; color: var(--text-3); animation: spin 1.2s linear infinite; flex-shrink: 0;">
+                    <i data-lucide="loader-2" style="width: 14px; height: 14px;"></i>
+                  </span>
                   <div style="display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1;">
-                    <span id="debate-progress-text" style="color: var(--text-primary); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;">Tony Stark is responding...</span>
-                    <span id="debate-progress-pct" style="display: none;">5%</span>
+                    <span id="debate-progress-text" style="color: var(--text); font-weight: 400; font-size: 12.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;">Agents Collaborating...</span>
                   </div>
                 </div>
-                <!-- Right side: Rounded AI avatar representation -->
-                <div id="debate-progress-avatar" style="width: 20px; height: 20px; border-radius: 50%; background: var(--text-primary); color: var(--bg); display: flex; align-items: center; justify-content: center; font-weight: 400; font-size: 9.5px; flex-shrink: 0; text-transform: uppercase;">T</div>
+                <!-- Hidden placeholders for JS safety -->
+                <div style="display:none !important;"><div id="debate-progress-bar-fill"></div></div>
+                <span id="debate-progress-pct" style="display:none !important;">0%</span>
+                <div id="debate-progress-avatar" style="display:none !important;"></div>
               </div>
 
               <div class="debate-input-wrapper" id="debate-input-capsule" style="position: relative; z-index: 2; display: flex; flex-direction: column; align-items: stretch; gap: 0; padding: 8px 14px;">
@@ -459,7 +458,9 @@ function _bindEvents() {
       textarea.style.height = 'auto';
       textarea.style.height = Math.min(textarea.scrollHeight, 100) + 'px';
       textarea.style.overflowY = textarea.scrollHeight > 100 ? 'auto' : 'hidden';
+      _syncDebateInputButtons();
     });
+    textarea.addEventListener('keyup', _syncDebateInputButtons);
     textarea.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault();
@@ -475,6 +476,34 @@ function _bindEvents() {
   $('btn-debate-start')?.addEventListener('click', _startDebate);
   $('btn-debate-intervene')?.addEventListener('click', _interveneDebate);
   $('btn-debate-stop')?.addEventListener('click', _stopDebateOnly);
+
+  $('select-debate-rounds')?.addEventListener('change', () => _syncRoundsSelect('main'));
+
+  const topbarRoundsBtn  = $('btn-topbar-rounds-toggle');
+  const topbarRoundsMenu = $('topbar-rounds-menu');
+  if (topbarRoundsBtn && topbarRoundsMenu) {
+    topbarRoundsBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      topbarRoundsMenu.classList.toggle('show');
+    });
+
+    topbarRoundsMenu.querySelectorAll('.round-option').forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const val = item.getAttribute('data-value');
+        _syncRoundsSelect('topbar', val);
+        topbarRoundsMenu.classList.remove('show');
+      });
+    });
+
+    document.addEventListener('click', () => {
+      if (topbarRoundsMenu) topbarRoundsMenu.classList.remove('show');
+    });
+  }
+
+  _syncRoundsSelect('main');
   $('btn-debate-pause')?.addEventListener('click', _togglePause);
   $('btn-debate-voice')?.addEventListener('click', _toggleVoice);
   $('btn-sidebar-voice')?.addEventListener('click', _toggleVoice);
@@ -514,7 +543,6 @@ function _bindEvents() {
   document.getElementById('btn-debate-sidebar-toggle-main')?.addEventListener('click', toggleDebateSidebar);
   // Documentary Viewer bindings
   $('btn-doc-close')?.addEventListener('click', _closeDocViewer);
-  $('btn-doc-voice')?.addEventListener('click', _toggleDocVoice);
   
   const exportBtn = $('btn-doc-export');
   const exportMenu = $('doc-export-menu');
@@ -879,6 +907,7 @@ function _interveneDebate() {
 
   input.value = '';
   input.style.height = 'auto';
+  _syncDebateInputButtons();
 
   _appendUserBubble(msg, true);
   ChatSessionManager.appendPlaygroundMessage('user', msg, { isIntervention: true });
@@ -961,7 +990,7 @@ function _resetDebate() {
     if (window.lucide) lucide.createIcons();
   }
 
-  ['1','2','3','s'].forEach(s => _setFlowStep(s, 'idle'));
+  _syncRoundsSelect('main');
   _setParticipantStatus('alpha', 'Idle');
   _setParticipantStatus('beta', 'Idle');
   _setDot('alpha', false);
@@ -1068,7 +1097,7 @@ export function handleDebateEvent(event) {
         _setParticipantStatus('beta', 'Collaborating…');
         _setDot('alpha', true);
         _setDot('beta', true);
-        _setStatusPill('running', '⚡ Synthesis Round · Converging on joint solution');
+        _setStatusPill('running', 'Synthesis Round · Converging on joint solution');
         appendHudLog('[INFO] Synthesis round started — both agents converging on ONE solution');
       } else {
         _setParticipantStatus('alpha', sender === 'alpha' ? 'Speaking…' : 'Listening');
@@ -1237,15 +1266,22 @@ function _appendUserBubble(text, isIntervention = false) {
 
   const msg = document.createElement('div');
   msg.className = 'debate-msg debate-msg-user';
+  const renderedText = window.marked ? marked.parse(text) : _escape(text);
   msg.innerHTML = `
     <div class="debate-badge-row center">
       <span class="debate-sender-badge user-badge">${isIntervention ? '💬 You intervened' : '🎯 You'}</span>
       <span class="debate-target-badge">→ All</span>
     </div>
-    <div class="debate-bubble user-bubble">${_escape(text)}</div>
+    <div class="debate-bubble user-bubble">${renderedText}</div>
   `;
   thread.appendChild(msg);
   _scrollThread();
+
+  const bubble = msg.querySelector('.debate-bubble');
+  if (bubble) {
+    enhanceMarkdownContent(bubble);
+    _makeBubbleCollapsibleAndCopyable(bubble, text);
+  }
 }
 
 function _appendSystemBubble(text) {
@@ -1260,18 +1296,19 @@ function _appendSystemBubble(text) {
 function _appendStreamBubble(sender, [from, to], round) {
   const thread = document.getElementById('debate-thread');
 
-  // Synthesis round — special centered card
+  // Synthesis round — special clean card with secondary bg & monochrome icon
   if (sender === 'synthesis') {
     const sep = document.createElement('div');
     sep.className = 'debate-round-sep synthesis-sep';
-    sep.innerHTML = `<span>⚡ Synthesis Round — Joint Solution</span>`;
+    sep.innerHTML = `<span><i data-lucide="sparkles" style="width:12px; height:12px; margin-right:4px;"></i>Synthesis Round — Joint Solution</span>`;
     thread.appendChild(sep);
+    if (window.lucide) lucide.createIcons({ parent: sep });
 
     const card = document.createElement('div');
     card.className = 'debate-msg synthesis-card';
     card.innerHTML = `
       <div class="debate-badge-row left">
-        <span class="debate-sender-badge synthesis-badge">⚡ Tony + Bruce</span>
+        <span class="debate-sender-badge synthesis-badge"><i data-lucide="sparkles" style="width:12px; height:12px;"></i> Tony + Bruce</span>
         <span class="debate-arrow">→</span>
         <span class="debate-target-badge">Joint Solution</span>
       </div>
@@ -1280,6 +1317,7 @@ function _appendStreamBubble(sender, [from, to], round) {
       </div>
     `;
     thread.appendChild(card);
+    if (window.lucide) lucide.createIcons({ parent: card });
     _scrollThread();
 
     const bubble = card.querySelector('.debate-bubble');
@@ -1355,7 +1393,8 @@ function _appendStreamBubble(sender, [from, to], round) {
             {left: '\\(', right: '\\)', display: false},
             {left: '\\[', right: '\\]', display: true}
           ],
-          throwOnError: false
+          throwOnError: false,
+          strict: "ignore"
         });
       }
       _makeBubbleCollapsibleAndCopyable(bubble, text);
@@ -1415,7 +1454,7 @@ function _makeBubbleCollapsibleAndCopyable(bubble, text) {
         setTimeout(() => {
           copyBtn.innerHTML = `<i data-lucide="copy" style="width:14px; height:14px; margin-right:4px;"></i><span>Copy</span>`;
           if (window.lucide) lucide.createIcons({ parent: copyBtn });
-        }, 2000);
+        }, 3000);
       });
     });
   }, 50);
@@ -1480,36 +1519,131 @@ function _setFlowStep(num, state) {
   el.className = `dfs dfs-${state}`;
 }
 
-function _setRunningState(running) {
-  _debateRunning = running;
-  const startBtn    = document.getElementById('btn-debate-start');
-  const pauseBtn    = document.getElementById('btn-debate-pause');
+function _syncDebateInputButtons() {
+  const startBtn     = document.getElementById('btn-debate-start');
   const interveneBtn = document.getElementById('btn-debate-intervene');
   const stopBtn      = document.getElementById('btn-debate-stop');
-  const hintEl      = document.getElementById('debate-input-hint');
-  const textarea    = document.getElementById('debate-input');
+  const textarea     = document.getElementById('debate-input');
 
-  const selectAlpha  = document.getElementById('select-alpha-model');
-  const selectBeta   = document.getElementById('select-beta-model');
-  const selectRounds = document.getElementById('select-debate-rounds');
+  const hasText = textarea ? textarea.value.trim().length > 0 : false;
 
-  if (selectAlpha)  selectAlpha.disabled = running;
-  if (selectBeta)   selectBeta.disabled  = running;
+  if (_debateRunning) {
+    if (startBtn) startBtn.style.display = 'none';
+    if (hasText) {
+      if (interveneBtn) interveneBtn.style.display = 'flex';
+      if (stopBtn)      stopBtn.style.display      = 'none';
+    } else {
+      if (interveneBtn) interveneBtn.style.display = 'none';
+      if (stopBtn)      stopBtn.style.display      = 'flex';
+    }
+  } else {
+    if (stopBtn) stopBtn.style.display = 'none';
+    if (hasText) {
+      if (startBtn)     startBtn.style.display     = 'none';
+      if (interveneBtn) interveneBtn.style.display = 'flex';
+    } else {
+      if (startBtn)     startBtn.style.display     = 'flex';
+      if (interveneBtn) interveneBtn.style.display = 'none';
+    }
+  }
+}
+
+function _renderFlowSteps(totalRounds = 3) {
+  const container = document.getElementById('debate-flow-steps');
+  if (!container) return;
+
+  let html = '';
+  for (let i = 1; i <= totalRounds; i++) {
+    html += `<div class="dfs dfs-idle" id="dfs-${i}" data-round="${i}" style="cursor:pointer;" title="Jump to Round ${i}">Round ${i}</div>`;
+  }
+  html += `<div class="dfs dfs-idle" id="dfs-s" data-round="s" style="cursor:pointer;" title="Jump to Summary">Summary</div>`;
+  container.innerHTML = html;
+
+  container.querySelectorAll('.dfs').forEach(el => {
+    el.addEventListener('click', () => {
+      const r = el.getAttribute('data-round');
+      let targetEl;
+      if (r === 's') {
+        targetEl = document.querySelector('.debate-summary-card, .synthesis-card');
+      } else {
+        targetEl = document.querySelector(`.debate-bubble[data-round="${r}"]`);
+      }
+      if (targetEl) {
+        targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    });
+  });
+}
+
+function _syncRoundsSelect(sourceId, specifiedVal) {
+  const mainSelect    = document.getElementById('select-debate-rounds');
+  const sidebarSelect = document.getElementById('select-sidebar-rounds');
+  const topbarLabel   = document.getElementById('topbar-rounds-label');
+  const topbarMenu    = document.getElementById('topbar-rounds-menu');
+
+  let val = specifiedVal || '3';
+  if (!specifiedVal) {
+    if (sourceId === 'main' && mainSelect) {
+      val = mainSelect.value;
+    } else if (sourceId === 'sidebar' && sidebarSelect) {
+      val = sidebarSelect.value;
+    } else if (mainSelect) {
+      val = mainSelect.value;
+    }
+  }
+
+  if (mainSelect) mainSelect.value = val;
+  if (sidebarSelect) sidebarSelect.value = val;
+  if (topbarLabel) topbarLabel.textContent = `${val} Rounds`;
+
+  if (topbarMenu) {
+    topbarMenu.querySelectorAll('.cloud-option-item').forEach(item => {
+      const isMatch = item.getAttribute('data-value') === val;
+      item.classList.toggle('active', isMatch);
+    });
+  }
+
+  const rounds = parseInt(val, 10) || 3;
+  _renderFlowSteps(rounds);
+}
+
+function _setRunningState(running) {
+  _debateRunning = running;
+  const hintEl          = document.getElementById('debate-input-hint');
+  const textarea        = document.getElementById('debate-input');
+
+  const selectAlpha     = document.getElementById('select-alpha-model');
+  const selectBeta      = document.getElementById('select-beta-model');
+  const selectRounds    = document.getElementById('select-debate-rounds');
+  const sidebarRounds   = document.getElementById('select-sidebar-rounds');
+  const topbarRoundsBtn = document.getElementById('btn-topbar-rounds-toggle');
+  const topbarRoundsMenu = document.getElementById('topbar-rounds-menu');
+
+  if (selectAlpha)   selectAlpha.disabled = running;
+  if (selectBeta)    selectBeta.disabled  = running;
   if (selectRounds) {
     selectRounds.disabled = running;
     selectRounds.style.display = running ? 'none' : 'block';
   }
-
-  if (startBtn)     startBtn.style.display    = running ? 'none' : 'flex';
-  if (pauseBtn)     pauseBtn.style.display    = running ? 'flex' : 'none';
-  if (interveneBtn) interveneBtn.style.display = running ? 'flex' : 'none';
-  if (stopBtn)      stopBtn.style.display      = running ? 'flex' : 'none';
+  if (sidebarRounds) {
+    sidebarRounds.disabled = running;
+  }
+  if (topbarRoundsBtn) {
+    topbarRoundsBtn.disabled = running;
+    topbarRoundsBtn.style.opacity = running ? '0.5' : '1';
+    topbarRoundsBtn.style.pointerEvents = running ? 'none' : 'auto';
+  }
+  if (running && topbarRoundsMenu) {
+    topbarRoundsMenu.style.display = 'none';
+  }
 
   if (textarea) textarea.placeholder = running
     ? 'Intervene mid-debate… (press Enter)'
     : 'Enter a topic to debate… e.g. "Is AI replacing human creativity?"';
 
   if (hintEl) hintEl.textContent = running ? 'Enter to intervene' : 'Enter to start';
+
+  _syncDebateInputButtons();
 
   if (!running) {
     _setStatusPill('idle', 'Ready');
@@ -1546,7 +1680,7 @@ function _resetDebateUIOnly() {
     if (window.lucide) lucide.createIcons();
   }
 
-  ['1','2','3','s'].forEach(s => _setFlowStep(s, 'idle'));
+  _syncRoundsSelect('main');
   _setParticipantStatus('alpha', 'Idle');
   _setParticipantStatus('beta', 'Idle');
   _setDot('alpha', false);
@@ -1713,8 +1847,10 @@ function _openDocumentary(doc) {
 
   // Toggle "Go to Chat" button based on associated chat session
   const goChatBtn = document.getElementById('btn-doc-go-chat');
+  const sepChat   = document.getElementById('sep-doc-chat');
   if (goChatBtn) {
     goChatBtn.style.display = 'inline-flex';
+    if (sepChat) sepChat.style.display = 'block';
     goChatBtn.onclick = (e) => {
       e.stopPropagation();
       _closeDocViewer();
@@ -1767,22 +1903,13 @@ function _openDocumentary(doc) {
     </div>
     ${sectionsHtml}
   `;
-
-  // Reset speech button state
-  _docSpeaking = false;
-  const voiceBtn = document.getElementById('btn-doc-voice');
-  if (voiceBtn) {
-    voiceBtn.innerHTML = `<i data-lucide="volume-x" style="width:14px; height:14px; margin-right:4px;"></i><span>Voice: Off</span>`;
-    if (window.lucide) lucide.createIcons({ parent: voiceBtn });
-  }
 }
 
 function _closeDocViewer() {
-  // Cancel speech
-  if (window.speechSynthesis) {
-    window.speechSynthesis.cancel();
-  }
-  _docSpeaking = false;
+  const goChatBtn = document.getElementById('btn-doc-go-chat');
+  const sepChat   = document.getElementById('sep-doc-chat');
+  if (goChatBtn) goChatBtn.style.display = 'none';
+  if (sepChat) sepChat.style.display = 'none';
 
   window._currentDocumentary = null;
 
@@ -1897,7 +2024,7 @@ function _exportDoc(format) {
           .section { margin-bottom: 25px; padding: 15px; border-left: 3px solid #888888; background-color: #fafafa; }
           .section-heading { font-size: 14pt; font-weight: bold; color: #111111; margin-bottom: 6px; }
           .section-body { font-size: 11pt; color: #444444; }
-          .badge { font-size: 9pt; font-weight: bold; text-transform: uppercase; color: #666666; display: inline-block; margin-bottom: 8px; }
+          .badge { font-size: 9pt; font-weight: 600; text-transform: none; color: #666666; display: inline-block; margin-bottom: 8px; }
           .sources { font-size: 9pt; color: #777777; margin-top: 8px; }
         </style>
       </head>
@@ -2086,13 +2213,13 @@ function _copyActiveDocumentary(btnId, doc) {
 
   // Copy to clipboard
   navigator.clipboard.writeText(markdownText).then(() => {
-    // Copy Success UX: green check icon and Copied! text
-    btn.innerHTML = `<i data-lucide="check" style="width:14px; height:14px; margin-right:4px; color: #16a34a;"></i><span style="color: #16a34a;">Copied!</span>`;
+    // Copy Success UX: green check icon only
+    btn.innerHTML = `<i data-lucide="check" style="width:15px; height:15px; color: #16a34a;"></i>`;
     if (window.lucide) lucide.createIcons({ parent: btn });
 
     // Reset back after 3 seconds (3000ms)
     setTimeout(() => {
-      btn.innerHTML = `<i data-lucide="copy" style="width:14px; height:14px; margin-right:4px;"></i><span>Copy</span>`;
+      btn.innerHTML = `<i data-lucide="copy" style="width:15px; height:15px;"></i>`;
       if (window.lucide) lucide.createIcons({ parent: btn });
     }, 3000);
   }).catch(err => {
@@ -2145,7 +2272,7 @@ function _documentaryToMarkdown(doc) {
       setTimeout(() => {
         copyBtn.innerHTML = `<i data-lucide="copy" style="width: 14px; height: 14px;"></i>`;
         if (window.lucide) lucide.createIcons({ parent: copyBtn });
-      }, 2000);
+      }, 3000);
     }
   }).catch(err => {
     console.error('Failed to copy debate content: ', err);
@@ -2213,37 +2340,20 @@ function _showActiveProgress(sender, statusText) {
   _hideActiveSearch();
   const card = document.getElementById('debate-active-progress-card');
   const textEl = document.getElementById('debate-progress-text');
-  const pctEl = document.getElementById('debate-progress-pct');
-  const barFill = document.getElementById('debate-progress-bar-fill');
-  const avatar = document.getElementById('debate-progress-avatar');
-  if (!card || !textEl || !pctEl || !barFill || !avatar) return;
+  if (!card || !textEl) return;
 
-  _chunkCount = 0;
-  barFill.style.width = '5%';
-  pctEl.textContent = '5%';
-  textEl.textContent = statusText;
-
-  let avatarInitials = 'S';
-  let avatarBg = 'var(--text-primary)';
-  let avatarColor = 'var(--bg)';
-
-  if (sender === 'alpha') {
-    avatarInitials = ALPHA_NAME.charAt(0);
-    avatarBg = '#ef4444';
-    avatarColor = '#ffffff';
-  } else if (sender === 'beta') {
-    avatarInitials = BETA_NAME.charAt(0);
-    avatarBg = '#10b981';
-    avatarColor = '#ffffff';
-  } else if (sender === 'synthesis') {
-    avatarInitials = '✦';
-    avatarBg = 'linear-gradient(90deg, #b45309, #d97706)';
-    avatarColor = '#ffffff';
+  let label = statusText || 'Agents Collaborating...';
+  if (sender === 'synthesis' || (statusText && statusText.toLowerCase().includes('summary'))) {
+    label = 'Synthesizing Final Summary...';
+  } else if (sender === 'alpha' || sender === 'beta' || (statusText && (statusText.toLowerCase().includes('respond') || statusText.toLowerCase().includes('round')))) {
+    label = 'Agents Collaborating...';
   }
+  textEl.textContent = label;
 
-  avatar.textContent = avatarInitials;
-  avatar.style.background = avatarBg;
-  avatar.style.color = avatarColor;
+  if (window.lucide) {
+    const wrap = card.querySelector('.status-spinner-wrap');
+    if (wrap) lucide.createIcons({ parent: wrap });
+  }
 
   card.style.display = 'flex';
   requestAnimationFrame(() => {

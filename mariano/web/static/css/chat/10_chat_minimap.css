@@ -1,0 +1,209 @@
+/* === 10_chat_minimap.css — Fully Theme-Adaptive Chat Minimap & Dropdown === */
+
+.chat-minimap-container {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 14px;
+  z-index: 95;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+  user-select: none;
+  width: 28px;
+  max-height: 75vh;
+  padding: 8px 0;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.chat-minimap-container.hidden {
+  display: none !important;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Vertical strip holding horizontal bars */
+.minimap-bar-strip {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  max-height: 70vh;
+  overflow-y: auto;
+  cursor: pointer;
+  padding: 6px 4px 6px 0;
+}
+
+.minimap-bar-strip::-webkit-scrollbar {
+  display: none;
+}
+
+/* Individual mini bar line — Dynamic CSS variables for 100% theme adaptability */
+.minimap-dash {
+  width: 16px;
+  height: 3px;
+  border-radius: 3px;
+  background-color: var(--text-3, #a1a1aa);
+  opacity: 0.5;
+  transition: width 0.18s ease-out, background-color 0.18s ease-out, opacity 0.18s ease-out;
+  border: none !important;
+  box-shadow: none !important;
+  flex-shrink: 0;
+}
+
+.minimap-dash:hover {
+  width: 22px;
+  background-color: var(--accent, #2563eb);
+  opacity: 1;
+}
+
+.minimap-dash.active-dash {
+  width: 24px;
+  height: 4px;
+  background-color: var(--text, #111111);
+  border-radius: 4px;
+  opacity: 1;
+}
+
+/* Disabled right-side footer button */
+.minimap-scroll-bottom-btn {
+  display: none !important;
+}
+
+/* FLOATING CENTER SCROLL TO BOTTOM ARROW BUTTON (Directly above input bar, theme adaptive) */
+.chat-center-scroll-btn {
+  position: absolute;
+  bottom: 84px;
+  left: 50%;
+  transform: translateX(-50%) translateY(6px);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--input-bg, #2C2C2B);
+  color: var(--text, #ffffff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 88;
+  border: none !important;
+  box-shadow: none !important;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1), transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.15s ease;
+}
+
+.chat-center-scroll-btn.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+
+.chat-center-scroll-btn:hover {
+  background: var(--hover, #eeeeec);
+  transform: translateX(-50%) translateY(-2px);
+}
+
+/* FLOATING DROPDOWN POPUP MENU (Main background with subtle theme outline border, zero shadow) */
+.minimap-dropdown-popup {
+  position: absolute;
+  right: 36px;
+  top: 50%;
+  width: 300px;
+  max-width: calc(100vw - 60px);
+  max-height: 420px;
+  background: var(--bg, #ffffff);
+  border: 1px solid var(--border, #E8E8E6) !important;
+  border-radius: 12px;
+  padding: 10px 8px;
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  box-shadow: none !important;
+  opacity: 0;
+  transform: translateY(-50%) translateX(8px) scale(0.97);
+  transform-origin: center right;
+  pointer-events: none;
+  transition: opacity 0.18s cubic-bezier(0.16, 1, 0.3, 1), transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+
+
+.minimap-dropdown-popup.open {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0) scale(1);
+  pointer-events: auto;
+}
+
+.minimap-dropdown-header {
+  display: none !important;
+}
+
+/* Scrollable items container */
+.minimap-dropdown-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow-y: auto;
+  max-height: 360px;
+  padding-right: 4px;
+}
+
+.minimap-dropdown-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.minimap-dropdown-list::-webkit-scrollbar-thumb {
+  background: var(--border, rgba(0, 0, 0, 0.15));
+  border-radius: 4px;
+}
+
+/* Dropdown list item - Unbold, theme adaptive */
+.minimap-item {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 9px 12px;
+  border-radius: 8px;
+  font-family: var(--font), sans-serif;
+  font-size: 12.5px;
+  font-weight: 400 !important;
+  line-height: 1.45;
+  color: var(--text-2, #52525b);
+  background: transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border: none !important;
+  box-shadow: none !important;
+  transition: background-color 0.12s ease, color 0.12s ease;
+  min-height: 36px;
+}
+
+.minimap-item:hover {
+  background-color: var(--hover, rgba(0, 0, 0, 0.06));
+  color: var(--text, #111111);
+  font-weight: 400 !important;
+}
+
+.minimap-item.active {
+  background-color: var(--hover, rgba(0, 0, 0, 0.09));
+  color: var(--text, #111111);
+  font-weight: 400 !important;
+}
+
+/* Flash highlight animation for target message when jumped to */
+@keyframes minimapTargetFlash {
+  0% { background-color: rgba(37, 99, 235, 0.22); }
+  100% { background-color: transparent; }
+}
+
+.minimap-target-highlight {
+  animation: minimapTargetFlash 1.2s ease-out;
+  border-radius: 8px;
+}

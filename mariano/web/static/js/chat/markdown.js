@@ -70,7 +70,7 @@ export function enhanceCodeBlocks(container) {
         const mHeader = document.createElement('div');
         mHeader.style.cssText = 'display:flex; align-items:center; justify-content:space-between; width:100%; border-bottom:1px solid var(--border); padding-bottom:6px;';
         mHeader.innerHTML = `
-          <span style="font-size:11px; font-weight:700; color:var(--text-3); text-transform:uppercase;">MERMAID DIAGRAM</span>
+          <span style="font-size:11px; font-weight:600; color:var(--text-3);">Mermaid Diagram</span>
           <button class="code-action-btn btn-canvas" title="Open in Live Canvas" style="display:flex; align-items:center; gap:4px; font-size:11.5px; padding:3px 8px; border-radius:5px; border:1px solid var(--border); background:var(--bg); color:var(--text-2); cursor:pointer;">
             <i data-lucide="layout" style="width:13px;height:13px"></i> Open in Canvas
           </button>
@@ -266,7 +266,7 @@ export function enhanceCodeBlocks(container) {
         setTimeout(() => {
           copyBtn.innerHTML = '<i data-lucide="copy" style="width:14px;height:14px"></i>';
           if (window.lucide) lucide.createIcons({ parent: copyBtn });
-        }, 1500);
+        }, 3000);
       } catch (err) { console.error('Failed to copy code', err); }
     });
 
@@ -274,7 +274,7 @@ export function enhanceCodeBlocks(container) {
   });
 }
 
-/** Wraps all table elements in a clean container and adds a copy button */
+/** Wraps all table elements in a clean container and adds a top-right floating copy button */
 export function enhanceTables(container) {
   const tables = container.querySelectorAll('table');
   tables.forEach((table) => {
@@ -283,28 +283,20 @@ export function enhanceTables(container) {
     const wrapper = document.createElement('div');
     wrapper.className = 'table-wrapper';
 
-    const header = document.createElement('div');
-    header.className = 'table-header-bar';
-
-    const title = document.createElement('div');
-    title.className = 'table-title';
-    title.innerHTML = '<i data-lucide="table" style="width:14px;height:14px"></i><span>Data Table</span>';
-
     const copyBtn = document.createElement('button');
     copyBtn.className = 'table-copy-btn';
     copyBtn.title = 'Copy Table as CSV';
-    copyBtn.innerHTML = '<i data-lucide="copy" style="width:14px;height:14px"></i>';
-
-    header.appendChild(title);
-    header.appendChild(copyBtn);
+    copyBtn.innerHTML = '<i data-lucide="copy" style="width:13.5px;height:13.5px"></i>';
 
     const scrollContainer = document.createElement('div');
     scrollContainer.className = 'table-scroll-container';
 
     table.parentNode.insertBefore(wrapper, table);
-    wrapper.appendChild(header);
+    wrapper.appendChild(copyBtn);
     wrapper.appendChild(scrollContainer);
     scrollContainer.appendChild(table);
+
+    if (window.lucide) lucide.createIcons({ parent: copyBtn });
 
     copyBtn.addEventListener('click', async () => {
       const rows = Array.from(table.querySelectorAll('tr'));
@@ -324,7 +316,7 @@ export function enhanceTables(container) {
         setTimeout(() => {
           copyBtn.innerHTML = '<i data-lucide="copy" style="width:14px;height:14px"></i>';
           if (window.lucide) lucide.createIcons({ parent: copyBtn });
-        }, 1500);
+        }, 3000);
       } catch (err) { console.error('Failed to copy table', err); }
     });
 
@@ -576,7 +568,8 @@ export function enhanceMarkdownContent(container) {
           {left: '\\(', right: '\\)', display: false},
           {left: '\\[', right: '\\]', display: true}
         ],
-        throwOnError: false
+        throwOnError: false,
+        strict: "ignore"
       });
     } catch (e) {}
   }

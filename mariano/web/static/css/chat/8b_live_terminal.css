@@ -1,0 +1,436 @@
+/* ==========================================================================
+   DRAWER — TASKS LEGEND BAR (bottom of tasks tab)
+   ========================================================================== */
+
+.drawer-tasks-legend {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 0 0 0;
+  margin-top: 12px;
+  border-top: 1px solid var(--border);
+  font-size: 11px;
+  color: var(--text-3);
+}
+
+.drawer-tasks-body {
+  flex: 1;
+  overflow-y: auto;
+}
+
+#tab-content-tasks {
+  display: none;
+  flex-direction: column;
+}
+
+#tab-content-tasks.active {
+  display: flex;
+}
+
+/* ==========================================================================
+   SIDEBAR & DRAWER — PREMIUM SMOOTH FADEOUT OVERLAYS
+   ========================================================================== */
+
+/* Left Sidebar Code Subpane Overlays */
+.sidebar-top-fadeout {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 20px;
+  background: linear-gradient(to bottom, var(--sidebar-bg, var(--bg)) 0%, transparent 100%);
+  pointer-events: none;
+  z-index: 99;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.sidebar-bottom-fadeout {
+  display: none; /* Removed fadeout gradient over the avatar */
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 20px;
+  background: linear-gradient(to top, var(--sidebar-bg, var(--bg)) 0%, transparent 100%);
+  pointer-events: none;
+  z-index: 99;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+/* Right Drawer Panel Overlays */
+.drawer-top-fadeout {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 20px;
+  background: linear-gradient(to bottom, var(--card, var(--bg)) 0%, transparent 100%);
+  pointer-events: none;
+  z-index: 99;
+}
+
+.drawer-bottom-fadeout {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 20px;
+  background: linear-gradient(to top, var(--card, var(--bg)) 0%, transparent 100%);
+  pointer-events: none;
+  z-index: 99;
+}
+
+/* Live Process HUD top fadeout overlay */
+.hud-top-fadeout {
+  position: absolute;
+  top: 48px; /* height of HUD top bar */
+  left: 0;
+  right: 0;
+  height: 20px;
+  background: linear-gradient(to bottom, var(--card, var(--bg)) 0%, transparent 100%);
+  pointer-events: none;
+  z-index: 99;
+}
+
+/* ==========================================================================
+   CLEAN NON-FANCY MARKDOWN TABLES & WRAPPER
+   ========================================================================== */
+.table-wrapper {
+  position: relative;
+  margin: 12px 0;
+  border-radius: 8px;
+  overflow: hidden;
+  background: transparent;
+}
+
+.table-header-bar, .table-title {
+  display: none !important;
+}
+
+.table-copy-btn {
+  position: absolute;
+  top: 11px;
+  right: 12px;
+  z-index: 10;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: var(--text-3);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.15s ease, color 0.12s ease, background 0.12s ease;
+}
+
+.table-copy-btn svg, .table-copy-btn i {
+  width: 12px !important;
+  height: 12px !important;
+  stroke-width: 1.8px !important;
+  opacity: 0.65;
+  transition: opacity 0.12s ease;
+}
+
+.table-wrapper:hover .table-copy-btn {
+  opacity: 1;
+}
+
+.table-copy-btn:hover {
+  background: var(--hover);
+  color: var(--text-primary);
+}
+
+.table-copy-btn:hover svg, .table-copy-btn:hover i {
+  opacity: 1;
+}
+
+.table-scroll-container {
+  overflow-x: auto;
+  width: 100%;
+  -webkit-overflow-scrolling: touch;
+}
+
+.markdown-body table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+  line-height: 1.6;
+  text-align: left;
+  color: var(--text-primary);
+  background: transparent;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.markdown-body table th {
+  background: transparent;
+  font-size: 13.5px;
+  font-weight: 600;
+  padding: 10px 14px;
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-primary);
+  text-align: left;
+}
+
+.markdown-body table td {
+  padding: 10px 14px;
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-bottom: 1px solid var(--border);
+  background: transparent;
+  font-size: 13.5px;
+  color: var(--text-primary);
+  line-height: 1.6;
+}
+
+.markdown-body table tr:last-child td {
+  border-bottom: none !important;
+}
+
+.markdown-body table tr:nth-child(even) {
+  background: transparent;
+}
+
+body.dark .markdown-body table tr:nth-child(even) {
+  background: transparent;
+}
+
+.markdown-body table tr:hover td {
+  background: var(--hover);
+}
+
+/* === IMAGE GENERATION CARD === */
+.image-generation-card {
+  margin: 10px 0;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--card);
+  overflow: hidden;
+  max-width: 240px; /* Reduced to ~half-size compact card */
+  width: 100%;
+  box-shadow: none !important;
+}
+
+.image-generation-header {
+  display: flex;
+  align-items: center;
+  padding: 6px 12px;
+  background: var(--sidebar-bg);
+  border-bottom: 1px solid var(--border);
+  font-size: 11px;
+  color: var(--text-2);
+  gap: 4px;
+}
+
+.image-generation-header span {
+  flex-grow: 1;
+  font-weight: 500;
+  font-family: var(--font);
+}
+
+.image-generation-body {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  background: var(--bg);
+  height: 150px; /* Reduced to compact ~half height */
+  overflow: hidden;
+  gap: 12px;
+}
+
+.image-generation-shimmer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.05) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.image-generation-spinner {
+  width: 32px;
+  height: 32px;
+  border: 2px solid var(--border);
+  border-top-color: var(--text-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  z-index: 2;
+}
+
+.image-generation-text {
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-family: var(--font);
+  font-weight: 500;
+  z-index: 2;
+  animation: pulse-opacity 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse-opacity {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Image fade-in animation */
+.image-fade-in {
+  opacity: 0;
+  animation: fadeInImage 0.4s forwards ease-out;
+}
+
+@keyframes fadeInImage {
+  to {
+    opacity: 1;
+  }
+}
+
+/* Blue & Dark Navy Combination Glow (Smooth Breathing Beat Animation) */
+#bottom-input-bar, .bottom-col, #home-screen, .home-center-wrap {
+  overflow: visible !important;
+}
+
+@keyframes navy-glow-beat {
+  0% {
+    box-shadow: 
+      0 4px 14px rgba(30, 58, 138, 0.14),
+      0 0 calc(14px + 24px * var(--voice-level, 0.4)) rgba(37, 99, 235, calc(0.20 + 0.32 * var(--voice-level, 0.4))),
+      0 0 calc(28px + 42px * var(--voice-level, 0.4)) rgba(30, 27, 75, calc(0.15 + 0.28 * var(--voice-level, 0.4)));
+    transform: scale(calc(1 + 0.003 * var(--voice-level, 0.4)));
+  }
+  50% {
+    box-shadow: 
+      0 4px 20px rgba(30, 58, 138, 0.24),
+      0 0 calc(22px + 34px * var(--voice-level, 0.4)) rgba(37, 99, 235, calc(0.32 + 0.42 * var(--voice-level, 0.4))),
+      0 0 calc(42px + 58px * var(--voice-level, 0.4)) rgba(30, 27, 75, calc(0.24 + 0.35 * var(--voice-level, 0.4)));
+    transform: scale(calc(1 + 0.009 * var(--voice-level, 0.4)));
+  }
+  100% {
+    box-shadow: 
+      0 4px 14px rgba(30, 58, 138, 0.14),
+      0 0 calc(14px + 24px * var(--voice-level, 0.4)) rgba(37, 99, 235, calc(0.20 + 0.32 * var(--voice-level, 0.4))),
+      0 0 calc(28px + 42px * var(--voice-level, 0.4)) rgba(30, 27, 75, calc(0.15 + 0.28 * var(--voice-level, 0.4)));
+    transform: scale(calc(1 + 0.003 * var(--voice-level, 0.4)));
+  }
+}
+
+.capsule-listening-active {
+  border-color: var(--border-color, rgba(255, 255, 255, 0.12)) !important;
+  transition: border-color 0.2s ease !important;
+}
+
+body.dark .capsule-listening-active {
+  border-color: var(--border-color, rgba(255, 255, 255, 0.12)) !important;
+}
+
+.voice-recording-active {
+  background: rgba(239, 68, 68, 0.15) !important;
+  color: #ef4444 !important;
+  border-radius: 50% !important;
+}
+
+body.dark .voice-recording-active {
+  background: rgba(239, 68, 68, 0.2) !important;
+  color: #f87171 !important;
+}
+
+.cad-ai-stream-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 16px;
+  margin-bottom: 10px;
+}
+
+.cad-ai-orb-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  box-shadow: none !important;
+  display: inline-block;
+  vertical-align: middle;
+  overflow: hidden;
+}
+
+.cad-ai-header-title {
+  font-weight: 600;
+  font-size: 13.5px;
+  color: #1e293b;
+  background: linear-gradient(90deg, #475569 0%, #0f172a 50%, #475569 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: monoFlashyShimmer 2.2s linear infinite;
+  letter-spacing: -0.1px;
+  display: inline-block;
+}
+
+[data-theme="dark"] .cad-ai-header-title,
+[data-theme="oled"] .cad-ai-header-title,
+body.dark .cad-ai-header-title,
+.theme-dark .cad-ai-header-title {
+  color: #f8fafc;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 0.6) 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+@keyframes monoFlashyShimmer {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+
+.cad-typing-dots {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 4px;
+}
+
+.cad-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #5667FF;
+  animation: cadDotPulse 1.4s infinite ease-in-out both;
+}
+
+.cad-dot:nth-child(1) { animation-delay: -0.32s; }
+.cad-dot:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes cadDotPulse {
+  0%, 80%, 100% { transform: scale(0); opacity: 0.3; }
+  40% { transform: scale(1); opacity: 1; }
+}

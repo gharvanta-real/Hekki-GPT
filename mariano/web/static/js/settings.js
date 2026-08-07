@@ -35,6 +35,22 @@ export function initSettings(setGreetingCallback) {
     });
   });
 
+  // ── Settings Search Filter ─────────────────────────────────────────────
+  $('settings-search')?.addEventListener('input', (e) => {
+    const query = e.target.value.toLowerCase().trim();
+    modal.querySelectorAll('.modal-nav-item').forEach(btn => {
+      const text = btn.textContent.toLowerCase();
+      const secId = btn.dataset.section;
+      const sec = $('section-' + secId);
+      const secText = sec ? sec.textContent.toLowerCase() : '';
+      if (!query || text.includes(query) || secText.includes(query)) {
+        btn.style.display = 'flex';
+      } else {
+        btn.style.display = 'none';
+      }
+    });
+  });
+
   // ── Save indicator flash ──────────────────────────────────────────────
   function flashSaved() {
     const ind = $('settings-save-indicator');
@@ -275,6 +291,17 @@ export function initSettings(setGreetingCallback) {
     const modelInput = $('settings-ollama-model');
     if (modelInput) modelInput.value = val;
     save({ ollama_model: val, local_model: val });
+  });
+  let localUrlDebounceTimer = null;
+  $('settings-ollama-url')?.addEventListener('input', e => {
+    const val = e.target.value.trim();
+    if (localUrlDebounceTimer) clearTimeout(localUrlDebounceTimer);
+    localUrlDebounceTimer = setTimeout(() => {
+      if (val.length >= 7) {
+        save({ ollama_base_url: val, local_base_url: val });
+        fetchLocalModels(val);
+      }
+    }, 400);
   });
   $('settings-ollama-url')?.addEventListener('change', e => {
     const val = e.target.value.trim();

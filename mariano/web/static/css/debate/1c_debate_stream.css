@@ -1,0 +1,356 @@
+/* ============================================================
+   DEBATE BUBBLES, STREAMING & INPUT AREA
+   ============================================================ */
+
+.debate-bubble {
+  padding: 4px 0;
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  width: 100%;
+}
+.alpha-bubble {
+  border-left: none !important;
+}
+.beta-bubble {
+  border-right: none !important;
+}
+.synthesis-bubble {
+  border: none !important;
+  background: transparent !important;
+  border-radius: 0 !important;
+  padding: 6px 0 !important;
+  box-shadow: none !important;
+}
+.synthesis-card {
+  border: none !important;
+  border-radius: 12px !important;
+  padding: 16px 20px !important;
+  background: var(--sidebar-bg) !important; /* Clean secondary background tint */
+  margin-bottom: 24px !important;
+  box-shadow: none !important;
+}
+.synthesis-sep span {
+  color: var(--text-secondary) !important;
+  font-weight: 600 !important;
+  font-size: 11px !important;
+  letter-spacing: 0.02em;
+  display: inline-flex;
+  align-items: center;
+}
+.user-bubble {
+  color: var(--text-2);
+  font-style: normal; /* forced normal style, no italics */
+  font-size: 14.5px;
+  font-weight: 400; /* Same regular weight matching AI response body */
+}
+.system-bubble {
+  background: transparent !important;
+  border: none !important;
+  text-align: center;
+  color: var(--text-3);
+  font-size: 11px;
+  font-style: normal; /* forced normal style, no italics */
+}
+
+/* Typing animation */
+.debate-typing {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+  height: 18px;
+}
+.debate-typing span {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--text-3);
+  animation: dt 1s infinite;
+}
+.debate-typing span:nth-child(2) { animation-delay: 0.15s; }
+.debate-typing span:nth-child(3) { animation-delay: 0.3s; }
+@keyframes dt {
+  0%, 80%, 100% { opacity: 0.3; transform: scale(0.8); }
+  40% { opacity: 1; transform: scale(1); }
+}
+
+/* Summary card */
+.debate-summary-card {
+  align-self: center;
+  width: 100%;
+  max-width: 820px;
+  margin: 16px auto 24px;
+  padding: 0 0 20px 0;
+  border: none !important;
+  border-bottom: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  min-width: 0;
+}
+.debate-summary-icon {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  background: var(--sidebar-bg);
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+/* ── Input area (Aligned to main chat input style) ── */
+.debate-input-area {
+  flex-shrink: 0;
+  padding: 0 24px 0 !important;
+  margin-bottom: 0 !important;
+  background: var(--bg);
+  border-top: none;
+  position: relative;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+}
+.debate-input-area .bottom-disclaimer {
+  width: 100% !important;
+  max-width: 720px !important;
+  margin: 2px auto 0 auto !important;
+  padding-bottom: 0 !important;
+  text-align: center !important;
+  display: block !important;
+  font-size: 10px !important;
+  color: var(--text-3) !important;
+  opacity: 0.7 !important;
+  letter-spacing: 0.01em !important;
+  box-sizing: border-box !important;
+}
+.debate-input-area::before {
+  content: '';
+  position: absolute;
+  top: -30px;
+  left: 0;
+  right: 0;
+  height: 30px;
+  background: linear-gradient(to bottom, transparent, var(--bg));
+  pointer-events: none;
+  z-index: 10;
+}
+.debate-input-wrapper {
+  max-width: 720px !important;
+  width: 100% !important;
+  margin: 0 auto !important;
+  box-sizing: border-box !important;
+  background: var(--input-bg, #F4F4F6);
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  border-radius: 8px;
+  padding: 10px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+}
+.debate-active-progress-card,
+.debate-active-search-card {
+  width: 100% !important;
+  max-width: 720px !important;
+  box-sizing: border-box !important;
+  margin: 0 auto 8px auto !important;
+  padding: 8px 16px !important;
+  background: var(--card) !important;
+  border: none !important;
+  outline: none !important;
+  border-radius: 24px !important;
+  box-shadow: none !important;
+}
+.debate-input-wrapper:focus-within {
+  border-color: #b5b4b0;
+  box-shadow: var(--shadow), 0 0 0 3px rgba(0,0,0,0.02);
+}
+body.dark .debate-input-wrapper:focus-within {
+  border-color: #555;
+}
+.debate-textarea {
+  width: 100%;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font);
+  font-size: var(--fs-md);     /* 14px */
+  resize: none;
+  outline: none;
+  line-height: 1.55;
+  min-height: 24px;
+  max-height: 100px;
+  overflow-y: hidden;
+}
+.debate-textarea::placeholder {
+  color: var(--text-3);
+}
+.debate-input-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 4px;
+}
+.debate-input-hint {
+  font-size: var(--fs-xs);     /* 11px */
+  color: var(--text-3);
+}
+.debate-input-btns {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.debate-rounds-select {
+  cursor: pointer;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text-2);
+  padding: 0 16px 0 4px !important;
+  font-family: var(--font);
+  outline: none !important;
+  height: 24px;
+  line-height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  box-sizing: border-box;
+  margin: 0;
+  transition: color 0.15s, opacity 0.15s;
+}
+.debate-rounds-select:hover {
+  color: var(--text);
+  opacity: 0.9;
+}
+
+.input-action-btn {
+  background: none;
+  border: none !important;
+  color: var(--text-3);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border-radius: 50%;
+  transition: background-color 0.12s, color 0.12s;
+}
+.input-action-btn:hover {
+  background-color: var(--hover);
+  color: var(--text-primary) !important;
+}
+.input-action-btn.active {
+  background-color: rgba(16, 185, 129, 0.08) !important;
+  color: #10b981 !important;
+}
+
+.submit-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--text-primary);
+  color: var(--bg);
+  border: none !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.1s ease, background-color 0.15s ease;
+}
+.submit-btn:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+.submit-btn:active {
+  transform: scale(0.95);
+}
+.submit-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Select fields custom styling for premium feel */
+.debate-model-select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 6px center;
+  background-size: 8px;
+  padding-right: 18px !important;
+  background-color: var(--sidebar-bg); /* secondary chip bg */
+  border: none !important; /* no outline */
+  border-radius: 6px; /* button ratio */
+  font-size: 9.5px;
+  color: var(--text-2);
+  padding: 2.5px 18px 2.5px 8px !important;
+  outline: none !important;
+  font-family: var(--font);
+  margin-top: 1px;
+  cursor: pointer;
+  transition: opacity 0.15s;
+  width: fit-content; /* only as wide as selected text */
+  max-width: 160px;   /* safety cap */
+}
+
+.debate-model-select:hover {
+  opacity: 0.85;
+}
+
+.debate-model-select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: transparent;
+}
+
+.debate-rounds-select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 4px center;
+  background-size: 8px;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text-2);
+  padding: 0 16px 0 4px !important;
+  outline: none !important;
+  font-family: var(--font);
+  cursor: pointer;
+  transition: color 0.15s, opacity 0.15s;
+  height: 24px;
+}
+
+.debate-rounds-select:hover {
+  color: var(--text);
+  opacity: 0.9;
+}
+
+.debate-rounds-select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: transparent;
+}
+
+.debate-model-select option,
+.debate-rounds-select option {
+  background: var(--card);
+  color: var(--text);
+}

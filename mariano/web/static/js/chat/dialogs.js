@@ -164,7 +164,7 @@ export function openImageLightbox(src, redirectUrl = '') {
           setTimeout(() => {
             icon.setAttribute('data-lucide', 'copy');
             if (window.lucide) lucide.createIcons({ parent: btnCopy });
-          }, 1500);
+          }, 3000);
         }
       });
     };

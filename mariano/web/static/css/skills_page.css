@@ -175,7 +175,7 @@ body.dark .skills-btn.danger:hover {
   color: var(--text-3);
   font-size: var(--fs-xs);     /* 11px */
   font-weight: 600;
-  text-transform: uppercase;
+  text-transform: none;
   letter-spacing: .04em;
 }
 
@@ -260,9 +260,8 @@ body.dark .skills-btn.danger:hover {
   font-weight: 600;
   padding: 1px 5px;
   border-radius: 4px;
-  text-transform: uppercase;
-  letter-spacing: .02em;
-  border: 1px solid var(--border);
+  text-transform: none;
+  border: none;
 }
 
 .skills-status-badge.active {
