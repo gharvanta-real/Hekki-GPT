@@ -62,11 +62,9 @@ export class WorkspacePage {
   mount(container) {
     // If already mounted in same container, just refresh
     if (this._mounted && this._root === container) {
-      console.log('[WorkspacePage] Already mounted, refreshing...');
       this.refresh();
       return;
     }
-    console.log('[WorkspacePage] Mounting into:', container?.id);
     this._root = container;
     this._mounted = true;
     this._render();

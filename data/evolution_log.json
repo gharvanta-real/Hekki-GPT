@@ -1,5 +1,217 @@
 [
   {
+    "timestamp": "2026-08-07T10:50:30Z",
+    "version": "2.0.4-fix-iframe-sandbox-security-warning",
+    "category": "Browser Security Compliance",
+    "summary": "Resolved Chromium iframe sandbox escape security warning in live_canvas.js",
+    "details": "Updated iframe sandbox attribute in live_canvas.js to 'allow-scripts allow-modals allow-forms allow-popups' (removing allow-same-origin) to strictly comply with W3C/Chromium security specs.",
+    "files": [
+      "mariano/web/static/js/components/live_canvas.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T11:07:18Z",
+    "version": "2.0.9-fix-live-canvas-cross-origin-dom-exception",
+    "category": "JS Sandbox & DOM Bug Fix",
+    "summary": "Resolved iframe DOMException in live_canvas.js using HTML5 iframe.srcdoc property",
+    "details": "Replaced contentWindow.document.write() with iframe.srcdoc = fullHtml in live_canvas.js, allowing sandboxed web app previews to render cleanly without cross-origin security exceptions.",
+    "files": [
+      "mariano/web/static/js/components/live_canvas.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T11:02:40Z",
+    "version": "2.0.8-web-audio-api-sound-effects-engine",
+    "category": "Audio & Feedback Features",
+    "summary": "Implemented Web Audio API Synthesizer Sound Engine for real-time UI feedback",
+    "details": "Created sound_effects.js providing zero-latency, high-frequency synthesized audio feedback for message send (playSend), completion (playDone), reminder chime (playChime), micro click (playClick), and error alerts (playError). Integrated across main.js and agent_stream.js.",
+    "files": [
+      "mariano/web/static/js/sound_effects.js",
+      "mariano/web/static/main.js",
+      "mariano/web/static/js/agent_stream.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T11:00:45Z",
+    "version": "2.0.7-fix-agent-stream-unexpected-token-export-syntax-error",
+    "category": "JS Syntax Bug Fix",
+    "summary": "Fixed Uncaught SyntaxError: Unexpected token 'export' in agent_stream.js",
+    "details": "Added missing closing brace to _updateDynamicHeaderTitle() function on line 176 of agent_stream.js which caused export function handleChatAgentEvent to be nested inside another function.",
+    "files": [
+      "mariano/web/static/js/agent_stream.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T10:59:50Z",
+    "version": "2.0.6-realtime-reminder-countdown-notification-system",
+    "category": "Skill Enhancement & Real-time Features",
+    "summary": "Upgraded ReminderSkill v2.0.0 with real-time countdown timers, WebSocket broadcast, audio chime, and toast alerts",
+    "details": "Added parse_delay_seconds helper and _schedule_timer countdown worker in ReminderSkill, broadcast_reminder_notification helper in app.py, and playReminderChime audio synth + reminder_trigger alert bubble in agent_stream.js.",
+    "files": [
+      "mariano/skills/core_skills/reminder/skill.py",
+      "mariano/web/app.py",
+      "mariano/web/static/js/agent_stream.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T10:53:05Z",
+    "version": "2.0.5-dynamic-user-profile-menu-header",
+    "category": "UX & Privacy Bug Fix",
+    "summary": "Replaced hardcoded fake email string in user profile menu header with dynamic user identity name",
+    "details": "Removed static string 'anshu@gmail.com' from index.html and debate_page.js, and bound .user-menu-header to dynamically display configured user identity name (or 'User Account') loaded from Settings.",
+    "files": [
+      "mariano/web/static/index.html",
+      "mariano/web/static/js/debate/debate_page.js",
+      "mariano/web/static/js/settings.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T10:47:35Z",
+    "version": "2.0.3-restore-lucide-icons-left-sidebar",
+    "category": "UI & Icons Restoration",
+    "summary": "Restored standard Lucide vector icons for Left Sidebar Action items per user request",
+    "details": "Restored data-lucide='message-circle-plus', 'swords', 'compass', and 'image' on #btn-new-chat, #btn-nav-playground, #nav-skills-btn, and #btn-nav-images in index.html.",
+    "files": [
+      "mariano/web/static/index.html"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T10:46:28Z",
+    "version": "2.0.1-fix-markdown-enhance-tables-reference-error",
+    "category": "JS Bug Fix",
+    "summary": "Fixed ReferenceError: header is not defined in markdown.js enhanceTables()",
+    "details": "Removed orphaned line 323 in markdown.js that called lucide.createIcons({ parent: header }) where header was undefined.",
+    "files": [
+      "mariano/web/static/js/chat/markdown.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T10:47:02Z",
+    "version": "2.0.2-user-fluent-image-svg-integration",
+    "category": "UI Design & Iconography",
+    "summary": "Applied user-provided Microsoft Fluent System Image SVG path for #btn-nav-images with fill='currentColor'",
+    "details": "Updated Images button SVG in index.html with exact user-provided Fluent Image vector path using fill='currentColor' for dynamic theme switching.",
+    "files": [
+      "mariano/web/static/index.html"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T10:45:38Z",
+    "version": "2.0.0-microsoft-fluent-regular-outline-icons",
+    "category": "UI Design & Iconography",
+    "summary": "Switched Left Sidebar Action icons to Microsoft Fluent System Icons (Regular Outline SVG)",
+    "details": "Updated SVGs on #btn-new-chat, #btn-nav-playground, #nav-skills-btn, and #btn-nav-images in index.html to Microsoft Fluent System Icons Regular Outline variants (stroke-width 1.75, rounded caps and joins) with dynamic stroke: currentColor rule in 3_sidebar_nav.css.",
+    "files": [
+      "mariano/web/static/css/layout/3_sidebar_nav.css",
+      "mariano/web/static/index.html"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T10:45:15Z",
+    "version": "1.9.9-microsoft-fluent-rounded-fill-icons-integration",
+    "category": "UI Design & Iconography",
+    "summary": "Integrated official Microsoft Fluent System Icons (Rounded Filled SVG) for Left Sidebar Action items",
+    "details": "Replaced Lucide vector icons on #btn-new-chat, #btn-nav-playground, #nav-skills-btn, and #btn-nav-images in index.html with Microsoft Fluent System Icons rounded filled SVG vector paths and added .fluent-icon fill: currentColor rules in 3_sidebar_nav.css.",
+    "files": [
+      "mariano/web/static/css/layout/3_sidebar_nav.css",
+      "mariano/web/static/index.html"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T10:43:00Z",
+    "version": "1.9.8-revert-to-original-lucide-icons",
+    "category": "UI & Icons Restoration",
+    "summary": "Reverted sidebar and settings icons back to original clean Lucide vector icons per user request",
+    "details": "Restored <i data-lucide='...'> for New Chat, Skills, Images, and Settings Modal Skills items in index.html.",
+    "files": [
+      "mariano/web/static/index.html"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T10:38:00Z",
+    "version": "1.9.7-custom-png-icons-message-and-skills",
+    "category": "UI & Asset Integration",
+    "summary": "Integrated custom PNG icons (message.png, skills.png) for New Chat and Skills navigation buttons",
+    "details": "Copied message.png and skills.png into static assets/icons/, updated #btn-new-chat, #nav-skills-btn, and Settings Modal Skills nav item in index.html with automatic light/dark theme inverting via .custom-nav-icon.",
+    "files": [
+      "mariano/web/static/assets/icons/message.png",
+      "mariano/web/static/assets/icons/skills.png",
+      "mariano/web/static/index.html"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T10:35:30Z",
+    "version": "1.9.6-custom-png-images-nav-icon",
+    "category": "UI & Asset Integration",
+    "summary": "Integrated custom PNG image icon for Left Sidebar Images button with dynamic light/dark theme inverting",
+    "details": "Copied image-.png-color-black.png into static assets/icons/image-black.png, added .custom-nav-icon with body.dark/oled filter: invert(1) rule in 3_sidebar_nav.css, and updated #btn-nav-images in index.html.",
+    "files": [
+      "mariano/web/static/assets/icons/image-black.png",
+      "mariano/web/static/css/layout/3_sidebar_nav.css",
+      "mariano/web/static/index.html"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T10:22:00Z",
+    "version": "1.9.5-strict-monochrome-neutral-accents",
+    "category": "Design System Strict Neutrality",
+    "summary": "Removed all blue and generic color highlights in favor of strict neutral monochrome palette",
+    "details": "Changed active settings nav icon color from blue to var(--text-primary) in 1_settings_base.css, and changed :focus-visible ring outline from var(--blue) to neutral var(--text-2) in base.css.",
+    "files": [
+      "mariano/web/static/css/base.css",
+      "mariano/web/static/css/settings/1_settings_base.css"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T10:21:25Z",
+    "version": "1.9.4-fix-settings-modal-stray-brace-parser-bug",
+    "category": "CSS Syntax & Layout Repair",
+    "summary": "Removed stray closing brace in 1_settings_base.css that broke .modal-nav-item width parsing",
+    "details": "Removed extra unmatched closing brace above .modal-nav-item line 70. Enforced width: 100% !important and display: flex !important so all settings nav items stretch fully across the sidebar width.",
+    "files": [
+      "mariano/web/static/css/settings/1_settings_base.css"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T10:20:25Z",
+    "version": "1.9.3-fix-settings-modal-borderless-nav-styling",
+    "category": "UI & Design System Compliance",
+    "summary": "Enforced Rule #3 (Zero Borders/Outlines) and Rule #5 (Active Pill Highlight) on Settings Modal",
+    "details": "Added global button border reset in base.css, removed browser default button borders on .modal-nav-item in 1_settings_base.css, set modal-nav background tint to var(--input-bg), and set active item to clean borderless pure white pill (#FFFFFF).",
+    "files": [
+      "mariano/web/static/css/base.css",
+      "mariano/web/static/css/settings/1_settings_base.css"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T10:16:30Z",
+    "version": "1.9.2-fix-sqlite-chat-tables-operational-error",
+    "category": "Backend Bug Fix",
+    "summary": "Fixed HTTP 500 OperationalError on /api/chats and /api/chats/sync",
+    "details": "Added _ensure_tables() helper in EpisodicStore to auto-create missing chat_sessions and chat_messages SQLite tables on database query execution.",
+    "files": [
+      "mariano/memory/episodic/episodic_store.py"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T10:11:00Z",
+    "version": "1.9.1-pre-production-audit-remediation",
+    "category": "Security, Performance & Stability",
+    "summary": "Implemented complete remediation for pre-production audit report findings",
+    "details": "Added sanitizeHtml() XSS guard for AI markdown outputs in agent_stream.js and messages.js. Added WS error forwarding, attachment filename sanitization, 300s timeout guard, and unique voice temp filenames in app.py. Fixed --font-mono to real monospace font stack, added :focus-visible keyboard navigation styles, and removed duplicate CSS vars in base.css. Implemented DocumentFragment batching in session.js for zero reflows. Added user-facing offline toast notification in socket_manager.js.",
+    "files": [
+      "mariano/web/static/js/agent_stream.js",
+      "mariano/web/static/js/chat/messages.js",
+      "mariano/web/static/js/chat/session.js",
+      "mariano/web/static/js/components/socket_manager.js",
+      "mariano/web/static/js/debate/debate_page.js",
+      "mariano/web/static/js/pages/skills_page.js",
+      "mariano/web/static/js/pages/workspace_page.js",
+      "mariano/web/static/css/base.css",
+      "mariano/web/app.py"
+    ]
+  },
+  {
     "timestamp": "2026-08-07T09:56:45Z",
     "version": "1.9.0-hide-scroll-arrow-on-welcome-home-screen",
     "category": "UX & Conditional Visibility",

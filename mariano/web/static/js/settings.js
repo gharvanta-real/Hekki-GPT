@@ -128,7 +128,9 @@ export function initSettings(setGreetingCallback) {
       if (userName) userName.value = cfg.user_name || '';
       if (userInstructions) userInstructions.value = cfg.user_instructions || '';
 
-      // Also sync greeting in main view
+      // Also sync greeting & user menu header in main view
+      const userLabel = cfg.user_name ? cfg.user_name : 'User Account';
+      document.querySelectorAll('.user-menu-header').forEach(el => { el.textContent = userLabel; });
       if (cfg.user_name && setGreetingCallback) setGreetingCallback(cfg.user_name);
 
       // API key
@@ -258,6 +260,8 @@ export function initSettings(setGreetingCallback) {
     const name = $('settings-user-name')?.value.trim() || '';
     const instructions = $('settings-user-instructions')?.value.trim() || '';
     save({ user_name: name, user_instructions: instructions });
+    const userLabel = name || 'User Account';
+    document.querySelectorAll('.user-menu-header').forEach(el => { el.textContent = userLabel; });
     if (setGreetingCallback) setGreetingCallback(name);
   });
 

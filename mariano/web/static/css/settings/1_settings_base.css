@@ -48,7 +48,7 @@ body.dark .modal-box {
 .modal-nav {
   width: 215px;
   flex-shrink: 0;
-  background: var(--sidebar-bg) !important; /* Secondary background tint */
+  background: var(--input-bg) !important; /* Soft neutral background tint */
   border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
@@ -67,12 +67,13 @@ body.dark .modal-box {
   display: none !important;
 }
 
-}
-
 .modal-nav-item {
-  height: 34px;
-  width: 100%;
-  border: none;
+  height: 36px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
   background: transparent;
   color: var(--text-2);
   cursor: pointer;
@@ -80,10 +81,10 @@ body.dark .modal-box {
   font-size: var(--fs-base);   /* 13px */
   font-weight: 400;
   border-radius: 8px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 0 12px;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px;
+  padding: 0 12px !important;
   text-align: left;
   transition: background 0.12s, color 0.12s;
 }
@@ -95,19 +96,33 @@ body.dark .modal-box {
   transition: color 0.12s;
 }
 .modal-nav-item:hover {
-  background: var(--hover);
-  color: var(--text);
+  background: var(--hover) !important;
+  color: var(--text) !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
 }
 .modal-nav-item:hover .lucide {
   color: var(--text-2);
 }
 .modal-nav-item.active {
-  background: var(--hover);
-  color: var(--text);
-  font-weight: 400;
+  background: #FFFFFF !important;
+  color: var(--text-primary) !important;
+  font-weight: 600;
+  border: none !important;
+  outline: none !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04) !important;
+}
+body.dark .modal-nav-item.active {
+  background: #2C2C2B !important;
+  color: #FFFFFF !important;
+}
+body.oled .modal-nav-item.active {
+  background: #141414 !important;
+  color: #FFFFFF !important;
 }
 .modal-nav-item.active .lucide {
-  color: var(--text-primary);
+  color: var(--text-primary) !important;
 }
 
 /* === RIGHT CONTENT PANEL (Main Page BG) === */

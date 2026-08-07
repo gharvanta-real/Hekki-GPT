@@ -57,11 +57,9 @@ export class SkillsPage {
   /** Mount the skills manager into the given container element. */
   mount(container) {
     if (this._mounted && this._root === container) {
-      console.log('[SkillsPage] Already mounted, refreshing...');
       this.refresh();
       return;
     }
-    console.log('[SkillsPage] Mounting into:', container?.id);
     this._root = container;
     this._mounted = true;
     this._renderLayout();

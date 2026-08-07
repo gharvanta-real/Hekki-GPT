@@ -319,8 +319,6 @@ export function enhanceTables(container) {
         }, 3000);
       } catch (err) { console.error('Failed to copy table', err); }
     });
-
-    if (window.lucide) lucide.createIcons({ parent: header });
   });
 }
 

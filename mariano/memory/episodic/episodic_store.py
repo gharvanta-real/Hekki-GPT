@@ -79,16 +79,20 @@ class EpisodicStore:
     def _connect(self):
         return aiosqlite.connect(self._db_path, timeout=30.0)
 
+    async def _ensure_tables(self, db) -> None:
+        """Ensures all required tables exist in SQLite database."""
+        await db.execute("PRAGMA journal_mode=WAL")
+        await db.execute("PRAGMA synchronous=NORMAL")
+        await db.execute(CREATE_MEMORIES)
+        await db.execute(CREATE_EPISODES)
+        await db.execute(CREATE_TASK_LOG)
+        await db.execute(CREATE_CHAT_SESSIONS)
+        await db.execute(CREATE_CHAT_MESSAGES)
+        await db.commit()
+
     async def initialize(self) -> None:
         async with self._connect() as db:
-            await db.execute("PRAGMA journal_mode=WAL")
-            await db.execute("PRAGMA synchronous=NORMAL")
-            await db.execute(CREATE_MEMORIES)
-            await db.execute(CREATE_EPISODES)
-            await db.execute(CREATE_TASK_LOG)
-            await db.execute(CREATE_CHAT_SESSIONS)
-            await db.execute(CREATE_CHAT_MESSAGES)
-            await db.commit()
+            await self._ensure_tables(db)
         log.info("episodic.initialized", path=str(self._db_path))
 
 
@@ -96,6 +100,7 @@ class EpisodicStore:
 
     async def store(self, content: str, category: str = "general", metadata: dict | None = None) -> None:
         async with self._connect() as db:
+            await self._ensure_tables(db)
             await db.execute(
                 "INSERT INTO memories (content, category, metadata, created_at) VALUES (?, ?, ?, ?)",
                 (content, category, json.dumps(metadata or {}), datetime.utcnow().isoformat()))
@@ -104,6 +109,7 @@ class EpisodicStore:
     async def search(self, query: str, limit: int = 5) -> list[dict]:
         words = query.lower().split()
         async with self._connect() as db:
+            await self._ensure_tables(db)
             db.row_factory = aiosqlite.Row
             conditions = " OR ".join(["LOWER(content) LIKE ?" for _ in words])
             params = [f"%{w}%" for w in words] + [limit]
@@ -114,6 +120,7 @@ class EpisodicStore:
 
     async def get_recent(self, limit: int = 10) -> list[dict]:
         async with self._connect() as db:
+            await self._ensure_tables(db)
             db.row_factory = aiosqlite.Row
             cursor = await db.execute(
                 "SELECT * FROM memories ORDER BY created_at DESC LIMIT ?", (limit,))
@@ -125,6 +132,7 @@ class EpisodicStore:
     async def store_episode(self, user_input: str, assistant_output: str,
                              tools_used: list[str], success: bool) -> None:
         async with self._connect() as db:
+            await self._ensure_tables(db)
             await db.execute(
                 "INSERT INTO episodes (user_input, assistant_output, tools_used, success, created_at) VALUES (?, ?, ?, ?, ?)",
                 (user_input, assistant_output, json.dumps(tools_used), int(success), datetime.utcnow().isoformat()))
@@ -132,6 +140,7 @@ class EpisodicStore:
 
     async def get_episodes(self, limit: int = 50) -> list[dict]:
         async with self._connect() as db:
+            await self._ensure_tables(db)
             db.row_factory = aiosqlite.Row
             cursor = await db.execute(
                 "SELECT * FROM episodes ORDER BY created_at DESC LIMIT ?", (limit,))
@@ -144,6 +153,7 @@ class EpisodicStore:
                         files: list[str] | None = None, success: bool = True) -> None:
         """Append a structured task log entry."""
         async with self._connect() as db:
+            await self._ensure_tables(db)
             await db.execute(
                 "INSERT INTO task_log (chat_id, action, detail, files, success, created_at) VALUES (?, ?, ?, ?, ?, ?)",
                 (chat_id or "__global__", action, detail,
@@ -153,6 +163,7 @@ class EpisodicStore:
     async def get_task_log(self, chat_id: str | None = None, limit: int = 50) -> list[dict]:
         """Retrieve task log entries. Pass chat_id to filter by session."""
         async with self._connect() as db:
+            await self._ensure_tables(db)
             db.row_factory = aiosqlite.Row
             if chat_id:
                 cursor = await db.execute(
@@ -177,6 +188,7 @@ class EpisodicStore:
     async def get_all_chats(self) -> list[dict]:
         """Fetch all chat sessions along with their messages, sorted by latest activity time."""
         async with self._connect() as db:
+            await self._ensure_tables(db)
             db.row_factory = aiosqlite.Row
             cursor = await db.execute("SELECT * FROM chat_sessions")
             sessions = [dict(r) for r in await cursor.fetchall()]
@@ -217,6 +229,7 @@ class EpisodicStore:
     async def sync_chats(self, chats: list[dict]) -> None:
         """Syncs the entire chats list by replacing or inserting sessions & messages."""
         async with self._connect() as db:
+            await self._ensure_tables(db)
             await db.execute("DELETE FROM chat_sessions")
             await db.execute("DELETE FROM chat_messages")
             
@@ -239,6 +252,7 @@ class EpisodicStore:
     async def save_single_message(self, chat_id: str, role: str, text: str, metadata: dict | None = None) -> None:
         """Saves a single message under an existing chat session. Auto-creates the session if missing."""
         async with self._connect() as db:
+            await self._ensure_tables(db)
             now_iso = datetime.utcnow().isoformat()
             cursor = await db.execute("SELECT 1 FROM chat_sessions WHERE id = ?", (chat_id,))
             exists = await cursor.fetchone()

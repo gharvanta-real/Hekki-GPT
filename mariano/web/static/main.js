@@ -11,6 +11,7 @@ import { router, initRouterState } from '/static/js/router.js';
 import { SearchModal }     from '/static/js/components/search_modal.js';
 import { SkillsPage }      from '/static/js/pages/skills_page.js';
 import { handleChatAgentEvent } from '/static/js/agent_stream.js';
+import { sounds } from '/static/js/sound_effects.js';
 
 // Modular UI component imports
 import { showToast } from '/static/js/components/toast.js';
@@ -277,7 +278,10 @@ function boot() {
   bindVoice(voice, socket, inConversationState, log);
 
   // Bind inputs and send queries through WS
-  bindInputs((text) => send(text, enterConversation, log));
+  bindInputs((text) => {
+    if (window.sounds) window.sounds.playSend();
+    send(text, enterConversation, log);
+  });
   window.clearInputs = clearInputs;
 
   bindShortcuts();

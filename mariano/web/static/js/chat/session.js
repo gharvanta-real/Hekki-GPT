@@ -45,7 +45,10 @@ export const ChatSessionManager = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ chats })
-    }).catch(() => { console.log("Server sync temporarily unavailable (offline mode)."); });
+    }).catch(() => {
+      // [M-3] Show subtle non-blocking warning on sync failure
+      if (window.showToast) showToast('Sync Warning', 'Chat sync failed — local copy saved.', 3500);
+    });
   },
 
   createChat(initialText) {
@@ -268,6 +271,8 @@ export const ChatSessionManager = {
 
     clearChatLogs();
     const col = document.getElementById('chat-col');
+    // [H-1] Use DocumentFragment for batch DOM insertion (prevents N reflows)
+    const fragment = document.createDocumentFragment();
 
     chat.messages.forEach((msg, idx) => {
       if (msg.role === 'assistant' && msg.metadata && msg.metadata.tool_runs && msg.metadata.tool_runs.length > 0) {
@@ -306,8 +311,10 @@ export const ChatSessionManager = {
         this, () => _globalSendCallback,
         msg.metadata || msg
       );
-      if (col && el) col.appendChild(el);
+      if (el) fragment.appendChild(el);
     });
+    // Append entire fragment in one operation
+    if (col) col.appendChild(fragment);
 
     const isNewChat = chat.messages.length === 0;
     if (window.inConversationState) window.inConversationState.val = !isNewChat;

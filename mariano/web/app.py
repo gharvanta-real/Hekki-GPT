@@ -8,6 +8,8 @@ if hasattr(sys.stderr, "reconfigure"):
     sys.stderr.reconfigure(encoding="utf-8")
 
 import os
+import re
+import uuid
 import base64
 import json
 import asyncio
@@ -33,6 +35,23 @@ settings = get_settings()
 
 # Registry holding active websocket client sockets
 active_connections: list[WebSocket] = []
+
+
+async def broadcast_reminder_notification(text: str):
+    """Broadcasts a real-time reminder notification event to all connected WebSocket clients."""
+    log.info("reminder.broadcast_triggered", text=text)
+    for ws in list(active_connections):
+        try:
+            await ws.send_json({
+                "type": "agent_event",
+                "kind": "reminder_trigger",
+                "data": text,
+                "metadata": {
+                    "timestamp": datetime.utcnow().isoformat()
+                }
+            })
+        except Exception as exc:
+            log.error("reminder.broadcast_failed", error=str(exc))
 
 
 async def watch_static_files(connections: list[WebSocket]):
@@ -402,6 +421,7 @@ async def websocket_endpoint(websocket: WebSocket):
     })
 
     query_task = None
+    _ws_debate = None  # [L-1] Per-connection debate instance (not shared on app.state)
 
     async def run_query(query_text, project=None, project_path=None, chat_id=None, permission_policy=None, aider_enabled=False, model_alpha=None, model_beta=None):
         try:
@@ -515,8 +535,26 @@ async def websocket_endpoint(websocket: WebSocket):
                 "data": "Generation stopped by user.",
                 "metadata": {}
             })
+        except asyncio.TimeoutError:
+            log.error("web.query_timeout")
+            await websocket.send_json({
+                "type": "agent_event",
+                "kind": "error",
+                "data": "Request timed out after 5 minutes. Please try again.",
+                "metadata": {}
+            })
         except Exception as e:
             log.error("web.query_run_error", error=str(e))
+            # [C-2] Forward error to WS client so UI spinner does not freeze
+            try:
+                await websocket.send_json({
+                    "type": "agent_event",
+                    "kind": "error",
+                    "data": f"An error occurred: {str(e)[:300]}",
+                    "metadata": {}
+                })
+            except Exception:
+                pass
 
     try:
         while True:
@@ -542,6 +580,8 @@ async def websocket_endpoint(websocket: WebSocket):
 
                         for att in attachments:
                             name = att.get("name", "file")
+                            # [H-4] Sanitize filename: strip directory components and dangerous chars
+                            name = re.sub(r'[^\w\-. ]', '_', Path(name).name).strip() or "file"
                             is_img = att.get("is_image", False)
                             ext = att.get("ext", "bin")
 
@@ -584,7 +624,10 @@ async def websocket_endpoint(websocket: WebSocket):
                 log.info("web.query_received", text=text, attachments_count=len(attachments), project=project, project_path=project_path, chat_id=chat_id, permission_policy=permission_policy, aider_enabled=aider_enabled, model_alpha=model_alpha, model_beta=model_beta)
                 if query_task and not query_task.done():
                     query_task.cancel()
-                query_task = asyncio.create_task(run_query(text, project=project, project_path=project_path, chat_id=chat_id, permission_policy=permission_policy, aider_enabled=aider_enabled, model_alpha=model_alpha, model_beta=model_beta))
+                # [H-3] 300s timeout guard to prevent hung queries freezing UI
+                async def _run_with_timeout(*args, **kwargs):
+                    await asyncio.wait_for(run_query(*args, **kwargs), timeout=300)
+                query_task = asyncio.create_task(_run_with_timeout(text, project=project, project_path=project_path, chat_id=chat_id, permission_policy=permission_policy, aider_enabled=aider_enabled, model_alpha=model_alpha, model_beta=model_beta))
 
             elif action_type == "grant_permission":
                 chat_id = payload.get("chat_id")
@@ -620,7 +663,7 @@ async def websocket_endpoint(websocket: WebSocket):
                     model_beta=model_beta,
                     max_rounds=rounds,
                 )
-                websocket.app.state._debate = _debate
+                _ws_debate = _debate  # [L-1] Store per-connection, not on app.state
 
                 async def send_debate_event(evt):
                     try:
@@ -636,23 +679,23 @@ async def websocket_endpoint(websocket: WebSocket):
 
             elif action_type == "debate_intervene":
                 message = payload.get("message", "")
-                debate = getattr(websocket.app.state, "_debate", None)
+                debate = _ws_debate
                 if debate:
                     debate.inject_user_message(message)
                     log.info("web.debate_intervene", message=message)
 
             elif action_type == "debate_pause":
-                debate = getattr(websocket.app.state, "_debate", None)
+                debate = _ws_debate
                 if debate:
                     debate.pause()
 
             elif action_type == "debate_resume":
-                debate = getattr(websocket.app.state, "_debate", None)
+                debate = _ws_debate
                 if debate:
                     debate.resume()
 
             elif action_type == "debate_stop":
-                debate = getattr(websocket.app.state, "_debate", None)
+                debate = _ws_debate
                 if debate:
                     debate.stop()
                 if query_task and not query_task.done():
@@ -672,7 +715,8 @@ async def websocket_endpoint(websocket: WebSocket):
                 try:
                     audio_bytes = base64.b64decode(b64_audio)
                     temp_dir = Path(tempfile.gettempdir())
-                    temp_wav = temp_dir / "mariano_web_voice.wav"
+                    # [M-8] Unique filename to prevent concurrent request collision
+                    temp_wav = temp_dir / f"mariano_voice_{uuid.uuid4().hex[:8]}.wav"
                     temp_wav.write_bytes(audio_bytes)
                     
                     transcript = await voice_controller.transcribe_audio(temp_wav)
@@ -818,12 +862,25 @@ class OpenAIChatCompletionRequest(BaseModel):
     chat_id: str | None = None
     project: str | None = None
 
+from fastapi import Request, Header
+
 @app.post("/api/v1/chat/completions")
 @app.post("/v1/chat/completions")
-async def openai_chat_completions(req: OpenAIChatCompletionRequest):
+async def openai_chat_completions(
+    req: OpenAIChatCompletionRequest,
+    raw_req: Request,
+    authorization: str | None = Header(None)
+):
     """GPT-Grade OpenAI-compatible Server-Sent Events (SSE) chat streaming endpoint.
-    Allows standard LLM clients, browser apps, and extensions to stream responses.
+    Allows standard LLM clients, browser apps, and extensions to stream responses safely.
     """
+    settings_obj = get_settings()
+    # [C-3] Optional API key authentication guard if active key is configured
+    expected_key = getattr(settings_obj, "openai_api_key", None)
+    if expected_key and authorization:
+        token = authorization.replace("Bearer ", "").strip()
+        if token != expected_key:
+            raise HTTPException(status_code=401, detail="Invalid API Key provided")
     from fastapi.responses import StreamingResponse
     import time
     import uuid

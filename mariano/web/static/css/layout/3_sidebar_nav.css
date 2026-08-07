@@ -10,6 +10,22 @@
   overflow: hidden;
   height: 100%;
 }
+
+/* Microsoft Fluent System Icons (Regular / Outline SVG) */
+.fluent-icon {
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+  flex-shrink: 0;
+  display: inline-block;
+  vertical-align: middle;
+  color: var(--text-2);
+  transition: color 0.15s ease;
+}
+.sidebar-action-btn:hover .fluent-icon,
+.sidebar-action-btn.active .fluent-icon {
+  color: var(--text-primary);
+}
 /* Claude-style: collapse to icon rail (52px), not zero */
 #sidebar-nav.collapsed {
   width: 52px;

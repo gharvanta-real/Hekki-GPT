@@ -256,7 +256,7 @@ export class LiveCanvasEngine {
     if (this._currentViewMode === 'preview') {
       return `
         <div class="canvas-preview-wrapper">
-          <iframe id="canvas-iframe" class="canvas-iframe" sandbox="allow-scripts allow-modals allow-forms allow-same-origin"></iframe>
+          <iframe id="canvas-iframe" class="canvas-iframe" sandbox="allow-scripts allow-modals allow-forms allow-popups"></iframe>
         </div>
       `;
     }
@@ -493,11 +493,17 @@ export class LiveCanvasEngine {
       }
     }
 
-    const doc = iframe.contentWindow || iframe.contentDocument;
-    if (doc.document) {
-      doc.document.open();
-      doc.document.write(fullHtml);
-      doc.document.close();
+    try {
+      iframe.srcdoc = fullHtml;
+    } catch (e) {
+      try {
+        const doc = iframe.contentDocument || iframe.contentWindow?.document;
+        if (doc) {
+          doc.open();
+          doc.write(fullHtml);
+          doc.close();
+        }
+      } catch (err) {}
     }
   }
 

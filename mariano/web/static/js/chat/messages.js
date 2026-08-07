@@ -3,6 +3,18 @@ import { escapeHtml, formatTime, scrollChat, clearChatLogs } from './input.js';
 import { enhanceMarkdownContent } from './markdown.js';
 import { enhanceImagePreviews } from './media.js';
 
+/** [C-1] Lightweight HTML sanitizer — strips dangerous tags & on* handlers from AI output */
+function sanitizeHtml(html) {
+  if (!html) return '';
+  return html
+    .replace(/<script[\s\S]*?<\/script>/gi, '')
+    .replace(/<iframe[\s\S]*?<\/iframe>/gi, '')
+    .replace(/<object[\s\S]*?<\/object>/gi, '')
+    .replace(/<embed[\s\S]*?\/>/gi, '')
+    .replace(/\s+on\w+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]*)/gi, '')
+    .replace(/href\s*=\s*["']?javascript:[^"'>\s]*/gi, 'href="#"');
+}
+
 /** Render a single message DOM node with full Claude-style actions */
 export function createMessageElement(type, text, timestamp, index, ChatSessionManager, globalSendCallbackRef, metadata = null) {
   const timeStr = formatTime(timestamp);
@@ -209,13 +221,13 @@ export function createMessageElement(type, text, timestamp, index, ChatSessionMa
               <i class="mi-chevron thought-chevron" data-lucide="chevron-down" style="width:12px;height:12px;display:inline-block;vertical-align:middle;transition:transform 0.2s"></i>
             </div>
             <div class="thought-body collapsed" style="display: none;">
-              <div class="thought-step">${window.marked ? marked.parse(thoughtContent) : escapeHtml(thoughtContent)}</div>
+              <div class="thought-step">${window.marked ? sanitizeHtml(marked.parse(thoughtContent)) : escapeHtml(thoughtContent)}</div>
             </div>
           </div>
         `;
       }
 
-      el.innerHTML = thoughtHtml + (window.marked ? marked.parse(finalText) : escapeHtml(finalText));
+      el.innerHTML = thoughtHtml + (window.marked ? sanitizeHtml(marked.parse(finalText)) : escapeHtml(finalText));
       enhanceMarkdownContent(el);
 
       const header = el.querySelector('.thought-header');

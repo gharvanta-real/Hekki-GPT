@@ -1,5 +1,5 @@
 import { ChatSessionManager, enhanceCodeBlocks, enhanceMarkdownContent } from '../chat.js';
-const appendHudLog = (msg) => { console.log("[DEBATE HUD LOG]", msg); };
+const appendHudLog = window.__HEKKI_DEBUG__ ? (msg) => console.log('[DEBATE HUD LOG]', msg) : () => {};
 import { router } from '../router.js';
 import { showToast } from '../components/toast.js';
 
@@ -176,7 +176,7 @@ function _buildLayout() {
         <div style="position: relative; margin-top: auto; border-top: none;">
           <!-- User Menu Dropdown (Debate Specific) -->
           <div class="user-menu-dropdown hidden" id="debate-user-menu-dropdown" style="bottom: 50px; left: 8px;">
-            <div class="user-menu-header">anshu@gmail.com</div>
+            <div class="user-menu-header">User Account</div>
             <button class="user-menu-item" id="btn-debate-user-settings">
               <i data-lucide="settings" style="width:16px; height:16px;"></i>
               <span>Settings</span>

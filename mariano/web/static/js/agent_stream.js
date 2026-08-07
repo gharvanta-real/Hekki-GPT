@@ -1,5 +1,25 @@
 import { scrollChat, enhanceCodeBlocks, enhanceTables, enhanceImagePreviews, enhanceMarkdownContent, escapeHtml, ChatSessionManager } from './chat.js';
-const appendHudLog = (msg) => { console.log("[HUD LOG]", msg); };
+const appendHudLog = window.__HEKKI_DEBUG__ ? (msg) => console.log('[HUD LOG]', msg) : () => {};
+
+/**
+ * [C-1] Lightweight HTML sanitizer — strips <script>, <iframe>, on* event handlers
+ * from AI-generated markdown output before assigning to innerHTML.
+ * Full DOMPurify can replace this when added via CDN/npm.
+ */
+function sanitizeHtml(html) {
+  if (!html) return '';
+  // Remove <script> and <iframe> blocks entirely
+  let clean = html
+    .replace(/<script[\s\S]*?<\/script>/gi, '')
+    .replace(/<iframe[\s\S]*?<\/iframe>/gi, '')
+    .replace(/<object[\s\S]*?<\/object>/gi, '')
+    .replace(/<embed[\s\S]*?\/>/gi, '');
+  // Strip on* event handler attributes (e.g. onerror, onload, onclick)
+  clean = clean.replace(/\s+on\w+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]*)/gi, '');
+  // Strip javascript: hrefs
+  clean = clean.replace(/href\s*=\s*["']?javascript:[^"'>\s]*/gi, 'href="#"');
+  return clean;
+}
 
 let _streamThoughtCard  = null;
 let _streamThoughtBody  = null;
@@ -87,13 +107,13 @@ function _renderParsedMessage(containerEl, rawText) {
           <i class="mi-chevron thought-chevron" data-lucide="chevron-down" style="width:12px;height:12px;display:inline-block;vertical-align:middle;transition:transform 0.2s"></i>
         </div>
         <div class="thought-body collapsed" style="display: none;">
-          <div class="thought-step">${window.marked ? marked.parse(thoughtContent) : escapeHtml(thoughtContent)}</div>
+          <div class="thought-step">${window.marked ? sanitizeHtml(marked.parse(thoughtContent)) : escapeHtml(thoughtContent)}</div>
         </div>
       </div>
     `;
   }
 
-  const responseHtml = window.marked ? marked.parse(cleanFinalText || rawText) : escapeHtml(cleanFinalText || rawText);
+  const responseHtml = window.marked ? sanitizeHtml(marked.parse(cleanFinalText || rawText)) : escapeHtml(cleanFinalText || rawText);
   containerEl.innerHTML = thoughtHtml + responseHtml;
   enhanceMarkdownContent(containerEl);
 
@@ -155,6 +175,22 @@ function _updateDynamicHeaderTitle(col, actionText) {
   }
 }
 
+function playReminderChime() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(587.33, ctx.currentTime);
+    osc.frequency.setValueAtTime(880, ctx.currentTime + 0.15);
+    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.6);
+  } catch (err) {}
+}
 
 
 export function handleChatAgentEvent(e, enterConversationCallback) {
@@ -167,6 +203,27 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
   }
 
   switch (e.kind) {
+    case 'reminder_trigger': {
+      const text = e.data || 'Reminder Notification';
+      playReminderChime();
+      if (window.showToast) window.showToast('⏰ Reminder Alert', text, 8000);
+      const alertEl = document.createElement('div');
+      alertEl.className = 'chat-msg-row ai-msg';
+      alertEl.innerHTML = `
+        <div class="msg-bubble ai-bubble" style="border: 1px solid var(--accent, #2563eb) !important; background: var(--input-bg) !important; padding: 10px 14px; border-radius: 10px; margin-top: 10px;">
+          <div style="display:flex;align-items:center;gap:8px;font-weight:600;color:var(--text-primary);margin-bottom:4px;">
+            <i data-lucide="bell" style="width:16px;height:16px;color:var(--accent, #2563eb);"></i>
+            <span>⏰ REMINDER ALERT</span>
+          </div>
+          <div style="font-size:13px;color:var(--text);">${escapeHtml(text)}</div>
+        </div>
+      `;
+      col.appendChild(alertEl);
+      if (window.lucide) lucide.createIcons({ parent: alertEl });
+      scrollChat();
+      break;
+    }
+
     case 'thinking': {
       enterConversationCallback();
       if (e.data && e.data.includes('Aider')) {
@@ -270,7 +327,7 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
         if (_aiderConsoleLogArea) {
           _aiderConsoleRawText += e.data;
           _aiderConsoleLogArea.innerHTML = window.marked 
-            ? marked.parse(_aiderConsoleRawText) 
+            ? sanitizeHtml(marked.parse(_aiderConsoleRawText)) 
             : escapeHtml(_aiderConsoleRawText);
           enhanceMarkdownContent(_aiderConsoleLogArea);
           _aiderConsoleLogArea.scrollTop = _aiderConsoleLogArea.scrollHeight;
@@ -1155,7 +1212,7 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
         // Render Aider completion log bubble to Chat DOM
         const summaryEl = document.createElement('div');
         summaryEl.className = 'msg ai';
-        summaryEl.innerHTML = window.marked ? marked.parse(historyMsg) : escapeHtml(historyMsg);
+        summaryEl.innerHTML = window.marked ? sanitizeHtml(marked.parse(historyMsg)) : escapeHtml(historyMsg);
         enhanceMarkdownContent(summaryEl);
         col.appendChild(summaryEl);
         scrollChat();
@@ -1195,6 +1252,7 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
       // Remove reasoning orb header completely on response completion for clean output
       col.querySelectorAll('.chat-ai-stream-header, .cad-ai-stream-header').forEach(el => el.remove());
       _currentMessageActive = false;
+      if (window.sounds) window.sounds.playDone();
       if (window.setGeneratingState) window.setGeneratingState(false);
       // Auto-refresh drawer tabs (plan / tasks / walkthrough) silently
       setTimeout(() => { if (window.refreshPlanDrawer) window.refreshPlanDrawer(); }, 600);
@@ -1202,6 +1260,7 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
     }
 
     case 'error': {
+      if (window.sounds) window.sounds.playError();
       col.querySelectorAll('.think-label-temp, .tool-block-temp, .thought-container, .reasoning-inline-temp, .ai-reasoning-card').forEach(el => el.remove());
       // Remove reasoning orb header completely on error
       col.querySelectorAll('.chat-ai-stream-header, .cad-ai-stream-header').forEach(el => el.remove());
@@ -1241,7 +1300,7 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
         _streamResponseText += `\n\nfailed **Error**: ${e.data}`;
         if (_streamResponseEl) {
           _streamResponseEl.innerHTML = window.marked 
-            ? marked.parse(_streamResponseText) 
+            ? sanitizeHtml(marked.parse(_streamResponseText)) 
             : escapeHtml(_streamResponseText);
           enhanceMarkdownContent(_streamResponseEl);
         }

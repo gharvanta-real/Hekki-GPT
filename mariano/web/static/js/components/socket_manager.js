@@ -48,6 +48,14 @@ export function rebindSocket(onMessageCallback, log) {
     if (reconnectAttempts >= MAX_RECONNECT_ATTEMPTS) {
       window.isServerOffline = true;
       log('WS disconnected permanently. Server is offline.', 'err');
+      // [H-2] Show user-facing error so UI doesn't silently freeze
+      if (window.showToast) {
+        showToast(
+          'Connection Lost',
+          'Unable to reach Hekki server after 5 attempts. Please restart the app.',
+          8000
+        );
+      }
       return;
     }
     reconnectAttempts++;
@@ -129,7 +137,6 @@ export function setupSocketEvents(enterConversation, log, handleTranscriptCallba
           if (p.data && p.data.includes('Aider Coding Task Completed')) {
             if (window.lastPreviewIframe) {
               window.lastPreviewIframe.src = window.lastPreviewIframe.src;
-              console.log("[WebPreview] Aider completed, reloading preview iframe.");
             }
           }
         }
