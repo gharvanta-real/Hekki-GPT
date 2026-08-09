@@ -9,6 +9,7 @@
   border-radius: 0 !important;
   box-shadow: none !important;
   width: 100%;
+  font-size: 12px;
 }
 .alpha-bubble {
   border-left: none !important;
@@ -42,7 +43,7 @@
 .user-bubble {
   color: var(--text-2);
   font-style: normal; /* forced normal style, no italics */
-  font-size: 14.5px;
+  font-size: 14px;
   font-weight: 400; /* Same regular weight matching AI response body */
 }
 .system-bubble {
@@ -79,7 +80,7 @@
 .debate-summary-card {
   align-self: center;
   width: 100%;
-  max-width: 820px;
+  max-width: 720px !important;
   margin: 16px auto 24px;
   padding: 0 0 20px 0;
   border: none !important;
@@ -147,7 +148,7 @@
   border: none !important;
   outline: none !important;
   box-shadow: none !important;
-  border-radius: 8px;
+  border-radius: 20px !important;
   padding: 10px 16px;
   display: flex;
   flex-direction: column;
@@ -292,7 +293,7 @@ body.dark .debate-input-wrapper:focus-within {
   padding-right: 18px !important;
   background-color: var(--sidebar-bg); /* secondary chip bg */
   border: none !important; /* no outline */
-  border-radius: 6px; /* button ratio */
+  border-radius: 20px; /* button ratio */
   font-size: 9.5px;
   color: var(--text-2);
   padding: 2.5px 18px 2.5px 8px !important;

@@ -7,6 +7,7 @@ from __future__ import annotations
 import os
 import logging
 from typing import Optional
+from mariano.config.prompt_loader import load_native_coder_prompt
 
 logger = logging.getLogger("Hekki.NativeContext")
 
@@ -69,25 +70,5 @@ class WorkspaceContextManager:
 
     def prepare_system_prompt(self, workspace_tree: str) -> str:
         """Prepares master system prompt for the Native Engine ReAct loop."""
-        return (
-            "You are Hekki Native Coding Engine — an autonomous, highly capable AI developer.\n"
-            "You have direct access to local workspace tools.\n\n"
-            "SYSTEM RULES:\n"
-            "1. ALWAYS inspect files or search the workspace before writing or modifying code.\n"
-            "2. Never guess paths, imports, or variable names without viewing the source.\n"
-            "3. Strictly keep every file UNDER 500 lines. Split into modular files if larger.\n"
-            "4. Format tool calls as structured JSON in markdown codeblocks:\n"
-            "```json\n"
-            '{"tool": "tool_name", "args": {"arg_name": "value"}}\n'
-            "```\n"
-            "Available tools:\n"
-            "- list_workspace_tree: args: {max_depth: 3}\n"
-            "- view_file: args: {file_path: 'relative/or/abs/path', start_line: 1, end_line: 200}\n"
-            "- write_file: args: {file_path: 'relative/or/abs/path', content: '...'}\n"
-            "- replace_file_content: args: {file_path: '...', target: '...', replacement: '...'}\n"
-            "- grep_search: args: {query: 'search_term_or_regex'}\n"
-            "- find_files: args: {pattern: '*.py'}\n"
-            "- run_command: args: {command: 'dir / git status / python ...'}\n"
-            "When completed, respond with your final response.\n\n"
-            f"[WORKSPACE TREE]\n{workspace_tree}\n"
-        )
+        base_prompt = load_native_coder_prompt()
+        return f"{base_prompt}\n\n[WORKSPACE TREE]\n{workspace_tree}\n"

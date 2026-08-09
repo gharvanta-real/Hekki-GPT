@@ -9,7 +9,7 @@
  * Pages: 'chat' | 'workspace' | 'skills' | 'changelog' | 'debate'
  */
 
-const PAGES = ['chat', 'workspace', 'skills', 'changelog', 'debate', 'images'];
+const PAGES = ['chat', 'workspace', 'skills', 'changelog', 'debate', 'images', 'plugins', 'history'];
 
 class Router {
   constructor() {
@@ -85,6 +85,8 @@ class Router {
       'coder-pane',
       'images-pane',
       'hekkicad-pane',
+      'plugins-pane',
+      'history-pane',
     ];
     panesUsingVisible.forEach(id => {
       const el = document.getElementById(id);
@@ -259,6 +261,56 @@ class Router {
         }
         break;
 
+      case 'plugins':
+        this._showPane('plugins-pane', 'flex');
+        if (titlebarEl) titlebarEl.style.display = 'none';
+        document.getElementById('sidebar-nav')?.classList.remove('collapsed');
+        const toggleBtnPlugins = document.getElementById('btn-sidebar-toggle-main');
+        if (toggleBtnPlugins) toggleBtnPlugins.style.display = '';
+        if (innerChat) innerChat.style.display = 'flex';
+        if (innerCoder) {
+          innerCoder.style.display = 'none';
+          innerCoder.style.visibility = 'hidden';
+          innerCoder.style.pointerEvents = 'none';
+        }
+        if (window.updateTitleBreadcrumb) {
+          window.updateTitleBreadcrumb('Plugins & Connectors', '');
+        }
+        if (!window.pluginsPageInstance) {
+          import('/static/js/pages/plugins_page.js').then(({ PluginsPage }) => {
+            window.pluginsPageInstance = new PluginsPage(window.showToast);
+            window.pluginsPageInstance.mount(document.getElementById('plugins-pane'));
+          }).catch(err => console.error('Failed to load PluginsPage:', err));
+        } else {
+          window.pluginsPageInstance.refresh();
+        }
+        break;
+
+      case 'history':
+        this._showPane('history-pane', 'flex');
+        if (titlebarEl) titlebarEl.style.display = 'none';
+        document.getElementById('sidebar-nav')?.classList.remove('collapsed');
+        const toggleBtnHist = document.getElementById('btn-sidebar-toggle-main');
+        if (toggleBtnHist) toggleBtnHist.style.display = '';
+        if (innerChat) innerChat.style.display = 'flex';
+        if (innerCoder) {
+          innerCoder.style.display = 'none';
+          innerCoder.style.visibility = 'hidden';
+          innerCoder.style.pointerEvents = 'none';
+        }
+        if (window.updateTitleBreadcrumb) {
+          window.updateTitleBreadcrumb('Search Chats', '');
+        }
+        if (!window.historyPageInstance) {
+          import('/static/js/pages/history_page.js').then(({ HistoryPage }) => {
+            window.historyPageInstance = new HistoryPage(window.chatSessionManager);
+            window.historyPageInstance.mount(document.getElementById('history-pane'));
+          }).catch(err => console.error('Failed to load HistoryPage:', err));
+        } else {
+          window.historyPageInstance.refresh();
+        }
+        break;
+
 
 
 
@@ -351,10 +403,16 @@ class Router {
       }
     }
   }
+
+  navigate(targetPage, subView = null) {
+    return this.navigateTo(targetPage, subView);
+  }
 }
 
 // Singleton export
 export const router = new Router();
+window.router = router;
+window._router = router;
 
 /**
  * Call once at app boot to ensure pane state matches the default page ('chat').

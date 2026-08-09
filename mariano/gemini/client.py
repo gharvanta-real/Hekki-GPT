@@ -11,6 +11,7 @@ from google import genai
 from google.genai import types
 
 from mariano.config import get_settings, SYSTEM_PROMPT, MAX_OUTPUT_TOKENS
+from mariano.config.prompt_loader import load_rule_layer
 
 log = structlog.get_logger(__name__)
 
@@ -161,12 +162,8 @@ class GeminiClient:
         if system_override:
             dynamic_system_instruction = system_override
         else:
-            layer1_rules = ""
-            try:
-                rules_path = Path(__file__).parent.parent / "config" / "rules" / "layer1_rules.md"
-                layer1_rules = "\n\n" + rules_path.read_text(encoding="utf-8")
-            except Exception:
-                pass
+            layer1_rules = load_rule_layer("layer1_rules")
+            layer2_rules = load_rule_layer("layer2_rules")
             
             # Inject user identity + custom instructions from settings
             user_inject = ""
@@ -178,12 +175,13 @@ class GeminiClient:
                 user_inject += f"\n\n[USER CUSTOM INSTRUCTIONS]\n{_user_instructions}"
 
             dynamic_system_instruction = (
-                SYSTEM_PROMPT 
-                + env_state 
-                + state_inject 
-                + alignment_inject 
-                + emotional_inject 
-                + layer1_rules 
+                SYSTEM_PROMPT
+                + env_state
+                + state_inject
+                + alignment_inject
+                + emotional_inject
+                + layer1_rules
+                + layer2_rules
                 + user_inject
             )
 
@@ -199,25 +197,63 @@ class GeminiClient:
             target_url = f"{clean_base}/chat/completions" if is_openai_style else f"{clean_base}/v1/chat/completions"
             fallback_url = f"{clean_base}/api/chat"
 
-            ollama_messages = [{"role": "system", "content": dynamic_system_instruction}]
+            # Streamlined local prompt to minimize Prompt Evaluation (TTFT) latency
+            local_sys = (
+                "You are Hekki, a friendly and smart AI assistant. "
+                "Respond directly in natural conversational language. "
+                "Do NOT output raw JSON strings like {\"name\": ...} for normal text chat."
+            )
+            ollama_messages = [{"role": "system", "content": local_sys}]
             for msg in history:
                 role = "assistant" if msg["role"] == "assistant" else msg["role"]
                 ollama_messages.append({"role": role, "content": msg["content"]})
             ollama_messages.append({"role": "user", "content": message})
             
+            # Determine smart num_ctx based on model size to avoid slow KV-cache allocation.
+            # Small models (1B/3B) don't need 32K context — it only wastes RAM and causes slow TTFT.
+            model_lower = model.lower()
+            if any(tag in model_lower for tag in ["1b", "0.5b", "0.6b", "1.5b"]):
+                smart_num_ctx = 4096   # Small models: 4K context is plenty, fast load
+            elif any(tag in model_lower for tag in ["3b", "3.8b", "4b"]):
+                smart_num_ctx = 8192   # Medium-small models: 8K context
+            elif any(tag in model_lower for tag in ["7b", "8b", "13b"]):
+                smart_num_ctx = 16384  # Mid-range models: 16K context
+            else:
+                smart_num_ctx = 32768  # Large models (30B+): full 32K
+
             payload = {
                 "model": model,
                 "messages": ollama_messages,
                 "stream": True if on_chunk else False,
-                "temperature": current_temp
+                "temperature": current_temp,
+                "keep_alive": -1,  # Keep model hot in RAM — never unload between requests
+                "options": {
+                    "num_ctx": smart_num_ctx,  # Smart context window (avoids slow 32K KV-cache for small models)
+                    "num_predict": 2048,       # Balanced output limit
+                    "repeat_penalty": 1.1,     # Prevent repetition
+                }
             }
             
-            if self._tool_declarations:
+            # Tool Declarations: Only inject for models that properly support structured tool calling.
+            # Small models (1B, 3B) hallucinate raw JSON when tools are injected — skip tools for them.
+            _is_small_model = any(tag in model_lower for tag in ["1b", "0.5b", "0.6b", "1.5b", "3b", "3.8b"])
+            if self._tool_declarations and not _is_small_model:
                 ollama_tools = []
                 for td in self._tool_declarations:
                     params = td.get("parameters", {})
+                    # Support nested JSON Schema: {"properties": {...}, "required": [...]}
+                    if "properties" in params and isinstance(params["properties"], dict):
+                        props_source = params["properties"]
+                        required_list = list(params.get("required", []))
+                    else:
+                        props_source = params
+                        required_list = []
                     cleaned_properties = {}
-                    for k, v in params.items():
+                    for k, v in props_source.items():
+                        # Guard: skip non-dict values (flat "action": "string" manifests)
+                        if not isinstance(v, dict):
+                            cleaned_properties[k] = {"type": "string", "description": k}
+                            continue
                         ptype = v.get("type", "string").lower()
                         if ptype in ("str", "string"): ptype = "string"
                         elif ptype in ("int", "integer"): ptype = "integer"
@@ -225,7 +261,6 @@ class GeminiClient:
                         elif ptype in ("bool", "boolean"): ptype = "boolean"
                         elif ptype in ("list", "array"): ptype = "array"
                         elif ptype in ("dict", "object"): ptype = "object"
-                            
                         cleaned_prop = {
                             "type": ptype,
                             "description": v.get("description", k)
@@ -233,7 +268,12 @@ class GeminiClient:
                         if v.get("enum"):
                             cleaned_prop["enum"] = v["enum"]
                         cleaned_properties[k] = cleaned_prop
-                        
+                    # Infer required if not from nested schema
+                    if not required_list:
+                        required_list = [
+                            k for k, v in props_source.items()
+                            if isinstance(v, dict) and v.get("required", True) and "default" not in v
+                        ]
                     ollama_tools.append({
                         "type": "function",
                         "function": {
@@ -242,7 +282,7 @@ class GeminiClient:
                             "parameters": {
                                 "type": "object",
                                 "properties": cleaned_properties,
-                                "required": [k for k, v in params.items() if v.get("required", True) and "default" not in v]
+                                "required": required_list
                             }
                         }
                     })
@@ -258,10 +298,11 @@ class GeminiClient:
                     method="POST"
                 )
                 try:
-                    with urllib.request.urlopen(req, timeout=120) as response:
+                    with urllib.request.urlopen(req, timeout=300) as response:
                         if on_chunk:
                             full_content = ""
-                            tool_calls = []
+                            # Accumulate partial tool_call chunks by index for proper reconstruction
+                            partial_tool_calls: dict[int, dict] = {}
                             for raw_line in response:
                                 line = raw_line.decode("utf-8", errors="replace").strip()
                                 if not line:
@@ -274,23 +315,37 @@ class GeminiClient:
                                     chunk = json.loads(line)
                                     if "choices" in chunk and isinstance(chunk["choices"], list) and len(chunk["choices"]) > 0:
                                         delta = chunk["choices"][0].get("delta", {})
-                                        content = delta.get("content", "")
+                                        content = delta.get("content", "") or ""
                                         if content:
                                             full_content += content
                                             thread_safe_on_chunk(content)
-                                        if "tool_calls" in delta:
-                                            tool_calls.extend(delta["tool_calls"])
+                                        # Accumulate partial tool_call chunks by index
+                                        for tc_chunk in (delta.get("tool_calls") or []):
+                                            idx = tc_chunk.get("index", 0)
+                                            if idx not in partial_tool_calls:
+                                                partial_tool_calls[idx] = {"id": "", "type": "function", "function": {"name": "", "arguments": ""}}
+                                            if tc_chunk.get("id"):
+                                                partial_tool_calls[idx]["id"] += tc_chunk["id"]
+                                            func_chunk = tc_chunk.get("function", {})
+                                            if func_chunk.get("name"):
+                                                partial_tool_calls[idx]["function"]["name"] += func_chunk["name"]
+                                            if func_chunk.get("arguments"):
+                                                partial_tool_calls[idx]["function"]["arguments"] += func_chunk["arguments"]
                                     elif "message" in chunk and isinstance(chunk["message"], dict):
+                                        # Ollama native /api/chat non-streaming style final message
                                         msg = chunk["message"]
-                                        content = msg.get("content", "")
+                                        content = msg.get("content", "") or ""
                                         if content:
                                             full_content += content
                                             thread_safe_on_chunk(content)
-                                        if "tool_calls" in msg:
-                                            tool_calls.extend(msg["tool_calls"])
+                                        for tc in (msg.get("tool_calls") or []):
+                                            idx = len(partial_tool_calls)
+                                            partial_tool_calls[idx] = tc
                                 except Exception:
                                     continue
-                            return {"message": {"role": "assistant", "content": full_content, "tool_calls": tool_calls}}
+                            # Reconstruct complete tool_calls list from accumulated chunks
+                            reconstructed_tool_calls = [partial_tool_calls[i] for i in sorted(partial_tool_calls.keys())]
+                            return {"message": {"role": "assistant", "content": full_content, "tool_calls": reconstructed_tool_calls}}
                         else:
                             resp_json = json.loads(response.read().decode("utf-8"))
                             if "choices" in resp_json and isinstance(resp_json["choices"], list) and len(resp_json["choices"]) > 0:
@@ -317,23 +372,56 @@ class GeminiClient:
             log.error("ollama.chat_error", error=str(exc))
             return {"text": f"Error running offline Ollama model: {exc}", "tool_calls": []}
 
+        # Safety guard: if resp_data is None or not a dict
+        if not isinstance(resp_data, dict):
+            return {"text": str(resp_data) if resp_data else None, "tool_calls": []}
+
         message_data = resp_data.get("message", {})
+        if not isinstance(message_data, dict):
+            message_data = {}
         text = message_data.get("content")
         tool_calls = []
-        
-        if "tool_calls" in message_data:
+
+        # Detect raw JSON string hallucination in text e.g. {"name": "greet", "arguments": ...}
+        if text and text.strip().startswith("{") and text.strip().endswith("}"):
+            try:
+                parsed_json = json.loads(text.strip())
+                if isinstance(parsed_json, dict) and ("name" in parsed_json or "function" in parsed_json):
+                    tname = parsed_json.get("name") or parsed_json.get("function", {}).get("name")
+                    targs = parsed_json.get("arguments") or parsed_json.get("args") or parsed_json.get("function", {}).get("arguments", {})
+                    if tname:
+                        tool_calls.append({"name": tname, "args": targs if isinstance(targs, dict) else {}})
+                        text = None
+            except Exception:
+                pass
+
+        if "tool_calls" in message_data and message_data["tool_calls"]:
             for tc in message_data["tool_calls"]:
-                func = tc.get("function", {})
-                args = func.get("arguments", {})
+                # Guard: skip non-dict entries entirely
+                if not isinstance(tc, dict):
+                    continue
+
+                # Detect format: Ollama native vs OpenAI-style
+                if "function" in tc:
+                    func = tc.get("function", {})
+                    if not isinstance(func, dict):
+                        continue
+                    tc_name = func.get("name")
+                    args = func.get("arguments", {})
+                else:
+                    tc_name = tc.get("name")
+                    args = tc.get("arguments", tc.get("args", {}))
+
                 if isinstance(args, str):
                     try:
                         args = json.loads(args)
                     except Exception:
                         args = {}
-                tool_calls.append({
-                    "name": func.get("name"),
-                    "args": args
-                })
+                if not isinstance(args, dict):
+                    args = {}
+
+                if tc_name:
+                    tool_calls.append({"name": tc_name, "args": args})
                 
         return {"text": text, "tool_calls": tool_calls}
 
@@ -393,12 +481,8 @@ class GeminiClient:
         )
         alignment_inject = self._cp.feedback.get_dynamic_prompt_rules()
         emotional_inject = f"\n\n[LIMBIC EMOTIONAL DIRECTIVES]\n{self._nm.get_emotional_directives()}"
-        layer1_rules = ""
-        try:
-            rules_path = Path(__file__).parent.parent / "config" / "rules" / "layer1_rules.md"
-            layer1_rules = "\n\n" + rules_path.read_text(encoding="utf-8")
-        except Exception:
-            pass
+        layer1_rules = load_rule_layer("layer1_rules")
+        layer2_rules = load_rule_layer("layer2_rules")
 
         reasoning_mode = self._settings.active_reasoning_mode
         reasoning_inject = ""
@@ -440,6 +524,7 @@ class GeminiClient:
             + alignment_inject
             + emotional_inject
             + layer1_rules
+            + layer2_rules
             + user_inject
         )
 

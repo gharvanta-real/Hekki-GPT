@@ -26,23 +26,22 @@ def main():
     # 2. Cleanup previous build artifacts
     build_dir = project_root / "build"
     dist_dir = project_root / "dist"
-    backend_dist_dir = project_root / "backend_dist"
 
     if build_dir.exists():
         print(f"Removing old build directory: {build_dir}")
         shutil.rmtree(build_dir, ignore_errors=True)
-    if backend_dist_dir.exists():
-        print(f"Removing old backend_dist directory: {backend_dist_dir}")
-        shutil.rmtree(backend_dist_dir, ignore_errors=True)
+    if dist_dir.exists():
+        print(f"Removing old dist directory: {dist_dir}")
+        shutil.rmtree(dist_dir, ignore_errors=True)
 
     # 3. Construct PyInstaller Command
-    # We want a single-file executable named 'hekki_backend' inside backend_dist folder
+    # We want a single-file executable named 'Hekki-Assistant.exe' inside dist folder
     pyinstaller_args = [
         "pyinstaller",
         "--clean",
         "--onefile",
-        "--name=hekki_backend",
-        f"--distpath={backend_dist_dir}",
+        "--name=Hekki-Assistant",
+        f"--distpath={dist_dir}",
         
         # Include data files/folders
         # Format: source_path;dest_path
@@ -50,6 +49,8 @@ def main():
         f'--add-data="mariano/web/routes;mariano/web/routes"',
         f'--add-data="mariano/skills;mariano/skills"',
         f'--add-data="mariano/config/rules;mariano/config/rules"',
+        f'--add-data="mariano/config/prompts;mariano/config/prompts"',
+        f'--add-data="mariano/mcp;mariano/mcp"',
         
         # Hidden imports for FastAPI & Uvicorn dynamic packages
         "--hidden-import=uvicorn.logging",
@@ -98,16 +99,16 @@ def main():
     ]
 
     cmd = " ".join(pyinstaller_args)
-    print("Starting backend compilation...")
+    print("Starting desktop app compilation...")
     run_command(cmd)
     
     # 4. Verify compilation output
-    output_exe = backend_dist_dir / "hekki_backend.exe"
+    output_exe = dist_dir / "Hekki-Assistant.exe"
     if output_exe.exists():
-        print(f"\nSuccess! Compiled backend executable created at: {output_exe}")
+        print(f"\nSuccess! Compiled desktop application created at: {output_exe}")
         print(f"Size: {output_exe.stat().st_size / (1024*1024):.2f} MB")
     else:
-        print("\nError: Compilation finished but hekki_backend.exe was not found in backend_dist.")
+        print("\nError: Compilation finished but Hekki-Assistant.exe was not found in dist.")
         sys.exit(1)
 
 if __name__ == "__main__":

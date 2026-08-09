@@ -57,7 +57,7 @@
 
 .minimap-dash:hover {
   width: 22px;
-  background-color: var(--accent, #2563eb);
+  background-color: var(--text-primary);
   opacity: 1;
 }
 
@@ -80,11 +80,12 @@
   bottom: 84px;
   left: 50%;
   transform: translateX(-50%) translateY(6px);
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  background: var(--input-bg, #2C2C2B);
-  color: var(--text, #ffffff);
+  background: transparent !important;
+  background-color: transparent !important;
+  color: var(--text-primary, #1e293b);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -92,9 +93,10 @@
   z-index: 88;
   border: none !important;
   box-shadow: none !important;
+  outline: none !important;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1), transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.15s ease;
+  transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1), transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), color 0.15s ease;
 }
 
 .chat-center-scroll-btn.visible {
@@ -104,8 +106,10 @@
 }
 
 .chat-center-scroll-btn:hover {
-  background: var(--hover, #eeeeec);
-  transform: translateX(-50%) translateY(-2px);
+  background: transparent !important;
+  background-color: transparent !important;
+  color: var(--text-primary);
+  transform: translateX(-50%) translateY(-3px);
 }
 
 /* FLOATING DROPDOWN POPUP MENU (Main background with subtle theme outline border, zero shadow) */

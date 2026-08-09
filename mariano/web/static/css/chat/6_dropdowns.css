@@ -17,7 +17,8 @@
 }
 
 /* === ATTACH DROPDOWN MENU (Claude Style) === */
-.attach-dropdown {
+.attach-dropdown,
+.hekki-slash-popup {
   position: absolute;
   bottom: 44px; /* Rendered above the plus button */
   left: 12px;
@@ -32,6 +33,16 @@
   flex-direction: column;
   min-width: 230px;
   animation: fadeIn 0.12s ease-out;
+}
+
+/* Slash popup: fixed positioning overrides (inline style handles the rest) */
+.hekki-slash-popup {
+  position: fixed;
+  bottom: auto;
+  left: auto;
+  z-index: 999999;
+  min-width: 250px;
+  max-width: 320px;
 }
 
 .attach-dropdown-item {

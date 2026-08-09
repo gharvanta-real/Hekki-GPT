@@ -170,7 +170,18 @@ async def lifespan(app: FastAPI):
     registry = SkillRegistry.get_instance()
     discovery = SkillDiscovery(registry, settings.evolved_skills_dir)
     await discovery.discover_all()
-    
+
+    # 2b. Start MCP Server Manager — connect configured MCP servers & register tools
+    from mariano.mcp.server_manager import MCPServerManager
+    from mariano.mcp.bridge import MCPSkillBridge
+    mcp_manager = MCPServerManager.get_instance()
+    try:
+        await mcp_manager.startup()
+        await MCPSkillBridge.refresh_all(registry)
+        log.info("mcp.systems_online")
+    except Exception as _mcp_err:
+        log.warning("mcp.startup_skipped", error=str(_mcp_err))
+
     # 3. Instantiate Gemini Client
     gemini = GeminiClient()
     
@@ -189,6 +200,8 @@ async def lifespan(app: FastAPI):
     log.info("web.systems_online")
     yield
     # Shutdown
+    from mariano.mcp.server_manager import MCPServerManager
+    await MCPServerManager.get_instance().shutdown()
     watcher_task.cancel()
     ui_events_task.cancel()
     log.info("web.shutting_down")
@@ -226,6 +239,9 @@ app.include_router(images_router)
 from mariano.web.routes.recon import router as recon_router
 app.include_router(recon_router)
 
+from mariano.web.routes.mcp_routes import router as mcp_router
+app.include_router(mcp_router)
+
 voice_controller = VoiceController.get_instance()
 profiler = CognitiveProfiler.get_instance()
 neuromodulator = Neuromodulator.get_instance()
@@ -251,6 +267,33 @@ async def get_index():
 async def favicon():
     from fastapi.responses import Response
     return Response(status_code=204)
+
+
+@app.get("/manifest.json", include_in_schema=False)
+async def get_manifest():
+    manifest_file = STATIC_DIR / "manifest.json"
+    if manifest_file.exists():
+        return FileResponse(
+            manifest_file,
+            media_type="application/manifest+json",
+            headers={"Cache-Control": "no-cache"}
+        )
+    return Response(status_code=404)
+
+
+@app.get("/sw.js", include_in_schema=False)
+async def get_sw():
+    sw_file = STATIC_DIR / "sw.js"
+    if sw_file.exists():
+        return FileResponse(
+            sw_file,
+            media_type="application/javascript",
+            headers={
+                "Cache-Control": "no-cache",
+                "Service-Worker-Allowed": "/"
+            }
+        )
+    return Response(status_code=404)
 
 
 from pydantic import BaseModel

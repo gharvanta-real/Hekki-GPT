@@ -27,12 +27,23 @@ import mariano.skills.core_skills.physics_solver.skill
 import mariano.skills.core_skills.data_analyzer.skill
 
 import multiprocessing
+import threading
+import time
+import webbrowser
+
+def _open_app_ui():
+    time.sleep(1.2)
+    try:
+        webbrowser.open("http://localhost:8000")
+    except Exception as e:
+        print(f"Browser launch note: {e}")
 
 if __name__ == "__main__":
     # Essential for PyInstaller on Windows when using multiprocessing or async servers
     multiprocessing.freeze_support()
+    threading.Thread(target=_open_app_ui, daemon=True).start()
     print("====================================================")
-    print("HEKKI ASSISTANT WEB SERVER INITIATED")
+    print("HEKKI ASSISTANT DESKTOP APP INITIATED")
     print("Local Access:   http://localhost:8000")
     print("Network Access (Phone): http://[YOUR-PC-IP]:8000")
     print("WebSocket Pipe: ws://localhost:8000/ws")

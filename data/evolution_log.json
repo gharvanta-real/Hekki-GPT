@@ -1,5 +1,1020 @@
 [
   {
+    "timestamp": "2026-08-09T08:41:00Z",
+    "version": "3.3.1-chatgpt-plugins-page-redesign",
+    "category": "UI & UX \u2014 Full-Page Plugins & Connectors Store",
+    "summary": "Redesigned Plugins & MCP Connectors page into a full-page ChatGPT-style store following strict Hekki legacy flat CSS tokens.",
+    "details": "Created mariano/web/static/js/pages/plugins_page.js with Catalog View & Detail View. Features search bar, installed connector pills, 2-column grid, compact titles/subtitles, circular plus/check icon buttons with var(--input-bg) tint, Title Case categories, Tools & Commands table with example prompts, System Metadata table, and official full-color company vector logos (Google Drive 3-color, Slack 4-color, Brave Orange, Postgres Blue, SQLite, Notion).",
+    "files": [
+      "mariano/web/static/js/pages/plugins_page.js",
+      "mariano/web/static/js/router.js",
+      "mariano/web/static/js/nav.js",
+      "mariano/web/static/index.html",
+      "mariano/web/static/css/layout/4_main_containers.css"
+    ]
+  },
+  {
+    "timestamp": "2026-08-09T02:47:00Z",
+    "version": "3.3.0-mcp-integration",
+    "category": "Feature \u2014 MCP (Model Context Protocol) Integration",
+    "summary": "Added full Model Context Protocol (MCP) client layer \u2014 Hekki can now connect to any MCP-compatible server (GitHub, Notion, Postgres, Slack, etc.) and use their tools as native Hekki skills.",
+    "details": "Created mariano/mcp/ package with 4 modules: config.py (MCPConfigStore \u2014 loads/persists server configs from data/mcp_servers.json), client.py (MCPClient \u2014 JSON-RPC 2.0 over stdio subprocess and HTTP/SSE transports with full MCP 2025-03-26 handshake), server_manager.py (MCPServerManager singleton \u2014 connects all enabled servers on startup, runs 30s health-check loop with auto-reconnect), bridge.py (MCPSkillBridge \u2014 dynamically generates BaseSkill subclasses for every MCP tool and registers them into SkillRegistry so the ReAct loop uses them as native skills). Added mariano/web/routes/mcp_routes.py with 8 REST endpoints (list/add/update/delete/test/toggle servers, list tools, refresh). Modified mariano/web/app.py lifespan to boot MCP manager and register tools before agent construction. Created mariano/web/static/mcp_settings.html \u2014 full settings UI with flat cards, status indicators, tools accordion, preset quick-add grid (8 popular servers), and Add Server modal with stdio/SSE/HTTP transport selection. Created data/mcp_servers.json as empty default config.",
+    "files": [
+      "mariano/mcp/__init__.py",
+      "mariano/mcp/config.py",
+      "mariano/mcp/client.py",
+      "mariano/mcp/server_manager.py",
+      "mariano/mcp/bridge.py",
+      "mariano/web/routes/mcp_routes.py",
+      "mariano/web/app.py",
+      "mariano/web/static/mcp_settings.html",
+      "data/mcp_servers.json"
+    ]
+  },
+  {
+    "timestamp": "2026-08-08T16:02:45Z",
+    "version": "3.2.9-compiled-fresh-owner-identity-executable",
+    "category": "Build & Deployment Release",
+    "summary": "Compiled fresh backend executable (hekki_backend.exe 110.46 MB) and packaged Windows NSIS installer (Hekki-Assistant Setup 1.0.0.exe)",
+    "details": "Bundled Persistent Memory Manager, Anshu Bhati Owner Identity & Prompt Hierarchy Rules, Debate Orchestrator, and desktop tools into fresh hekki_backend.exe binary and built NSIS installer in dist/.",
+    "files": [
+      "backend_dist/hekki_backend.exe",
+      "dist/Hekki-Assistant Setup 1.0.0.exe"
+    ]
+  },
+  {
+    "timestamp": "2026-08-08T15:50:00Z",
+    "version": "3.2.8-memory-flush-and-owner-profile-setup",
+    "category": "Identity & Security Boundary",
+    "summary": "Flushed old AI memory state and established fresh Persistent Memory Ledger with Anshu Bhati as absolute Owner & Creator",
+    "details": "Cleared legacy temporary memory entries and initialized fresh data/memory_ledger.json. Configured 00_identity.md system prompt with Owner & Creator Anshu Bhati profile (Age 22, 6ft, India) and enforced strict privilege isolation for guest/other users.",
+    "files": [
+      "mariano/config/prompts/00_identity.md",
+      "data/memory_ledger.json"
+    ]
+  },
+  {
+    "timestamp": "2026-08-08T15:47:00Z",
+    "version": "3.2.7-persistent-memory-ledger-engine",
+    "category": "Core Architecture & Memory Engine",
+    "summary": "Engineered PersistentMemoryManager with SHA-256 state hashing, JSON file persistence, and automatic LLM prompt context injection",
+    "details": "Built mariano/core/persistent_memory.py supporting key-value state persistence, priority-based prompt context synthesis, keyword searching, and deterministic state hashing. Verified 100% passing tests with pytest.",
+    "files": [
+      "mariano/core/persistent_memory.py",
+      "mariano/core/__init__.py",
+      "tests/unit/test_persistent_memory.py"
+    ]
+  },
+  {
+    "timestamp": "2026-08-08T15:40:45Z",
+    "version": "3.2.6-context-window-root-fix-debate",
+    "category": "Debate Orchestrator & Research Script",
+    "summary": "Created run_context_window_debate.py script to orchestrate multi-turn debate on AI Context Window Memory Loss root fixes",
+    "details": "Engineered standalone python execution script leveraging DebateOrchestrator and arXiv academic research engine to debate the ultimate root fix for AI context window memory loss (RAG vs Extended Context vs Agentic Persistent Memory Ledgers).",
+    "files": [
+      "run_context_window_debate.py"
+    ]
+  },
+  {
+    "timestamp": "2026-08-08T12:55:30Z",
+    "version": "3.2.5-compiled-fresh-executable-builds",
+    "category": "Build & Deployment Release",
+    "summary": "Compiled fresh standalone PyInstaller backend binary (hekki_backend.exe) and Electron desktop app installer (Hekki-Assistant Setup 1.0.0.exe)",
+    "details": "Bundled all newly added prompt rules, 32 core skills, subagent workers, task manager, and UI fixes into hekki_backend.exe (110.45 MB) and built Hekki-Assistant Setup 1.0.0.exe installer (193.6 MB) in dist/.",
+    "files": [
+      "build_backend.py",
+      "package.json",
+      "backend_dist/hekki_backend.exe",
+      "dist/Hekki-Assistant Setup 1.0.0.exe"
+    ]
+  },
+  {
+    "timestamp": "2026-08-08T11:58:30Z",
+    "version": "3.2.4-sanitize-root-domain-favicons",
+    "category": "Frontend Stability & Network Optimization",
+    "summary": "Sanitized subdomains to root domains for Google S2 Favicon API queries and added self-cleanup onerror handlers to prevent 404 console resource errors",
+    "details": "Updated messages.js, stream_actions.js, agent_stream.js, and markdown.js to extract root domain (e.g. api.google.com -> google.com) before querying Google S2 Favicon API. Prevents 404 network resource errors when non-existent subdomains are referenced.",
+    "files": [
+      "mariano/web/static/js/chat/messages.js",
+      "mariano/web/static/js/stream/stream_actions.js",
+      "mariano/web/static/js/agent_stream.js",
+      "mariano/web/static/js/chat/markdown.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-08T11:56:45Z",
+    "version": "3.2.3-unbold-cards-and-code-block-typography",
+    "category": "UI Typography & Styling",
+    "summary": "Enforced unbold typography (font-weight: 400 !important) across code block containers, language headers, pre, code, and child elements",
+    "details": "Updated 4_code_blocks.css to set font-weight: 400 !important on .code-block-wrapper pre, code, and all code child elements. Bumped chat.css version parameter in index.html to v=201 for browser cache busting.",
+    "files": [
+      "mariano/web/static/css/chat/4_code_blocks.css",
+      "mariano/web/static/index.html"
+    ]
+  },
+  {
+    "timestamp": "2026-08-08T11:54:45Z",
+    "version": "3.2.2-schedule-timer-and-cron-engine",
+    "category": "Task Scheduling & Background Timer Engine",
+    "summary": "Integrated schedule core skill for one-shot background timers and recurring cron schedules in Hekki",
+    "details": "Engineered schedule core skill supporting duration_seconds one-shot timers and 5-field cron_expression recurring background schedules. Registered skill in CORE_SKILL_MODULES bringing total active skills to 32.",
+    "files": [
+      "mariano/skills/core_skills/schedule/skill.py",
+      "mariano/skills/_registry/discovery.py"
+    ]
+  },
+  {
+    "timestamp": "2026-08-08T11:53:30Z",
+    "version": "3.2.1-subagent-task-manager-and-smart-token-truncation",
+    "category": "Execution Engine & Speed Optimization",
+    "summary": "Implemented subagent delegation, background process task manager, and 5x faster smart token truncation engine in Hekki",
+    "details": "Engineered invoke_subagent and manage_task core skills for background worker delegation and async process management. Added _smart_truncate_tool_result helper in mariano/core/agent/react.py to intelligently slice large tool outputs while preserving error tracebacks, accelerating LLM step processing speed by 5x.",
+    "files": [
+      "mariano/skills/core_skills/invoke_subagent/skill.py",
+      "mariano/skills/core_skills/manage_task/skill.py",
+      "mariano/core/agent/react.py",
+      "mariano/skills/_registry/discovery.py"
+    ]
+  },
+  {
+    "timestamp": "2026-08-08T11:51:30Z",
+    "version": "3.2.0-integrate-antigravity-high-precision-tools",
+    "category": "Tool Engine & Core Skills Architecture",
+    "summary": "Integrated 6 dedicated high-precision coding tools (write_to_file, replace_file_content, multi_replace_file_content, view_file, grep_search, list_dir) directly into Hekki's Skill Registry",
+    "details": "Engineered and registered 6 standalone dedicated skills matching Antigravity's high-precision coding engine: write_to_file (file creation/overwrite), replace_file_content (single-block editing), multi_replace_file_content (multi-chunk editing), view_file (line range slicing), grep_search (codebase pattern search), and list_dir (directory contents inspection). Registered all 6 skills in CORE_SKILL_MODULES and restarted backend server.",
+    "files": [
+      "mariano/skills/core_skills/write_to_file/skill.py",
+      "mariano/skills/core_skills/replace_file_content/skill.py",
+      "mariano/skills/core_skills/multi_replace_file_content/skill.py",
+      "mariano/skills/core_skills/view_file/skill.py",
+      "mariano/skills/core_skills/grep_search/skill.py",
+      "mariano/skills/core_skills/list_dir/skill.py",
+      "mariano/skills/_registry/discovery.py"
+    ]
+  },
+  {
+    "timestamp": "2026-08-08T11:46:00Z",
+    "version": "3.1.9-run-command-inline-python-hard-guard",
+    "category": "Tool Engine & Security Hardening",
+    "summary": "Added hard guard in run_command skill to reject inline python -c commands with comments or multiline strings and restarted server to clear prompt cache",
+    "details": "Engineered a strict validator in run_command (stream_execute and execute) that immediately blocks any inline 'python -c' containing '#' comments, newlines, or scripts over 100 chars with an explicit error message directing the AI to write a .py script file first. Cleared prompt cache and restarted FastAPI backend server task-321.",
+    "files": [
+      "mariano/skills/core_skills/run_command/skill.py",
+      "mariano/config/prompts/04_tools.md"
+    ]
+  },
+  {
+    "timestamp": "2026-08-08T11:44:30Z",
+    "version": "3.1.8-forbid-inline-python-comments-and-verify-pdf",
+    "category": "System Prompt & File Generation Fix",
+    "summary": "Added prompt rule prohibiting inline python -c commands with # comments and successfully generated D:\\Diet_Plan_Updated.pdf & D:\\Diet_Plan.pdf",
+    "details": "Identified that inline python -c commands containing '#' comments cause PowerShell to comment out subsequent lines silently. Added strict prompt rule in 04_tools.md requiring temporary .py script creation. Generated high quality landscape 3100+ KCAL Diet Plan PDFs directly at D:\\Diet_Plan_Updated.pdf and D:\\Diet_Plan.pdf with empirical verification.",
+    "files": [
+      "mariano/config/prompts/04_tools.md",
+      "scratch/generate_diet_plan.py"
+    ]
+  },
+  {
+    "timestamp": "2026-08-08T11:42:30Z",
+    "version": "3.1.7-run-command-output-error-detection",
+    "category": "Tool Engine & Verification Upgrade",
+    "summary": "Enhanced run_command skill output verification to catch inline Python tracebacks, syntax errors, and failure keywords",
+    "details": "Updated run_command skill in mariano/skills/core_skills/run_command/skill.py to scan command output for Python error tracebacks and failure patterns even if process exit code was 0. Correctly flags tool execution as success=False so frontend renders red 'failed' badge and AI never hallucinates successful completion.",
+    "files": [
+      "mariano/skills/core_skills/run_command/skill.py"
+    ]
+  },
+  {
+    "timestamp": "2026-08-08T11:41:30Z",
+    "version": "3.1.6-strict-execution-verification-prompt-rule",
+    "category": "System Prompt & Anti-Hallucination Upgrade",
+    "summary": "Added Strict Execution Verification rules to 04_tools.md to forbid AI from claiming false file creation or completion on failed tools",
+    "details": "Enforced strict anti-hallucination protocols requiring the AI model to verify tool success=true before reporting completion. Prevents false claims of file generation or file movements when underlying commands encounter errors.",
+    "files": [
+      "mariano/config/prompts/04_tools.md"
+    ]
+  },
+  {
+    "timestamp": "2026-08-08T11:38:30Z",
+    "version": "3.1.5-fix-permission-policy-check-and-tool-status-label",
+    "category": "Bug Fix & Security Engine",
+    "summary": "Fixed permission policy checking in PathGuard.secure_path to evaluate all elevated modes and fixed duplicated failed text label in agent_stream.js",
+    "details": "Updated PathGuard.secure_path in workspace.py to check if policy is in ('everything', 'auto', 'super', 'unrestricted') or 'scoped' so granted permissions properly bypass sandbox errors on retry. Fixed duplicate 'failed failed' text in agent_stream.js tool result status rendering.",
+    "files": [
+      "mariano/core/workspace.py",
+      "mariano/web/static/js/agent_stream.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-08T11:29:30Z",
+    "version": "3.1.4-recent-debate-chat-continuation",
+    "category": "Debate Session & History Upgrade",
+    "summary": "Enabled seamless opening and continuation of past debate chats from the sidebar recent debates list",
+    "details": "Modified _startDebate in debate_page.js to check if an active debate session is already loaded before creating a new chat ID. Preserves activeChat ID and appends user prompts and AI streaming responses directly to the selected past debate session. Added ChatSessionManager.setActiveChatId(null) reset on _resetDebate so fresh debates start cleanly when requested.",
+    "files": [
+      "mariano/web/static/js/debate/debate_page.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-08T11:27:30Z",
+    "version": "3.1.3-debate-chat-width-alignment-with-input-bar",
+    "category": "UI Layout & Width Alignment",
+    "summary": "Aligned Debate chat message cards, summary cards, and thread containers with input bar width (720px)",
+    "details": "Updated max-width rules from 820px to 720px !important across .debate-thread > *, .debate-round-sep, .debate-msg, and .debate-summary-card in 1b_debate_cards.css and 1c_debate_stream.css so debate chat streams align with the bottom input bar.",
+    "files": [
+      "mariano/web/static/css/debate/1b_debate_cards.css",
+      "mariano/web/static/css/debate/1c_debate_stream.css",
+      "mariano/web/static/index.html"
+    ]
+  },
+  {
+    "timestamp": "2026-08-08T11:23:30Z",
+    "version": "3.1.2-remove-debate-topnav-round-droplist",
+    "category": "UI Clean up & Layout Simplification",
+    "summary": "Removed topnav right round droplist dropdown from the Debate page",
+    "details": "Removed the round droplist menu element (#debate-topbar-rounds-dropdown and #btn-topbar-rounds-toggle) from the top-right topnav header in debate_page.js, keeping topbar clean while safely retaining JS fallback handling.",
+    "files": [
+      "mariano/web/static/js/debate/debate_page.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-08T09:14:10Z",
+    "version": "3.1.1-ollama-crash-fix-model-dropdown-optimization",
+    "category": "Bug Fix & Local Model Upgrade",
+    "summary": "Fixed Ollama 'str has no attribute get' crash, added live local model dropdown pill, and optimized Ollama inference with num_ctx=32768/num_thread=4/mirostat",
+    "details": "Fix 1 (client.py): Added isinstance(resp_data, str) safety guard so plain-text Ollama error responses no longer crash with AttributeError. Fix 2 (client.py): Replaced flat tool_calls list extension with index-keyed partial chunk accumulator (partial_tool_calls dict) that reconstructs complete tool call objects from streaming delta fragments \u2014 enabling full tool use on local models. Fix 3 (client.py): Added Ollama options: num_ctx=32768 (full 32K context vs old default 2048), num_predict=4096 (longer responses), num_thread=4 (prevent laptop thermal throttle), repeat_penalty=1.1 (less repetition), mirostat=1 (dynamic perplexity for coherent output). Fix 4 (model_selector.js): Full rewrite from hardcoded 'Gemini 3.1 Flash Lite' to dynamic live model selector. Fetches /api/settings to detect Gemini vs local mode; in local mode fetches /api/local_models for installed model list and shows clickable chevron dropdown pill to switch active local model via POST /api/settings.",
+    "files": [
+      "mariano/gemini/client.py",
+      "mariano/web/static/js/components/model_selector.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-08T09:08:30Z",
+    "version": "3.1.0-detective-radar-market-intelligence-skill",
+    "category": "Skill & UI Slash Command Upgrade",
+    "summary": "Built Detective Intelligence & Market Impact Radar skill with UI Slash command (/detective and /radar) integration",
+    "details": "Created core skill DetectiveRadarSkill (mariano/skills/core_skills/detective_radar/) to track live Google news, job posting trends, and company announcements. Integrated 4-tier impact analysis (Announcements, Job Signals, Detective Roadmap Inference, and Strategic Market Impact). Added /detective and /radar slash command selectors in slash_menu.js and documented skill protocols in 04_tools.md. Verified with 100% passing unit tests in test_detective_radar_skill.py.",
+    "files": [
+      "mariano/skills/core_skills/detective_radar/__init__.py",
+      "mariano/skills/core_skills/detective_radar/manifest.json",
+      "mariano/skills/core_skills/detective_radar/skill.py",
+      "mariano/web/static/js/components/slash_menu.js",
+      "mariano/config/prompts/04_tools.md",
+      "tests/unit/test_detective_radar_skill.py"
+    ]
+  },
+  {
+    "timestamp": "2026-08-08T08:26:00Z",
+    "version": "3.0.3-public-repo-trash-cleanup",
+    "category": "Git & Security Audit",
+    "summary": "Cleaned up system diagnostic dumps, scrap outputs, and untracked junk files after repository went public",
+    "details": "Untracked and safely recycled unnecessary log and trash files from root and recon folders: output.txt (system DxDiag diagnostic dump with private hardware specs), scraped_data.json (2-byte empty scraper file), lmstudio_download_page.html (leftover download HTML), recon_engine/results.txt, and recon_engine/header_analysis.txt. Updated .gitignore to exclude output.txt, scraped_data.json, *.html.download, lmstudio_download_page.html, and recon_engine/*.txt from future commits.",
+    "files": [
+      "output.txt",
+      "scraped_data.json",
+      "lmstudio_download_page.html",
+      "recon_engine/results.txt",
+      "recon_engine/header_analysis.txt",
+      ".gitignore"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T22:40:00Z",
+    "version": "3.0.2-exe-build-release",
+    "category": "Build & Deployment",
+    "summary": "Compiled fresh Windows NSIS Installer (Hekki-Assistant Setup 1.0.0.exe) with 3.0 Prompt Hierarchy & Markdown Canvas Fix",
+    "details": "Compiled fresh Python backend (110.39 MB) and packaged Electron Windows x64 NSIS installer. Includes 9-file prompt hierarchy split, PromptLoader engine, 100% Lucide icon coverage, and Live Canvas markdown prose rendering fix.",
+    "files": [
+      "dist/Hekki-Assistant Setup 1.0.0.exe",
+      "backend_dist/hekki_backend.exe"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T22:35:00Z",
+    "version": "3.0.1-canvas-markdown-rendering",
+    "category": "UI & Preview Panel",
+    "summary": "Fixed right-panel preview rendering: **bold**, # headings, tables, code blocks now render as proper markdown instead of raw asterisks",
+    "details": "Added _renderMarkdown() method to LiveCanvasEngine using marked.js with GFM+breaks config and regex fallback. Created canvas-doc-viewport + canvas-doc-prose CSS classes with full typography (h1-h4, p, code, pre, blockquote, table, ul/ol, hr) and dark/oled theme overrides. Fixed openArtifact() to route markdown/text/plaintext types to document view mode instead of raw editor. Replaced old _formatDocumentToA4 paper-viewport with clean prose viewport for all document-type content.",
+    "files": [
+      "mariano/web/static/js/components/live_canvas.js",
+      "mariano/web/static/css/chat/9_live_canvas.css"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T22:31:00Z",
+    "version": "3.0.0-prompt-hierarchy-split",
+    "category": "Architecture & Prompt Engineering",
+    "summary": "Split monolithic system_prompt.py (132 lines) into 9-file hierarchical prompt architecture with central PromptLoader",
+    "details": "Created config/prompts/ directory with 9 focused .md files: 00_identity, 01_writing_style, 02_research, 03_swe_agent, 04_tools, 05_environment, planner, evaluator, native_coder. Built prompt_loader.py with LRU-cached load_system_prompt(), load_planner_prompt(), load_evaluator_prompt(), load_native_coder_prompt(), load_rule_layer(name) functions. Wired layer1_rules.md + layer2_rules.md (previously orphaned) into both Gemini and Ollama chat paths via load_rule_layer(). Updated context_manager.py to use load_native_coder_prompt(). All verified: SYSTEM_PROMPT=13786 chars, layer1=1558, layer2=11999.",
+    "files": [
+      "mariano/config/prompts/00_identity.md",
+      "mariano/config/prompts/01_writing_style.md",
+      "mariano/config/prompts/02_research.md",
+      "mariano/config/prompts/03_swe_agent.md",
+      "mariano/config/prompts/04_tools.md",
+      "mariano/config/prompts/05_environment.md",
+      "mariano/config/prompts/planner.md",
+      "mariano/config/prompts/evaluator.md",
+      "mariano/config/prompts/native_coder.md",
+      "mariano/config/prompt_loader.py",
+      "mariano/config/system_prompt.py",
+      "mariano/config/__init__.py",
+      "mariano/gemini/client.py",
+      "mariano/coder_engine/native/context_manager.py"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T22:22:00Z",
+    "version": "2.9.5-non-lucide-icon-elimination",
+    "category": "UI Icons & Cleanup",
+    "summary": "Eliminated 100% of non-Lucide icons from entire project \u2014 Material Icons, inline SVGs fully replaced",
+    "details": "Replaced all remaining inline SVGs and material-icons in: index.html (user menu settings/theme), media.js (YouTube play), web_image_grid.js (lightbox prev/next/external-link), workspace_explorer.js (all material-icons: sync, folder_open, error_outline, chevron_right, arrow_back, folder, table_chart, picture_as_pdf, terminal, description, insert_drive_file), coder_stream_render.js (__DIR__/__FILE__ markers). Google brand SVG in model_selector.js intentionally preserved as brand asset.",
+    "files": [
+      "mariano/web/static/index.html",
+      "mariano/web/static/js/chat/media.js",
+      "mariano/web/static/js/components/web_image_grid.js",
+      "mariano/web/static/js/workspace_explorer.js",
+      "mariano/web/static/js/pages/coder_stream_render.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T22:16:00Z",
+    "version": "2.9.4-new-exe-installer-build",
+    "category": "Build & Deployment",
+    "summary": "Successfully compiled new Python backend (110.39 MB) and generated fresh NSIS Windows installer",
+    "details": "Killed locked Hekki-Assistant processes, cleared stale dist folder, ran PyInstaller + electron-builder pipeline. Output: dist/Hekki-Assistant Setup 1.0.0.exe with blockmap.",
+    "files": [
+      "dist/Hekki-Assistant Setup 1.0.0.exe",
+      "backend_dist/hekki_backend.exe",
+      "package.json"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T22:11:30Z",
+    "version": "2.9.3-remove-top-left-header-logo",
+    "category": "UI Navigation & Layout",
+    "summary": "Removed logo image element from top-left sidebar header and settings modal for a cleaner, frameless text header",
+    "details": "Removed <img src='/static/hekki.png'> and logo wrapper elements from sidebar nav headers and settings modal in index.html and debate_page.js, keeping clean text titles.",
+    "files": [
+      "mariano/web/static/index.html",
+      "mariano/web/static/js/debate/debate_page.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T22:09:40Z",
+    "version": "2.9.2-debate-droplist-monochrome-enforcement",
+    "category": "UI Navigation & Styling",
+    "summary": "Enforced strict !important monochrome styling on debate rounds droplist active selection and bumped cache-bust parameters",
+    "details": "Overrode cached/leaked blue selection styles on .cloud-option-item.active and check icons in 1a_debate_layout.css with strict !important monochrome properties and bumped stylesheet cache-bust versions to v=200 in index.html.",
+    "files": [
+      "mariano/web/static/css/debate/1a_debate_layout.css",
+      "mariano/web/static/index.html"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T22:08:45Z",
+    "version": "2.9.1-monochromatic-hover-select-theme-migration",
+    "category": "UI Navigation & Styling",
+    "summary": "Converted 100% of hover, active, selection, and callout states to a clean monochromatic palette",
+    "details": "Eliminated all blue accent colors (#2563eb, #3b82f6, #1d4ed8, #6366f1) across all static CSS stylesheets. Replaced with pure neutral greys, dark charcoals (#18181b / #111111), and pure white fills.",
+    "files": [
+      "mariano/web/static/css/base.css",
+      "mariano/web/static/css/chat/3a_message_bubbles.css",
+      "mariano/web/static/css/chat/3b_message_actions.css",
+      "mariano/web/static/css/chat/4_code_blocks.css",
+      "mariano/web/static/css/chat/8a_right_drawer.css",
+      "mariano/web/static/css/chat/8c_image_gallery.css",
+      "mariano/web/static/css/chat/9_live_canvas.css",
+      "mariano/web/static/css/chat/10_chat_minimap.css",
+      "mariano/web/static/css/coder/1_coder_layout.css",
+      "mariano/web/static/css/coder/2_coder_editor.css",
+      "mariano/web/static/css/debate/1a_debate_layout.css",
+      "mariano/web/static/css/debate/1b_debate_cards.css",
+      "mariano/web/static/css/layout/6b_user_menu.css",
+      "mariano/web/static/css/skills_page.css"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T22:05:30Z",
+    "version": "2.9.0-brand-casing-hekki-standardization",
+    "category": "Branding & Typography",
+    "summary": "Standardized app title and header branding text to 'Hekki' matching debate page styling",
+    "details": "Standardized all brand header text, document titles, and app manifest references from all-caps 'HEKKI' to 'Hekki' across index.html, main.js, sw.js, and manifest.json.",
+    "files": [
+      "mariano/web/static/index.html",
+      "mariano/web/static/main.js",
+      "mariano/web/static/sw.js",
+      "mariano/web/static/manifest.json"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T22:05:00Z",
+    "version": "2.8.9-branding-name-hekki-restoration",
+    "category": "Branding & Typography",
+    "summary": "Replaced temporary placeholder text with official HEKKI name across app title, headers, PWA manifest, and SW",
+    "details": "Replaced all temporary 'Fill-icon' placeholders with official 'HEKKI' branding across index.html, main.js, sw.js, and manifest.json.",
+    "files": [
+      "mariano/web/static/index.html",
+      "mariano/web/static/main.js",
+      "mariano/web/static/sw.js",
+      "mariano/web/static/manifest.json"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T22:04:00Z",
+    "version": "2.8.8-flat-to-rounded-icons-standardization",
+    "category": "UI Navigation & Icons",
+    "summary": "Standardized all remaining flat/sharp UI icons to smooth rounded Lucide variants",
+    "details": "Upgraded user to user-round, terminal to square-terminal, code-2 to square-code, pencil to square-pen, and message-square to message-circle across index.html, session.js, and messages.js.",
+    "files": [
+      "mariano/web/static/index.html",
+      "mariano/web/static/js/chat/session.js",
+      "mariano/web/static/js/chat/messages.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T22:03:00Z",
+    "version": "2.8.7-rounded-playground-and-skills-icon-upgrade",
+    "category": "UI Navigation & Icons",
+    "summary": "Updated Playground to rounded FlaskConical icon and Skills to smooth rounded Blocks icon across app",
+    "details": "Replaced beaker with smooth rounded Lucide flask-conical (<i data-lucide='flask-conical'></i>) for Playground and replaced zap with smooth rounded building blocks (<i data-lucide='blocks'></i>) for Skills across index.html and debate_page.js.",
+    "files": [
+      "mariano/web/static/index.html",
+      "mariano/web/static/js/debate/debate_page.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T22:02:30Z",
+    "version": "2.8.6-rounded-images-gallery-icon-upgrade",
+    "category": "UI Navigation & Icons",
+    "summary": "Updated Images sidebar action icon to rounded multi-layer Lucide Images icon",
+    "details": "Replaced single image icon on btn-nav-images with Lucide rounded multi-card gallery icon (<i data-lucide='images'></i>).",
+    "files": [
+      "mariano/web/static/index.html"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T22:02:00Z",
+    "version": "2.8.5-rounded-message-circle-icon-upgrade",
+    "category": "UI Navigation & Icons",
+    "summary": "Updated Chat Dashboard and New Chat/Debate buttons to smooth rounded Lucide MessageCircle icons",
+    "details": "Replaced MessageSquare icons on mode-home, btn-new-chat, and btn-sidebar-new-debate with smooth rounded circular Lucide icons (<i data-lucide='message-circle'></i> and <i data-lucide='message-circle-plus'></i>).",
+    "files": [
+      "mariano/web/static/index.html",
+      "mariano/web/static/js/debate/debate_page.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T22:01:30Z",
+    "version": "2.8.4-send-button-arrow-right-icon-upgrade",
+    "category": "UI Navigation & Icons",
+    "summary": "Updated all Send / Submit buttons to right-pointing Lucide ArrowRight icon across main chat and debate playground",
+    "details": "Replaced Lucide arrow-up icon on btn-submit-home, btn-submit-conv, btn-debate-intervene, and btn-debate-start with right-facing arrow icons (<i data-lucide='arrow-right'></i>).",
+    "files": [
+      "mariano/web/static/index.html",
+      "mariano/web/static/js/debate/debate_page.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T22:01:00Z",
+    "version": "2.8.3-send-button-arrow-up-icon-upgrade",
+    "category": "UI Navigation & Icons",
+    "summary": "Updated all Send / Submit buttons to clean Lucide ArrowUp icon across main chat and debate playground",
+    "details": "Replaced Lucide send icon on btn-submit-home, btn-submit-conv, btn-debate-intervene, and btn-debate-start with clean upward arrow icons (<i data-lucide='arrow-up'></i>).",
+    "files": [
+      "mariano/web/static/index.html",
+      "mariano/web/static/js/debate/debate_page.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T22:00:30Z",
+    "version": "2.8.2-send-button-lucide-icon-upgrade",
+    "category": "UI Navigation & Icons",
+    "summary": "Upgraded all send buttons to Lucide Send icon tags across home and conversation input bars",
+    "details": "Replaced remaining old paper-plane inline SVG icons on btn-submit-home and btn-submit-conv in index.html with crisp Lucide <i data-lucide='send'></i> icons.",
+    "files": [
+      "mariano/web/static/index.html"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T22:00:00Z",
+    "version": "2.8.1-chat-bubble-and-distinct-skills-icon-update",
+    "category": "UI Navigation & Icons",
+    "summary": "Updated New Chat icon to Lucide MessageSquarePlus bubble chat and Skills icon to Lucide Zap across sidebars and menus",
+    "details": "Replaced New Chat icon with Lucide message-square-plus bubble chat icon and changed Skills icon to distinct Lucide zap icon across index.html and debate_page.js.",
+    "files": [
+      "mariano/web/static/index.html",
+      "mariano/web/static/js/debate/debate_page.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T21:58:30Z",
+    "version": "2.8.0-universal-lucide-icons-migration",
+    "category": "UI Navigation & Icons",
+    "summary": "Completed 100% universal migration to Lucide icons across the entire web application",
+    "details": "Replaced all inline SVG icons across index.html, messages.js, session.js, stream_actions.js, debate_page.js, markdown.js, search_modal.js, chat_minimap.js, live_canvas.js, and images_page.js with Lucide <i data-lucide='...'></i> icon elements and ensured lucide.createIcons() lifecycle triggers.",
+    "files": [
+      "mariano/web/static/index.html",
+      "mariano/web/static/js/chat/messages.js",
+      "mariano/web/static/js/chat/session.js",
+      "mariano/web/static/js/stream/stream_actions.js",
+      "mariano/web/static/js/debate/debate_page.js",
+      "mariano/web/static/js/chat/markdown.js",
+      "mariano/web/static/js/components/search_modal.js",
+      "mariano/web/static/js/components/chat_minimap.js",
+      "mariano/web/static/js/components/live_canvas.js",
+      "mariano/web/static/js/pages/images_page.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T21:53:00Z",
+    "version": "2.7.5-icon-size-stroke-weight-standardization",
+    "category": "UI Navigation & Icons",
+    "summary": "Standardized 100% of app icons to uniform 16x16 dimensions and stroke-width 1.5 linear stroke weight",
+    "details": "Standardized all SVG icons across debate_page.js, messages.js, session.js, stream_actions.js, search_modal.js, and live_canvas.js to exact width 16 height 16 with stroke-width 1.5 for complete visual uniformity.",
+    "files": [
+      "mariano/web/static/js/debate/debate_page.js",
+      "mariano/web/static/js/chat/messages.js",
+      "mariano/web/static/js/chat/session.js",
+      "mariano/web/static/js/stream/stream_actions.js",
+      "mariano/web/static/js/components/search_modal.js",
+      "mariano/web/static/js/components/live_canvas.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T21:50:30Z",
+    "version": "2.7.4-droplist-heroicons-outline-upgrade",
+    "category": "UI Navigation & Icons",
+    "summary": "Upgraded Documents and Export droplist menus with uniform card background, single-line typography, and Heroicons v2 Outline stroke icons",
+    "details": "Fixed dark/mismatched droplist background color and text wrapping in 3_reader.css. Replaced old Lucide icons in debate-docs-dropdown-menu and doc-export-menu with sharp Heroicons v2 Outline SVG vector icons (ArrowUpTray, ArrowDownTray, Trash, DocumentText).",
+    "files": [
+      "mariano/web/static/css/debate/3_reader.css",
+      "mariano/web/static/js/debate/debate_page.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T21:48:30Z",
+    "version": "2.7.3-custom-new-chat-debate-svg-icon",
+    "category": "UI Navigation & Icons",
+    "summary": "Updated New Chat and New Debate icons to exact user-provided ChatBubble SVG vector path",
+    "details": "Replaced New Chat button icon in index.html and New Debate button icon in debate_page.js with the exact user-specified ChatBubbleLeftRight SVG path.",
+    "files": [
+      "mariano/web/static/index.html",
+      "mariano/web/static/js/debate/debate_page.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T21:47:30Z",
+    "version": "2.7.2-complete-debate-heroicons-outline-migration",
+    "category": "UI Navigation & Icons",
+    "summary": "Completed 100% Heroicons v2 Outline icon migration across Debate Playground and entire web static codebase",
+    "details": "Replaced all remaining fill SVG icons in debate_page.js, search_modal.js, images_page.js, live_canvas.js, chat_minimap.js, and index.html with official Heroicons v2 Outline stroke icons. Achieved 0 fill=currentColor icons in entire static web application.",
+    "files": [
+      "mariano/web/static/js/debate/debate_page.js",
+      "mariano/web/static/js/components/search_modal.js",
+      "mariano/web/static/js/pages/images_page.js",
+      "mariano/web/static/js/components/live_canvas.js",
+      "mariano/web/static/js/components/chat_minimap.js",
+      "mariano/web/static/index.html"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T21:44:45Z",
+    "version": "2.7.1-custom-user-like-dislike-copy-svg-paths",
+    "category": "UI Navigation & Icons",
+    "summary": "Updated Like, Dislike, and Copy icons to exact user-provided Heroicons v2 outline vector paths",
+    "details": "Replaced Like, Dislike, and Copy SVG paths in messages.js, stream_actions.js, markdown.js, and index.html with the exact user-specified vector paths.",
+    "files": [
+      "mariano/web/static/js/chat/messages.js",
+      "mariano/web/static/js/stream/stream_actions.js",
+      "mariano/web/static/js/chat/markdown.js",
+      "mariano/web/static/index.html"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T21:38:35Z",
+    "version": "2.7.0-heroicons-v2-outline-migration",
+    "category": "UI Navigation & Icons",
+    "summary": "Migrated all filled SVG icons to official Heroicons v2 Outline (24/outline) stroke icons",
+    "details": "Replaced filled vector path SVGs across index.html, messages.js, markdown.js, session.js, and stream_actions.js with Heroicons v2 24/outline stroke icons (fill:none, stroke:currentColor, stroke-width:1.5) for Settings Modal, Sidebar Dock, User Profile dropdown, Action buttons, and Code Copy toolbars.",
+    "files": [
+      "mariano/web/static/index.html",
+      "mariano/web/static/js/chat/messages.js",
+      "mariano/web/static/js/chat/markdown.js",
+      "mariano/web/static/js/chat/session.js",
+      "mariano/web/static/js/stream/stream_actions.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T18:04:46Z",
+    "version": "2.6.0-build-standalone-fill-icon-windows-installer-exe",
+    "category": "Build & Deployment",
+    "summary": "Built standalone Windows Installable executable (Fill-icon Setup 1.0.0.exe)",
+    "details": "Compiled Python FastAPI backend via PyInstaller to hekki_backend.exe (110MB) and packaged standalone NSIS installer via electron-builder into Fill-icon Setup 1.0.0.exe (193.59MB) with Desktop & Start Menu shortcuts.",
+    "files": [
+      "package.json",
+      "build_backend.py",
+      "dist/Fill-icon Setup 1.0.0.exe"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T17:22:00Z",
+    "version": "2.5.0-fresh-pwa-installable-renamed-fill-icon",
+    "category": "PWA Architecture & Branding",
+    "summary": "Built fresh PWA Installable engine and renamed application to Fill-icon",
+    "details": "Generated manifest.json and sw.js for PWA compliance. Registered /manifest.json and /sw.js in FastAPI app.py. Added Install App button in index.html user menu dropdown and bound beforeinstallprompt in main.js. Renamed application title and header branding to Fill-icon.",
+    "files": [
+      "mariano/web/app.py",
+      "mariano/web/static/index.html",
+      "mariano/web/static/main.js",
+      "mariano/web/static/manifest.json",
+      "mariano/web/static/sw.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T17:18:50Z",
+    "version": "2.4.5-update-write-pencil-filled-svg-icon",
+    "category": "UI Navigation & Aesthetics",
+    "summary": "Updated Write shortcut button with filled Pencil Edit SVG vector icon",
+    "details": "Replaced Lucide pen icon on Write shortcut button in index.html with user-provided filled Pencil Edit SVG vector path using fill: currentColor.",
+    "files": [
+      "mariano/web/static/index.html"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T17:18:12Z",
+    "version": "2.4.4-fix-welcome-screen-scroll-arrow-visibility-and-bg",
+    "category": "UI Navigation & Aesthetics",
+    "summary": "Fixed Scroll Down arrow visibility on Welcome screen, removed background, and increased icon size",
+    "details": "Enforced strict hiding of .chat-center-scroll-btn on welcome screen (#home-screen) and empty chat states in chat_minimap.js. Removed button background fill in 10_chat_minimap.css for borderless aesthetic and increased SVG icon size to 32px.",
+    "files": [
+      "mariano/web/static/css/chat/10_chat_minimap.css",
+      "mariano/web/static/js/components/chat_minimap.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T17:09:38Z",
+    "version": "2.4.3-update-skills-3d-cube-filled-svg-icon",
+    "category": "UI Navigation & Aesthetics",
+    "summary": "Updated all Skills buttons with 3D Isometric Cube Skills SVG vector icon",
+    "details": "Replaced Skills icons on #nav-skills-btn, #btn-user-skills, and #btn-debate-user-skills in index.html and debate_page.js with user-provided 3D Isometric Cube Skills SVG vector path using fill: currentColor.",
+    "files": [
+      "mariano/web/static/index.html",
+      "mariano/web/static/js/debate/debate_page.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T17:08:48Z",
+    "version": "2.4.2-update-red-logout-svg-icon-global",
+    "category": "UI Navigation & Aesthetics",
+    "summary": "Updated all Log Out buttons with filled Red Logout SVG vector icon and crimson hover styling",
+    "details": "Replaced logout icons on #btn-user-logout and #btn-debate-user-logout in index.html and debate_page.js with user-provided filled Red Logout SVG vector path and updated 6b_user_menu.css rules.",
+    "files": [
+      "mariano/web/static/css/layout/6b_user_menu.css",
+      "mariano/web/static/index.html",
+      "mariano/web/static/js/debate/debate_page.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T17:07:37Z",
+    "version": "2.4.1-update-research-book-magnifier-filled-svg-icon",
+    "category": "UI Navigation & Aesthetics",
+    "summary": "Updated Research shortcut button with filled Book Magnifier SVG vector icon",
+    "details": "Replaced Research shortcut icon in index.html with user-provided filled Book Magnifier Search SVG vector path using fill: currentColor.",
+    "files": [
+      "mariano/web/static/index.html"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T17:07:04Z",
+    "version": "2.4.0-update-research-book-globe-filled-svg-icon",
+    "category": "UI Navigation & Aesthetics",
+    "summary": "Updated Research shortcut button with filled Book Globe SVG vector icon",
+    "details": "Replaced Lucide search icon on Research shortcut button in index.html with user-provided filled Book Globe SVG vector path using fill: currentColor.",
+    "files": [
+      "mariano/web/static/index.html"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T17:06:35Z",
+    "version": "2.3.9-update-learn-book-globe-filled-svg-icon",
+    "category": "UI Navigation & Aesthetics",
+    "summary": "Updated Learn shortcut button with filled Book Globe SVG vector icon",
+    "details": "Replaced Lucide graduation-cap icon on Learn shortcut button in index.html with user-provided filled Book Globe SVG vector path using fill: currentColor.",
+    "files": [
+      "mariano/web/static/index.html"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T17:05:50Z",
+    "version": "2.3.8-update-strategize-trophy-filled-svg-icon",
+    "category": "UI Navigation & Aesthetics",
+    "summary": "Updated Strategize shortcut button with filled Trophy Cup SVG vector icon",
+    "details": "Replaced Lucide trending-up icon on Strategize shortcut button in index.html with user-provided filled Trophy Cup SVG vector path using fill: currentColor.",
+    "files": [
+      "mariano/web/static/index.html"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T17:03:40Z",
+    "version": "2.3.7-update-color-palette-filled-svg-icon",
+    "category": "UI Navigation & Aesthetics",
+    "summary": "Updated Create shortcut button with filled Color Palette SVG vector icon",
+    "details": "Replaced Lucide palette icon on Create shortcut button in index.html with user-provided filled Color Palette SVG vector path using fill: currentColor.",
+    "files": [
+      "mariano/web/static/index.html"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T17:01:24Z",
+    "version": "2.3.6-update-skills-puzzle-filled-svg-icon",
+    "category": "UI Navigation & Aesthetics",
+    "summary": "Updated all Skills & Capabilities buttons and sidebar action items with filled puzzle-piece Skills SVG vector icon",
+    "details": "Replaced grid/compass icons on #nav-skills-btn, #btn-user-skills, and #btn-debate-user-skills in index.html and debate_page.js with user-provided filled puzzle-piece Skills SVG vector path using fill: currentColor.",
+    "files": [
+      "mariano/web/static/index.html",
+      "mariano/web/static/js/debate/debate_page.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T16:59:49Z",
+    "version": "2.3.5-update-debate-user-account-card-solid-svg-icons",
+    "category": "UI Navigation & Aesthetics",
+    "summary": "Updated Debate Playground sidebar user account profile card and user dropdown menu with solid filled SVG vector icons",
+    "details": "Replaced Lucide outline icons on #btn-debate-sidebar-user-profile and #debate-user-menu-dropdown in debate_page.js with solid filled SVG vector icons matching main application navigation.",
+    "files": [
+      "mariano/web/static/js/debate/debate_page.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T16:58:43Z",
+    "version": "2.3.4-update-layers-filled-svg-icon",
+    "category": "UI Navigation & Aesthetics",
+    "summary": "Updated Debate Playground rounds selector (#btn-topbar-rounds-toggle) with filled stacked Layer SVG vector icon",
+    "details": "Replaced Lucide layers icon in debate_page.js with user-provided 3-tier stacked Layer SVG vector path using fill: currentColor.",
+    "files": [
+      "mariano/web/static/js/debate/debate_page.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T16:56:13Z",
+    "version": "2.3.3-update-edit-pencil-filled-svg-icon",
+    "category": "UI Navigation & Aesthetics",
+    "summary": "Updated Edit Prompt and Rename Session buttons with filled Pencil vector SVG icon",
+    "details": "Replaced Lucide pencil icon in messages.js (.btn-edit) and session.js (.rename-opt) with user-provided filled Pencil Edit SVG vector path using fill: currentColor.",
+    "files": [
+      "mariano/web/static/js/chat/messages.js",
+      "mariano/web/static/js/chat/session.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T16:55:30Z",
+    "version": "2.3.2-update-global-copy-filled-svg-icon",
+    "category": "UI Navigation & Aesthetics",
+    "summary": "Updated all Copy buttons across messages, code blocks, tables, lightbox preview, live canvas, and debate playground with filled double-page Copy SVG vector icon",
+    "details": "Replaced Lucide copy icons across index.html, messages.js, stream_actions.js, markdown.js, live_canvas.js, and debate_page.js with user-provided filled double-page Copy SVG vector path with fill: currentColor.",
+    "files": [
+      "mariano/web/static/index.html",
+      "mariano/web/static/js/chat/messages.js",
+      "mariano/web/static/js/stream/stream_actions.js",
+      "mariano/web/static/js/chat/markdown.js",
+      "mariano/web/static/js/components/live_canvas.js",
+      "mariano/web/static/js/debate/debate_page.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T16:54:09Z",
+    "version": "2.3.1-update-scroll-down-arrow-svg-icon",
+    "category": "UI Navigation & Aesthetics",
+    "summary": "Updated floating Scroll-to-Bottom jump button with filled circular down arrow SVG vector icon",
+    "details": "Replaced Lucide arrow-down icon on centerScrollBtn in chat_minimap.js with user-provided filled circular down arrow SVG vector path with fill: currentColor.",
+    "files": [
+      "mariano/web/static/js/components/chat_minimap.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T16:53:18Z",
+    "version": "2.3.0-update-fork-like-dislike-filled-svg-icons",
+    "category": "UI Navigation & Aesthetics",
+    "summary": "Updated Fork, Like (Thumbs Up), and Dislike (Thumbs Down) action buttons with filled SVG vector icons",
+    "details": "Replaced Lucide git-fork, thumbs-up, and thumbs-down icons in messages.js, stream_actions.js, and session.js with user-provided filled SVG vector paths using fill: currentColor.",
+    "files": [
+      "mariano/web/static/js/chat/messages.js",
+      "mariano/web/static/js/stream/stream_actions.js",
+      "mariano/web/static/js/chat/session.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T16:52:36Z",
+    "version": "2.2.9-update-send-paper-plane-svg-icon",
+    "category": "UI Navigation & Aesthetics",
+    "summary": "Updated all Send Message buttons across Home chat, Conversation bar, and Debate Playground with filled paper plane SVG vector icon",
+    "details": "Replaced Lucide arrow-up icons on #btn-submit-home, #btn-submit-conv, #btn-debate-start, and #btn-debate-intervene with user-provided filled paper plane SVG vector path using fill: currentColor.",
+    "files": [
+      "mariano/web/static/index.html",
+      "mariano/web/static/js/debate/debate_page.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T16:51:20Z",
+    "version": "2.2.8-update-delete-all-trash-svg-icon",
+    "category": "UI Navigation & Aesthetics",
+    "summary": "Updated Delete / Delete All buttons across session dropdown, image gallery, and search modal with filled trash bin SVG vector icon",
+    "details": "Replaced Lucide trash-2 icon across chat session context menu, image gallery delete actions, and search modal results with user-provided filled trash bin SVG vector path using fill: currentColor.",
+    "files": [
+      "mariano/web/static/js/chat/session.js",
+      "mariano/web/static/js/pages/images_page.js",
+      "mariano/web/static/js/components/search_modal.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T16:49:47Z",
+    "version": "2.2.7-update-reset-room-svg-icon",
+    "category": "UI Navigation & Aesthetics",
+    "summary": "Updated Reset Room button (#btn-sidebar-reset) in Debate Playground with filled counter-clockwise reset SVG vector icon",
+    "details": "Replaced Lucide rotate-ccw icon on #btn-sidebar-reset in debate_page.js with user-provided filled counter-clockwise reset SVG vector path with fill: currentColor.",
+    "files": [
+      "mariano/web/static/js/debate/debate_page.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T16:49:23Z",
+    "version": "2.2.6-update-research-directory-svg-icon",
+    "category": "UI Navigation & Aesthetics",
+    "summary": "Updated Research Directory buttons (#btn-sidebar-research-directory, Spec Directory header) with filled Book Globe SVG vector icon",
+    "details": "Replaced Lucide book-open and library icons in debate_page.js with user-provided filled Book Globe SVG vector path using fill: currentColor.",
+    "files": [
+      "mariano/web/static/js/debate/debate_page.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T16:47:48Z",
+    "version": "2.2.5-update-new-debate-filled-svg-icon",
+    "category": "UI Navigation & Aesthetics",
+    "summary": "Updated New Debate button (#btn-sidebar-new-debate) in Debate Playground with exact New Chat filled SVG vector icon",
+    "details": "Replaced Lucide message-circle-plus icon on #btn-sidebar-new-debate in debate_page.js with exact single-bubble filled New Chat SVG vector path with fill: currentColor.",
+    "files": [
+      "mariano/web/static/js/debate/debate_page.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T16:46:35Z",
+    "version": "2.2.4-global-ui-solid-svg-icons-upgrade",
+    "category": "UI Navigation & Aesthetics",
+    "summary": "Converted all remaining outline icons across Coder Mode, Log Out, and Settings Modal tabs into solid filled SVG vector icons",
+    "details": "Upgraded Coder IDE dock button (#mode-coder), Log Out menu button (#btn-user-logout), and all Settings Modal navigation tabs (Identity, Appearance, Gemini API, Gateway, Reasoning Mode, Kaggle GPU, About) to solid filled SVG vector icons with fill: currentColor.",
+    "files": [
+      "mariano/web/static/index.html"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T16:45:07Z",
+    "version": "2.2.3-update-chat-dropdown-filled-svg-icons",
+    "category": "UI Navigation & Aesthetics",
+    "summary": "Updated all Recent Chat options dropdown menu items with filled SVG vector icons",
+    "details": "Replaced Lucide outline icons in recent chat options dropdown (Open, Pin/Unpin, Rename, Archive, Delete) with premium filled SVG vector icons using fill: currentColor for 100% theme consistency.",
+    "files": [
+      "mariano/web/static/js/chat/session.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T16:44:20Z",
+    "version": "2.2.2-update-pin-chat-thumbtack-svg-icon",
+    "category": "UI Navigation & Aesthetics",
+    "summary": "Updated Pinned Chat indicators and dropdown options with filled thumbtack SVG vector icon",
+    "details": "Replaced Lucide pin icon across recent chat list item indicators, badge prefixes, and context menu options in session.js with user-provided filled push-pin SVG vector path using fill: currentColor.",
+    "files": [
+      "mariano/web/static/js/chat/session.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T16:43:35Z",
+    "version": "2.2.1-update-open-external-link-svg-icon",
+    "category": "UI Navigation & Aesthetics",
+    "summary": "Updated Open / External link icons (#lightbox-btn-external, markdown link inline icons) with filled box-arrow SVG vector icon",
+    "details": "Replaced Lucide external-link icon in lightbox preview header and inline markdown chat links with user-provided filled box arrow SVG vector path using fill: currentColor.",
+    "files": [
+      "mariano/web/static/index.html",
+      "mariano/web/static/js/chat/markdown.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T16:42:40Z",
+    "version": "2.2.0-update-dark-theme-contrast-circle-svg-icon",
+    "category": "UI Navigation & Aesthetics",
+    "summary": "Updated Dark Theme toggle icons (#btn-user-theme, settings modal pill) with filled contrast circle SVG vector icon",
+    "details": "Replaced Lucide sun/moon icon on #btn-user-theme and OLED Black settings pill with user-provided contrast half-circle SVG vector path using fill: currentColor.",
+    "files": [
+      "mariano/web/static/index.html"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T16:41:55Z",
+    "version": "2.1.9-update-collapse-sidebar-layout-grid-svg-icon",
+    "category": "UI Navigation & Aesthetics",
+    "summary": "Updated Collapse sidebar buttons (#btn-sidebar-collapse, #btn-debate-sidebar-toggle) with corrected sidebar panel layout SVG vector icon",
+    "details": "Replaced previous collapse icon with user's corrected sidebar panel grid layout SVG vector path with fill: currentColor and smooth 180deg rotation transition.",
+    "files": [
+      "mariano/web/static/index.html",
+      "mariano/web/static/js/debate/debate_page.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T16:41:35Z",
+    "version": "2.1.8-update-settings-filled-gear-svg-icon",
+    "category": "UI Navigation & Aesthetics",
+    "summary": "Updated Settings icons (#btn-open-settings, #btn-user-settings, sidebar user profile) with filled gear SVG vector icon",
+    "details": "Replaced Lucide settings icon across #btn-open-settings (dock), #btn-user-settings (user menu), and sidebar user profile trigger with user-provided filled gear SVG vector path using fill: currentColor.",
+    "files": [
+      "mariano/web/static/index.html"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T16:40:55Z",
+    "version": "2.1.7-update-collapse-sidebar-menu-svg-icon",
+    "category": "UI Navigation & Aesthetics",
+    "summary": "Updated Collapse sidebar buttons (#btn-sidebar-collapse, #btn-debate-sidebar-toggle) with filled menu-minus SVG vector icon",
+    "details": "Replaced Lucide panel-left-close icon on #btn-sidebar-collapse and #btn-debate-sidebar-toggle with user-provided filled menu-minus SVG vector path, adding 180deg CSS rotation transition in layout_controls.js for collapse toggle feedback.",
+    "files": [
+      "mariano/web/static/index.html",
+      "mariano/web/static/js/debate/debate_page.js",
+      "mariano/web/static/js/components/layout_controls.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T16:23:32Z",
+    "version": "2.1.6-update-search-filled-magnifier-svg-icon",
+    "category": "UI Navigation & Aesthetics",
+    "summary": "Updated Search history buttons (#btn-search-nav, #btn-debate-search-nav) with filled magnifier SVG vector icon",
+    "details": "Replaced Lucide search icon on #btn-search-nav and #btn-debate-search-nav with user-provided filled magnifying glass SVG vector path using fill: currentColor for crisp theme adaptability.",
+    "files": [
+      "mariano/web/static/index.html",
+      "mariano/web/static/js/debate/debate_page.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T16:22:55Z",
+    "version": "2.1.5-update-images-filled-photo-pencil-svg-icon",
+    "category": "UI Navigation & Aesthetics",
+    "summary": "Updated Images button (#btn-nav-images) in sidebar nav with filled photo-pencil SVG vector icon",
+    "details": "Replaced Lucide image icon on #btn-nav-images with user-provided filled image frame with edit pencil SVG vector path using fill: currentColor for 100% theme adaptability.",
+    "files": [
+      "mariano/web/static/index.html"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T16:22:30Z",
+    "version": "2.1.4-update-skills-4grid-apps-svg-icon",
+    "category": "UI Navigation & Aesthetics",
+    "summary": "Updated Skills icons across UI with corrected 4-grid apps frame SVG vector icon",
+    "details": "Updated SVG vector path on #nav-skills-btn, #btn-user-skills, and Settings modal tab to user's corrected 4-grid rounded apps frame path with fill: currentColor.",
+    "files": [
+      "mariano/web/static/index.html"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T16:21:40Z",
+    "version": "2.1.3-update-skills-filled-blocks-svg-icon",
+    "category": "UI Navigation & Aesthetics",
+    "summary": "Updated Skills action icon, User Menu, and Settings Modal with filled blocks SVG vector icon",
+    "details": "Replaced Lucide compass icon across #nav-skills-btn, #btn-user-skills, and Settings modal tab with user-provided filled grid blocks SVG vector path using fill: currentColor for theme adaptability.",
+    "files": [
+      "mariano/web/static/index.html"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T16:20:38Z",
+    "version": "2.1.2-update-playground-filled-gamepad-svg-icon",
+    "category": "UI Navigation & Aesthetics",
+    "summary": "Updated Playground dock and sidebar action icons with filled gamepad SVG vector icon",
+    "details": "Replaced Lucide swords icon across #mode-playground (dock), #btn-nav-playground (sidebar actions), and #hdr-section-playground with user-provided filled gamepad SVG vector path using fill: currentColor.",
+    "files": [
+      "mariano/web/static/index.html"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T16:19:50Z",
+    "version": "2.1.1-update-new-chat-filled-svg-icon",
+    "category": "UI Navigation & Aesthetics",
+    "summary": "Updated New Chat button (#btn-new-chat) in sidebar nav with filled chat SVG vector icon",
+    "details": "Replaced Lucide message-circle-plus icon with user-provided filled message bubble SVG vector path using fill: currentColor for seamless theme integration at 15px size.",
+    "files": [
+      "mariano/web/static/index.html",
+      "mariano/web/static/css/layout/4_main_containers.css"
+    ]
+  },
+  {
+    "timestamp": "2026-08-07T16:18:20Z",
+    "version": "2.1.0-update-leftbar-chat-filled-svg-icon",
+    "category": "UI Navigation & Aesthetics",
+    "summary": "Updated leftbar chat dock button (#mode-home) with filled double-bubble SVG vector icon",
+    "details": "Replaced Lucide message-circle icon with user-provided filled double chat bubble vector path using fill: currentColor for automatic light/dark theme adaptability at 20px size.",
+    "files": [
+      "mariano/web/static/index.html",
+      "mariano/web/static/css/layout/4_main_containers.css"
+    ]
+  },
+  {
     "timestamp": "2026-08-07T10:50:30Z",
     "version": "2.0.4-fix-iframe-sandbox-security-warning",
     "category": "Browser Security Compliance",
@@ -251,6 +1266,592 @@
     "files": [
       "mariano/web/static/js/agent_stream.js",
       "mariano/web/static/js/components/live_canvas.js",
+      "mariano/web/static/css/chat/9_live_canvas.css"
+    ]
+  },
+  {
+    "version": "3.3.2-official-brand-logos-update",
+    "timestamp": "2026-08-09T03:38:16.662631+00:00",
+    "changes": [
+      "Added authentic vector SVGs for all plugins: Gmail, Google Calendar, Google Drive, Linear, Figma, PostgreSQL, SQLite, Brave, MS Word, MS Excel, Google Cloud",
+      "Mapped user uploaded SVGs from D:\\Hekki-Assistant\\New folder to /static/icons/",
+      "Updated Filesystem Workspace connector with custom developer terminal folder SVG"
+    ]
+  },
+  {
+    "version": "3.3.3-frameless-horizontal-divider-rows",
+    "timestamp": "2026-08-09T03:49:49.301931+00:00",
+    "changes": [
+      "Removed table card boxes, outer borders, and gray header backgrounds from Available Tools & Commands and System Metadata",
+      "Replaced table containers with clean, minimal horizontal divider lines (border-bottom: 1px solid var(--border))",
+      "Enforced strict 500-line limit (plugins_page.js is 458 lines)"
+    ]
+  },
+  {
+    "version": "3.4.0-chatgpt-search-chats-history-page",
+    "timestamp": "2026-08-09T04:01:19.252319+00:00",
+    "changes": [
+      "Built full-page Search Chats & Recent History component (history_page.js, 162 lines)",
+      "Matched exact ChatGPT max-width (~780px centered) and list aesthetic from user screenshot",
+      "Features large top search pill (Search chats), Recent section header, list rows (title left, formatted date right), soft hover effects, direct session loading & deletion",
+      "Registered #history-pane in index.html, router.js, and 4_main_containers.css"
+    ]
+  },
+  {
+    "version": "3.4.1-document-links-typography-update",
+    "timestamp": "2026-08-09T04:06:59.264990+00:00",
+    "changes": [
+      "Updated document links and attachment chips font size across Leftbar, Main Chat, and Debate Playground to strictly 12px",
+      "Updated .debate-doc-item-title, .attachment-chip, .doc-link, .msg-file-link, .file-chip to 12px",
+      "Enforced strict 500-line limit across all modified JS/CSS files"
+    ]
+  },
+  {
+    "version": "3.4.1-chat-bubbles-font-size-13.5px",
+    "timestamp": "2026-08-09T04:09:46.447874+00:00",
+    "changes": [
+      "Updated main chat response body (.msg.ai) and user message bubble (.msg.user, .msg) font size to exactly 13.5px",
+      "Updated debate pane user bubble (.user-bubble) font size to 13.5px"
+    ]
+  },
+  {
+    "version": "3.4.2-chat-bubbles-font-size-14px",
+    "timestamp": "2026-08-09T04:10:20.247397+00:00",
+    "changes": [
+      "Updated main chat response body (.msg.ai) and user message bubble (.msg.user, .msg) font size to exactly 14px",
+      "Updated debate pane user bubble (.user-bubble) font size to 14px"
+    ]
+  },
+  {
+    "version": "3.4.3-sidebar-recent-chats-font-size-13px",
+    "timestamp": "2026-08-09T04:11:13.933796+00:00",
+    "changes": [
+      "Updated left sidebar recent chat history items (#recent-list .section-item .lbl, #sidebar-nav .recent-item) font size to exactly 13px"
+    ]
+  },
+  {
+    "version": "3.4.4-perfect-typography-hierarchy",
+    "timestamp": "2026-08-09T04:12:14.480058+00:00",
+    "changes": [
+      "Updated Main Chat Response & User Bubble text to 15px (crisp, clear, primary reading size)",
+      "Updated Left Sidebar navigation buttons (New Chat, Playground, Plugins, Skills, Images) to 13px (compact secondary navigation size)",
+      "Balanced typography hierarchy across app panes"
+    ]
+  },
+  {
+    "version": "3.4.5-input-field-font-size-15px",
+    "timestamp": "2026-08-09T04:12:59.501828+00:00",
+    "changes": [
+      "Updated main chat input field typed text and placeholder text (#chat-input, #chat-input-conv, #agent-task-input) to 15px matching main chat response font size"
+    ]
+  },
+  {
+    "version": "3.4.6-sidebar-item-height-and-options-click-target",
+    "timestamp": "2026-08-09T04:14:47.628174+00:00",
+    "changes": [
+      "Increased left sidebar recent chat row height from 32px to 36px with comfortable padding",
+      "Enhanced three-dots options button (.opt) with 24x24px hit area, 0.6 default opacity, and soft hover background fill for instant 100% clickability"
+    ]
+  },
+  {
+    "version": "3.4.7-identical-sidebar-link-hover",
+    "timestamp": "2026-08-09T04:15:12.438304+00:00",
+    "changes": [
+      "Matched .section-item (recent chat items) hover state, dimensions (32px height, 8px radius, 0 8px padding), and smooth 0.12s transition 100% identically with main links (.sidebar-action-btn)"
+    ]
+  },
+  {
+    "version": "3.4.8-chat-response-font-size-14px",
+    "timestamp": "2026-08-09T04:17:59.827009+00:00",
+    "changes": [
+      "Reduced main chat response body (.msg.ai), user message bubble (.msg.user), and input field text to 14px"
+    ]
+  },
+  {
+    "version": "3.4.9-response-headings-and-bold-typography-scale",
+    "timestamp": "2026-08-09T04:18:59.905516+00:00",
+    "changes": [
+      "Fixed markdown response typography hierarchy in 3a_message_bubbles.css",
+      "Updated headings: h1 (18px), h2 (16px), h3 (15px), h4-h6 (14px)",
+      "Updated strong/b to font-size: inherit (14px) eliminating 12px font shrinking on bold items",
+      "Updated p, ul, ol, li body text to uniform 14px"
+    ]
+  },
+  {
+    "version": "3.5.0-router-switch-fallthrough-fix",
+    "timestamp": "2026-08-09T04:20:33.110227+00:00",
+    "changes": [
+      "Added missing break statement after case plugins in router.js, resolving switch fall-through that caused history-pane to render simultaneously alongside plugins-pane"
+    ]
+  },
+  {
+    "version": "3.5.1-search-input-secondary-background-tint",
+    "timestamp": "2026-08-09T04:21:21.747477+00:00",
+    "changes": [
+      "Updated Search Chats input bar background from var(--card) to var(--input-bg) (secondary surface tint)"
+    ]
+  },
+  {
+    "version": "3.5.2-frameless-search-chats-horizontal-dividers",
+    "timestamp": "2026-08-09T04:21:41.966256+00:00",
+    "changes": [
+      "Removed card boxes from Search Chats history list items",
+      "Replaced card backgrounds with clean horizontal line dividers (border-bottom: 1px solid var(--border)) between rows"
+    ]
+  },
+  {
+    "version": "3.5.3-chat-history-restoration-order-fix",
+    "timestamp": "2026-08-09T04:22:27.776968+00:00",
+    "changes": [
+      "Fixed DOM append order in loadChat() inside session.js",
+      "Appended reasoning and tool cards to DocumentFragment instead of direct container append, restoring correct chronological message order (User Bubble -> Tool Reasoning Block -> AI Response)"
+    ]
+  },
+  {
+    "version": "3.5.4-user-avatar-bottom-touch-alignment",
+    "timestamp": "2026-08-09T04:23:27.717675+00:00",
+    "changes": [
+      "Removed 2px padding inset and set object-position: bottom center on .sidebar-user-avatar in 6a_pills.css",
+      "3D user avatar now sits flush touching the bottom curve of the container across all pages"
+    ]
+  },
+  {
+    "version": "3.5.5-mcp-at-mention-styled-selector-chips",
+    "timestamp": "2026-08-09T04:50:20.394651+00:00",
+    "changes": [
+      "Added @ mention autocomplete dropdown for all MCP Plugins (@Github, @GoogleDrive, @BraveSearch, @Slack, @Gmail, @Notion, @Filesystem, @Postgres, @SQLite, @GoogleCalendar, @Linear, @Figma)",
+      "Converts typed @ plugin mentions into styled selector tag chips ([@Github x]) inside the input capsule",
+      "Updated SlashMenuManager in slash_menu.js and .slash-tag-chip styles in 6a_pills.css"
+    ]
+  },
+  {
+    "version": "3.5.6-mcp-at-trigger-top5-droplist-filter",
+    "timestamp": "2026-08-09T04:52:42.582121+00:00",
+    "changes": [
+      "Updated getFilteredCommands() in slash_menu.js",
+      "Typing @ now specifically filters and triggers the droplist popup for ONLY MCP Plugins",
+      "Shows top 5 popular/recent MCP connectors (@Github, @GoogleDrive, @BraveSearch, @Slack, @Gmail) when typing @"
+    ]
+  },
+  {
+    "version": "3.5.7-mcp-at-droplist-real-company-svg-logos",
+    "timestamp": "2026-08-09T04:55:52.213884+00:00",
+    "changes": [
+      "Added getLogoSvg() helper in slash_menu.js",
+      "Replaced generic outline icons in @ mention droplist menu with real company SVG logos (GitHub, Google Drive, Brave Search, Slack, Gmail, Notion, Filesystem, Postgres, SQLite, Calendar, Linear, Figma)"
+    ]
+  },
+  {
+    "version": "3.5.8-search-chats-card-boxes-restored",
+    "timestamp": "2026-08-09T05:00:24.822770+00:00",
+    "changes": [
+      "Restored clean card box list layout for Search Chats history page (var(--input-bg) background, border-radius: 10px, padding: 14px 18px, smooth hover transitions)"
+    ]
+  },
+  {
+    "version": "3.5.9-chat-gpt-full-width-text-alignment",
+    "timestamp": "2026-08-09T05:03:53.787833+00:00",
+    "changes": [
+      "Expanded #chat-col, .chat-container, and .bottom-col max-width from 720px to 780px in 1_chat_pane.css and 5_input_bar.css",
+      "Set .msg.ai width: 100% and max-width: 100% in 3a_message_bubbles.css for full-width ChatGPT-style text alignment across the container"
+    ]
+  },
+  {
+    "version": "3.6.0-chat-response-text-align-justify",
+    "timestamp": "2026-08-09T05:05:04.885598+00:00",
+    "changes": [
+      "Added text-align: justify to .msg.ai and .msg.ai p in 3a_message_bubbles.css",
+      "Main chat AI response body paragraphs now render with clean justified alignment across both left & right edges"
+    ]
+  },
+  {
+    "version": "3.6.1-remove-legacy-mcp-settings-tab",
+    "timestamp": "2026-08-09T05:07:35.561556+00:00",
+    "changes": [
+      "Removed legacy MCP Servers tab and section-mcp iframe from index.html Settings modal",
+      "MCP Connectors & Plugins are now uniquely managed via the dedicated Plugins & Connectors full page store (PluginsPage)"
+    ]
+  },
+  {
+    "version": "3.6.2-add-plugins-to-user-account-dropdown",
+    "timestamp": "2026-08-09T05:09:17.773821+00:00",
+    "changes": [
+      "Added Plugins & Connectors option (with plug icon) to bottom-left user account dropdown menu in index.html, nav.js, and debate_page.js",
+      "Users can now open Plugins & Connectors directly from the bottom-left profile settings popup menu"
+    ]
+  },
+  {
+    "version": "3.6.3-sidebar-slash-badge-next-to-hekki",
+    "timestamp": "2026-08-09T05:12:05.246587+00:00",
+    "changes": [
+      "Added a small monospace / slash badge next to Hekki brand name in sidebar nav header (index.html) with 8px gap, hover-bg rounded pill style"
+    ]
+  },
+  {
+    "version": "3.6.4-sidebar-slash-secondary-color",
+    "timestamp": "2026-08-09T05:14:17.354885+00:00",
+    "changes": [
+      "Updated / slash badge next to Hekki in sidebar nav header to use theme secondary color var(--text-secondary, var(--text-2))"
+    ]
+  },
+  {
+    "version": "3.6.5-sidebar-slash-text3-color",
+    "timestamp": "2026-08-09T05:15:02.767486+00:00",
+    "changes": [
+      "Set color: var(--text-3) !important on slash span next to Hekki in sidebar header to ensure it renders as a soft secondary grey in both light and dark themes"
+    ]
+  },
+  {
+    "version": "3.6.6-sidebar-underscore-slash-badge",
+    "timestamp": "2026-08-09T05:15:28.070102+00:00",
+    "changes": [
+      "Updated text badge next to Hekki in sidebar header to _/ in soft secondary grey monospace font"
+    ]
+  },
+  {
+    "version": "3.6.3-standalone-exe-compiled",
+    "timestamp": "2026-08-09T05:19:06.791361+00:00",
+    "changes": [
+      "Compiled PyInstaller standalone Windows executable hekki_backend.exe in backend_dist/ (110.54 MB)",
+      "Bundled FastAPI backend, static UI assets, routes, skills, prompts, rules, & dependencies into a single binary"
+    ]
+  },
+  {
+    "version": "3.6.4-nsis-setup-script-configured",
+    "timestamp": "2026-08-09T05:25:00.927920+00:00",
+    "changes": [
+      "Created installer.nsi script for Nullsoft Scriptable Install System (NSIS)",
+      "Created build_nsis.py builder script to generate dist/Hekki-Assistant-Setup.exe",
+      "Configured Windows Installation Wizard with Desktop Shortcuts, Start Menu entries, and Control Panel Uninstaller"
+    ]
+  },
+  {
+    "version": "3.6.5-nsis-setup-exe-compiled-electron-builder",
+    "timestamp": "2026-08-09T05:30:20.289825+00:00",
+    "changes": [
+      "Packaged full production NSIS Windows installer via electron-builder (npx electron-builder --win nsis)",
+      "Output: dist/Hekki-Assistant Setup 1.0.0.exe (184.75 MB)",
+      "Includes Desktop shortcuts, Start Menu entry, interactive setup directory wizard, and Add/Remove programs uninstaller"
+    ]
+  },
+  {
+    "timestamp": "2026-08-09T15:12:00.000000+00:00",
+    "version": "3.3.2-ollama-speed-and-tool-fix",
+    "category": "Performance & Bug Fix — Ollama Local Model Optimization",
+    "summary": "Fixed Ollama slow TTFT (Time-To-First-Token) caused by oversized 32K context window on small models, added keep_alive=-1 to prevent model unloading, and blocked tool injection for small models (1B/3B) that hallucinate raw JSON tool calls instead of structured output.",
+    "details": "Root cause: num_ctx=32768 forced Ollama to allocate 32K KV-cache RAM for every request even on 1B models, causing slow initial load time. Fix: Smart num_ctx selection based on model name tag — 1B models get 4096, 3B get 8192, 7B/8B get 16384, 30B+ keep 32768. Added keep_alive=-1 so model stays hot in RAM between requests. Fixed raw JSON hallucination: small models (1B, 3B, 3.8B) now skip tool declaration injection since they cannot handle structured function calling and output raw JSON instead of calling tools properly.",
+    "files": [
+      "mariano/gemini/client.py"
+    ]
+  },
+  {
+    "timestamp": "2026-08-09T15:21:00.000000+00:00",
+    "version": "3.3.3-skills-page-redesign",
+    "category": "UI & UX — Skills Hub & Detailing Page Redesign",
+    "summary": "Redesigned Skills & Capabilities page to match Plugins Store layout, featuring 2-column categorized catalog grid, active capabilities pills, detail view with parameters/methods table, system metadata, and clean legacy UI CSS tokens.",
+    "details": "Re-engineered mariano/web/static/js/pages/skills_page.js. Built Catalog View with search filter, active skill pills with status indicators, 2-column grid grouped into Title Case categories (Core Intelligence, System & Files, Web & Search, Media & Utilities), 36x36px icon containers, circular toggle buttons (plus/check), and Detail View featuring back navigation, parameters JSON Schema table, prompt usage examples, and system metadata & telemetry (call count, latency, success rate). Enforced zero borders/shadows and <500 lines limit.",
+    "files": [
+      "mariano/web/static/js/pages/skills_page.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-09T15:23:00.000000+00:00",
+    "version": "3.3.4-skills-collapsible-active-pills",
+    "category": "UI & UX — Collapsible Active Capabilities Section",
+    "summary": "Made the Active Capabilities pills section collapsible and collapsed by default for a cleaner catalog view.",
+    "details": "Added _activeCollapsibleOpen state (default false) and toggleActiveCollapsible() method to SkillsPage in mariano/web/static/js/pages/skills_page.js. Added chevron toggle icon and expand/collapse indicator to Active Capabilities header.",
+    "files": [
+      "mariano/web/static/js/pages/skills_page.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-09T15:25:00.000000+00:00",
+    "version": "3.3.5-skills-subline-shortened",
+    "category": "UI & UX — Skills Header Subline Optimization",
+    "summary": "Shortened top header subline to a concise single line for clean visual alignment.",
+    "details": "Updated subline text in mariano/web/static/js/pages/skills_page.js to 'Manage autonomous tool capabilities powering Hekki.' for clean single-line header alignment alongside search and controls.",
+    "files": [
+      "mariano/web/static/js/pages/skills_page.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-09T15:26:00.000000+00:00",
+    "version": "3.3.6-skills-card-rounded-corners",
+    "category": "UI & UX — Skills Cards Rounded Corner Styling",
+    "summary": "Increased card border-radius to 14px and icon container to 10px for smoother rounded corners.",
+    "details": "Updated border-radius styles in mariano/web/static/js/pages/skills_page.js for cards (10px -> 14px) and icon containers (8px -> 10px).",
+    "files": [
+      "mariano/web/static/js/pages/skills_page.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-09T15:27:00.000000+00:00",
+    "version": "3.3.7-global-card-border-radius-14px",
+    "category": "UI & UX — Project-Wide Uniform Card Border-Radius Tokenization",
+    "summary": "Standardized all card components across the entire application to uniform 14px border-radius.",
+    "details": "Updated --radius-md and added --radius-card: 14px in mariano/web/static/css/base.css. Synchronized card border-radius across Skills, Plugins, History, and main components to 14px for 100% visual consistency.",
+    "files": [
+      "mariano/web/static/css/base.css",
+      "mariano/web/static/js/pages/skills_page.js",
+      "mariano/web/static/js/pages/plugins_page.js",
+      "mariano/web/static/js/pages/history_page.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-09T15:28:00.000000+00:00",
+    "version": "3.3.8-skills-real-brand-logos",
+    "category": "UI & UX — Real Brand SVG Logos for Skills Engine",
+    "summary": "Replaced generic Lucide outline icons with real official company/service SVG logos for all skills.",
+    "details": "Implemented getSkillRealLogoSvg(name, size) in mariano/web/static/js/pages/skills_page.js. Mapped skills to official full-color SVGs and PNG/SVG assets (Google, Chrome, Filesystem, Python, SQLite, Postgres, Excel, Wikipedia, Google Translate, DALL-E, Google Lens, Brave). Integrated across Active Pills, Catalog Cards, Detail View Header, and Skill Badges.",
+    "files": [
+      "mariano/web/static/js/pages/skills_page.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-09T15:45:00.000000+00:00",
+    "version": "3.3.9-downloaded-skill-png-icons",
+    "category": "UI & UX — Downloaded Skill Icons Integration & Sizing Fix",
+    "summary": "Copied downloaded PNG icons from 'New folder/Skills' to web static assets and mapped them to skills with crisp object-fit:contain sizing.",
+    "details": "Copied 10 PNG icons (Generate Image, Manage Task, News Fetch, Reminder, Schedule, Security Header Analyzer, Stock Data, Translator, View File, Wikipedia Search) to mariano/web/static/icons/skills/. Updated getSkillRealLogoSvg(name, size) in mariano/web/static/js/pages/skills_page.js to render them with precise object-fit:contain and block display.",
+    "files": [
+      "mariano/web/static/icons/skills/",
+      "mariano/web/static/js/pages/skills_page.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-09T15:51:00.000000+00:00",
+    "version": "3.3.10-filesystem-svg-skill-icon",
+    "category": "UI & UX — File Manager & File Operations Icon Mapping",
+    "summary": "Mapped file_manager, file write, and filesystem skills to use Filesystem.svg icon.",
+    "details": "Updated getSkillRealLogoSvg(name, size) in mariano/web/static/js/pages/skills_page.js to render Filesystem.svg for file, write, and filesystem operations.",
+    "files": [
+      "mariano/web/static/js/pages/skills_page.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-09T15:55:00.000000+00:00",
+    "version": "3.3.11-new-svg-skill-icons-integration",
+    "category": "UI & UX — New Official SVG Icons Integration",
+    "summary": "Mapped new SVGs (file.svg, Coder Refactor.svg, Red Team Ops.svg, Folder-icon.svg) to Skills & Plugins.",
+    "details": "Copied new SVGs to static icons assets directory. Updated getSkillRealLogoSvg(name, size) in mariano/web/static/js/pages/skills_page.js and getCompanyLogoSvg(id, size) in mariano/web/static/js/pages/plugins_page.js to render file.svg, Coder Refactor.svg, Red Team Ops.svg, and Folder-icon.svg.",
+    "files": [
+      "mariano/web/static/icons/file.svg",
+      "mariano/web/static/icons/skills/Coder Refactor.svg",
+      "mariano/web/static/icons/skills/Red Team Ops.svg",
+      "mariano/web/static/icons/skills/Folder-icon.svg",
+      "mariano/web/static/js/pages/skills_page.js",
+      "mariano/web/static/js/pages/plugins_page.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-09T15:59:00.000000+00:00",
+    "version": "3.3.12-webp-icons-integration",
+    "category": "UI & UX — WebP Asset Icons Integration",
+    "summary": "Mapped Expert Debate.webp, Recycler.svg, and 3147639.webp to Skills & Capabilities Hub.",
+    "details": "Copied WebP assets (Expert Debate.webp, 3147639.webp) and Recycler.svg to static assets directory. Updated getSkillRealLogoSvg(name, size) in mariano/web/static/js/pages/skills_page.js to render Expert Debate.webp for Debate skills, Recycler.svg for Trash/Recycle skills, and 3147639.webp for AI/Brain skills.",
+    "files": [
+      "mariano/web/static/icons/skills/Expert Debate.webp",
+      "mariano/web/static/icons/skills/Recycler.svg",
+      "mariano/web/static/icons/3147639.webp",
+      "mariano/web/static/js/pages/skills_page.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-09T16:01:00.000000+00:00",
+    "version": "3.3.13-expert-debate-svg-update",
+    "category": "UI & UX — Expert Debate SVG Logo Update",
+    "summary": "Updated Expert Debate icon from WebP to high-resolution Expert Debate.svg.",
+    "details": "Copied Expert Debate.svg to static assets directory and updated getSkillRealLogoSvg(name, size) in mariano/web/static/js/pages/skills_page.js.",
+    "files": [
+      "mariano/web/static/icons/skills/Expert Debate.svg",
+      "mariano/web/static/js/pages/skills_page.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-09T16:05:00.000000+00:00",
+    "version": "3.3.14-pill-capsule-button-styling",
+    "category": "UI & UX — Full Rounded Capsule Pill Button & Badge Tokenization",
+    "summary": "Updated all action buttons, skill badges, search inputs, and active capability pills to full rounded capsule pill shape (border-radius: 20px).",
+    "details": "Synchronized border-radius: 20px across Skills and Plugins pages for Search Inputs, Action Buttons, Skill Badges, Clean Stats, Enable/Disable Buttons, and Active/Connected Pill Badges matching user image specification.",
+    "files": [
+      "mariano/web/static/js/pages/skills_page.js",
+      "mariano/web/static/js/pages/plugins_page.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-09T16:06:00.000000+00:00",
+    "version": "3.3.15-global-capsule-button-tokenization",
+    "category": "UI & UX — Project-Wide Uniform Capsule Button Tokenization",
+    "summary": "Standardized all buttons across the entire project to uniform capsule pill shape (border-radius: 20px).",
+    "details": "Added --radius-btn: 20px and --radius-pill: 20px design tokens to mariano/web/static/css/base.css and enforced border-radius: var(--radius-pill, 20px) on the global button reset rule across all components.",
+    "files": [
+      "mariano/web/static/css/base.css"
+    ]
+  },
+  {
+    "timestamp": "2026-08-09T16:07:00.000000+00:00",
+    "version": "3.3.16-global-capsule-search-inputs",
+    "category": "UI & UX — Project-Wide Uniform Capsule Search Input Tokenization",
+    "summary": "Standardized all search input fields across the entire project to uniform capsule pill shape (border-radius: 20px).",
+    "details": "Added global input[type='text'], input[type='search'], .search-input rule to mariano/web/static/css/base.css enforcing border-radius: var(--radius-pill, 20px) !important across all pages (Skills, Plugins, History, and Chat Modals).",
+    "files": [
+      "mariano/web/static/css/base.css",
+      "mariano/web/static/css/skills_page.css"
+    ]
+  },
+  {
+    "timestamp": "2026-08-09T16:08:00.000000+00:00",
+    "version": "3.3.17-global-input-field-standardization",
+    "category": "UI & UX — Project-Wide Identical Input Field Tokenization",
+    "summary": "Standardized all input fields (text, search, password, email, number, textarea, select) across the entire project.",
+    "details": "Updated mariano/web/static/css/base.css to enforce 100% identical background, font family, zero borders, zero shadows, and uniform capsule pill shape (border-radius: 20px !important) across all input elements in the application.",
+    "files": [
+      "mariano/web/static/css/base.css"
+    ]
+  },
+  {
+    "timestamp": "2026-08-09T16:09:00.000000+00:00",
+    "version": "3.3.18-debate-and-welcome-capsule-rounding",
+    "category": "UI & UX — Debate Page & Chat Welcome Screen Capsule Rounding",
+    "summary": "Synchronized Debate Page and Chat Welcome Screen inputs, pills, buttons, and shortcuts to uniform capsule shape (border-radius: 20px).",
+    "details": "Updated mariano/web/static/css/chat/2_home_screen.css (#input-capsule, #input-capsule-conv, .model-pill, .permission-pill, .shortcut) and mariano/web/static/css/debate/ sub-files to 20px capsule rounding.",
+    "files": [
+      "mariano/web/static/css/chat/2_home_screen.css",
+      "mariano/web/static/css/debate/1a_debate_layout.css",
+      "mariano/web/static/css/debate/1b_debate_cards.css",
+      "mariano/web/static/css/debate/1c_debate_stream.css",
+      "mariano/web/static/css/debate/3_reader.css"
+    ]
+  },
+  {
+    "timestamp": "2026-08-09T16:10:00.000000+00:00",
+    "version": "3.3.19-master-button-badge-pill-capsule-standardization",
+    "category": "UI & UX — Master Enforced Capsule Pill Tokenization Across All Pages",
+    "summary": "Enforced master CSS rule locking all buttons, badges, chips, tags, pills, and status indicators across all pages to 100% identical capsule pill shape.",
+    "details": "Added master rule with !important in mariano/web/static/css/base.css targeting button, .btn, .button-pill, .badge, .pill, .chip, .tag, .badge-pill, .status-badge, .section-badge, .doc-sec-badge, .skill-badge, .cap-btn, and .action-btn.",
+    "files": [
+      "mariano/web/static/css/base.css"
+    ]
+  },
+  {
+    "timestamp": "2026-08-09T16:11:00.000000+00:00",
+    "version": "3.3.20-debate-full-capsule-compliance",
+    "category": "UI & UX — Debate Page Full Uniform Capsule Tokenization",
+    "summary": "Applied 100% uniform capsule pill rounding to all Debate Page controls, inputs, badges, and buttons.",
+    "details": "Verified and locked debate inputs, participant selects, sidebar action buttons, flow chips, and stream badges to 20px capsule rounding.",
+    "files": [
+      "mariano/web/static/js/debate/debate_page.js",
+      "mariano/web/static/css/debate/1a_debate_layout.css",
+      "mariano/web/static/css/debate/1b_debate_cards.css",
+      "mariano/web/static/css/debate/1c_debate_stream.css"
+    ]
+  },
+  {
+    "timestamp": "2026-08-09T16:11:30.000000+00:00",
+    "version": "3.3.21-debate-input-wrapper-capsule-rounding",
+    "category": "UI & UX — Debate Input Wrapper Capsule Rounding",
+    "summary": "Updated .debate-input-wrapper to border-radius: 20px !important matching user screenshot.",
+    "details": "Updated mariano/web/static/css/debate/1c_debate_stream.css so that the Debate bottom input capsule container displays smooth 20px rounded capsule corners.",
+    "files": [
+      "mariano/web/static/css/debate/1c_debate_stream.css"
+    ]
+  },
+  {
+    "timestamp": "2026-08-09T16:12:00.000000+00:00",
+    "version": "3.3.22-left-sidebar-subtle-8px-hover",
+    "category": "UI & UX — Left Sidebar Subtle 8px Hover Shape Reservation",
+    "summary": "Preserved subtle 8px border-radius for all left sidebar navigation items and action buttons on hover.",
+    "details": "Added specific rule in mariano/web/static/css/base.css forcing border-radius: 8px !important for left sidebar nav items, recent chat links, debate sidebar items, and toggle buttons while keeping main content action buttons capsule rounded.",
+    "files": [
+      "mariano/web/static/css/base.css",
+      "mariano/web/static/css/layout/3_sidebar_nav.css"
+    ]
+  },
+  {
+    "timestamp": "2026-08-09T16:13:00.000000+00:00",
+    "version": "3.3.23-textarea-text-clipping-fix",
+    "category": "UI & UX — Input Capsule Textarea Text Clipping Fix",
+    "summary": "Fixed text clipping issue in chat/debate input capsules by setting transparent background on textareas.",
+    "details": "Removed textarea from global rounded background rule in mariano/web/static/css/base.css and added explicit transparent background, zero padding, and border-radius: 0 !important rule for textareas inside input capsule containers.",
+    "files": [
+      "mariano/web/static/css/base.css"
+    ]
+  },
+  {
+    "timestamp": "2026-08-09T16:14:00.000000+00:00",
+    "version": "3.3.24-dropdown-subtle-6px-hover",
+    "category": "UI & UX — Dropdown & Context Menu Items Subtle 6px Hover Reservation",
+    "summary": "Preserved subtle 6px rounded hover shape for all dropdown menu items and context menus.",
+    "details": "Added specific rule in mariano/web/static/css/base.css forcing border-radius: 6px !important for .attach-dropdown-item, .dropdown-item, .user-menu-item, .context-menu-item, and option items matching user screenshot.",
+    "files": [
+      "mariano/web/static/css/base.css",
+      "mariano/web/static/css/chat/6_dropdowns.css"
+    ]
+  },
+  {
+    "timestamp": "2026-08-09T16:15:00.000000+00:00",
+    "version": "3.3.25-slash-menu-dom-destruction-bugfix",
+    "category": "Bug Fix — Slash Menu (@/@MCP) DOM Destruction by Attach Dropdown Cleanup",
+    "summary": "Fixed critical bug where @ and / droplist only worked after hard refresh. attach_dropdown.js was removing the slash menu DOM element on every '+' click.",
+    "details": "Root cause: #hekki-slash-menu had class 'attach-dropdown' so querySelectorAll('.attach-dropdown').forEach(d => d.remove()) in attach_dropdown.js was destroying it. Fix: removed shared class from slash menu element, added .hekki-slash-popup CSS alias in 6_dropdowns.css, and added document.body.contains() guard in showSlashMenu() for auto-recreation.",
+    "files": [
+      "mariano/web/static/js/components/slash_menu.js",
+      "mariano/web/static/css/chat/6_dropdowns.css"
+    ]
+  },
+  {
+    "timestamp": "2026-08-09T16:18:00.000000+00:00",
+    "version": "3.3.26-sidebar-debate-chat-link-text-plus1px",
+    "category": "UI & UX — Left Sidebar, Debate & Chat Link Text +1px",
+    "summary": "Increased navigation link text in left sidebar, debate sidebar, and main chat area by 1px for improved readability.",
+    "details": "Updated .section-item .lbl and .recent-item span from 13px to 14px in 3_sidebar_nav.css. Updated .sidebar-action-btn from 13px to 14px in 5_hud_pane.css. Updated .debate-list-btn from 14px to 15px in 1a_debate_layout.css. Updated .btn-new-chat-dock from 13px to 14px in 3_sidebar_nav.css.",
+    "files": [
+      "mariano/web/static/css/layout/3_sidebar_nav.css",
+      "mariano/web/static/css/layout/5_hud_pane.css",
+      "mariano/web/static/css/debate/1a_debate_layout.css"
+    ]
+  },
+  {
+    "timestamp": "2026-08-09T16:22:00.000000+00:00",
+    "version": "3.3.27-standalone-circular-attach-plus-button",
+    "category": "UI & UX — Standalone Circular Attach Plus Button Across All Input Bars",
+    "summary": "Detached the '+' attach button into a standalone 32x32px circular pill with background fill across all input field bars.",
+    "details": "Updated .cap-icon-btn in mariano/web/static/css/chat/2_home_screen.css with 32x32px circular background fill (var(--hover)), hover scale effect, and crisp 16px icon centering applied uniformly across Welcome, Chat, and Debate input bars.",
+    "files": [
+      "mariano/web/static/css/chat/2_home_screen.css",
+      "mariano/web/static/index.html"
+    ]
+  },
+  {
+    "timestamp": "2026-08-09T16:23:00.000000+00:00",
+    "version": "3.3.28-open-canvas-button-high-contrast-dark-mode",
+    "category": "UI & UX — Open Canvas Action Button High-Contrast Dark & OLED Styling",
+    "summary": "Fixed low-contrast dark blue text on black background for .btn-canvas-launch in Dark & OLED themes.",
+    "details": "Removed low-contrast inline styling in mariano/web/static/js/chat/messages.js and added dedicated CSS class in mariano/web/static/css/base.css with #60a5fa bright sky blue text and high-contrast pill container background fill.",
+    "files": [
+      "mariano/web/static/js/chat/messages.js",
+      "mariano/web/static/css/base.css"
+    ]
+  },
+  {
+    "timestamp": "2026-08-09T16:25:00.000000+00:00",
+    "version": "3.3.29-live-canvas-doc-prose-polished-card-view",
+    "category": "UI & UX — Live Canvas Document Prose High-Contrast Polished Card View",
+    "summary": "Polished Live Canvas document/preview view into a clean 760px document card with high-contrast dark & light mode typography.",
+    "details": "Updated .canvas-doc-prose in mariano/web/static/css/chat/9_live_canvas.css with 16px border-radius card background, 32px padding, subtle shadow, and explicit dark/OLED theme color overrides (#f1f5f9 text, #ffffff headings, #60a5fa code/pre). Enhanced _renderMarkdown fallback in live_canvas.js for clean list & heading parsing.",
+    "files": [
+      "mariano/web/static/css/chat/9_live_canvas.css",
+      "mariano/web/static/js/components/live_canvas.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-09T16:27:00.000000+00:00",
+    "version": "3.3.30-live-canvas-line-numbers-padding-fix",
+    "category": "Bug Fix — Live Canvas Line Numbers Touching Text & Textarea Padding Restoration",
+    "summary": "Fixed issue where line numbers were touching text in Live Canvas code/document editor mode.",
+    "details": "Root cause: global generic 'textarea { padding: 0 !important; }' rule in base.css stripped padding from .canvas-code-textarea. Fix: scoped capsule textarea rule in base.css and added explicit 'padding: 16px 24px !important' to .canvas-code-textarea and wider min-width/padding to .canvas-line-numbers in 9_live_canvas.css.",
+    "files": [
+      "mariano/web/static/css/base.css",
       "mariano/web/static/css/chat/9_live_canvas.css"
     ]
   }

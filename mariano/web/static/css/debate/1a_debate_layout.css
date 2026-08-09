@@ -155,7 +155,7 @@
   border: none;
   background: transparent;
   cursor: pointer;
-  border-radius: 6px; /* standard button ratio */
+  border-radius: 20px; /* standard button ratio */
   color: var(--text-secondary);
   transition: background 0.12s, color 0.12s;
 }
@@ -232,7 +232,7 @@
   width: 36px !important;
   height: 36px !important;
   min-width: 36px !important;
-  border-radius: 8px !important;
+  border-radius: 20px !important;
   margin: 0 auto !important;
   display: flex !important;
   align-items: center !important;
@@ -250,7 +250,7 @@
   min-width: 36px;
   padding: 0 !important;
   justify-content: center;
-  border-radius: 8px;
+  border-radius: 20px;
   margin: 0 auto;
 }
 .debate-layout.collapsed-sidebar .debate-list-btn span:not(#btn-sidebar-voice-icon-wrap) {
@@ -285,10 +285,10 @@
   padding: 0 8px;
   background-color: transparent;
   border: none !important;
-  border-radius: 8px;
+  border-radius: 20px;
   color: var(--text-2);
   font-family: var(--font);
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 400;
   cursor: pointer;
   transition: all 0.12s ease;
@@ -388,7 +388,7 @@
   color: var(--text);
   background: transparent;
   border: none !important;
-  border-radius: 8px;
+  border-radius: 20px;
   cursor: pointer;
   transition: background 0.15s ease, color 0.15s ease;
   box-sizing: border-box;
@@ -400,21 +400,24 @@
 }
 
 .cloud-option-item.active {
-  background: rgba(37, 99, 235, 0.12);
-  color: var(--accent, #2563eb);
-  font-weight: 500;
+  background: var(--hover, rgba(255, 255, 255, 0.08)) !important;
+  color: var(--text-primary) !important;
+  font-weight: 600 !important;
 }
 
 .cloud-option-item .cloud-check-icon,
-.cloud-option-item svg.cloud-check-icon {
-  width: 13px;
-  height: 13px;
+.cloud-option-item svg.cloud-check-icon,
+.cloud-option-item i[data-lucide="check"] {
+  width: 13px !important;
+  height: 13px !important;
   display: none !important;
-  color: var(--accent, #2563eb);
+  color: var(--text-primary) !important;
 }
 
 .cloud-option-item.active .cloud-check-icon,
-.cloud-option-item.active svg.cloud-check-icon {
+.cloud-option-item.active svg.cloud-check-icon,
+.cloud-option-item.active i[data-lucide="check"] {
   display: inline-block !important;
   opacity: 1 !important;
+  color: var(--text-primary) !important;
 }

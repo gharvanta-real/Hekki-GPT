@@ -3,6 +3,8 @@
  * Features content search, markdown strip-cleaning, and visual deletion transition.
  */
 
+import { router } from '/static/js/router.js';
+
 export class SearchModal {
   constructor(chatSessionManager) {
     this.chatSessionManager = chatSessionManager;
@@ -90,7 +92,11 @@ export class SearchModal {
       if (searchBtn) {
         e.preventDefault();
         e.stopPropagation();
-        openModal();
+        if (router && typeof router.navigateTo === 'function') {
+          router.navigateTo('history');
+        } else {
+          openModal();
+        }
       }
     });
 
@@ -207,9 +213,10 @@ export class SearchModal {
           </div>
         </div>
         <button class="search-result-delete-btn" title="Delete immediately">
-          <i data-lucide="trash-2"></i>
+          <i data-lucide="trash-2" style="width:14px; height:14px;"></i>
         </button>
       `;
+      if (window.lucide) lucide.createIcons({ parent: item });
 
       item.addEventListener('click', (e) => {
         if (e.target.closest('.search-result-delete-btn')) return;

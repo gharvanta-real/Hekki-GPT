@@ -32,7 +32,6 @@ export function bindSidebarToggle() {
 }
 
 function _updateCollapseIcon(isCollapsed) {
-  // Rotate the panel-left-close icon to signal expand
   ['btn-sidebar-collapse'].forEach(id => {
     const btn = document.getElementById(id);
     if (!btn) return;
@@ -40,6 +39,10 @@ function _updateCollapseIcon(isCollapsed) {
     if (icon) {
       icon.setAttribute('data-lucide', isCollapsed ? 'panel-left-open' : 'panel-left-close');
       if (window.lucide) lucide.createIcons();
+    }
+    const svg = btn.querySelector('svg');
+    if (svg) {
+      svg.style.transform = isCollapsed ? 'rotate(180deg)' : 'rotate(0deg)';
     }
   });
 }

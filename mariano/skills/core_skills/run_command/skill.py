@@ -66,6 +66,14 @@ class RunCommandSkill(BaseSkill):
             yield ("done", 1)
             return
 
+        # Inline python -c guard
+        cmd_strip = command.strip()
+        if cmd_strip.startswith("python -c") or cmd_strip.startswith("python3 -c"):
+            if "#" in command or "\n" in command or len(command) > 100:
+                yield ("log", "ERROR: Execution Policy Error: Inline 'python -c' with '#' comments or long scripts is forbidden. You MUST write your python code to a file (e.g. scratch/temp_script.py) using file_manager / write_to_file and then execute 'python scratch/temp_script.py'.")
+                yield ("done", 1)
+                return
+
         work_dir = await self._get_workdir(cwd_param)
         yield ("log", f"$ {command}")
         yield ("log", f"  cwd: {work_dir}")
@@ -104,6 +112,16 @@ class RunCommandSkill(BaseSkill):
 
         if not command:
             return SkillResult(success=False, data=None, error="Parameter 'command' is required.")
+
+        # Inline python -c guard
+        cmd_strip = command.strip()
+        if cmd_strip.startswith("python -c") or cmd_strip.startswith("python3 -c"):
+            if "#" in command or "\n" in command or len(command) > 100:
+                return SkillResult(
+                    success=False,
+                    data=None,
+                    error="Execution Policy Error: Inline 'python -c' with '#' comments or long scripts is forbidden because Windows command line truncates them. You MUST write your python code to a file (e.g. scratch/temp_script.py) using file_manager / write_to_file and then execute 'python scratch/temp_script.py'."
+                )
 
         # Security Policy check
         from mariano.core.workspace import active_permission_policy
@@ -151,8 +169,17 @@ class RunCommandSkill(BaseSkill):
                     exit_code = int(val or 0)
 
             output_text = "\n".join(all_lines) if all_lines else "(no output)"
+            out_lower = output_text.lower()
+            error_patterns = [
+                "syntaxerror:", "traceback (most recent call last):", "failed because", 
+                "is not recognized as an internal", "command not found", "error:",
+                "module_not_found_error", "importerror:", "indentationerror:"
+            ]
+            has_error_keyword = any(pat in out_lower for pat in error_patterns)
+            is_success = (exit_code == 0) and not has_error_keyword
+
             return SkillResult(
-                success=(exit_code == 0),
+                success=is_success,
                 data=f"Exit code: {exit_code}\nSTDOUT:\n{output_text}",
                 metadata={"command": command, "exit_code": exit_code, "cwd": str(work_dir)}
             )

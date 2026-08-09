@@ -1,17 +1,27 @@
 /* === USER MENU DROPDOWN & SIDEBAR HARMONY === */
 
 #btn-user-logout,
+#btn-debate-user-logout,
 #btn-user-logout span,
+#btn-debate-user-logout span,
 #btn-user-logout i,
+#btn-debate-user-logout i,
 #btn-user-logout svg,
-#btn-user-logout .lucide {
+#btn-debate-user-logout svg,
+#btn-user-logout .lucide,
+#btn-debate-user-logout .lucide {
   color: #ef4444 !important;
 }
 #btn-user-logout:hover,
+#btn-debate-user-logout:hover,
 #btn-user-logout:hover span,
+#btn-debate-user-logout:hover span,
 #btn-user-logout:hover i,
+#btn-debate-user-logout:hover i,
 #btn-user-logout:hover svg,
-#btn-user-logout:hover .lucide {
+#btn-debate-user-logout:hover svg,
+#btn-user-logout:hover .lucide,
+#btn-debate-user-logout:hover .lucide {
   color: #dc2626 !important;
 }
 .user-menu-item .chevron {
@@ -41,7 +51,7 @@
   right: -2px;
   width: 8px;
   height: 8px;
-  background-color: #3b82f6; /* blue dot */
+  background-color: #18181b; /* monochrome dot */
   border: 2px solid var(--bg);
   border-radius: 50%;
 }

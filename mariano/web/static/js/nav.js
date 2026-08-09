@@ -106,6 +106,11 @@ export function bindNavigation(tabs, showToast, inConversationStateRef) {
   });
 
 
+  //  Plugins & MCP Connectors Hub
+  $('btn-nav-plugins')?.addEventListener('click', () => {
+    router.navigateTo('plugins');
+  });
+
   //  Images Gallery 
   $('btn-nav-images')?.addEventListener('click', () => {
     router.navigateTo('images');
@@ -132,6 +137,14 @@ export function bindNavigation(tabs, showToast, inConversationStateRef) {
       }
     });
     
+    // Bind Plugins & Connectors button
+    const userPluginsBtn = $('btn-user-plugins');
+    if (userPluginsBtn) {
+      userPluginsBtn.addEventListener('click', () => {
+        router.navigateTo('plugins');
+      });
+    }
+
     // Bind Skills & Capabilities button
     const userSkillsBtn = $('btn-user-skills');
     if (userSkillsBtn) {

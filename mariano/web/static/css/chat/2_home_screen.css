@@ -46,11 +46,14 @@
 #input-capsule {
   position: relative;
   width: 100%;
+  max-width: 660px;
+  margin-left: auto;
+  margin-right: auto;
   background: var(--input-bg, #F4F4F6);
   border: none !important;
   outline: none !important;
   box-shadow: none !important;
-  border-radius: 8px;
+  border-radius: 20px;
   padding: 14px 16px 12px;
   display: flex;
   flex-direction: column;
@@ -64,7 +67,7 @@
   background: transparent;
   color: var(--text);
   font-family: var(--font);
-  font-size: var(--fs-md);     /* 14px */
+  font-size: 14px;
   resize: none;
   outline: none !important;
   line-height: 1.55;
@@ -74,6 +77,7 @@
 }
 #chat-input::placeholder, #agent-task-input::placeholder {
   color: var(--text-3);
+  font-size: 14px;
 }
 
 
@@ -84,7 +88,7 @@
   border: none !important;
   outline: none !important;
   box-shadow: none !important;
-  border-radius: 8px;
+  border-radius: 20px;
   padding: 10px 16px;
   display: flex;
   flex-direction: row;
@@ -98,7 +102,7 @@
   background: transparent;
   color: var(--text);
   font-family: var(--font);
-  font-size: var(--fs-md);     /* 14px */
+  font-size: 14px;
   resize: none;
   outline: none;
   line-height: 1.55;
@@ -109,6 +113,7 @@
 }
 #chat-input-conv::placeholder {
   color: var(--text-3);
+  font-size: 14px;
 }
 
 
@@ -133,27 +138,44 @@
 }
 
 
-/* Capsule buttons */
+/* Capsule buttons — standalone circular background fill */
 .cap-icon-btn {
-  width: 28px;
-  height: 28px;
-  border: none;
-  background: transparent;
-  color: var(--text-3);
+  width: 32px !important;
+  height: 32px !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: var(--hover, rgba(0, 0, 0, 0.06)) !important;
+  color: var(--text) !important;
   cursor: pointer;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.12s, color 0.12s;
-  font-size: 16px;
+  border-radius: 50% !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.12s ease !important;
 }
 .cap-icon-btn:hover {
-  background: var(--hover);
-  color: var(--text);
+  background: var(--card, rgba(0, 0, 0, 0.12)) !important;
+  color: var(--text) !important;
+  transform: scale(1.05);
+}
+.cap-icon-btn i,
+.cap-icon-btn svg,
+.cap-icon-btn .lucide {
+  width: 16px !important;
+  height: 16px !important;
+  color: var(--text-2) !important;
+  stroke-width: 2.2px !important;
+  transition: color 0.15s ease !important;
+}
+.cap-icon-btn:hover i,
+.cap-icon-btn:hover svg,
+.cap-icon-btn:hover .lucide {
+  color: var(--text) !important;
 }
 .cap-icon-btn.active {
-  color: #dc2626;
+  color: #dc2626 !important;
   animation: mic-pulse 1.5s infinite;
 }
 @keyframes mic-pulse {
@@ -191,7 +213,7 @@
 .model-pill,
 #input-capsule-conv .model-pill {
   height: 26px !important;
-  padding: 0 6px !important;
+  padding: 0 10px !important;
   border: none !important;
   outline: none !important;
   box-shadow: none !important;
@@ -201,7 +223,7 @@
   font-weight: 500 !important;
   color: var(--text-2) !important;
   cursor: pointer;
-  border-radius: 6px !important;
+  border-radius: 20px !important;
   display: flex !important;
   align-items: center !important;
   gap: 3px !important;
@@ -250,7 +272,7 @@
   font-weight: 500;
   color: var(--text-2);
   cursor: pointer;
-  border-radius: 8px;
+  border-radius: 20px;
   display: inline-flex;
   align-items: center;
   gap: 4px;
@@ -323,6 +345,8 @@
   justify-content: center;
   gap: 8px;
   margin-top: 14px;
+  max-width: 660px;
+  width: 100%;
 }
 .shortcut {
   height: 32px;
@@ -336,7 +360,7 @@
   font-family: var(--font);
   font-size: var(--fs-base);   /* 13px */
   font-weight: 500;
-  border-radius: 8px;
+  border-radius: 20px;
   display: flex;
   align-items: center;
   gap: 6px;

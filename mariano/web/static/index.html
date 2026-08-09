@@ -6,35 +6,34 @@
     <!-- Left nav (Always secondary background tint) -->
     <div class="modal-nav">
       <div style="display:flex;align-items:center;gap:10px;padding:12px 14px 12px;">
-        <img src="/static/hekki.png" alt="Hekki" style="width:28px;height:28px;border-radius:8px;">
         <span style="font-weight:600;font-size:15px;color:var(--text-primary);">Hekki</span>
       </div>
 
       <button class="modal-nav-item active" data-section="general">
-        <i class="mi" data-lucide="user"></i> Identity
+        <i data-lucide="user-round" style="width:15px;height:15px;margin-right:6px;display:inline-block;vertical-align:middle;"></i> Identity
       </button>
       <button class="modal-nav-item" data-section="appearance">
-        <i class="mi" data-lucide="palette"></i> Appearance
+        <i data-lucide="palette" style="width:15px;height:15px;margin-right:6px;display:inline-block;vertical-align:middle;"></i> Appearance
       </button>
 
       <button class="modal-nav-item" data-section="gemini">
-        <i class="mi" data-lucide="sparkles"></i> Gemini API
+        <i data-lucide="sparkles" style="width:15px;height:15px;margin-right:6px;display:inline-block;vertical-align:middle;"></i> Gemini API
       </button>
       <button class="modal-nav-item" data-section="gateway">
-        <i class="mi" data-lucide="server"></i> Local Gateway
+        <i data-lucide="server" style="width:15px;height:15px;margin-right:6px;display:inline-block;vertical-align:middle;"></i> Local Gateway
       </button>
       <button class="modal-nav-item" data-section="reasoning">
-        <i class="mi" data-lucide="brain"></i> Reasoning Mode
+        <i data-lucide="brain" style="width:15px;height:15px;margin-right:6px;display:inline-block;vertical-align:middle;"></i> Reasoning Mode
       </button>
       <button class="modal-nav-item" data-section="kaggle">
-        <i class="mi" data-lucide="cpu"></i> Kaggle GPU
+        <i data-lucide="square-terminal" style="width:15px;height:15px;margin-right:6px;display:inline-block;vertical-align:middle;"></i> Kaggle GPU
       </button>
 
       <button class="modal-nav-item" data-section="skills">
-        <i class="mi" data-lucide="compass"></i> Skills &amp; Plugins
+        <i data-lucide="blocks" style="width:15px;height:15px;margin-right:6px;display:inline-block;vertical-align:middle;"></i> Skills &amp; Plugins
       </button>
       <button class="modal-nav-item" data-section="about">
-        <i class="mi" data-lucide="info"></i> About Hekki
+        <i data-lucide="info" style="width:15px;height:15px;margin-right:6px;display:inline-block;vertical-align:middle;"></i> About Hekki
       </button>
     </div>
 
@@ -249,10 +248,18 @@
   <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@300;400;500;600;700&family=Google+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hekki</title>
-  <link class="cache-bust" rel="stylesheet" href="/static/theme.css?v=161">
-  <link class="cache-bust" rel="stylesheet" href="/static/css/chat.css?v=163">
-  <link class="cache-bust" rel="stylesheet" href="/static/css/debate.css?v=156">
-  <link class="cache-bust" rel="stylesheet" href="/static/css/coder.css?v=141">
+  <meta name="application-name" content="Hekki">
+  <meta name="apple-mobile-web-app-title" content="Hekki">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" type="image/png" href="/static/hekki.png">
+  <link rel="apple-touch-icon" href="/static/hekki.png">
+  <link class="cache-bust" rel="stylesheet" href="/static/theme.css?v=200">
+  <link class="cache-bust" rel="stylesheet" href="/static/css/chat.css?v=201">
+  <link class="cache-bust" rel="stylesheet" href="/static/css/debate.css?v=201">
+  <link class="cache-bust" rel="stylesheet" href="/static/css/coder.css?v=200">
 
 
 
@@ -331,18 +338,18 @@
     </div>
     <div class="dock-items">
       <button class="dock-item active" id="mode-home" title="Chat Dashboard">
-        <i data-lucide="message-circle"></i>
+        <i data-lucide="message-circle" style="width:20px;height:20px;"></i>
       </button>
       <button class="dock-item" id="mode-playground" title="Debate Playground">
-        <i data-lucide="swords"></i>
+        <i data-lucide="flask-conical" style="width:20px;height:20px;"></i>
       </button>
-      <button class="dock-item" id="mode-coder" title="Coder IDE" style="position:relative;">
-        <i data-lucide="code-2"></i>
+      <button class="dock-item" id="mode-coder" data-tab="coder" title="Coder IDE" style="position:relative;">
+        <i data-lucide="square-code" style="width:20px;height:20px;"></i>
       </button>
     </div>
     <div class="dock-footer">
       <button class="dock-item" id="btn-open-settings" title="Customize Settings">
-        <i data-lucide="settings"></i>
+        <i data-lucide="settings" style="width:20px;height:20px;"></i>
       </button>
     </div>
   </div>
@@ -350,20 +357,17 @@
   <!-- SIDEBAR NAV (Second left sub-navigation sidebar panel) -->
   <div id="sidebar-nav">
     <div class="nav-header">
-      <div class="nav-header-logo-wrapper" title="Hekki Assistant">
-        <img class="nav-header-logo" src="/static/hekki.png" alt="Hekki Logo" style="width: 28px; height: 28px; border-radius: 6px; object-fit: contain; flex-shrink: 0;" />
-      </div>
-      <div class="nav-header-title" style="font-weight: 600; font-size: 16px; color: var(--text-primary); margin-left: 2px; flex: 1;">
+      <div class="nav-header-title" style="font-weight: 600; font-size: 16px; color: var(--text-primary); margin-left: 4px; flex: 1;">
         Hekki
       </div>
       <button class="icon-btn" id="btn-return-chat-nav" title="Return to Chat" style="display: none; border: none; background: transparent; cursor: pointer; margin-right: 4px;">
         <i data-lucide="chevron-left" style="width: 14px; height: 14px;"></i>
       </button>
       <button class="icon-btn" id="btn-search-nav" title="Search Chat History" style="margin-right: 2px;">
-        <i data-lucide="search" style="width: 15px; height: 15px;"></i>
+        <i data-lucide="search" style="width:15px; height:15px;"></i>
       </button>
       <button id="btn-sidebar-collapse" title="Collapse sidebar">
-        <i data-lucide="panel-left-close" style="width:15px;height:15px;"></i>
+        <i data-lucide="panel-left" style="width:15px; height:15px;"></i>
       </button>
     </div>
     
@@ -378,19 +382,23 @@
           </div>
           <div class="nav-section-actions" style="display: flex; flex-direction: column; gap: 2px; margin-top: 0;">
             <button class="sidebar-action-btn" id="btn-new-chat">
-              <i data-lucide="message-circle-plus" style="width:15px; height:15px; margin-right:8px;"></i>
+              <i data-lucide="message-circle-plus" style="width:15px; height:15px; margin-right:8px; display:inline-block; vertical-align:middle; flex-shrink:0;"></i>
               <span>New Chat</span>
             </button>
             <button class="sidebar-action-btn" id="btn-nav-playground">
-              <i data-lucide="swords" style="width:15px; height:15px; margin-right:8px;"></i>
+              <i data-lucide="flask-conical" style="width:15px; height:15px; margin-right:8px; display:inline-block; vertical-align:middle; flex-shrink:0;"></i>
               <span>Playground</span>
             </button>
+            <button class="sidebar-action-btn" id="btn-nav-plugins">
+              <i data-lucide="plug" style="width:15px; height:15px; margin-right:8px; display:inline-block; vertical-align:middle; flex-shrink:0;"></i>
+              <span>Plugins</span>
+            </button>
             <button class="sidebar-action-btn" id="nav-skills-btn">
-              <i data-lucide="compass" style="width:15px; height:15px; margin-right:8px;"></i>
+              <i data-lucide="blocks" style="width:15px; height:15px; margin-right:8px; display:inline-block; vertical-align:middle; flex-shrink:0;"></i>
               <span>Skills</span>
             </button>
             <button class="sidebar-action-btn" id="btn-nav-images">
-              <i data-lucide="image" style="width:15px; height:15px; margin-right:8px;"></i>
+              <i data-lucide="images" style="width:15px; height:15px; margin-right:8px; display:inline-block; vertical-align:middle; flex-shrink:0;"></i>
               <span>Images</span>
             </button>
           </div>
@@ -411,7 +419,7 @@
         <div class="nav-section" id="nav-section-playground" style="display:none; margin-top: 8px;">
           <div class="section-hdr collapsible-hdr" id="hdr-section-playground" style="display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: var(--text-3); letter-spacing: 0.02em; font-weight: 600; margin-bottom: 4px; padding: 4px 6px; cursor: pointer; user-select: none; border-radius: 6px; transition: background 0.15s ease;">
             <div style="display: flex; align-items: center; gap: 6px;">
-              <i data-lucide="swords" style="width: 13px; height: 13px; color: var(--accent, #2563eb);"></i>
+              <i data-lucide="beaker" style="width:13px; height:13px; color: var(--accent, #2563eb); display:inline-block; vertical-align:middle; flex-shrink:0;"></i>
               <span>Debates & Playgrounds</span>
               <span class="badge-count" id="playground-count" style="font-size: 10px; background: rgba(37, 99, 235, 0.1); color: var(--accent, #2563eb); padding: 1px 6px; border-radius: 10px; font-weight: 500;">0</span>
             </div>
@@ -434,21 +442,29 @@
       <div class="user-menu-dropdown hidden" id="user-menu-dropdown">
         <div class="user-menu-header" id="user-menu-header">User Account</div>
         <button class="user-menu-item" id="btn-user-settings">
-          <i data-lucide="settings" style="width:16px; height:16px;"></i>
+          <i data-lucide="settings" style="width:16px; height:16px; margin-right:8px; display:inline-block; vertical-align:middle; flex-shrink:0;"></i>
           <span>Settings</span>
         </button>
         <button class="user-menu-item" id="btn-user-theme">
-          <i data-lucide="sun" style="width:16px; height:16px;" id="user-menu-theme-icon"></i>
+          <i data-lucide="sun-moon" style="width:16px; height:16px; margin-right:8px; display:inline-block; vertical-align:middle; flex-shrink:0;"></i>
           <span id="user-menu-theme-text">Toggle Theme</span>
         </button>
+        <button class="user-menu-item" id="btn-user-plugins">
+          <i data-lucide="plug" style="width:16px; height:16px; margin-right:8px; display:inline-block; vertical-align:middle; flex-shrink:0;"></i>
+          <span>Plugins & Connectors</span>
+        </button>
         <button class="user-menu-item" id="btn-user-skills">
-          <i data-lucide="compass" style="width:16px; height:16px;"></i>
+          <i data-lucide="blocks" style="width:16px; height:16px; margin-right:8px; display:inline-block; vertical-align:middle; flex-shrink:0;"></i>
           <span>Skills & Capabilities</span>
+        </button>
+        <button class="user-menu-item" id="btn-pwa-install">
+          <i data-lucide="download" style="width:16px; height:16px; margin-right:8px; display:inline-block; vertical-align:middle; flex-shrink:0;"></i>
+          <span>Install App</span>
         </button>
         <div class="user-menu-divider"></div>
         <button class="user-menu-item" id="btn-user-logout">
-          <i data-lucide="log-out" style="width:16px; height:16px;"></i>
-          <span>Log out</span>
+          <i data-lucide="log-out" style="width:16px; height:16px; margin-right:8px; color:#ef4444; display:inline-block; vertical-align:middle; flex-shrink:0;"></i>
+          <span style="color:#ef4444;">Log out</span>
         </button>
       </div>
 
@@ -458,7 +474,7 @@
         <div class="sidebar-user-info">
           <div class="sidebar-user-name" id="sidebar-user-name">User</div>
         </div>
-        <i data-lucide="settings" style="width:16px; height:16px; color:var(--text); margin-left:auto;"></i>
+        <i data-lucide="settings" style="width:16px; height:16px; color:var(--text); margin-left:auto; display:inline-block; vertical-align:middle; flex-shrink:0;"></i>
       </div>
     </div>
   </div>
@@ -537,7 +553,7 @@
                       </button>
                       <!-- Submit / Send Button -->
                       <button class="submit-btn hidden" id="btn-submit-home" title="Send Message">
-                        <i data-lucide="arrow-up"></i>
+                        <i data-lucide="arrow-right" style="width:15px; height:15px;"></i>
                       </button>
                       <button class="submit-btn hidden" id="btn-stop" title="Stop Recording" style="background: rgba(239, 68, 68, 0.08); color: #ef4444; border: none;">
                         <i data-lucide="square" style="fill: currentColor; width: 10px; height: 10px;"></i>
@@ -550,11 +566,21 @@
                 </div>
                 <!-- Shortcuts -->
                 <div class="shortcuts">
-                  <button class="shortcut"><i class="mi" data-lucide="search"></i> Research</button>
-                  <button class="shortcut"><i class="mi" data-lucide="trending-up"></i> Strategize</button>
-                  <button class="shortcut"><i class="mi" data-lucide="palette"></i> Create</button>
-                  <button class="shortcut"><i class="mi" data-lucide="pen"></i> Write</button>
-                  <button class="shortcut"><i class="mi" data-lucide="graduation-cap"></i> Learn</button>
+                  <button class="shortcut">
+                    <i data-lucide="search" style="width:14px; height:14px; margin-right:4px; display:inline-block; vertical-align:middle; flex-shrink:0;"></i> Research
+                  </button>
+                  <button class="shortcut">
+                    <i data-lucide="brain" style="width:14px; height:14px; margin-right:4px; display:inline-block; vertical-align:middle; flex-shrink:0;"></i> Strategize
+                  </button>
+                  <button class="shortcut">
+                    <i data-lucide="sparkles" style="width:14px; height:14px; margin-right:4px; display:inline-block; vertical-align:middle; flex-shrink:0;"></i> Create
+                  </button>
+                  <button class="shortcut">
+                    <i data-lucide="pencil" style="width:14px; height:14px; margin-right:4px; display:inline-block; vertical-align:middle; flex-shrink:0;"></i> Write
+                  </button>
+                  <button class="shortcut">
+                    <i data-lucide="book-open" style="width:14px; height:14px; margin-right:4px; display:inline-block; vertical-align:middle; flex-shrink:0;"></i> Learn
+                  </button>
                 </div>
 
               </div>
@@ -597,7 +623,7 @@
 
                     <!-- Submit / Send Button -->
                     <button class="submit-btn hidden" id="btn-submit-conv" title="Send Message">
-                      <i data-lucide="arrow-up"></i>
+                      <i data-lucide="arrow-right" style="width:15px; height:15px;"></i>
                     </button>
                     <button class="submit-btn hidden" id="btn-stop-conv" title="Stop Recording" style="background: rgba(239, 68, 68, 0.08); color: #ef4444; border: none;">
                       <i data-lucide="square" style="fill: currentColor; width: 10px; height: 10px;"></i>
@@ -641,10 +667,11 @@
       <!-- ═══ IMAGES GALLERY PANE ═══ -->
       <div id="images-pane"></div>
 
+      <!-- ═══ PLUGINS HUB PANE (ChatGPT-style full page Plugins Store) ═══ -->
+      <div id="plugins-pane"></div>
 
-      <!-- ═══ IMAGES PANE ═══ -->
-      <div id="images-pane"></div>
-      <!-- ═══ end IMAGES PANE ═══ -->
+      <!-- ═══ HISTORY PANE (ChatGPT-style full page Search Chats) ═══ -->
+      <div id="history-pane"></div>
 
 
 

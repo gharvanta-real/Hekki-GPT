@@ -52,7 +52,7 @@ export class WorkspaceExplorer {
         <!-- Explorer Body -->
         <div class="explorer-body" id="explorer-body">
           <div class="explorer-empty">
-            <span class="material-icons explorer-empty-icon">sync</span>
+            <i data-lucide="loader-circle" class="explorer-empty-icon" style="animation:spin 1.2s linear infinite;"></i>
             <div>Loading workspace...</div>
           </div>
         </div>
@@ -91,7 +91,7 @@ export class WorkspaceExplorer {
     if (body) {
       body.innerHTML = `
         <div class="explorer-empty">
-          <span class="material-icons explorer-empty-icon" style="animation: spin 2s linear infinite">sync</span>
+          <i data-lucide="loader-circle" class="explorer-empty-icon" style="animation:spin 1.2s linear infinite;"></i>
           <div>Scanning workspace...</div>
         </div>
       `;
@@ -111,7 +111,7 @@ export class WorkspaceExplorer {
       if (body) {
         body.innerHTML = `
           <div class="explorer-empty">
-            <span class="material-icons explorer-empty-icon" style="color:#dc2626">error_outline</span>
+            <i data-lucide="circle-alert" class="explorer-empty-icon" style="color:#dc2626;"></i>
             <div>Error scanning files</div>
             <div style="font-size:12px;color:var(--text-3);margin-top:4px">${err.message}</div>
           </div>
@@ -129,7 +129,7 @@ export class WorkspaceExplorer {
     if (this.items.length === 0) {
       body.innerHTML = `
         <div class="explorer-empty">
-          <span class="material-icons explorer-empty-icon">folder_open</span>
+          <i data-lucide="folder-open" class="explorer-empty-icon"></i>
           <div>Workspace folder is empty</div>
           <div style="font-size:12px;color:var(--text-3);margin-top:4px">Ask Hekki to create files here!</div>
         </div>
@@ -173,7 +173,7 @@ export class WorkspaceExplorer {
     parts.forEach((p, idx) => {
       pathAcc += (idx === 0 ? "" : "/") + p;
       html += `
-        <span class="breadcrumb-separator"><i class="material-icons" style="font-size:12px">chevron_right</i></span>
+        <span class="breadcrumb-separator"><i data-lucide="chevron-right" style="width:12px;height:12px;display:inline-block;vertical-align:middle;"></i></span>
         <span class="breadcrumb-item" data-path="${pathAcc}">${p}</span>
       `;
     });
@@ -200,7 +200,7 @@ export class WorkspaceExplorer {
       html += `
         <div class="file-card" data-idx="${idx}">
           <div class="file-card-icon ${colorClass}">
-            <span class="material-icons">${icon}</span>
+            <i data-lucide="${icon}" style="width:22px;height:22px;"></i>
           </div>
           <div class="file-card-name" title="${item.name}">${item.name}</div>
           <div class="file-card-meta">${sizeStr}</div>
@@ -235,7 +235,7 @@ export class WorkspaceExplorer {
 
       html += `
         <div class="file-row" data-idx="${idx}">
-          <span class="file-row-icon ${colorClass}"><span class="material-icons">${icon}</span></span>
+          <span class="file-row-icon ${colorClass}"><i data-lucide="${icon}" style="width:15px;height:15px;display:inline-block;vertical-align:middle;"></i></span>
           <span class="file-row-name" title="${item.name}">${item.name}</span>
           <span class="file-row-size">${sizeStr}</span>
           <span class="file-row-date">${dateStr}</span>
@@ -281,7 +281,7 @@ export class WorkspaceExplorer {
           <div class="viewer-header">
             <div style="display:flex;align-items:center;gap:12px">
               <button class="explorer-btn" id="btn-viewer-back">
-                <span class="material-icons" style="font-size:16px">arrow_back</span> Back to Files
+                <i data-lucide="arrow-left" style="width:16px;height:16px;display:inline-block;vertical-align:middle;margin-right:4px;"></i> Back to Files
               </button>
               <span class="viewer-title">✴ ${item.name}</span>
             </div>
@@ -310,17 +310,17 @@ export class WorkspaceExplorer {
     
     switch (ext) {
       case 'xlsx': case 'xls': case 'csv':
-        return "table_chart";
+        return "table";
       case 'pdf':
-        return "picture_as_pdf";
+        return "file-text";
       case 'py': case 'js': case 'json': case 'html': case 'css': case 'rs': case 'bat': case 'toml':
-        return "terminal";
+        return "square-terminal";
       case 'png': case 'jpg': case 'jpeg': case 'gif': case 'svg':
         return "image";
       case 'md': case 'txt':
-        return "description";
+        return "file-text";
       default:
-        return "insert_drive_file";
+        return "file";
     }
   }
 

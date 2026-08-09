@@ -36,6 +36,39 @@ window.showToast = showToast;
 window.handleDebateEvent = handleDebateEvent;
 window.ChatMinimapManager = ChatMinimapManager;
 
+/* === PWA Service Worker & Installability Engine === */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js', { scope: '/' })
+      .then(reg => console.log('[PWA] HEKKI ServiceWorker active:', reg.scope))
+      .catch(err => console.error('[PWA] ServiceWorker failed:', err));
+  });
+}
+
+let deferredPwaPrompt = null;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPwaPrompt = e;
+  const pwaBtn = document.getElementById('btn-pwa-install');
+  if (pwaBtn) pwaBtn.style.display = 'flex';
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  const pwaBtn = document.getElementById('btn-pwa-install');
+  if (pwaBtn) {
+    pwaBtn.addEventListener('click', async () => {
+      if (deferredPwaPrompt) {
+        deferredPwaPrompt.prompt();
+        const { outcome } = await deferredPwaPrompt.userChoice;
+        console.log('[PWA] User response:', outcome);
+        deferredPwaPrompt = null;
+      } else {
+        showToast('Install App', 'To install HEKKI on your device, use your browser menu (...) and select "Install App" or "Add to Home Screen".', 3500);
+      }
+    });
+  }
+});
+
 
 
 

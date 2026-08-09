@@ -54,7 +54,8 @@ export class ChatMinimapManager {
     this.centerScrollBtn = document.createElement('button');
     this.centerScrollBtn.className = 'chat-center-scroll-btn';
     this.centerScrollBtn.title = 'Jump to latest message';
-    this.centerScrollBtn.innerHTML = '<i data-lucide="arrow-down" style="width:16px; height:16px;"></i>';
+    this.centerScrollBtn.innerHTML = '<i data-lucide="arrow-down-circle" style="width:24px;height:24px;"></i>';
+    if (window.lucide) lucide.createIcons({ parent: this.centerScrollBtn });
     parentPane.appendChild(this.centerScrollBtn);
 
     this.stripEl = this.minimapEl.querySelector('#minimap-bar-strip');
@@ -168,6 +169,7 @@ export class ChatMinimapManager {
     // Show or hide minimap container based on whether messages exist
     if (this.userMessages.length === 0) {
       this.minimapEl.classList.add('hidden');
+      if (this.centerScrollBtn) this.centerScrollBtn.classList.remove('visible');
       return;
     }
 
@@ -223,7 +225,15 @@ export class ChatMinimapManager {
   }
 
   updateActiveDashOnScroll() {
-    if (!this.scrollContainer || this.userMessages.length === 0) return;
+    const homeScreen = document.getElementById('home-screen');
+    const isOnHomeScreen = homeScreen && !homeScreen.classList.contains('hidden');
+    const chatLog = document.getElementById('chat-log');
+    const hasMessages = chatLog ? chatLog.children.length > 0 : false;
+
+    if (isOnHomeScreen || !hasMessages || !this.scrollContainer || this.userMessages.length === 0) {
+      if (this.centerScrollBtn) this.centerScrollBtn.classList.remove('visible');
+      return;
+    }
 
     const containerRect = this.scrollContainer.getBoundingClientRect();
     let currentIdx = 0;
@@ -254,8 +264,6 @@ export class ChatMinimapManager {
     });
 
     // Toggle centered scroll-to-bottom arrow button right above input bar when scrolled up
-    const homeScreen = document.getElementById('home-screen');
-    const isOnHomeScreen = homeScreen && !homeScreen.classList.contains('hidden');
     const distanceToBottom = this.scrollContainer.scrollHeight - (this.scrollContainer.scrollTop + this.scrollContainer.clientHeight);
     if (!isOnHomeScreen && distanceToBottom > 100 && this.userMessages.length > 0) {
       if (this.centerScrollBtn) this.centerScrollBtn.classList.add('visible');

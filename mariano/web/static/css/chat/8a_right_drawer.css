@@ -265,7 +265,7 @@ body.oled .tool-terminal-block {
 }
 
 .diff-line-meta {
-  color: #2563eb !important;
+  color: var(--text-primary) !important;
   font-weight: 600;
 }
 

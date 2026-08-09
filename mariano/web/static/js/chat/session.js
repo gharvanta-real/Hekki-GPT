@@ -56,13 +56,9 @@ export const ChatSessionManager = {
     const truncatedText = initialText.length > 30 ? initialText.substring(0, 30) + '...' : initialText;
     const activeProj = localStorage.getItem('hekki_active_project');
     const newChat = {
-      id: 'chat_' + Date.now(),
-      title: truncatedText,
-      messages: [],
-      timestamp: new Date().toISOString(),
-      project: activeProj || null,
-      pinned: false,
-      archived: false
+      id: 'chat_' + Date.now(), title: truncatedText, messages: [],
+      timestamp: new Date().toISOString(), project: activeProj || null,
+      pinned: false, archived: false
     };
     chats.unshift(newChat);
     this.saveChats(chats);
@@ -86,14 +82,9 @@ export const ChatSessionManager = {
     const newTitle = `Branch: ${baseTitle}`;
 
     const newChat = {
-      id: 'chat_' + Date.now(),
-      title: newTitle,
-      messages: clonedMessages,
-      timestamp: new Date().toISOString(),
-      project: activeProj || null,
-      pinned: false,
-      archived: false,
-      forkedFrom: activeId
+      id: 'chat_' + Date.now(), title: newTitle, messages: clonedMessages,
+      timestamp: new Date().toISOString(), project: activeProj || null,
+      pinned: false, archived: false, forkedFrom: sourceChat.id
     };
 
     chats.unshift(newChat);
@@ -203,14 +194,9 @@ export const ChatSessionManager = {
     const chats = this.getChats();
     const truncatedText = topic.length > 30 ? topic.substring(0, 30) + '...' : topic;
     const newChat = {
-      id: 'playground_' + Date.now(),
-      title: truncatedText,
-      messages: [],
-      timestamp: new Date().toISOString(),
-      project: null,
-      isPlayground: true,
-      pinned: false,
-      archived: false
+      id: 'playground_' + Date.now(), title: truncatedText, messages: [],
+      timestamp: new Date().toISOString(), project: null, isPlayground: true,
+      pinned: false, archived: false
     };
     chats.unshift(newChat);
     this.saveChats(chats);
@@ -277,8 +263,7 @@ export const ChatSessionManager = {
     chat.messages.forEach((msg, idx) => {
       if (msg.role === 'assistant' && msg.metadata && msg.metadata.tool_runs && msg.metadata.tool_runs.length > 0) {
         const toolCard = createToolGroupCard(msg, escapeHtml);
-        if (col) col.appendChild(toolCard);
-        if (window.lucide) lucide.createIcons({ parent: toolCard });
+        if (toolCard) fragment.appendChild(toolCard);
 
         // Restore generated image cards from tool metadata
         msg.metadata.tool_runs.forEach(r => {
@@ -286,21 +271,10 @@ export const ChatSessionManager = {
             const renderUrl = `/api/workspace/render?path=${encodeURIComponent(r.image_path)}`;
             const restoredCard = document.createElement('div');
             restoredCard.className = 'chat-image-preview-card';
-            restoredCard.innerHTML = `
-              <div class="img-preview-box" style="position:relative; width:100%; border-radius:10px; overflow:hidden; cursor:pointer; background:var(--hover);">
-                <img src="${renderUrl}" alt="Generated Image" loading="lazy" style="width:100%; height:130px; object-fit:cover; display:block; border-radius:10px;" />
-                <a href="${renderUrl}" target="_blank" rel="noopener noreferrer" class="img-redirect-btn" style="position:absolute; bottom:6px; right:6px; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); color:#fff; width:22px; height:22px; border-radius:5px; display:flex; align-items:center; justify-content:center; text-decoration:none; z-index:5;" title="Open image">
-                  <i data-lucide="external-link" style="width:11px; height:11px;"></i>
-                </a>
-              </div>
-            `;
+            restoredCard.innerHTML = `<div class="img-preview-box" style="position:relative; width:100%; border-radius:10px; overflow:hidden; cursor:pointer; background:var(--hover);"><img src="${renderUrl}" alt="Generated Image" loading="lazy" style="width:100%; height:130px; object-fit:cover; display:block; border-radius:10px;" /><a href="${renderUrl}" target="_blank" rel="noopener noreferrer" class="img-redirect-btn" style="position:absolute; bottom:6px; right:6px; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); color:#fff; width:22px; height:22px; border-radius:5px; display:flex; align-items:center; justify-content:center; text-decoration:none; z-index:5;" title="Open image"><i data-lucide="external-link" style="width:11px; height:11px;"></i></a></div>`;
             const imgEl = restoredCard.querySelector('img');
-            if (imgEl) {
-              imgEl.onclick = (e) => { e.stopPropagation(); openImageLightbox(renderUrl); };
-              imgEl.onerror = () => restoredCard.remove();
-            }
-            if (col) col.appendChild(restoredCard);
-            if (window.lucide) lucide.createIcons({ parent: restoredCard });
+            if (imgEl) { imgEl.onclick = (e) => { e.stopPropagation(); openImageLightbox(renderUrl); }; imgEl.onerror = () => restoredCard.remove(); }
+            fragment.appendChild(restoredCard);
           }
         });
       }
@@ -315,6 +289,7 @@ export const ChatSessionManager = {
     });
     // Append entire fragment in one operation
     if (col) col.appendChild(fragment);
+    if (window.lucide && col) lucide.createIcons({ parent: col });
 
     const isNewChat = chat.messages.length === 0;
     if (window.inConversationState) window.inConversationState.val = !isNewChat;
@@ -379,18 +354,18 @@ export const ChatSessionManager = {
 
           let badgeContent = '';
           if (c.pinned) {
-            badgeContent = '<i data-lucide="pin" style="width:14px; height:14px; stroke-width:2.2px; display:inline-block;"></i>';
+            badgeContent = '<i data-lucide="pin" style="width:14px;height:14px;"></i>';
           } else if (c.forkedFrom || cleanTitle.toLowerCase().startsWith('branch:')) {
-            badgeContent = '<i data-lucide="git-fork" style="width:14px; height:14px; stroke-width:2.2px; display:inline-block;"></i>';
+            badgeContent = '<i data-lucide="git-fork" style="width:14px;height:14px;"></i>';
           } else {
             const firstChar = Array.from(cleanTitle)[0] || 'C';
             badgeContent = firstChar.toUpperCase();
           }
 
           item.innerHTML = `
-            <span class="lbl">${c.pinned ? '<i data-lucide="pin" style="width:12px; height:12px; margin-right:6px; color:var(--text-3); vertical-align:-1px;"></i>' : ''}${escapeHtml(cleanTitle)}</span>
-            <span class="opt" style="cursor:pointer; display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px">
-              <i data-lucide="more-horizontal" style="width:14px; height:14px; pointer-events:none"></i>
+            <span class="lbl">${c.pinned ? '<i data-lucide="pin" style="width:12px;height:12px;margin-right:6px;color:var(--text-3);display:inline-block;vertical-align:-1px;"></i>' : ''}${escapeHtml(cleanTitle)}</span>
+            <span class="opt" style="cursor:pointer; display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px;">
+              <i data-lucide="more-horizontal" style="width:14px; height:14px; pointer-events:none;"></i>
             </span>
           `;
           item.addEventListener('click', (e) => {
@@ -487,12 +462,13 @@ export const ChatSessionManager = {
     const dropdown = document.createElement('div');
     dropdown.className = 'chat-dropdown';
     dropdown.innerHTML = `
-      <button class="chat-dropdown-item open-opt"><i data-lucide="message-square"></i> Open</button>
-      <button class="chat-dropdown-item pin-opt"><i data-lucide="${isPinned ? 'pin-off' : 'pin'}"></i> ${isPinned ? 'Unpin' : 'Pin'}</button>
-      <button class="chat-dropdown-item rename-opt"><i data-lucide="pencil"></i> Rename</button>
-      <button class="chat-dropdown-item archive-opt"><i data-lucide="archive"></i> Archive</button>
-      <button class="chat-dropdown-item delete-opt delete"><i data-lucide="trash-2"></i> Delete</button>
+      <button class="chat-dropdown-item open-opt"><i data-lucide="message-circle" style="width:14px;height:14px;margin-right:8px;display:inline-block;vertical-align:middle;flex-shrink:0;"></i> Open</button>
+      <button class="chat-dropdown-item pin-opt">${isPinned ? '<i data-lucide="pin-off" style="width:14px;height:14px;margin-right:8px;display:inline-block;vertical-align:middle;flex-shrink:0;"></i> Unpin' : '<i data-lucide="pin" style="width:14px;height:14px;margin-right:8px;display:inline-block;vertical-align:middle;flex-shrink:0;"></i> Pin'}</button>
+      <button class="chat-dropdown-item rename-opt"><i data-lucide="square-pen" style="width:14px;height:14px;margin-right:8px;display:inline-block;vertical-align:middle;flex-shrink:0;"></i> Rename</button>
+      <button class="chat-dropdown-item archive-opt"><i data-lucide="archive" style="width:14px;height:14px;margin-right:8px;display:inline-block;vertical-align:middle;flex-shrink:0;"></i> Archive</button>
+      <button class="chat-dropdown-item delete-opt delete"><i data-lucide="trash-2" style="width:14px;height:14px;margin-right:8px;display:inline-block;vertical-align:middle;flex-shrink:0;"></i> Delete</button>
     `;
+    if (window.lucide) lucide.createIcons({ parent: dropdown });
     dropdown.querySelector('.open-opt').addEventListener('click', () => { this.loadChat(chatId); this.closeAllDropdowns(); });
     dropdown.querySelector('.pin-opt').addEventListener('click', () => { this.togglePinChat(chatId); this.closeAllDropdowns(); });
     dropdown.querySelector('.rename-opt').addEventListener('click', async () => {
@@ -515,3 +491,6 @@ export const ChatSessionManager = {
     setTimeout(() => document.addEventListener('click', closeHandler), 50);
   }
 };
+
+window.ChatSessionManager = ChatSessionManager;
+window.chatSessionManager = ChatSessionManager;

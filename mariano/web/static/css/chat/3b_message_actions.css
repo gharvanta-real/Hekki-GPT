@@ -48,8 +48,8 @@ a.chat-link,
 .coder-bubble a,
 .debate-bubble a,
 #chat-response-area a {
-  color: #3b82f6;
-  text-decoration: none;
+  color: var(--text-primary);
+  text-decoration: underline;
   font-weight: 400; /* Lite font matching body text */
   font-size: inherit;
   padding: 0;
@@ -75,7 +75,7 @@ a.chat-link:hover,
 .coder-bubble a:hover,
 .debate-bubble a:hover,
 #chat-response-area a:hover {
-  color: #1d4ed8;
+  color: var(--text-primary);
   text-decoration: underline;
   background: transparent !important;
   border: none !important;
@@ -142,64 +142,56 @@ body.dark a.chat-link.file-link:hover {
 /* ── Modern GitHub-style Callouts ── */
 .chat-callout {
   margin: 12px 0;
-  padding: 12px 16px;
-  border-radius: 8px;
-  border-left: 4px solid #3b82f6;
-  background: rgba(59, 130, 246, 0.06);
-  font-size: 13px;
-  line-height: 1.6;
-  transition: all 0.2s ease;
+  padding: 10px 14px;
+  border-radius: var(--radius-md, 8px);
+  background: var(--hover, #f4f4f5);
+  border-left: 3.5px solid var(--text-primary);
 }
+
 .chat-callout .callout-header {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   font-weight: 600;
-  margin-bottom: 6px;
   font-size: 13px;
-  letter-spacing: 0.01em;
-}
-.chat-callout .callout-icon {
-  width: 16px;
-  height: 16px;
-  flex-shrink: 0;
-}
-.chat-callout .callout-body {
-  color: var(--text-2);
-}
-.chat-callout .callout-body p:last-child {
-  margin-bottom: 0;
+  margin-bottom: 4px;
+  color: var(--text-primary);
 }
 
-.chat-callout.callout-note {
-  border-left-color: #3b82f6;
-  background: rgba(59, 130, 246, 0.06);
-}
-.chat-callout.callout-note .callout-header { color: #2563eb; }
+.chat-callout.callout-info { border-left-color: var(--text-primary); }
+.chat-callout.callout-info .callout-header { color: var(--text-primary); }
 
-.chat-callout.callout-tip {
-  border-left-color: #10b981;
-  background: rgba(16, 185, 129, 0.06);
-}
-.chat-callout.callout-tip .callout-header { color: #059669; }
-
-.chat-callout.callout-important {
-  border-left-color: #8b5cf6;
-  background: rgba(139, 92, 246, 0.06);
-}
-.chat-callout.callout-important .callout-header { color: #7c3aed; }
-
-.chat-callout.callout-warning {
-  border-left-color: #f59e0b;
-  background: rgba(245, 158, 11, 0.06);
-}
+.chat-callout.callout-warning { border-left-color: #d97706; }
 .chat-callout.callout-warning .callout-header { color: #d97706; }
 
-.chat-callout.callout-caution {
-  border-left-color: #ef4444;
-  background: rgba(239, 68, 68, 0.06);
+.chat-callout.callout-tip { border-left-color: #16a34a; }
+.chat-callout.callout-tip .callout-header { color: #16a34a; }
+
+.chat-callout.callout-danger { border-left-color: #ef4444; }
+.chat-callout.callout-danger .callout-header { color: #ef4444; }
+
+.chat-callout.callout-note { border-left-color: var(--text-primary); }
+.chat-callout.callout-note .callout-header { color: var(--text-primary); }
+
+.chat-callout-body {
+  font-size: 13px;
+  color: var(--text);
 }
-.chat-callout.callout-caution .callout-header { color: #dc2626; }
+
+/* User Prompt Checkboxes & Lists */
+.msg-user-content input[type="checkbox"],
+.chat-bubble input[type="checkbox"] {
+  accent-color: var(--text-primary);
+  cursor: pointer;
+}
+
+/* Markdown Blockquote styling */
+.markdown-body blockquote {
+  margin: 12px 0;
+  padding: 8px 14px;
+  background: var(--hover, #f4f4f5);
+  border-left: 3.5px solid var(--text-primary) !important;
+}
 
 [data-theme="dark"] .chat-callout.callout-note .callout-header,
 body.dark .chat-callout.callout-note .callout-header { color: #60a5fa; }
@@ -225,7 +217,7 @@ body.dark .chat-callout.callout-caution .callout-header { color: #f87171; }
   opacity: 0.7;
 }
 .msg.ai input[type="checkbox"] {
-  accent-color: var(--accent, #3b82f6);
+  accent-color: var(--text-primary);
   width: 15px;
   height: 15px;
   margin: 0;
@@ -236,7 +228,7 @@ body.dark .chat-callout.callout-caution .callout-header { color: #f87171; }
   margin: 16px 0;
   padding: 12px 18px;
   border: none !important;
-  border-left: 3.5px solid #3b82f6 !important;
+  border-left: 3.5px solid var(--text-primary) !important;
   background: var(--hover);
   color: var(--text);
   font-style: normal;

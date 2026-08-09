@@ -146,7 +146,7 @@
 
 /* Pinned session style marker */
 .coder-conv-pin-badge {
-  color: #6366f1;
+  color: var(--text-primary);
 }
 
 /* Unread indicator dot */
@@ -154,7 +154,7 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #6366f1;
+  background: var(--text-primary);
   margin-right: 2px;
   flex-shrink: 0;
 }
@@ -314,7 +314,7 @@
 .coder-msg-assistant blockquote {
   margin: 12px 0;
   padding: 10px 16px;
-  border-left: 4px solid var(--accent, #6366f1);
+  border-left: 3.5px solid var(--text-primary);
   background: var(--hover);
   border-radius: 4px;
   color: var(--text-secondary);

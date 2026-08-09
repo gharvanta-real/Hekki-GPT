@@ -131,10 +131,11 @@ export function createMessageElement(type, text, timestamp, index, ChatSessionMa
     actions.innerHTML = `
       <span class="action-time">${timeStr}</span>
       <button class="action-btn btn-copy" title="Copy text"><i data-lucide="copy"></i></button>
-      <button class="action-btn btn-edit" title="Edit prompt"><i data-lucide="pencil"></i></button>
+      <button class="action-btn btn-edit" title="Edit prompt"><i data-lucide="square-pen"></i></button>
       <button class="action-btn btn-retry" title="Retry generation"><i data-lucide="refresh-cw"></i></button>
     `;
     group.appendChild(actions);
+    if (window.lucide) lucide.createIcons({ parent: actions });
 
     const userCopyBtn = actions.querySelector('.btn-copy');
     userCopyBtn.addEventListener('click', () => {
@@ -283,12 +284,13 @@ export function createMessageElement(type, text, timestamp, index, ChatSessionMa
           faviconsHtml = `
             <div class="ai-bottom-right-sources" style="display:inline-flex; align-items:center; gap:5px; margin-right:auto; flex-wrap:wrap; opacity:0.9;">
               ${domainList.map(dom => {
-                const faviconUrl = `https://www.google.com/s2/favicons?domain=${encodeURIComponent(dom)}&sz=32`;
+                const rootDom = (dom || '').split('.').slice(-2).join('.');
+                const faviconUrl = `https://www.google.com/s2/favicons?domain=${encodeURIComponent(rootDom)}&sz=32`;
                 const cat = getCat(dom);
                 const catSpan = cat ? `<span style="font-size:10px; opacity:0.75; margin-left:2px; font-weight:400;">${cat}</span>` : '';
                 return `
                   <a href="https://${dom}" target="_blank" rel="noopener noreferrer" title="Verified Source: ${dom}" style="display:inline-flex; align-items:center; gap:4px; padding:2px 7px; border-radius:4px; background:rgba(255,255,255,0.05); font-size:11px; color:var(--text-secondary); font-family:var(--font); text-decoration:none; transition:background 0.15s;">
-                    <img src="${faviconUrl}" style="width:12px; height:12px; border-radius:2px;" onerror="this.onerror=null; this.style.display='none';">
+                    <img src="${faviconUrl}" style="width:12px; height:12px; border-radius:2px;" onerror="this.onerror=null; this.removeAttribute('src'); this.style.display='none';">
                     <span style="max-width:110px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:500;">${dom}</span>
                     ${catSpan}
                   </a>
@@ -311,6 +313,7 @@ export function createMessageElement(type, text, timestamp, index, ChatSessionMa
           </div>
         `;
         group.appendChild(actions);
+        if (window.lucide) lucide.createIcons({ parent: actions });
 
         actions.querySelector('.btn-fork')?.addEventListener('click', () => {
           if (ChatSessionManager && ChatSessionManager.forkChat) {
@@ -325,7 +328,6 @@ export function createMessageElement(type, text, timestamp, index, ChatSessionMa
           canvasActionBtn.className = 'action-btn btn-canvas-launch';
           canvasActionBtn.title = 'Open in Live Canvas';
           canvasActionBtn.innerHTML = '<i data-lucide="layout" style="width:13px;height:13px"></i> Open Canvas';
-          canvasActionBtn.style.cssText = 'display:flex; align-items:center; gap:4px; font-size:11.5px; font-weight:600; color:var(--blue); background:rgba(37,99,235,0.08); padding:3px 8px; border-radius:6px; border:none; cursor:pointer;';
           canvasActionBtn.addEventListener('click', () => {
             if (window.liveCanvas) {
               const codeBlockMatch = text.match(/```(\w+)?\n([\s\S]*?)```/);
@@ -340,6 +342,7 @@ export function createMessageElement(type, text, timestamp, index, ChatSessionMa
             }
           });
           actions.insertBefore(canvasActionBtn, actions.firstChild);
+          if (window.lucide) lucide.createIcons({ parent: canvasActionBtn });
         }
 
         const aiCopyBtn = actions.querySelector('.btn-copy');

@@ -7,7 +7,19 @@ import structlog
 
 log = structlog.get_logger(__name__)
 
-# ─── Pre-tool reasoning templates (zero-latency, contextual) ─────────────────
+def _smart_truncate_tool_result(text: str, max_chars: int = 5000) -> str:
+    """Intelligently truncates large tool outputs for ultra-fast LLM token processing."""
+    if not text or len(text) <= max_chars:
+        return text
+    
+    half = max_chars // 2
+    head = text[:half]
+    tail = text[-half:]
+    
+    err_lines = [line for line in text.splitlines() if any(kw in line.lower() for kw in ["error", "exception", "traceback", "failed", "syntaxerror"])]
+    err_snippet = ("\n... [Extracted Error Traceback]:\n" + "\n".join(err_lines[:5]) + "\n") if err_lines else ""
+    
+    return f"{head}\n\n... [Truncated {len(text) - max_chars} characters for speed] ...\n{err_snippet}\n{tail}"
 _PRE_TOOL_TEMPLATES: dict[str, str] = {
     "code_search":      "Searching the codebase for `{query}` to find relevant locations.",
     "web_search":       "Searching the web for `{query}` to gather up-to-date information.",
@@ -312,11 +324,11 @@ async def run_react_loop(
                         consecutive_failures = 0
                         last_failed_tool = None
 
-                    # Add structured tool response message to context
+                    # Add structured tool response message to context (smart truncated for fast token processing)
                     ctx.add(
                         "tool",
                         "",
-                        tool_response={"name": name, "result": result_text[:40000]}
+                        tool_response={"name": name, "result": _smart_truncate_tool_result(result_text)}
                     )
 
                     # Log task to persistent task_log

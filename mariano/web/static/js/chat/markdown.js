@@ -20,7 +20,7 @@ if (window.marked) {
           let iconMarkup = '';
           if (isExternal) {
             linkClass += ' external-link';
-            iconMarkup = `<i data-lucide="external-link" class="chat-link-icon"></i>`;
+            iconMarkup = `<i data-lucide="external-link" class="chat-link-icon" style="width:12px;height:12px;display:inline-block;vertical-align:middle;margin-left:3px;"></i>`;
           } else if (isFile) {
             linkClass += ' file-link';
             iconMarkup = `<i data-lucide="file-text" class="chat-link-icon"></i>`;
@@ -314,7 +314,7 @@ export function enhanceTables(container) {
         copyBtn.innerHTML = '<i data-lucide="check" style="width:14px;height:14px;color:#16a34a"></i>';
         if (window.lucide) lucide.createIcons({ parent: copyBtn });
         setTimeout(() => {
-          copyBtn.innerHTML = '<i data-lucide="copy" style="width:14px;height:14px"></i>';
+          copyBtn.innerHTML = '<i data-lucide="copy" style="width:13.5px;height:13.5px"></i>';
           if (window.lucide) lucide.createIcons({ parent: copyBtn });
         }, 3000);
       } catch (err) { console.error('Failed to copy table', err); }
@@ -504,7 +504,8 @@ export function enhanceCitationsAndFootnotes(container) {
     if (!domain) return;
 
     const category = getDomainCategoryBadge(domain);
-    const faviconUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=32`;
+    const rootDom = (domain || '').split('.').slice(-2).join('.');
+    const faviconUrl = `https://www.google.com/s2/favicons?domain=${encodeURIComponent(rootDom)}&sz=32`;
     const linkText = link.textContent.trim();
 
     let tooltipEl = null;
@@ -520,7 +521,7 @@ export function enhanceCitationsAndFootnotes(container) {
 
       tooltipEl.innerHTML = `
         <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
-          <img src="${faviconUrl}" style="width: 12px; height: 12px; border-radius: 2px;" onerror="this.style.display='none'" />
+          <img src="${faviconUrl}" style="width: 12px; height: 12px; border-radius: 2px;" onerror="this.onerror=null; this.removeAttribute('src'); this.style.display='none';" />
           <span style="font-size: 11.5px; font-weight: 600; color: var(--text);">${domain}</span>
           ${catBadge}
         </div>

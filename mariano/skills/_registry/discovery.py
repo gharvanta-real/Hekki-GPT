@@ -13,6 +13,15 @@ log = structlog.get_logger(__name__)
 CORE_SKILL_MODULES = [
     "mariano.skills.core_skills.file_manager.skill",  # Lightweight read-only & management file access
     "mariano.skills.core_skills.run_command.skill",   # Terminal CMD & PowerShell command execution
+    "mariano.skills.core_skills.write_to_file.skill",  # High-precision file creation and overwriting
+    "mariano.skills.core_skills.replace_file_content.skill",  # Targeted single-block text replacement
+    "mariano.skills.core_skills.multi_replace_file_content.skill",  # Multi-chunk non-contiguous file modifications
+    "mariano.skills.core_skills.view_file.skill",      # Line range slicing & file viewing
+    "mariano.skills.core_skills.grep_search.skill",    # Codebase regex & pattern searching
+    "mariano.skills.core_skills.list_dir.skill",       # Directory listing with sizes & metadata
+    "mariano.skills.core_skills.invoke_subagent.skill", # Autonomous background subagent worker delegation
+    "mariano.skills.core_skills.manage_task.skill",     # Background process & task manager
+    "mariano.skills.core_skills.schedule.skill",        # One-shot timers & background cron schedules
     "mariano.skills.core_skills.web_search.skill",
     "mariano.skills.core_skills.web_scraper.skill",
     "mariano.skills.core_skills.stock_data.skill",

@@ -84,7 +84,7 @@
   border: none !important;
   outline: none !important;
   box-shadow: none !important;
-  border-radius: 8px;
+  border-radius: 20px;
   color: var(--text);
   font-size: var(--fs-sm);     /* 12px */
   font-family: var(--font);
@@ -100,7 +100,7 @@
   padding: 0 10px;
   background: var(--bg);
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: 20px;
   color: var(--text-2);
   font-size: var(--fs-sm);     /* 12px */
   font-weight: 500;
@@ -399,11 +399,11 @@ body.dark .skill-row-tag {
 }
 
 .skills-toggle input:checked + .skills-toggle-track {
-  background-color: var(--blue);
+  background-color: #18181b;
 }
 
 body.dark .skills-toggle input:checked + .skills-toggle-track {
-  background-color: #3b82f6;
+  background-color: #ffffff;
 }
 
 .skills-toggle input:checked + .skills-toggle-track::before {

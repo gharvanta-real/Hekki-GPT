@@ -30,7 +30,7 @@ function _renderYoutubeCard(a, videoId) {
       <img src="${thumbUrl}" loading="lazy" style="width:100%; height:130px; object-fit:cover; display:block; border-radius:10px; opacity:0.92;" />
       <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none;">
         <div style="width:38px; height:38px; background:rgba(255,0,0,0.88); border-radius:50%; display:flex; align-items:center; justify-content:center;">
-          <svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:#fff;margin-left:2px"><path d="M8 5v14l11-7z"/></svg>
+          <i data-lucide="play" style="width:16px;height:16px;color:#fff;margin-left:2px;"></i>
         </div>
       </div>
       <a href="${watchUrl}" target="_blank" rel="noopener noreferrer" style="position:absolute; bottom:6px; right:6px; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); color:#fff; width:22px; height:22px; border-radius:5px; display:flex; align-items:center; justify-content:center; text-decoration:none; z-index:5;" title="Open on YouTube">

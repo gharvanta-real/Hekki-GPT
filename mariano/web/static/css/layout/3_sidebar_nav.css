@@ -255,20 +255,22 @@ body.dark .btn-new-chat-dock:hover {
   align-items: center;
   gap: 8px;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.12s ease;
+  position: relative;
+  box-shadow: none;
 }
 .section-item:hover {
   background: var(--hover);
-  transform: translateX(4px);
-}
-.section-item:active {
-  transform: scale(0.97);
+  color: var(--text);
 }
 .section-item.active {
   background: var(--hover);
+  color: var(--text);
 }
-.section-item .lbl {
-  font-size: 14px;
+.section-item .lbl,
+#recent-list .section-item .lbl,
+#sidebar-nav .recent-item span {
+  font-size: 14px !important;
   color: var(--text-2);
   white-space: nowrap;
   overflow: hidden;
@@ -297,12 +299,27 @@ body.dark .btn-new-chat-dock:hover {
 
 .section-item .opt {
   color: var(--text-3);
-  opacity: 0;
-  transition: opacity 0.12s;
-  font-size: 13px;
+  opacity: 0.6;
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: all 0.12s ease;
+  pointer-events: auto;
 }
-.section-item:hover .opt {
+.section-item:hover .opt,
+.section-item.active .opt,
+.section-item.dropdown-open .opt {
   opacity: 1;
+  color: var(--text);
+}
+.section-item .opt:hover {
+  background: var(--input-bg);
+  color: var(--text);
 }
 
 .upgrade-btn {

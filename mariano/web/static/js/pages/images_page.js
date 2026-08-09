@@ -80,7 +80,9 @@ export class ImagesPage {
           <div class="img-lightbox-topbar" style="justify-content: flex-end; padding: 8px 12px; border-bottom: none;">
             <div class="img-lightbox-actions">
               <button class="img-lightbox-btn" id="img-lb-download" title="Download"><i data-lucide="download" style="width:15px;height:15px;"></i></button>
-              <button class="img-lightbox-btn img-card-btn img-del-btn" id="img-lb-delete" title="Delete Image"><i data-lucide="trash-2" style="width:15px;height:15px;"></i></button>
+              <button class="img-lightbox-btn img-card-btn img-del-btn" id="img-lb-delete" title="Delete Image">
+                <i data-lucide="trash-2" style="width:15px;height:15px;"></i>
+              </button>
               <button class="img-lightbox-btn" id="img-lb-close" title="Close"><i data-lucide="x" style="width:15px;height:15px;"></i></button>
             </div>
           </div>

@@ -151,6 +151,7 @@ export class LiveCanvasEngine {
     if (type === 'web_app') this._currentViewMode = 'preview';
     else if (type === 'diagram') this._currentViewMode = 'diagram';
     else if (type === 'document' || type === 'pdf') this._currentViewMode = 'document';
+    else if (['markdown', 'md', 'text', 'txt', 'plaintext'].includes((opts.language || '').toLowerCase())) this._currentViewMode = 'document';
     else this._currentViewMode = 'editor';
 
     this.showPane();
@@ -193,9 +194,9 @@ export class LiveCanvasEngine {
             <i data-lucide="more-vertical" style="width:14px;height:14px;"></i>
           </button>
           
-          <div class="canvas-dropdown hidden" id="canvas-dropdown-menu">
+          <div class="canvas-dropdown hidden" id="canvas-dropdown-menu">            
             <button class="canvas-dropdown-item" id="canvas-btn-copy">
-              <i data-lucide="copy" style="width:13px;height:13px;"></i> Copy Code
+              <i data-lucide="copy" style="width:13px;height:13px;margin-right:6px;"></i> Copy Code
             </button>
             ${isWebApp ? `
               <button class="canvas-dropdown-item" id="canvas-btn-reload">
@@ -203,7 +204,7 @@ export class LiveCanvasEngine {
               </button>
             ` : ''}
             <button class="canvas-dropdown-item" id="canvas-btn-print">
-              <i data-lucide="download" style="width:13px;height:13px;"></i> Print / Save PDF
+              <i data-lucide="printer" style="width:13px;height:13px;"></i> Print / PDF
             </button>
             <button class="canvas-dropdown-item" id="canvas-btn-save">
               <i data-lucide="save" style="width:13px;height:13px;"></i> Save to Workspace
@@ -272,13 +273,12 @@ export class LiveCanvasEngine {
     }
 
     if (this._currentViewMode === 'document') {
-      const formattedHtml = this._formatDocumentToA4(art.code || '');
+      const rendered = this._renderMarkdown(art.code || '');
       return `
-        <div class="canvas-paper-viewport">
-          <div class="canvas-paper-page">
-            ${formattedHtml}
+        <div class="canvas-doc-viewport">
+          <div class="canvas-doc-prose">
+            ${rendered}
           </div>
-          <div class="canvas-page-counter">Page 1 / 1</div>
         </div>
       `;
     }
@@ -332,7 +332,7 @@ export class LiveCanvasEngine {
           btn.innerHTML = `<i data-lucide="check" style="width:13px;height:13px;"></i> Copied!`;
           if (window.lucide) lucide.createIcons({ parent: btn });
           setTimeout(() => {
-            btn.innerHTML = `<i data-lucide="copy" style="width:13px;height:13px;"></i> Copy`;
+            btn.innerHTML = `<i data-lucide="copy" style="width:13px;height:13px;margin-right:6px;"></i> Copy`;
             if (window.lucide) lucide.createIcons({ parent: btn });
           }, 3000);
         }
@@ -565,6 +565,40 @@ export class LiveCanvasEngine {
     }
   }
 
+  /**
+   * Render markdown text using marked.js with XSS-safe fallback.
+   * This is the core renderer used in document/preview mode.
+   */
+  _renderMarkdown(rawText) {
+    if (!rawText) return '<p style="color:var(--text-3);font-size:13px;">Empty document</p>';
+
+    if (window.marked) {
+      try {
+        const parseFn = typeof window.marked.parse === 'function' ? window.marked.parse : (typeof window.marked === 'function' ? window.marked : null);
+        if (window.marked.setOptions) {
+          window.marked.setOptions({ breaks: true, gfm: true });
+        }
+        if (parseFn) return parseFn(rawText);
+      } catch (e) {
+        console.warn('marked.js parse error:', e);
+      }
+    }
+
+    // Enhanced Fallback Markdown Parser
+    let html = rawText
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+      .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+      .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.+?)\*/g, '<em>$1</em>')
+      .replace(/`(.+?)`/g, '<code>$1</code>')
+      .replace(/^[\*\-] (.+)$/gm, '<li>$1</li>')
+      .replace(/^(\d+)\. (.+)$/gm, '<li><strong>$1.</strong> $2</li>');
+
+    return html.split('\n\n').map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`).join('');
+  }
+
   /** Transform raw text / markdown into a professional A4 formatted document */
   _formatDocumentToA4(rawText) {
     if (!rawText) return '<p>Empty Document</p>';
@@ -580,11 +614,8 @@ export class LiveCanvasEngine {
       const nameLine = lines[0].trim();
       const contactLine = lines[1].trim();
       let restLines = lines.slice(2).join('\n');
-
-      // Convert [Section Name] lines into markdown ## Section Name
       restLines = restLines.replace(/^\[(.*?)\]$/gm, '## $1');
-      const bodyHtml = window.marked ? window.marked.parse(restLines) : this._escapeHtml(restLines).replace(/\n/g, '<br>');
-
+      const bodyHtml = this._renderMarkdown(restLines);
       return `
         <div class="paper-resume-header">
           <h1 class="paper-candidate-name">${this._escapeHtml(nameLine)}</h1>
@@ -598,7 +629,7 @@ export class LiveCanvasEngine {
 
     // Standard Document Formatting
     let content = rawText.replace(/^\[(.*?)\]$/gm, '## $1');
-    return window.marked ? window.marked.parse(content) : this._escapeHtml(content).replace(/\n/g, '<br>');
+    return this._renderMarkdown(content);
   }
 
   _getFileExtension(lang) {

@@ -37,9 +37,6 @@ function _buildLayout() {
         <!-- Nav Header (With Hekki Logo on Left, Search + Collapsible Toggle on Right when Open) -->
         <div class="nav-header" style="display: flex; align-items: center; justify-content: space-between; height: 48px; padding: 0 12px; flex-shrink: 0;">
           <div class="nav-header-brand" style="display: flex; align-items: center; gap: 8px; flex: 1;">
-            <div class="nav-header-logo-wrapper" title="Hekki Assistant">
-              <img class="nav-header-logo" src="/static/hekki.png" alt="Hekki Logo" style="width: 28px; height: 28px; border-radius: 6px; object-fit: contain; flex-shrink: 0;" />
-            </div>
             <div class="nav-header-title" style="font-weight: 600; font-size: 16px; color: var(--text-primary); margin: 0; padding: 0;">
               Hekki
             </div>
@@ -52,7 +49,7 @@ function _buildLayout() {
               <i data-lucide="search" style="width: 15px; height: 15px;"></i>
             </button>
             <button class="icon-btn" id="btn-debate-sidebar-toggle" title="Toggle Sidebar" style="border: none; background: transparent; cursor: pointer;">
-              <i data-lucide="panel-left-close" style="width: 15px; height: 15px;"></i>
+              <i data-lucide="panel-left" style="width: 15px; height: 15px;"></i>
             </button>
           </div>
         </div>
@@ -65,15 +62,15 @@ function _buildLayout() {
           <!-- Sidebar Controls List -->
           <div class="debate-sidebar-controls-list">
             <button class="debate-list-btn" id="btn-sidebar-new-debate" title="New Debate">
-              <i data-lucide="message-circle-plus" style="width:15px; height:15px; margin-right:8px;"></i>
+              <i data-lucide="message-circle-plus" style="width: 15px; height: 15px; margin-right: 8px;"></i>
               <span>New Debate</span>
             </button>
             <button class="debate-list-btn" id="btn-sidebar-research-directory" title="Research Directory">
-              <i data-lucide="book-open" style="width:15px; height:15px; margin-right:8px;"></i>
+              <i data-lucide="book-open" style="width: 15px; height: 15px; margin-right: 8px;"></i>
               <span>Research Directory</span>
             </button>
             <button class="debate-list-btn" id="btn-sidebar-reset" title="Reset Debate Room">
-              <i data-lucide="rotate-ccw" style="width:15px; height:15px; margin-right:8px;"></i>
+              <i data-lucide="rotate-ccw" style="width: 15px; height: 15px; margin-right: 8px;"></i>
               <span>Reset Room</span>
             </button>
           </div>
@@ -144,18 +141,18 @@ function _buildLayout() {
                   <button class="debate-docs-menu-btn" id="btn-debate-docs-menu" style="background: transparent; border: none; padding: 2px 4px; cursor: pointer; color: var(--text-secondary); display: flex; align-items: center; justify-content: center; border-radius: 4px; transition: background 0.12s, color 0.12s;" title="Document Options">
                     <i data-lucide="more-vertical" style="width: 14px; height: 14px;"></i>
                   </button>
-                  <div class="doc-dropdown-menu" id="debate-docs-dropdown-menu" style="top: 24px; right: 0;">
-                    <button class="dropdown-item btn-upload-doc" id="btn-debate-upload-doc" style="display: flex; align-items: center; gap: 8px;">
-                      <i data-lucide="upload" style="width: 12px; height: 12px;"></i>
+                  <div class="doc-dropdown-menu" id="debate-docs-dropdown-menu" style="top: 26px; right: 0;">
+                    <button class="dropdown-item btn-upload-doc" id="btn-debate-upload-doc">
+                      <i data-lucide="upload" style="width: 15px; height: 15px; margin-right: 8px;"></i>
                       <span>Upload Document</span>
                     </button>
-                    <button class="dropdown-item btn-export-docs" id="btn-debate-export-docs" style="display: flex; align-items: center; gap: 8px;">
-                      <i data-lucide="download" style="width: 12px; height: 12px;"></i>
+                    <button class="dropdown-item btn-export-docs" id="btn-debate-export-docs">
+                      <i data-lucide="download" style="width: 15px; height: 15px; margin-right: 8px;"></i>
                       <span>Export All</span>
                     </button>
                     <div style="border-top: 1px solid var(--border); margin: 4px 0;"></div>
-                    <button class="dropdown-item btn-clear-docs" id="btn-debate-clear-docs" style="display: flex; align-items: center; gap: 8px; color: #ef4444;">
-                      <i data-lucide="trash-2" style="width: 12px; height: 12px;"></i>
+                    <button class="dropdown-item btn-clear-docs" id="btn-debate-clear-docs" style="color: #ef4444 !important;">
+                      <i data-lucide="trash-2" style="width: 15px; height: 15px; margin-right: 8px; color: #ef4444;"></i>
                       <span>Clean All</span>
                     </button>
                   </div>
@@ -178,22 +175,26 @@ function _buildLayout() {
           <div class="user-menu-dropdown hidden" id="debate-user-menu-dropdown" style="bottom: 50px; left: 8px;">
             <div class="user-menu-header">User Account</div>
             <button class="user-menu-item" id="btn-debate-user-settings">
-              <i data-lucide="settings" style="width:16px; height:16px;"></i>
+              <i data-lucide="settings" style="width: 16px; height: 16px; margin-right: 8px;"></i>
               <span>Settings</span>
               <span class="user-menu-shortcut">Ctrl+⇧+,</span>
             </button>
             <button class="user-menu-item" id="btn-debate-user-theme">
-              <i data-lucide="sun" style="width:16px; height:16px;"></i>
+              <i data-lucide="sun" style="width: 16px; height: 16px; margin-right: 8px;"></i>
               <span>Toggle Theme</span>
             </button>
+            <button class="user-menu-item" id="btn-debate-user-plugins">
+              <i data-lucide="plug" style="width: 16px; height: 16px; margin-right: 8px;"></i>
+              <span>Plugins & Connectors</span>
+            </button>
             <button class="user-menu-item" id="btn-debate-user-skills">
-              <i data-lucide="compass" style="width:16px; height:16px;"></i>
+              <i data-lucide="blocks" style="width: 16px; height: 16px; margin-right: 8px;"></i>
               <span>Skills & Capabilities</span>
             </button>
             <div class="user-menu-divider"></div>
             <button class="user-menu-item" id="btn-debate-user-logout">
-              <i data-lucide="log-out" style="width:16px; height:16px;"></i>
-              <span>Log out</span>
+              <i data-lucide="log-out" style="width: 16px; height: 16px; margin-right: 8px; color: #ef4444;"></i>
+              <span style="color:#ef4444;">Log out</span>
             </button>
           </div>
 
@@ -203,7 +204,7 @@ function _buildLayout() {
             <div class="sidebar-user-info">
               <div class="sidebar-user-name" id="debate-sidebar-user-name">User</div>
             </div>
-            <i data-lucide="settings" style="width:16px; height:16px; color:var(--text); margin-left:auto;"></i>
+            <i data-lucide="settings" style="width: 16px; height: 16px; margin-left: auto; color: var(--text);"></i>
           </div>
         </div>
 
@@ -225,36 +226,6 @@ function _buildLayout() {
               </div>
             </div>
             <div class="debate-topbar-controls">
-              <!-- Top-right Rounds Dropdown Button with Cloud Message Droplist -->
-              <div class="doc-dropdown" id="debate-topbar-rounds-dropdown" style="position: relative;">
-                <button class="debate-topbar-btn" id="btn-topbar-rounds-toggle" title="Select Rounds" style="display: flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 20px; background: var(--card); border: 1px solid var(--border) !important; cursor: pointer; color: var(--text-secondary); font-size: 11.5px; font-weight: 500;">
-                  <i data-lucide="layers" style="width: 13px; height: 13px;"></i>
-                  <span id="topbar-rounds-label">3 Rounds</span>
-                  <i data-lucide="chevron-down" style="width: 12px; height: 12px;"></i>
-                </button>
-                <div class="cloud-droplist-menu" id="topbar-rounds-menu">
-                  <div class="cloud-node-pointer"></div>
-                  <div class="cloud-droplist-header">Select Rounds</div>
-                  <div class="cloud-options-group">
-                    <button class="cloud-option-item round-option" data-value="2">
-                      <span>2 Rounds</span>
-                      <i data-lucide="check" class="cloud-check-icon"></i>
-                    </button>
-                    <button class="cloud-option-item round-option active" data-value="3">
-                      <span>3 Rounds</span>
-                      <i data-lucide="check" class="cloud-check-icon"></i>
-                    </button>
-                    <button class="cloud-option-item round-option" data-value="4">
-                      <span>4 Rounds</span>
-                      <i data-lucide="check" class="cloud-check-icon"></i>
-                    </button>
-                    <button class="cloud-option-item round-option" data-value="5">
-                      <span>5 Rounds</span>
-                      <i data-lucide="check" class="cloud-check-icon"></i>
-                    </button>
-                  </div>
-                </div>
-              </div>
               <!-- Hidden placeholders for JS element safety -->
               <div class="debate-status-pill" id="debate-status-pill" style="display:none !important;">
                 <span class="dot"></span>
@@ -296,18 +267,24 @@ function _buildLayout() {
                   <div class="doc-hdr-sep" id="sep-doc-chat" style="display: none; width: 1px; height: 16px; background: var(--border); margin: 0 4px;"></div>
                   
                   <button class="doc-icon-btn" id="btn-doc-copy" title="Copy to Clipboard" style="background: transparent; border: none !important; box-shadow: none !important; cursor: pointer; padding: 6px; border-radius: 6px; color: var(--text-secondary); display: inline-flex; align-items: center; justify-content: center;">
-                    <i data-lucide="copy" style="width:15px; height:15px;"></i>
+                    <i data-lucide="copy" style="width: 15px; height: 15px;"></i>
                   </button>
 
                   <div class="doc-hdr-sep" style="width: 1px; height: 16px; background: var(--border); margin: 0 4px;"></div>
 
                   <div class="doc-dropdown">
                     <button class="doc-icon-btn dropdown-toggle" id="btn-doc-export" title="Export Document" style="background: transparent; border: none !important; box-shadow: none !important; cursor: pointer; padding: 6px; border-radius: 6px; color: var(--text-secondary); display: inline-flex; align-items: center; justify-content: center;">
-                      <i data-lucide="download" style="width:15px; height:15px;"></i>
+                      <i data-lucide="download" style="width: 15px; height: 15px;"></i>
                     </button>
                     <div class="doc-dropdown-menu" id="doc-export-menu">
-                      <button class="dropdown-item" data-format="pdf">Export to PDF</button>
-                      <button class="dropdown-item" data-format="word">Export to Word</button>
+                      <button class="dropdown-item" data-format="pdf">
+                        <i data-lucide="file-text" style="width: 15px; height: 15px; margin-right: 8px;"></i>
+                        <span>Export to PDF</span>
+                      </button>
+                      <button class="dropdown-item" data-format="word">
+                        <i data-lucide="file-text" style="width: 15px; height: 15px; margin-right: 8px;"></i>
+                        <span>Export to Word</span>
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -325,13 +302,13 @@ function _buildLayout() {
                     <i data-lucide="chevron-left" style="width:18px; height:18px;"></i>
                   </button>
                   <div style="font-weight: 600; color: var(--text-primary); font-size: 13px; display: flex; align-items: center; gap: 6px;">
-                    <i data-lucide="library" style="width:16px; height:16px; color: #d97706;"></i>
+                    <i data-lucide="book-open" style="width: 15px; height: 15px; color: #d97706;"></i>
                     <span>Research Spec Directory</span>
                   </div>
                 </div>
                 <div class="doc-viewer-controls">
                   <button class="doc-icon-btn" id="btn-dir-copy" title="Copy to Clipboard" style="background: transparent; border: none !important; box-shadow: none !important; cursor: pointer; padding: 6px; border-radius: 6px; color: var(--text-secondary); display: inline-flex; align-items: center; justify-content: center;">
-                    <i data-lucide="copy" style="width:15px; height:15px;"></i>
+                    <i data-lucide="copy" style="width: 15px; height: 15px;"></i>
                   </button>
                 </div>
               </div>
@@ -419,12 +396,12 @@ function _buildLayout() {
                     
                     <!-- Intervene Button -->
                     <button class="submit-btn" id="btn-debate-intervene" title="Send Message" style="display: none;">
-                      <i data-lucide="arrow-up" style="width: 14px; height: 14px; stroke-width: 2.5;"></i>
+                      <i data-lucide="arrow-right" style="width:15px; height:15px;"></i>
                     </button>
                     
                     <!-- Start Button -->
                     <button class="submit-btn" id="btn-debate-start" title="Start Debate">
-                      <i data-lucide="arrow-up" style="width: 14px; height: 14px; stroke-width: 2.5;"></i>
+                      <i data-lucide="arrow-right" style="width:15px; height:15px;"></i>
                     </button>
                   </div>
                 </div>
@@ -722,6 +699,12 @@ function _bindEvents() {
     document.getElementById('btn-user-settings')?.click();
   });
 
+  $('btn-debate-user-plugins')?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (debateUserMenuDropdown) debateUserMenuDropdown.classList.add('hidden');
+    document.getElementById('btn-user-plugins')?.click();
+  });
+
   $('btn-debate-user-theme')?.addEventListener('click', (e) => {
     e.stopPropagation();
     if (debateUserMenuDropdown) debateUserMenuDropdown.classList.add('hidden');
@@ -856,15 +839,22 @@ function _startDebate() {
   input.value = '';
   input.style.height = 'auto';
 
-  // 1. Create a playground chat session in LocalStorage
-  ChatSessionManager.createPlaygroundChat(topic);
+  const activeId = ChatSessionManager.getActiveChatId();
+  const chats = ChatSessionManager.getChats();
+  const activeChat = chats.find(c => c.id === activeId && c.isPlayground);
+  const isContinuingExisting = Boolean(activeChat && activeChat.messages && activeChat.messages.length > 0);
+
+  if (!isContinuingExisting) {
+    // Create a playground chat session in LocalStorage ONLY if starting fresh
+    ChatSessionManager.createPlaygroundChat(topic);
+  }
 
   // 2. Hide empty state
   document.getElementById('debate-empty-state')?.remove();
 
   // 3. Append user topic bubble
-  _appendUserBubble(topic);
-  ChatSessionManager.appendPlaygroundMessage('user', topic);
+  _appendUserBubble(topic, isContinuingExisting);
+  ChatSessionManager.appendPlaygroundMessage('user', topic, { isIntervention: isContinuingExisting });
 
   const ws = window.socket;
   if (!ws || ws.readyState !== WebSocket.OPEN) {
@@ -969,6 +959,12 @@ function _resetDebate() {
   _roundNum = 0;
   _paused = false;
   _hideActiveSearch();
+
+  if (ChatSessionManager && ChatSessionManager.setActiveChatId) {
+    ChatSessionManager.setActiveChatId(null);
+    localStorage.removeItem('hekki_active_chat_id');
+    ChatSessionManager.renderChatsList();
+  }
 
   const pauseBtn = document.getElementById('btn-debate-pause');
   if (pauseBtn) {
@@ -2270,7 +2266,7 @@ function _documentaryToMarkdown(doc) {
       if (window.lucide) lucide.createIcons({ parent: copyBtn });
 
       setTimeout(() => {
-        copyBtn.innerHTML = `<i data-lucide="copy" style="width: 14px; height: 14px;"></i>`;
+        copyBtn.innerHTML = `<i data-lucide="copy" style="width:14px; height:14px;"></i>`;
         if (window.lucide) lucide.createIcons({ parent: copyBtn });
       }, 3000);
     }

@@ -156,9 +156,10 @@ body.dark .modal-nav-pill.active {
   height: 32px;
   border-radius: 50%;
   object-fit: cover;
+  object-position: bottom center;
   flex-shrink: 0;
   background: var(--hover);
-  padding: 2px;
+  padding: 0 !important;
   border: none !important;
   box-shadow: none !important;
 }
@@ -242,4 +243,39 @@ body.dark .sidebar-user-avatar {
   height: 15px !important;
   color: var(--text-2) !important;
   flex-shrink: 0;
+}
+
+/* ── Styled MCP & Command Selector Tag Chip ── */
+.slash-tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--hover);
+  color: var(--text);
+  font-size: 12px;
+  font-family: var(--font);
+  font-weight: 500 !important;
+  padding: 3px 8px;
+  border-radius: 6px;
+  user-select: none;
+  flex-shrink: 0;
+  border: none !important;
+  box-shadow: none !important;
+  transition: all 0.15s ease;
+}
+.slash-tag-chip .slash-tag-text {
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+.slash-tag-chip .slash-tag-close {
+  cursor: pointer;
+  opacity: 0.65;
+  font-size: 13px;
+  line-height: 1;
+  padding: 0 2px;
+  transition: opacity 0.12s;
+}
+.slash-tag-chip .slash-tag-close:hover {
+  opacity: 1;
+  color: #ef4444;
 }

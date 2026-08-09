@@ -1,0 +1,25 @@
+{
+  "system_owner": {
+    "key": "system_owner",
+    "value": {
+      "name": "Anshu Bhati",
+      "role": "Owner & Creator",
+      "age": 22,
+      "height": "6 feet",
+      "country": "India",
+      "privileges": "Full Owner Control & Absolute Authority"
+    },
+    "category": "creator_identity",
+    "priority": 5,
+    "created_at": "2026-08-08T21:20:00.000000",
+    "updated_at": "2026-08-08T21:20:00.000000"
+  },
+  "guest_user_policy": {
+    "key": "guest_user_policy",
+    "value": "All other users are treated as blank/guest with standard zero-owner permissions.",
+    "category": "security_policy",
+    "priority": 5,
+    "created_at": "2026-08-08T21:20:00.000000",
+    "updated_at": "2026-08-08T21:20:00.000000"
+  }
+}

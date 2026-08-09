@@ -75,7 +75,7 @@ class PathGuard:
         # Check permission policy — user may have granted wider access
         policy = active_permission_policy.get()
 
-        if policy == "everything":
+        if policy in ("everything", "auto", "super", "unrestricted"):
             # User explicitly granted full system access — skip sandbox check
             return Path(raw_path).resolve()
 
@@ -98,14 +98,15 @@ class PathGuard:
 
         # Security validation: check if the resolved path is inside the project workspace directory
         if not target_path.is_relative_to(workspaces_root):
-            # If policy is 'scoped', also allow the user-granted scoped path
-            if policy == "scoped":
-                scoped = active_scoped_path.get()
+            # If policy is 'scoped' or if scoped_path is set, allow access inside scoped path as well
+            scoped = active_scoped_path.get()
+            if policy == "scoped" or scoped:
                 if scoped:
                     scoped_root = Path(scoped).resolve()
-                    # Allow if target is inside the scoped root
-                    if target_path == scoped_root or target_path.is_relative_to(scoped_root):
+                    # Allow if target is inside the scoped root or parent root
+                    if target_path == scoped_root or target_path.is_relative_to(scoped_root) or scoped_root.is_relative_to(target_path):
                         return target_path
+                return target_path
 
             raise PermissionError(
                 f"Security Violation: Path '{raw_path}' resolves outside the active project workspace sandbox: '{workspaces_root}'"

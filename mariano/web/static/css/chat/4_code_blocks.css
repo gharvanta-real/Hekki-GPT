@@ -40,7 +40,7 @@ body.oled .code-block-header,
 }
 
 .code-block-lang {
-  font-weight: 500;
+  font-weight: 400 !important;
   text-transform: lowercase !important;
   letter-spacing: 0;
   font-size: 12px;
@@ -107,7 +107,7 @@ body.oled .code-action-btn:hover,
 }
 
 .code-action-btn.active {
-  color: var(--primary, #2563eb) !important;
+  color: var(--text-primary) !important;
 }
 
 .code-block-wrapper pre {
@@ -119,6 +119,7 @@ body.oled .code-action-btn:hover,
   overflow-x: auto !important;
   font-size: 13px;
   line-height: 1.6;
+  font-weight: 400 !important;
   font-family: var(--font-mono), monospace;
   white-space: pre-wrap !important;
   word-break: break-word !important;
@@ -126,13 +127,15 @@ body.oled .code-action-btn:hover,
   max-width: 100% !important;
 }
 
-.code-block-wrapper pre code {
+.code-block-wrapper pre code,
+.code-block-wrapper pre code * {
   background: transparent !important;
   color: var(--text-primary) !important;
   padding: 0 !important;
   border-radius: 0 !important;
   border: none !important;
   font-size: 13px !important;
+  font-weight: 400 !important;
   line-height: 1.6 !important;
   font-family: var(--font-mono), monospace !important;
   white-space: pre !important;

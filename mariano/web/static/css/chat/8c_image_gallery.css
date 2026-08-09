@@ -273,7 +273,7 @@
 
 .img-gallery-card.selected .img-gallery-thumb-wrap {
   border: none !important;
-  box-shadow: 0 0 0 2px var(--blue, #2563eb) !important;
+  box-shadow: 0 0 0 2px var(--text-primary) !important;
 }
 
 .img-gallery-thumb {

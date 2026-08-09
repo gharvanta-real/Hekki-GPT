@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MCP Servers — Hekki</title>
+  <link rel="stylesheet" href="/static/css/base.css" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    body { background: var(--bg); color: var(--text); font-family: var(--font); padding: 0; margin: 0; font-size: var(--fs-base); }
+    .mcp-container { padding: 20px 24px 40px; max-width: 900px; margin: 0 auto; }
+    .mcp-header { margin-bottom: 24px; }
+    .mcp-title { font-size: var(--fs-2xl); font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 8px; }
+    .mcp-sub { font-size: var(--fs-xs); color: var(--text-3); margin-top: 4px; }
+    .btn-mcp-primary { padding: 7px 16px; background: var(--text); color: var(--bg); border: none !important; border-radius: var(--radius-sm); font-size: var(--fs-xs); font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: opacity 0.15s ease; white-space: nowrap; }
+    .btn-mcp-primary:hover { opacity: 0.9; }
+    .btn-mcp-sec { padding: 6px 12px; background: var(--input-bg); color: var(--text-2); border: 1px solid var(--border) !important; border-radius: var(--radius-sm); font-size: var(--fs-xs); font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 5px; transition: background 0.15s ease, color 0.15s ease; }
+    .btn-mcp-sec:hover { background: var(--hover); color: var(--text); }
+    .btn-mcp-danger { padding: 6px; background: transparent; color: #ef4444; border: none !important; border-radius: var(--radius-sm); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s ease; }
+    .btn-mcp-danger:hover { background: rgba(239, 68, 68, 0.1); }
+    .server-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 16px; margin-bottom: 12px; display: flex; flex-direction: column; gap: 10px; transition: background 0.15s ease; }
+    .server-card.disabled { opacity: 0.55; }
+    .server-card-top { display: flex; align-items: center; justify-content: space-between; }
+    .server-title { font-size: var(--fs-base); font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 8px; }
+    .transport-pill { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 12px; background: var(--hover); color: var(--text-2); text-transform: uppercase; }
+    .server-status { display: flex; align-items: center; gap: 6px; font-size: var(--fs-xs); color: var(--text-3); }
+    .dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
+    .dot-green { background: #16a34a; }
+    .dot-grey  { background: #71717a; }
+    .server-cmd { font-size: 11.5px; font-family: var(--font-mono); color: var(--text-2); background: var(--input-bg); padding: 4px 8px; border-radius: var(--radius-sm); word-break: break-all; }
+    .toggle-switch { position: relative; display: inline-block; width: 34px; height: 18px; }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+    .toggle-track { position: absolute; cursor: pointer; inset: 0; background-color: var(--border); transition: .2s; border-radius: 18px; }
+    .toggle-track:before { position: absolute; content: ""; height: 14px; width: 14px; left: 2px; bottom: 2px; background-color: white; transition: .2s; border-radius: 50%; }
+    input:checked + .toggle-track { background-color: var(--text); }
+    input:checked + .toggle-track:before { transform: translateX(16px); }
+    .presets-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 10px; margin-top: 12px; }
+    .preset-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px 14px; cursor: pointer; transition: background 0.15s ease, border-color 0.15s ease; display: flex; flex-direction: column; gap: 4px; }
+    .preset-card:hover { background: var(--hover); border-color: var(--text-3); }
+    .preset-name { font-size: var(--fs-base); font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 6px; }
+    .preset-desc { font-size: var(--fs-xs); color: var(--text-3); }
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center; }
+    .modal-overlay.open { display: flex; }
+    .modal-box { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; width: 100%; max-width: 480px; }
+    .modal-title { font-size: var(--fs-2xl); font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+    .form-group { margin-bottom: 12px; }
+    .form-group label { display: block; font-size: var(--fs-xs); font-weight: 600; color: var(--text-2); margin-bottom: 4px; }
+    .form-input, .form-textarea { width: 100%; padding: 7px 10px; background: var(--input-bg); border: 1px solid var(--border) !important; border-radius: var(--radius-sm); color: var(--text); font-size: var(--fs-xs); font-family: var(--font); outline: none; box-sizing: border-box; }
+    .transport-selector { display: flex; gap: 6px; margin-bottom: 12px; }
+    .t-opt { flex: 1; padding: 6px; text-align: center; background: var(--input-bg); border: 1px solid var(--border) !important; border-radius: var(--radius-sm); font-size: var(--fs-xs); cursor: pointer; color: var(--text-2); font-weight: 500; }
+    .t-opt.active { background: var(--text); color: var(--bg); border-color: var(--text) !important; }
+    .toast { position: fixed; bottom: 20px; right: 20px; background: var(--text); color: var(--bg); padding: 8px 16px; border-radius: var(--radius-md); font-size: var(--fs-xs); font-weight: 500; opacity: 0; transition: opacity 0.2s; pointer-events: none; z-index: 999; }
+    .toast.visible { opacity: 1; }
+  </style>
+</head>
+<body>
+<div class="mcp-container">
+  <div class="mcp-header" style="display:flex;align-items:center;justify-content:space-between;">
+    <div>
+      <div class="mcp-title"><i data-lucide="plug" style="width:20px;height:20px;color:var(--text);"></i> MCP Servers</div>
+      <div class="mcp-sub">Connect Hekki to external data sources & tools via Model Context Protocol</div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <button class="btn-mcp-sec" onclick="openFullPluginsPage()"><i data-lucide="external-link" style="width:13px;height:13px;"></i> Plugins Store</button>
+      <button class="btn-mcp-primary" onclick="openModal()"><i data-lucide="plus" style="width:14px;height:14px;"></i> Add Server</button>
+    </div>
+  </div>
+  <div id="server-list"></div>
+  <div style="margin-top: 32px;">
+    <div style="font-size: var(--fs-xs); font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;">Popular Integrations</div>
+    <div class="presets-grid" id="presets-grid"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal">
+  <div class="modal-box">
+    <div class="modal-title"><i data-lucide="plug" style="width:18px;height:18px;"></i> Connect MCP Server</div>
+    <div class="form-group"><label>Server Name</label><input class="form-input" id="m-name" placeholder="e.g. GitHub MCP" /></div>
+    <div class="form-group">
+      <label>Transport Protocol</label>
+      <div class="transport-selector">
+        <button class="t-opt active" data-t="stdio" onclick="setTransport('stdio', this)">stdio (Local process)</button>
+        <button class="t-opt" data-t="sse" onclick="setTransport('sse', this)">SSE (Remote HTTP)</button>
+      </div>
+    </div>
+    <div id="f-stdio">
+      <div class="form-group"><label>Command</label><input class="form-input" id="m-cmd" placeholder="npx" /></div>
+      <div class="form-group"><label>Arguments (space-separated)</label><input class="form-input" id="m-args" placeholder="-y @modelcontextprotocol/server-github" /></div>
+      <div class="form-group"><label>Environment Variables (KEY=VALUE per line)</label><textarea class="form-textarea" id="m-env" rows="3" placeholder="GITHUB_TOKEN=ghp_xxx"></textarea></div>
+    </div>
+    <div id="f-http" style="display:none">
+      <div class="form-group"><label>Server URL</label><input class="form-input" id="m-url" placeholder="https://mcp.example.com/sse" /></div>
+      <div class="form-group"><label>Headers (KEY=VALUE per line)</label><textarea class="form-textarea" id="m-headers" rows="3" placeholder="Authorization=Bearer token"></textarea></div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:20px;">
+      <button class="btn-mcp-sec" onclick="closeModal()">Cancel</button>
+      <button class="btn-mcp-primary" onclick="saveServer()">Connect</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  let servers = [];
+  let selectedTransport = 'stdio';
+  const PRESETS = [
+    { name: 'GitHub MCP', transport: 'stdio', command: 'npx', args: '-y @modelcontextprotocol/server-github', env: 'GITHUB_TOKEN=', icon: 'github', desc: 'Repos, Issues, Pull Requests' },
+    { name: 'Notion MCP', transport: 'stdio', command: 'npx', args: '-y @notionhq/notion-mcp-server', env: 'NOTION_API_KEY=', icon: 'file-text', desc: 'Notes, Databases, Pages' },
+    { name: 'Brave Search', transport: 'stdio', command: 'npx', args: '-y @modelcontextprotocol/server-brave-search', env: 'BRAVE_API_KEY=', icon: 'globe', desc: 'Web Search Engine' },
+    { name: 'Postgres DB', transport: 'stdio', command: 'npx', args: '-y @modelcontextprotocol/server-postgres', env: 'DATABASE_URL=', icon: 'database', desc: 'SQL Query Execution' },
+    { name: 'Filesystem', transport: 'stdio', command: 'npx', args: '-y @modelcontextprotocol/server-filesystem /', env: '', icon: 'folder', desc: 'Local Workspace Files' },
+    { name: 'SQLite DB', transport: 'stdio', command: 'uvx', args: 'mcp-server-sqlite --db-path data/hekki.db', env: '', icon: 'hard-drive', desc: 'Hekki Internal Database' },
+    { name: 'Slack MCP', transport: 'stdio', command: 'npx', args: '-y @modelcontextprotocol/server-slack', env: 'SLACK_BOT_TOKEN=', icon: 'message-square', desc: 'Channels & Messages' },
+    { name: 'Google Drive', transport: 'stdio', command: 'npx', args: '-y @modelcontextprotocol/server-gdrive', env: '', icon: 'cloud', desc: 'Cloud Documents' },
+  ];
+
+  async function loadServers() {
+    try { const r = await fetch('/api/mcp/servers'); const d = await r.json(); servers = d.servers || []; } catch(e) { servers = []; }
+    render();
+  }
+
+  function render() {
+    const el = document.getElementById('server-list');
+    if (!servers.length) {
+      el.innerHTML = `<div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius-md);padding:36px;text-align:center;"><div style="font-size:var(--fs-base);font-weight:600;color:var(--text);margin-bottom:6px;">No MCP Servers Connected</div><div style="font-size:var(--fs-xs);color:var(--text-3);max-width:360px;margin:0 auto 16px;">Connect external MCP servers to give Hekki new capabilities automatically.</div><button class="btn-mcp-primary" style="margin:0 auto;" onclick="openModal()">＋ Add Server</button></div>`;
+      lucide.createIcons(); return;
+    }
+    el.innerHTML = servers.map(s => {
+      const dotClass = s.connected ? 'dot-green' : 'dot-grey';
+      const statusTxt = s.connected ? 'Connected' : (s.enabled ? 'Disconnected' : 'Disabled');
+      const cmd = s.transport === 'stdio' ? `${s.command} ${(s.args||[]).join(' ')}` : s.url;
+      return `<div class="server-card ${s.enabled ? '' : 'disabled'}"><div class="server-card-top"><div class="server-title"><i data-lucide="server" style="width:16px;height:16px;color:var(--text-2);"></i>${esc(s.name)}<span class="transport-pill">${s.transport}</span></div><div style="display:flex;align-items:center;gap:12px;"><div class="server-status"><span class="dot ${dotClass}"></span>${statusTxt}</div><label class="toggle-switch"><input type="checkbox" ${s.enabled ? 'checked' : ''} onchange="toggle('${s.id}', this.checked)" /><span class="toggle-track"></span></label><button class="btn-mcp-sec" onclick="testServer('${s.id}')" title="Test Connection"><i data-lucide="activity" style="width:13px;height:13px;"></i> Test</button><button class="btn-mcp-danger" onclick="removeServer('${s.id}')" title="Remove"><i data-lucide="trash-2" style="width:14px;height:14px;"></i></button></div></div>${cmd ? `<div class="server-cmd">${esc(cmd)}</div>` : ''}</div>`;
+    }).join('');
+    lucide.createIcons();
+  }
+
+  function renderPresets() {
+    const el = document.getElementById('presets-grid');
+    el.innerHTML = PRESETS.map(p => `<div class="preset-card" onclick='openModal(${JSON.stringify(p)})'><div class="preset-name"><i data-lucide="${p.icon}" style="width:15px;height:15px;color:var(--text);"></i>${p.name}</div><div class="preset-desc">${p.desc}</div></div>`).join('');
+    lucide.createIcons();
+  }
+
+  async function toggle(id, enabled) { await fetch(`/api/mcp/servers/${id}/toggle?enabled=${enabled}`, { method: 'POST' }); loadServers(); }
+  async function testServer(id) { showToast('Testing connection…'); const r = await fetch(`/api/mcp/servers/${id}/test`, { method: 'POST' }); const d = await r.json(); if (d.success) showToast(`✅ Connected (${d.tool_count ?? 0} tools)`, 'success'); else showToast('❌ ' + (d.error || 'Failed'), 'error'); }
+  async function removeServer(id) { if (!confirm('Remove this server?')) return; await fetch(`/api/mcp/servers/${id}`, { method: 'DELETE' }); loadServers(); }
+  function openModal(p) { document.getElementById('modal').classList.add('open'); if (p) { document.getElementById('m-name').value = p.name || ''; document.getElementById('m-cmd').value = p.command || ''; document.getElementById('m-args').value = p.args || ''; document.getElementById('m-env').value = p.env || ''; } }
+  function closeModal() { document.getElementById('modal').classList.remove('open'); }
+  function setTransport(t, btn) { selectedTransport = t; document.querySelectorAll('.t-opt').forEach(b => b.classList.remove('active')); if (btn) btn.classList.add('active'); document.getElementById('f-stdio').style.display = t === 'stdio' ? '' : 'none'; document.getElementById('f-http').style.display = t !== 'stdio' ? '' : 'none'; }
+  async function saveServer() { const name = document.getElementById('m-name').value.trim(); if (!name) return showToast('Enter server name'); let body = { name, transport: selectedTransport, enabled: true }; if (selectedTransport === 'stdio') { body.command = document.getElementById('m-cmd').value.trim(); body.args = document.getElementById('m-args').value.trim().split(/\s+/).filter(Boolean); body.env = parseKV(document.getElementById('m-env').value); } else { body.url = document.getElementById('m-url').value.trim(); body.headers = parseKV(document.getElementById('m-headers').value); } await fetch('/api/mcp/servers', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }); closeModal(); loadServers(); }
+  function parseKV(t) { const res = {}; (t||'').split('\n').forEach(l => { const eq = l.indexOf('='); if (eq > 0) res[l.slice(0,eq).trim()] = l.slice(eq+1).trim(); }); return res; }
+  function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('visible'); setTimeout(() => t.classList.remove('visible'), 2500); }
+  function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function openFullPluginsPage() { try { if (window.parent && window.parent.router) { window.parent.document.getElementById('btn-close-settings')?.click(); window.parent.router.navigateTo('plugins'); } } catch(e){} }
+  function syncTheme() { try { if (window.parent && window.parent.document.body) { document.body.className = window.parent.document.body.className; } } catch(e){} }
+  syncTheme(); setInterval(syncTheme, 1000);
+  loadServers(); renderPresets();
+</script>
+</body>
+</html>

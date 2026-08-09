@@ -846,9 +846,9 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
         const statusEl = _lastToolBlock.querySelector('.tool-status');
         if (statusEl) {
           if (isSuccess) {
-            statusEl.innerHTML = '<span style="color:var(--text-3);">completed done</span>';
+            statusEl.innerHTML = '<span style="color:var(--text-3);">done</span>';
           } else {
-            statusEl.innerHTML = '<span style="color:#ef4444;">failed failed</span>';
+            statusEl.innerHTML = '<span style="color:#ef4444;">failed</span>';
           }
         }
 
@@ -957,10 +957,11 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
               chipsDiv.style.cssText = 'width: 100%; margin-top: 6px; padding-left: 21px; display: flex; flex-wrap: wrap; gap: 6px; box-sizing: border-box;';
               const domainList = Array.from(domains).slice(0, 10);
               chipsDiv.innerHTML = domainList.map(dom => {
-                const faviconUrl = `https://www.google.com/s2/favicons?domain=${dom}&sz=32`;
+                const rootDom = (dom || '').split('.').slice(-2).join('.');
+                const faviconUrl = `https://www.google.com/s2/favicons?domain=${encodeURIComponent(rootDom)}&sz=32`;
                 return `
                   <span class="source-domain-chip" title="Verified Source: ${dom}" style="display: inline-flex; align-items: center; gap: 5px; padding: 3px 8px; border-radius: 4px; background: rgba(255,255,255,0.05); font-size: 11px; font-family: var(--font); color: var(--text-secondary); font-weight: 500;">
-                    <img src="${faviconUrl}" style="width: 12px; height: 12px; border-radius: 2px; filter: grayscale(20%); opacity: 0.85;" onerror="this.style.display='none'">
+                    <img src="${faviconUrl}" style="width: 12px; height: 12px; border-radius: 2px; filter: grayscale(20%); opacity: 0.85;" onerror="this.onerror=null; this.removeAttribute('src'); this.style.display='none';">
                     <span>${dom}</span>
                   </span>
                 `;

@@ -81,7 +81,7 @@ export function openImageLightbox(images, startIndex = 0) {
 
     <div class="web-lightbox-body">
       <button class="web-lightbox-nav web-lightbox-prev" id="lb-prev" title="Previous">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        <i data-lucide="chevron-left" style="width:24px;height:24px;"></i>
       </button>
 
       <div class="web-lightbox-main">
@@ -89,7 +89,7 @@ export function openImageLightbox(images, startIndex = 0) {
       </div>
 
       <button class="web-lightbox-nav web-lightbox-next" id="lb-next" title="Next">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        <i data-lucide="chevron-right" style="width:24px;height:24px;"></i>
       </button>
     </div>
 
@@ -99,7 +99,7 @@ export function openImageLightbox(images, startIndex = 0) {
       <img class="lb-favicon" id="lb-favicon" src="" alt="" />
       <span class="lb-source-title" id="lb-source-title"></span>
       <a class="lb-source-link" id="lb-source-link" href="#" target="_blank" rel="noopener noreferrer">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        <i data-lucide="external-link" style="width:12px;height:12px;"></i>
         Visit site
       </a>
     </div>

@@ -43,6 +43,11 @@ data/disabled_skills.json
 *.dll
 *.so
 *.dylib
+output.txt
+scraped_data.json
+*.html.download
+lmstudio_download_page.html
+recon_engine/*.txt
 
 # Local history extension files (e.g. VS Code local history)
 .history/

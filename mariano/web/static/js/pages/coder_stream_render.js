@@ -709,8 +709,8 @@ export class CoderStreamRenderer {
             .replace(/&/g, '&amp;')
             .replace(/</g, '&lt;')
             .replace(/>/g, '&gt;')
-            .replace(/__DIR__/g, '<span class="material-icons-outlined" style="font-size:15px; vertical-align:-3px; color:var(--text-3); margin-right:4px;">folder</span>')
-            .replace(/__FILE__/g, '<span class="material-icons-outlined" style="font-size:15px; vertical-align:-3px; color:var(--text-3); margin-right:4px;">description</span>');
+            .replace(/__DIR__/g, '<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-3px;color:var(--text-3);margin-right:4px;"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>')
+            .replace(/__FILE__/g, '<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-3px;color:var(--text-3);margin-right:4px;"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>');
           preEl.innerHTML = formatted;
         } else {
           preEl.innerHTML = '(no output)';

@@ -1,0 +1,8 @@
+{
+  "name": "detective_radar",
+  "description": "Detective Intelligence & Impact Radar for tracking announcements, Google news, job postings, hiring signals, and strategic market impact",
+  "version": "1.0.0",
+  "author": "mariano-core",
+  "evolved": false,
+  "tags": ["detective", "radar", "news", "jobs", "hiring", "impact", "intelligence"]
+}
