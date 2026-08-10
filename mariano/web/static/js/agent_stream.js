@@ -233,7 +233,7 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
       }
       appendHudLog(`[INFO] ${e.data}`);
 
-      // ── Inject Gemini 3.1 Reasoning Engine orb header (same as HekkiCAD) ──
+      // ── Inject Luminous Ghost Mascot Reasoning Engine header ──
       col.querySelectorAll('.chat-ai-stream-header').forEach(el => el.remove());
 
       const headerEl = document.createElement('div');
@@ -241,17 +241,20 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
       headerEl.style.marginTop = '20px';
       headerEl.style.marginBottom = '8px';
       headerEl.innerHTML = `
-        <canvas class="cad-ai-orb-avatar" id="chat-active-orb-canvas" width="28" height="28"></canvas>
+        <div class="ghost-avatar-container" id="chat-active-ghost-avatar" style="width:28px;height:28px;">
+          <img src="/static/assets/ghost/sprites/ghost_frame_08.png" class="ghost-avatar-img ghost-float-anim" style="width:28px;height:28px;object-fit:contain;" />
+        </div>
         <span class="cad-ai-header-title">Thinking...</span>
       `;
       col.appendChild(headerEl);
 
-      setTimeout(() => {
-        const canvas = headerEl.querySelector('#chat-active-orb-canvas');
-        if (canvas && window.RibbonGradientOrb) {
-          new window.RibbonGradientOrb(canvas).start();
+      if (window.ghostAvatar) {
+        window.ghostAvatar.setState('thinking');
+        const ghostContainer = headerEl.querySelector('#chat-active-ghost-avatar');
+        if (ghostContainer) {
+          window.ghostAvatar.registerContainer(ghostContainer, 28);
         }
-      }, 50);
+      }
 
       scrollChat();
       break;
@@ -1283,6 +1286,13 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
       // Remove reasoning orb header completely on response completion for clean output
       col.querySelectorAll('.chat-ai-stream-header, .cad-ai-stream-header').forEach(el => el.remove());
       _currentMessageActive = false;
+
+      if (window.ghostAvatar) {
+        window.ghostAvatar.setState('success');
+        setTimeout(() => {
+          if (window.ghostAvatar) window.ghostAvatar.setState('idle');
+        }, 4000);
+      }
       if (window.sounds) window.sounds.playDone();
       if (window.setGeneratingState) window.setGeneratingState(false);
       // Auto-refresh drawer tabs (plan / tasks / walkthrough) silently
