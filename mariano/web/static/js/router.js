@@ -9,7 +9,7 @@
  * Pages: 'chat' | 'workspace' | 'skills' | 'changelog' | 'debate'
  */
 
-const PAGES = ['chat', 'workspace', 'skills', 'changelog', 'debate', 'images', 'plugins', 'history'];
+const PAGES = ['chat', 'workspace', 'skills', 'changelog', 'debate', 'images', 'plugins', 'history', 'settings'];
 
 class Router {
   constructor() {
@@ -87,6 +87,7 @@ class Router {
       'hekkicad-pane',
       'plugins-pane',
       'history-pane',
+      'settings-pane',
     ];
     panesUsingVisible.forEach(id => {
       const el = document.getElementById(id);
@@ -253,7 +254,7 @@ class Router {
         }
         if (!window.imagesPageInstance && !window._loadingImagesPage) {
           window._loadingImagesPage = true;
-          import('/static/js/pages/images_page.js').then(({ ImagesPage }) => {
+          import('/static/js/pages/images_page.js?v=207').then(({ ImagesPage }) => {
             window.imagesPageInstance = new ImagesPage(window.showToast);
             window.imagesPageInstance.mount(document.getElementById('images-pane'));
           }).catch(err => console.error('Failed to load ImagesPage:', err))
@@ -280,7 +281,7 @@ class Router {
         }
         if (!window.pluginsPageInstance && !window._loadingPluginsPage) {
           window._loadingPluginsPage = true;
-          import('/static/js/pages/plugins_page.js').then(({ PluginsPage }) => {
+          import('/static/js/pages/plugins_page.js?v=205').then(({ PluginsPage }) => {
             window.pluginsPageInstance = new PluginsPage(window.showToast);
             window.pluginsPageInstance.mount(document.getElementById('plugins-pane'));
           }).catch(err => console.error('Failed to load PluginsPage:', err))
@@ -314,6 +315,26 @@ class Router {
             .finally(() => window._loadingHistoryPage = false);
         } else if (window.historyPageInstance) {
           window.historyPageInstance.refresh();
+        }
+        break;
+
+      case 'settings':
+        this._showPane('settings-pane', 'flex');
+        if (titlebarEl) titlebarEl.style.display = 'none';
+        document.getElementById('sidebar-nav')?.classList.remove('collapsed');
+        const toggleBtnSet = document.getElementById('btn-sidebar-toggle-main');
+        if (toggleBtnSet) toggleBtnSet.style.display = '';
+        if (innerChat) innerChat.style.display = 'flex';
+        if (innerCoder) {
+          innerCoder.style.display = 'none';
+          innerCoder.style.visibility = 'hidden';
+          innerCoder.style.pointerEvents = 'none';
+        }
+        if (window.updateTitleBreadcrumb) {
+          window.updateTitleBreadcrumb('Settings', '');
+        }
+        if (window._loadSettingsOnPage) {
+          window._loadSettingsOnPage();
         }
         break;
 

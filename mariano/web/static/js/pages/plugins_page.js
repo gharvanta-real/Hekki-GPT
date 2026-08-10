@@ -199,7 +199,15 @@ export class PluginsPage {
     return this._mcpServers.some(s => (s.enabled || s.connected) && (s.id === item.id || s.name.toLowerCase() === item.name.toLowerCase()));
   }
 
-  _renderCatalog() {
+  _renderCatalogGrid() {
+    const gridContainer = this._root ? this._root.querySelector('#plugins-grid-container') : null;
+    if (!gridContainer) return;
+
+    const activeInput = document.activeElement;
+    const isSearchInput = activeInput && activeInput.id === 'plugins-search-input';
+    const selStart = isSearchInput ? activeInput.selectionStart : null;
+    const selEnd = isSearchInput ? activeInput.selectionEnd : null;
+
     const seenPills = new Set();
     const installedList = [];
     for (const s of this._mcpServers) {
@@ -218,6 +226,53 @@ export class PluginsPage {
     });
     const categories = ['Featured', 'Productivity', 'Development & Data'];
 
+    gridContainer.innerHTML = `
+      <div style="margin-bottom:24px;">
+        <div style="font-size:11.5px; font-weight:600; color:var(--text-3); margin-bottom:8px; display:flex; align-items:center; gap:6px;">
+          <span>Connected Connectors</span>
+          <span style="font-size:10.5px; background:var(--input-bg); padding:1px 8px; border-radius:20px; color:var(--text-2);">${installedList.length}</span>
+        </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+          ${installedList.length === 0 ? `
+            <div style="font-size:11.5px; color:var(--text-3); background:var(--card); border:none !important; padding:8px 14px; border-radius:20px; width:100%; box-sizing:border-box;">
+              No active MCP connectors yet. Click the <strong>＋ icon</strong> on any plugin below to connect.
+            </div>
+          ` : installedList.map(s => {
+            return `
+              <div onclick="window.pluginsPageInstance.showDetail('${s.id}')" style="display:flex; align-items:center; gap:8px; background:var(--card); border:none !important; padding:6px 14px; border-radius:20px; cursor:pointer; transition:background 0.15s ease;">
+                ${getCompanyLogoSvg(s.id, 16)}
+                <span style="font-size:12px; font-weight:600; color:var(--text);">${esc(s.name)}</span>
+                <span style="width:6px; height:6px; border-radius:50%; background:#16a34a; margin-left:2px;"></span>
+              </div>`;
+          }).join('')}
+        </div>
+      </div>
+
+      ${categories.map(cat => {
+        const items = filtered.filter(i => i.category === cat);
+        if (items.length === 0) return '';
+        return `
+          <div style="margin-bottom:28px;">
+            <h3 style="font-size:13px; font-weight:600; color:var(--text); margin-bottom:10px;">${cat}</h3>
+            <div style="display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:10px;">
+              ${items.map(item => this._renderPluginCard(item)).join('')}
+            </div>
+          </div>
+        `;
+      }).join('')}
+    `;
+
+    if (window.lucide) lucide.createIcons({ parent: gridContainer });
+
+    if (isSearchInput && document.body.contains(activeInput)) {
+      activeInput.focus();
+      if (selStart !== null && selEnd !== null) {
+        try { activeInput.setSelectionRange(selStart, selEnd); } catch (e) {}
+      }
+    }
+  }
+
+  _buildShell() {
     this._root.innerHTML = `
       <div class="plugins-wrapper" style="display:flex; flex-direction:column; width:100%; height:100%; flex:1; min-width:0; overflow-y:auto; padding:40px 24px 48px; background:var(--bg); color:var(--text); font-family:var(--font); box-sizing:border-box;">
         <div style="max-width:780px; margin:0 auto; width:100%;">
@@ -228,56 +283,29 @@ export class PluginsPage {
             </div>
             <div style="position:relative; width:220px;">
               <i data-lucide="search" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); width:13px; height:13px; color:var(--text-3);"></i>
-              <input type="text" id="plugins-search-input" value="${esc(this._searchQuery)}" placeholder="Search plugins..." style="width:100%; height:30px; padding:0 12px 0 32px; background:var(--input-bg); border:none !important; border-radius:20px; color:var(--text); font-size:11.5px; outline:none !important; box-shadow:none !important;" />
+              <input type="text" id="plugins-search-input" placeholder="Search plugins..." style="width:100%; height:30px; padding:0 12px 0 32px; background:var(--input-bg); border:none !important; border-radius:20px; color:var(--text); font-size:11.5px; outline:none !important; box-shadow:none !important;" />
             </div>
           </div>
-
-          <div style="margin-bottom:24px;">
-            <div style="font-size:11.5px; font-weight:600; color:var(--text-3); margin-bottom:8px; display:flex; align-items:center; gap:6px;">
-              <span>Connected Connectors</span>
-              <span style="font-size:10.5px; background:var(--input-bg); padding:1px 8px; border-radius:20px; color:var(--text-2);">${installedList.length}</span>
-            </div>
-            <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
-              ${installedList.length === 0 ? `
-                <div style="font-size:11.5px; color:var(--text-3); background:var(--card); border:none !important; padding:8px 14px; border-radius:20px; width:100%; box-sizing:border-box;">
-                  No active MCP connectors yet. Click the <strong>＋ icon</strong> on any plugin below to connect.
-                </div>
-              ` : installedList.map(s => {
-                return `
-                  <div onclick="window.pluginsPageInstance.showDetail('${s.id}')" style="display:flex; align-items:center; gap:8px; background:var(--card); border:none !important; padding:6px 14px; border-radius:20px; cursor:pointer; transition:background 0.15s ease;">
-                    ${getCompanyLogoSvg(s.id, 16)}
-                    <span style="font-size:12px; font-weight:600; color:var(--text);">${esc(s.name)}</span>
-                    <span style="width:6px; height:6px; border-radius:50%; background:#16a34a; margin-left:2px;"></span>
-                  </div>`;
-              }).join('')}
-            </div>
-          </div>
-
-          ${categories.map(cat => {
-            const items = filtered.filter(i => i.category === cat);
-            if (items.length === 0) return '';
-            return `
-              <div style="margin-bottom:28px;">
-                <h3 style="font-size:13px; font-weight:600; color:var(--text); margin-bottom:10px;">${cat}</h3>
-                <div style="display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:10px;">
-                  ${items.map(item => this._renderPluginCard(item)).join('')}
-                </div>
-              </div>
-            `;
-          }).join('')}
-
+          <div id="plugins-grid-container"></div>
         </div>
       </div>
     `;
 
-    lucide.createIcons();
+    if (window.lucide) lucide.createIcons({ parent: this._root });
     const input = this._root.querySelector('#plugins-search-input');
     if (input) {
       input.addEventListener('input', (e) => {
         this._searchQuery = e.target.value;
-        this._renderCatalog();
+        this._renderCatalogGrid();
       });
     }
+  }
+
+  _renderCatalog() {
+    if (!this._root.querySelector('#plugins-grid-container')) {
+      this._buildShell();
+    }
+    this._renderCatalogGrid();
   }
 
   _renderPluginCard(item) {
@@ -464,5 +492,5 @@ function getCompanyLogoSvg(id, size = 16) {
   if (norm.includes('slack')) return `<svg viewBox="0 0 24 24" width="${size}" height="${size}"><path fill="#E01E5A" d="M5.042 15.165a2.528 2.528 0 0 1-2.52 2.523A2.528 2.528 0 0 1 0 15.165c0-1.394 1.127-2.52 2.522-2.52h2.52v2.52z"/><path fill="#E01E5A" d="M6.313 15.165c0-1.394 1.127-2.52 2.52-2.52 1.396 0 2.524 1.126 2.524 2.52v6.313A2.528 2.528 0 0 1 8.833 24a2.528 2.528 0 0 1-2.52-2.522v-6.313z"/><path fill="#36C5F0" d="M8.833 5.042a2.528 2.528 0 0 1-2.52-2.52A2.528 2.528 0 0 1 8.833 0c1.394 0 2.52 1.127 2.52 2.522v2.52h-2.52z"/><path fill="#36C5F0" d="M8.833 6.313c1.394 0 2.52 1.127 2.52 2.52v1.396a2.528 2.528 0 0 1-2.52 2.524 2.528 2.528 0 0 1-2.522-2.524V8.833c0-1.393 1.128-2.52 2.522-2.52z"/><path fill="#2EB67D" d="M18.956 8.833a2.528 2.528 0 0 1 2.522-2.52A2.528 2.528 0 0 1 24 8.833c0 1.394-1.127 2.52-2.522 2.52h-2.522V8.833z"/><path fill="#2EB67D" d="M17.688 8.833c0 1.394-1.128 2.52-2.52 2.52a2.528 2.528 0 0 1-2.524-2.52V2.522A2.528 2.528 0 0 1 15.167 0a2.528 2.528 0 0 1 2.52 2.522v6.311z"/><path fill="#ECB22E" d="M15.167 18.956a2.528 2.528 0 0 1 2.52 2.52A2.528 2.528 0 0 1 15.167 24c-1.394 0-2.52-1.127-2.52-2.522v-2.522h2.52z"/><path fill="#ECB22E" d="M15.167 17.685c-1.394 0-2.52-1.127-2.52-2.52v-1.396c0-1.394 1.126-2.52 2.52-2.52a2.528 2.528 0 0 1 2.524 2.52v1.396c0 1.393-1.13 2.52-2.524 2.52z"/></svg>`;
   if (norm.includes('notion')) return `<svg viewBox="0 0 24 24" width="${size}" height="${size}"><path fill="currentColor" d="M4.459 4.208c.746.606 1.026.56 2.428.466l13.215-.793c.28 0 .047-.28-.046-.326L17.86 1.876c-.467-.373-.98-.606-1.82-.513L2.827 2.576c-.373.047-.467.233-.28.466l1.912 1.166zm.793 4.292v13.623c0 .84.373 1.12.98 1.166l14.475-.84c.793-.047.933-.513.933-1.12V7.707c0-.606-.233-.933-.746-.886L5.998 7.614c-.513.047-.746.28-.746.886zm11.758.84c.326.047.467.233.467.56v11.011c0 .28-.14.42-.467.42h-.793c-.233 0-.42-.093-.56-.373l-5.692-8.586v8.446c0 .326-.14.467-.467.467h-1.073c-.326 0-.467-.14-.467-.467V9.9c0-.28.14-.42.467-.42h.886c.28 0 .467.093.56.373l5.599 8.446V9.34c0-.326.14-.467.467-.467h1.073z"/></svg>`;
   if (norm.includes('sqlite')) return `<svg viewBox="0 0 24 24" width="${size}" height="${size}"><path fill="#003B5C" d="M12 2C6.48 2 2 3.34 2 5v14c0 1.66 4.48 3 10 3s10-1.34 10-3V5c0-1.66-4.48-3-10-3zm0 2c4.42 0 8 .89 8 2s-3.58 2-8 2-8-.89-8-2 3.58-2 8-2zm0 16c-4.42 0-8-.89-8-2v-2.12c1.92 1.05 4.8 1.62 8 1.62s6.08-.57 8-1.62V18c0 1.11-3.58 2-8 2zm0-5c-4.42 0-8-.89-8-2v-2.12c1.92 1.05 4.8 1.62 8 1.62s6.08-.57 8-1.62V13c0 1.11-3.58 2-8 2z"/><path fill="#00758F" d="M12 4c4.42 0 8 .89 8 2s-3.58 2-8 2-8-.89-8-2 3.58-2 8-2z"/></svg>`;
-  return `<i data-lucide="plug" style="width:${size}px;height:${size}px;"></i>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-plugins" style="width:${size}px; height:${size}px; display:inline-block; vertical-align:middle;"><path d="M9 2v6M15 2v6M12 17v5M5 8h14a1 1 0 0 1 1 1v4a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V9a1 1 0 0 1 1-1z"></path></svg>`;
 }

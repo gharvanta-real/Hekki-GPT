@@ -131,7 +131,7 @@ export function createMessageElement(type, text, timestamp, index, ChatSessionMa
     actions.innerHTML = `
       <span class="action-time">${timeStr}</span>
       <button class="action-btn btn-copy" title="Copy text"><i data-lucide="copy"></i></button>
-      <button class="action-btn btn-edit" title="Edit prompt"><i data-lucide="square-pen"></i></button>
+      <button class="action-btn btn-edit" title="Edit prompt"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-compose" style="width:14px; height:14px; display:inline-block; vertical-align:middle;"><path d="M10 3H7a4 4 0 0 0-4 4v9a4 4 0 0 0 4 4h10a4 4 0 0 0 4-4v-4"></path><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"></path></svg></button>
       <button class="action-btn btn-retry" title="Retry generation"><i data-lucide="refresh-cw"></i></button>
     `;
     group.appendChild(actions);

@@ -72,7 +72,8 @@
   inset: 0;
   z-index: 99999;
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   background: transparent;
 }
 .lightbox-overlay.hidden {
@@ -81,58 +82,62 @@
 .lightbox-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.92);
+  background: rgba(0, 0, 0, 0.90);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   z-index: 1;
 }
 .lightbox-header {
-  position: relative;
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 24px;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.85), transparent);
+  display: none !important; /* Topnav bar removed per user request */
 }
 .lightbox-filename {
-  font-size: 13px;
-  font-weight: 500;
-  color: #ffffff;
-  max-width: 50%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  display: none !important;
 }
 .lightbox-controls {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 100;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
+  background: rgba(24, 24, 27, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  padding: 5px 10px;
+  border-radius: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
 }
 .lightbox-btn {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  border: none;
-  background: rgba(255, 255, 255, 0.08);
-  color: #ffffff;
+  width: 30px;
+  height: 30px;
+  border-radius: 50% !important;
+  border: none !important;
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff !important;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.12s, transform 0.12s;
+  transition: all 0.15s ease;
+  box-shadow: none !important;
+  outline: none !important;
 }
 .lightbox-btn:hover {
-  background: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.25);
+  transform: scale(1.08);
 }
 .lightbox-btn:active {
   transform: scale(0.95);
 }
 .lightbox-btn.close {
-  background: rgba(239, 68, 68, 0.2);
-  color: #f87171;
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff !important;
 }
 .lightbox-btn.close:hover {
-  background: rgba(239, 68, 68, 0.35);
-  color: #ffffff;
+  background: rgba(239, 68, 68, 0.8) !important;
+  color: #ffffff !important;
 }
 .lightbox-content {
   position: relative;
@@ -215,6 +220,7 @@
   color: var(--text) !important;
   opacity: 1 !important;
   font-weight: 400 !important;
+  font-size: 14px !important;
 }
 
 /* 4. Icons in Main Chat & Debate Sidebars */

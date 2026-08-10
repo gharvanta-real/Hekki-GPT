@@ -1,80 +1,60 @@
-/* === CHATGPT-STYLE CLEAN SETTINGS MODAL === */
+/* === FULL-PAGE CLEAN SETTINGS PANE === */
 
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 8000;
-  background: rgba(0, 0, 0, 0.45);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  backdrop-filter: blur(4px);
-  animation: fade-in 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.modal-overlay.hidden {
-  display: none !important;
-}
-
-@keyframes fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-.modal-box {
-  width: 760px;
-  max-width: 94vw;
-  height: 570px;
-  max-height: 90vh;
-  background: var(--bg, #ffffff);
-  border: 1px solid var(--border, rgba(0, 0, 0, 0.08)) !important;
-  outline: none !important;
-  border-radius: 16px;
-  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.15) !important;
-  display: flex;
+#settings-pane {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: none;
+  background: var(--bg);
+  color: var(--text);
   overflow: hidden;
-  animation: scale-in 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
 }
 
-body.oled .modal-box,
-body.dark .modal-box {
-  background: #18181b !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
+#settings-pane.visible {
+  display: flex !important;
+  flex-direction: row;
 }
 
-@keyframes scale-in {
-  from { transform: scale(0.97); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+.settings-page-box {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  background: var(--bg);
+  overflow: hidden;
 }
 
-/* === LEFT NAVIGATION PANEL (Secondary Tint) === */
+/* === LEFT NAVIGATION PANEL === */
 .modal-nav {
-  width: 215px;
+  width: 230px;
   flex-shrink: 0;
-  background: var(--input-bg, #f6f7f9) !important;
+  background: var(--bg) !important;
   border-right: 1px solid var(--border, rgba(0, 0, 0, 0.08));
   display: flex;
   flex-direction: column;
-  padding: 16px 12px;
+  padding: 0 16px 20px 16px;
   overflow-y: auto;
   gap: 4px;
 }
 
 .modal-nav-header {
+  height: 48px;
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 4px 8px 14px 8px;
+  padding: 0 8px;
+  margin: 0 0 4px 0;
   font-weight: 600;
-  font-size: 15px;
+  font-size: 16px;
   color: var(--text-primary);
+  flex-shrink: 0;
 }
 
 .modal-nav-item {
-  height: 36px !important;
+  height: 38px !important;
   width: 100% !important;
   box-sizing: border-box !important;
-  border: none !important;
+  border: 1px solid transparent !important;
   outline: none !important;
   box-shadow: none !important;
   background: transparent;
@@ -83,11 +63,11 @@ body.dark .modal-box {
   font-family: var(--font, sans-serif);
   font-size: 13px;
   font-weight: 500;
-  border-radius: 8px;
+  border-radius: 9999px !important;
   display: flex !important;
   align-items: center !important;
   gap: 10px;
-  padding: 0 12px !important;
+  padding: 0 14px !important;
   text-align: left;
   transition: all 0.15s ease;
 }
@@ -101,28 +81,32 @@ body.dark .modal-box {
 }
 
 .modal-nav-item:hover {
-  background: rgba(0, 0, 0, 0.04) !important;
+  background: rgba(0, 0, 0, 0.05) !important;
   color: var(--text-primary) !important;
+  border-radius: 9999px !important;
 }
 
 body.dark .modal-nav-item:hover,
 body.oled .modal-nav-item:hover {
-  background: rgba(255, 255, 255, 0.06) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
   color: #ffffff !important;
+  border-radius: 9999px !important;
 }
 
 .modal-nav-item.active {
-  background: #ffffff !important;
+  background: var(--hover, #f1f5f9) !important;
   color: var(--text-primary, #09090b) !important;
   font-weight: 600;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06) !important;
+  border: 1px solid var(--border, rgba(0, 0, 0, 0.15)) !important;
+  border-radius: 9999px !important;
 }
 
 body.dark .modal-nav-item.active,
 body.oled .modal-nav-item.active {
   background: #27272a !important;
   color: #ffffff !important;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  border-radius: 9999px !important;
 }
 
 .modal-nav-item.active .lucide {
@@ -132,15 +116,13 @@ body.oled .modal-nav-item.active {
 /* === RIGHT CONTENT PANEL (Main Page BG) === */
 .modal-content {
   flex: 1;
+  height: 100%;
   overflow-y: auto;
-  padding: 32px 36px 36px 36px;
+  padding: 0 48px 60px 48px;
   position: relative;
-  background: var(--bg, #ffffff) !important;
-}
-
-body.dark .modal-content,
-body.oled .modal-content {
-  background: #18181b !important;
+  background: var(--bg) !important;
+  max-width: 840px;
+  box-sizing: border-box;
 }
 
 .modal-close {
@@ -186,7 +168,10 @@ body.oled .modal-close:hover {
   font-size: 16px;
   font-weight: 600;
   color: var(--text-primary, #09090b);
-  margin: 0 0 4px 0;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  margin: 0;
   letter-spacing: -0.01em;
 }
 

@@ -610,12 +610,12 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
         imgCard.setAttribute('data-img-card', '1'); // For interval cleanup on error
         
         imgCard.innerHTML = `
+          <div class="image-generation-shimmer"></div>
           <div class="image-generation-header">
-            <i data-lucide="image" style="width:12px;height:12px;margin-right:4px;"></i>
+            <i data-lucide="image" style="width:13px;height:13px;margin-right:4px;"></i>
             <span>Generating Image</span>
           </div>
-          <div class="image-generation-body">
-            <div class="image-generation-shimmer"></div>
+          <div class="image-generation-center-content">
             <div class="image-generation-spinner"></div>
             <div class="image-generation-text">Designing details...</div>
           </div>
@@ -794,22 +794,20 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
         imgGenCard.className = 'chat-image-generating-card';
         imgGenCard.id = 'active-image-gen-card';
         
-        let waveBarsHtml = '';
-        const delays = [0.0, 0.15, 0.30, 0.45, 0.60, 0.75, 0.90, 1.05, 1.20];
-        delays.forEach(d => {
-          waveBarsHtml += `<div class="wave-bar" style="animation-delay:${d}s;"></div>`;
-        });
-        
         imgGenCard.innerHTML = `
+          <div class="image-generation-shimmer"></div>
           <div class="chat-image-gen-header">
+            <i data-lucide="image" style="width:14px;height:14px;margin-right:6px;"></i>
             <span>Creating image</span>
           </div>
-          <div class="image-gen-wave-container">
-            ${waveBarsHtml}
+          <div class="image-generation-center-content">
+            <div class="image-generation-spinner"></div>
+            <div class="image-generation-text">Designing details...</div>
           </div>
         `;
         col.appendChild(imgGenCard);
         scrollChat();
+        if (window.lucide) lucide.createIcons({ parent: imgGenCard });
       }
 
       _currentMessageToolRuns.push({
@@ -1328,15 +1326,31 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
         _aiderConsoleLogArea = null;
         _aiderActive = false;
       } else {
-        _ensureResponseMsg(enterConversationCallback);
-        _streamResponseText += `\n\nfailed **Error**: ${e.data}`;
         if (_streamResponseEl) {
-          _streamResponseEl.innerHTML = window.marked 
-            ? sanitizeHtml(marked.parse(_streamResponseText)) 
+          // Stream still open — append error into current bubble and finalize
+          _streamResponseText += `\n\nfailed **Error**: ${e.data}`;
+          _streamResponseEl.innerHTML = window.marked
+            ? sanitizeHtml(marked.parse(_streamResponseText))
             : escapeHtml(_streamResponseText);
           enhanceMarkdownContent(_streamResponseEl);
+          _finalizeStreamResponse();
+        } else {
+          // 'done' already fired and bubble was finalized — patch the last saved
+          // message in-session so it doesn't create a second separate DB entry
+          // that would appear as a split bubble on reload.
+          const errLabel = `\n\nfailed **Error**: ${e.data}`;
+          const col2 = document.getElementById('chat-col') || document.getElementById('chat-log');
+          const lastAiBubble = col2 ? col2.querySelector('.msg.ai:last-of-type') : null;
+          if (lastAiBubble) {
+            const patched = (lastAiBubble.textContent || '') + errLabel;
+            lastAiBubble.innerHTML = window.marked
+              ? sanitizeHtml(marked.parse(patched))
+              : escapeHtml(patched);
+            enhanceMarkdownContent(lastAiBubble);
+          }
+          // Patch the last saved session message text (no new DB entry)
+          ChatSessionManager.patchLastMessage('assistant', errLabel);
         }
-        _finalizeStreamResponse();
       }
       _finalizeStreamThought();
       _currentMessageActive = false;

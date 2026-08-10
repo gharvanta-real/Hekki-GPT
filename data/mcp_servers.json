@@ -1,20 +1,6 @@
 {
   "servers": [
     {
-      "id": "c4b788a4",
-      "name": "GitHub",
-      "transport": "stdio",
-      "enabled": true,
-      "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-github"
-      ],
-      "env": {},
-      "url": "",
-      "headers": {}
-    },
-    {
       "id": "d7dbac62",
       "name": "GitHub",
       "transport": "stdio",

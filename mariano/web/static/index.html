@@ -1,310 +1,4 @@
 <!DOCTYPE html>
-
-<!-- SETTINGS MODAL -->
-<div id="settings-modal" class="modal-overlay hidden">
-  <div class="modal-box">
-    <!-- Left nav (Always secondary background tint) -->
-    <div class="modal-nav">
-      <div style="display:flex;align-items:center;gap:10px;padding:12px 14px 12px;">
-        <span style="font-weight:600;font-size:15px;color:var(--text-primary);">Hekki</span>
-      </div>
-
-      <button class="modal-nav-item active" data-section="general">
-        <i data-lucide="user-round" style="width:15px;height:15px;margin-right:6px;display:inline-block;vertical-align:middle;"></i> Identity
-      </button>
-      <button class="modal-nav-item" data-section="appearance">
-        <i data-lucide="palette" style="width:15px;height:15px;margin-right:6px;display:inline-block;vertical-align:middle;"></i> Appearance
-      </button>
-
-      <button class="modal-nav-item" data-section="gemini">
-        <i data-lucide="sparkles" style="width:15px;height:15px;margin-right:6px;display:inline-block;vertical-align:middle;"></i> Gemini API
-      </button>
-      <button class="modal-nav-item" data-section="gateway">
-        <i data-lucide="server" style="width:15px;height:15px;margin-right:6px;display:inline-block;vertical-align:middle;"></i> Local Gateway
-      </button>
-      <button class="modal-nav-item" data-section="reasoning">
-        <i data-lucide="brain" style="width:15px;height:15px;margin-right:6px;display:inline-block;vertical-align:middle;"></i> Reasoning Mode
-      </button>
-      <button class="modal-nav-item" data-section="kaggle">
-        <i data-lucide="square-terminal" style="width:15px;height:15px;margin-right:6px;display:inline-block;vertical-align:middle;"></i> Kaggle GPU
-      </button>
-
-      <button class="modal-nav-item" data-section="skills">
-        <i data-lucide="blocks" style="width:15px;height:15px;margin-right:6px;display:inline-block;vertical-align:middle;"></i> Skills &amp; Plugins
-      </button>
-      <button class="modal-nav-item" data-section="about">
-        <i data-lucide="info" style="width:15px;height:15px;margin-right:6px;display:inline-block;vertical-align:middle;"></i> About Hekki
-      </button>
-    </div>
-
-
-    <!-- Right content (Always main page background color) -->
-    <div class="modal-content">
-      <button class="modal-close" id="btn-close-settings"><i data-lucide="x"></i></button>
-
-      <!-- Save indicator -->
-      <div id="settings-save-indicator" style="position:absolute;top:16px;right:52px;font-size:11px;color:#16a34a;opacity:0;transition:opacity 0.5s;display:flex;align-items:center;gap:5px;">
-        <i data-lucide="check-circle" style="width:13px;height:13px;"></i> Saved
-      </div>
-
-      <!-- IDENTITY (General) -->
-      <section class="settings-section active" id="section-general">
-        <h2 class="section-title">Identity</h2>
-        <p class="section-sub">How Hekki addresses you and understands your context.</p>
-
-        <!-- Top Promo Hero Banner (ChatGPT Style) -->
-        <div class="settings-promo-card">
-          <div class="settings-promo-left">
-            <div class="settings-promo-icon">
-              <i data-lucide="sparkles" style="width:16px;height:16px;"></i>
-            </div>
-            <div>
-              <div class="settings-promo-title">Personalized Assistant Context</div>
-              <div class="settings-promo-desc">Hekki remembers your preferences and constraints across all chats.</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="settings-row">
-          <div class="row-info">
-            <span class="row-label">Your Name</span>
-            <span class="row-desc">The name Hekki uses to address you in conversation.</span>
-          </div>
-          <input class="settings-input" type="text" id="settings-user-name" placeholder="e.g. Anshu" style="width:180px; text-align:left;">
-        </div>
-
-        <div style="margin-top:20px; padding-top:14px; border-top:1px solid var(--border);">
-          <div class="row-info" style="margin-bottom:10px;">
-            <span class="row-label">Custom Instructions</span>
-            <span class="row-desc">Rules Hekki will strictly follow in every conversation — tone, style, language, constraints.</span>
-          </div>
-          <textarea class="settings-textarea" id="settings-user-instructions" placeholder="e.g. Always reply in Hinglish. Be concise. Never use bullet points unless asked."></textarea>
-          <div style="display:flex;justify-content:flex-end;margin-top:14px;">
-            <button id="btn-save-identity" class="btn-pill-save">Save Identity</button>
-          </div>
-        </div>
-      </section>
-
-      <!-- APPEARANCE -->
-      <section class="settings-section" id="section-appearance">
-        <h2 class="section-title">Appearance</h2>
-        <p class="section-sub">Visual theme and overlay preferences for the Hekki interface.</p>
-
-        <div class="settings-row">
-          <div class="row-info">
-            <span class="row-label">Interface Theme</span>
-            <span class="row-desc">Select between OLED Pure Black or Light Mode aesthetic.</span>
-          </div>
-          <div class="theme-toggle-group">
-            <button class="theme-opt" data-theme="oled" title="OLED Black"><i data-lucide="moon"></i></button>
-            <button class="theme-opt" data-theme="light" title="Light Mode"><i data-lucide="sun"></i></button>
-          </div>
-        </div>
-
-        <div class="settings-row">
-          <div class="row-info">
-            <span class="row-label">Quick Voice Overlay</span>
-            <span class="row-desc">Press Ctrl+Shift+Space anywhere on your desktop to invoke Hekki voice mini-hud.</span>
-          </div>
-          <label class="toggle-switch">
-            <input type="checkbox" id="settings-quick-voice" checked>
-            <span class="toggle-track"></span>
-          </label>
-        </div>
-      </section>
-
-      <!-- GEMINI API -->
-      <section class="settings-section" id="section-gemini">
-        <h2 class="section-title">Gemini API &amp; Model Selection</h2>
-        <p class="section-sub">Configure your Google Gemini API Key and active reasoning model.</p>
-
-        <div class="settings-row" style="flex-direction:column; align-items:flex-start; gap:8px; padding-bottom:18px;">
-          <div class="row-info" style="width:100%;">
-            <span class="row-label">Google Gemini API Key</span>
-            <span class="row-desc">Get your free key from <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:var(--text-primary);text-decoration:underline;">Google AI Studio &rarr;</a></span>
-          </div>
-          <div style="display:flex; gap:8px; align-items:center; width:100%; margin-top:4px;">
-            <input class="settings-input" id="settings-gemini-key" type="password" placeholder="AIzaSy..." style="flex:1; font-family:monospace; text-align:left;">
-            <button id="btn-toggle-key-visibility" style="padding:7px 12px; border:1px solid var(--border); border-radius:8px; background:var(--hover); color:var(--text-2); cursor:pointer; font-size:12px;">
-              <i data-lucide="eye" style="width:14px;height:14px;pointer-events:none;"></i>
-            </button>
-          </div>
-          <div id="api-key-status" style="font-size:11.5px; color:var(--text-3);"></div>
-        </div>
-
-        <div class="settings-row">
-          <div class="row-info">
-            <span class="row-label">Active Gemini Model</span>
-            <span class="row-desc">Primary AI model used for generating chat responses.</span>
-          </div>
-          <select class="settings-select" id="settings-hekki-model">
-            <option value="gemini-3.1-flash-lite">Gemini 3.1 Flash Lite (Fast)</option>
-            <option value="gemini-3.1-flash">Gemini 3.1 Flash (Pro)</option>
-            <option value="gemini-3.1-pro">Gemini 3.1 Pro (Deep)</option>
-            <option value="openrouter_nemotron">Nemotron 3 Ultra (OpenRouter)</option>
-          </select>
-        </div>
-      </section>
-
-      <!-- LOCAL GATEWAY -->
-      <section class="settings-section" id="section-gateway">
-        <h2 class="section-title">Local Universal Model Gateway</h2>
-        <p class="section-sub">Connect Hekki to local models (Ollama, LM Studio, vLLM, Jan.ai) via OpenAI-compatible endpoints.</p>
-
-        <div class="settings-row">
-          <div class="row-info">
-            <span class="row-label">Enable Local Model Gateway</span>
-            <span class="row-desc">Route prompts to local hardware server instead of cloud API.</span>
-          </div>
-          <label class="toggle-switch">
-            <input type="checkbox" id="settings-use-ollama">
-            <span class="toggle-track"></span>
-          </label>
-        </div>
-
-        <div class="settings-row">
-          <div class="row-info">
-            <span class="row-label">Local Server Base URL</span>
-            <span class="row-desc">Endpoint address of your Ollama or OpenAI-compatible server.</span>
-          </div>
-          <div style="display:flex; gap:8px; align-items:center;">
-            <input class="settings-input" id="settings-ollama-url" type="text" placeholder="http://localhost:11434" style="width:180px; text-align:left;">
-            <button id="btn-fetch-local-models" type="button" style="padding:6px 12px; border-radius:8px; border:none; background:var(--hover); color:var(--text-primary); cursor:pointer; font-size:12px; font-weight:600; display:flex; align-items:center; gap:6px;">
-              <i data-lucide="refresh-cw" style="width:13px;height:13px;"></i> Fetch
-            </button>
-          </div>
-        </div>
-
-        <div class="settings-row">
-          <div class="row-info">
-            <span class="row-label">Active Local Model</span>
-            <span class="row-desc">Target LLM model running on your local machine.</span>
-          </div>
-          <div style="display:flex; gap:8px; align-items:center;">
-            <select class="settings-select" id="settings-local-model-dropdown" style="max-width:240px;">
-              <option value="">Click Fetch or type Base URL...</option>
-            </select>
-            <input id="settings-ollama-model" type="hidden">
-          </div>
-        </div>
-      </section>
-
-      <!-- REASONING MODE -->
-      <section class="settings-section" id="section-reasoning">
-        <h2 class="section-title">Reasoning &amp; Thinking Depth</h2>
-        <p class="section-sub">Configure how deeply Hekki analyzes and formulates responses.</p>
-
-        <div class="settings-row">
-          <div class="row-info">
-            <span class="row-label">Thinking Depth</span>
-            <span class="row-desc">Higher depth increases planning quality and reasoning steps.</span>
-          </div>
-          <select class="settings-select" id="settings-reasoning-mode">
-            <option value="fast">Fast — Quick, direct answers</option>
-            <option value="normal">Normal — Balanced</option>
-            <option value="pro">Pro — Deep research &amp; analysis</option>
-            <option value="thinking">Thinking — Full chain-of-thought</option>
-          </select>
-        </div>
-      </section>
-
-      <!-- KAGGLE GPU ACCELERATOR -->
-      <section class="settings-section" id="section-kaggle">
-        <h2 class="section-title">Kaggle GPU Cloud Accelerator</h2>
-        <p class="section-sub">Offload heavy neural simulations and CAD synthesis to Kaggle Tesla T4/P100 GPUs.</p>
-
-        <div class="settings-row">
-          <div class="row-info">
-            <span class="row-label">Kaggle Username</span>
-            <span class="row-desc">Your Kaggle profile handle.</span>
-          </div>
-          <input class="settings-input" type="text" id="settings-kaggle-user" placeholder="e.g. anshu_mariano" style="width:180px; text-align:left;">
-        </div>
-
-        <div class="settings-row">
-          <div class="row-info">
-            <span class="row-label">Kaggle API Token</span>
-            <span class="row-desc">Found in your Kaggle Account Settings.</span>
-          </div>
-          <div style="display:flex; gap:8px; align-items:center;">
-            <input class="settings-input" type="password" id="settings-kaggle-key" placeholder="e.g. 5f8a..." style="width:180px; font-family:monospace; text-align:left;">
-            <button id="btn-toggle-kaggle-visibility" style="padding:6px 10px; border:1px solid var(--border); border-radius:8px; background:var(--hover); color:var(--text-2); cursor:pointer; font-size:12px;">
-              <i data-lucide="eye" style="width:14px;height:14px;pointer-events:none;"></i>
-            </button>
-          </div>
-        </div>
-
-        <div style="display:flex; align-items:center; justify-content:space-between; margin-top:20px; padding-top:14px; border-top:1px solid var(--border);">
-          <div id="kaggle-status-badge" style="font-size:12px; color:var(--text-3); display:flex; align-items:center; gap:6px;">
-            <span style="width:8px; height:8px; border-radius:50%; background:#888; display:inline-block;"></span>
-            <span id="kaggle-status-text">Not Verified</span>
-          </div>
-          <div style="display:flex; gap:8px;">
-            <button id="btn-test-kaggle" style="padding:7px 16px; background:var(--hover); color:var(--text-primary); border:none; border-radius:9999px; font-size:13px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:6px;">
-              <i data-lucide="activity" style="width:14px;height:14px;"></i> Test Connection
-            </button>
-            <button id="btn-save-kaggle" class="btn-pill-save">Save</button>
-          </div>
-        </div>
-      </section>
-
-      <!-- SKILLS -->
-      <section class="settings-section" id="section-skills">
-        <h2 class="section-title">Active Skills &amp; Plugins</h2>
-        <p class="section-sub">All skills registered and available to Hekki. Each runs as an isolated module.</p>
-        <div class="skills-grid" id="skills-grid"></div>
-      </section>
-
-      <!-- ABOUT HEKKI -->
-      <section class="settings-section" id="section-about">
-        <h2 class="section-title">About Hekki</h2>
-        <p class="section-sub">System specifications &amp; architecture ledger.</p>
-
-        <div class="settings-row">
-          <div class="row-info">
-            <span class="row-label">Version</span>
-            <span class="row-desc">Active build release identifier</span>
-          </div>
-          <span style="font-weight:600; color:var(--text-primary); font-family:monospace; font-size:12.5px;">v3.4.0-clean-settings</span>
-        </div>
-
-        <div class="settings-row">
-          <div class="row-info">
-            <span class="row-label">Processor (CPU)</span>
-            <span class="row-desc">Local host processing unit</span>
-          </div>
-          <span style="font-size:12.5px; color:var(--text-2);">Intel 11th Gen Core i5-1135G7</span>
-        </div>
-
-        <div class="settings-row">
-          <div class="row-info">
-            <span class="row-label">System Memory</span>
-            <span class="row-desc">Available RAM capacity</span>
-          </div>
-          <span style="font-size:12.5px; color:var(--text-2);">8.0 GB DDR4</span>
-        </div>
-
-        <div class="settings-row">
-          <div class="row-info">
-            <span class="row-label">GPU Acceleration</span>
-            <span class="row-desc">Hardware acceleration backend</span>
-          </div>
-          <span style="font-size:12.5px; color:var(--text-2);">Intel Iris Xe + Kaggle Cloud GPU</span>
-        </div>
-
-        <div class="settings-row">
-          <div class="row-info">
-            <span class="row-label">Architecture Rules</span>
-            <span class="row-desc">Enforced codebase constraints</span>
-          </div>
-          <span style="font-size:12px; color:var(--text-3);">Rule #1 (Ledger), Rule #2 (&lt;500 Lines), Rule #3 (Flat), Rule #5 (Title Case)</span>
-        </div>
-      </section>
-
-    </div><!-- end modal-content -->
-  </div><!-- end modal-box -->
-</div>
-<!-- end settings-modal -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -318,7 +12,7 @@
   <meta charset="UTF-8">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,400&family=Karla:wght@300;400;500;600;700&family=Cabin:wght@400;500;600;700&family=Mulish:wght@300;400;500;600;700&family=Assistant:wght@300;400;500;600;700&family=Alegreya+Sans:wght@300;400;500;700&family=Source+Sans+3:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Merriweather+Sans:wght@300;400;500;600;700&family=Varela+Round&display=swap" rel="stylesheet">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hekki</title>
   <meta name="application-name" content="Hekki">
@@ -388,6 +82,7 @@
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" defer></script>
   <script src="/static/js/ribbon_orb.js"></script>
+  <script src="/static/js/lovable_gradient.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mermaid@10.2.4/dist/mermaid.min.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -411,7 +106,7 @@
     </div>
     <div class="dock-items">
       <button class="dock-item active" id="mode-home" title="Chat Dashboard">
-        <i data-lucide="message-circle" style="width:20px;height:20px;"></i>
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-compose" style="width:20px;height:20px;display:inline-block;vertical-align:middle;"><path d="M10 3H7a4 4 0 0 0-4 4v9a4 4 0 0 0 4 4h10a4 4 0 0 0 4-4v-4"></path><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"></path></svg>
       </button>
       <button class="dock-item" id="mode-playground" title="Debate Playground">
         <i data-lucide="flask-conical" style="width:20px;height:20px;"></i>
@@ -430,7 +125,7 @@
   <!-- SIDEBAR NAV (Second left sub-navigation sidebar panel) -->
   <div id="sidebar-nav">
     <div class="nav-header">
-      <div class="nav-header-title" style="font-weight: 600; font-size: 16px; color: var(--text-primary); margin-left: 4px; flex: 1;">
+      <div class="nav-header-title" style="font-weight: 600; font-size: 16px; color: var(--text-primary); flex: 1;">
         Hekki
       </div>
       <button class="icon-btn" id="btn-return-chat-nav" title="Return to Chat" style="display: none; border: none; background: transparent; cursor: pointer; margin-right: 4px;">
@@ -450,28 +145,28 @@
 
         <!-- Top Action Items -->
         <div class="nav-section" style="margin-top: 4px;">
-          <div class="section-hdr" style="display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: var(--text-3); letter-spacing: 0.02em; font-weight: 500; margin-bottom: 2px; padding: 0 4px;">
+          <div class="section-hdr">
             <span>Actions</span>
           </div>
           <div class="nav-section-actions" style="display: flex; flex-direction: column; gap: 2px; margin-top: 0;">
             <button class="sidebar-action-btn" id="btn-new-chat">
-              <i data-lucide="message-circle-plus" style="width:15px; height:15px; margin-right:8px; display:inline-block; vertical-align:middle; flex-shrink:0;"></i>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-compose" style="width:16px; height:16px; margin-right:8px; display:inline-block; vertical-align:middle; flex-shrink:0;"><path d="M10 3H7a4 4 0 0 0-4 4v9a4 4 0 0 0 4 4h10a4 4 0 0 0 4-4v-4"></path><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"></path></svg>
               <span>New Chat</span>
             </button>
             <button class="sidebar-action-btn" id="btn-nav-playground">
-              <i data-lucide="flask-conical" style="width:15px; height:15px; margin-right:8px; display:inline-block; vertical-align:middle; flex-shrink:0;"></i>
+              <i data-lucide="flask-conical" style="width:16px; height:16px; margin-right:8px; display:inline-block; vertical-align:middle; flex-shrink:0;"></i>
               <span>Playground</span>
             </button>
             <button class="sidebar-action-btn" id="btn-nav-plugins">
-              <i data-lucide="plug" style="width:15px; height:15px; margin-right:8px; display:inline-block; vertical-align:middle; flex-shrink:0;"></i>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-plugins" style="width:16px; height:16px; margin-right:8px; display:inline-block; vertical-align:middle; flex-shrink:0;"><path d="M9 2v6M15 2v6M12 17v5M5 8h14a1 1 0 0 1 1 1v4a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V9a1 1 0 0 1 1-1z"></path></svg>
               <span>Plugins</span>
             </button>
             <button class="sidebar-action-btn" id="nav-skills-btn">
-              <i data-lucide="blocks" style="width:15px; height:15px; margin-right:8px; display:inline-block; vertical-align:middle; flex-shrink:0;"></i>
+              <i data-lucide="blocks" style="width:16px; height:16px; margin-right:8px; display:inline-block; vertical-align:middle; flex-shrink:0;"></i>
               <span>Skills</span>
             </button>
             <button class="sidebar-action-btn" id="btn-nav-images">
-              <i data-lucide="images" style="width:15px; height:15px; margin-right:8px; display:inline-block; vertical-align:middle; flex-shrink:0;"></i>
+              <i data-lucide="images" style="width:16px; height:16px; margin-right:8px; display:inline-block; vertical-align:middle; flex-shrink:0;"></i>
               <span>Images</span>
             </button>
           </div>
@@ -480,7 +175,7 @@
 
         <!-- Recent Chats Group -->
         <div class="nav-section" style="margin-top: 6px;">
-          <div class="section-hdr" style="display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: var(--text-3); letter-spacing: 0.02em; font-weight: 500; margin-bottom: 2px; padding: 0 4px;">
+          <div class="section-hdr">
             <span>Recent Chats</span>
           </div>
           <div class="section-list" id="recent-list">
@@ -523,7 +218,7 @@
           <span id="user-menu-theme-text">Toggle Theme</span>
         </button>
         <button class="user-menu-item" id="btn-user-plugins">
-          <i data-lucide="plug" style="width:16px; height:16px; margin-right:8px; display:inline-block; vertical-align:middle; flex-shrink:0;"></i>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-plugins" style="width:16px; height:16px; margin-right:8px; display:inline-block; vertical-align:middle; flex-shrink:0;"><path d="M9 2v6M15 2v6M12 17v5M5 8h14a1 1 0 0 1 1 1v4a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V9a1 1 0 0 1 1-1z"></path></svg>
           <span>Plugins & Connectors</span>
         </button>
         <button class="user-menu-item" id="btn-user-skills">
@@ -649,7 +344,7 @@
                     <i data-lucide="sparkles" style="width:14px; height:14px; margin-right:4px; display:inline-block; vertical-align:middle; flex-shrink:0;"></i> Create
                   </button>
                   <button class="shortcut">
-                    <i data-lucide="pencil" style="width:14px; height:14px; margin-right:4px; display:inline-block; vertical-align:middle; flex-shrink:0;"></i> Write
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-compose" style="width:14px; height:14px; margin-right:4px; display:inline-block; vertical-align:middle; flex-shrink:0;"><path d="M10 3H7a4 4 0 0 0-4 4v9a4 4 0 0 0 4 4h10a4 4 0 0 0 4-4v-4"></path><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"></path></svg> Write
                   </button>
                   <button class="shortcut">
                     <i data-lucide="book-open" style="width:14px; height:14px; margin-right:4px; display:inline-block; vertical-align:middle; flex-shrink:0;"></i> Learn
@@ -746,6 +441,327 @@
       <!-- ═══ HISTORY PANE (ChatGPT-style full page Search Chats) ═══ -->
       <div id="history-pane"></div>
 
+      <!-- ═══ SETTINGS PANE (Full page clean Settings) ═══ -->
+      <div id="settings-pane">
+        <div class="settings-page-box">
+          <!-- Left nav (Always secondary background tint) -->
+          <div class="modal-nav">
+            <div class="modal-nav-header">
+              <span>Settings</span>
+            </div>
+
+            <button class="modal-nav-item active" data-section="general">
+              <i data-lucide="user-round" style="width:16px;height:16px;margin-right:6px;display:inline-block;vertical-align:middle;"></i> Identity
+            </button>
+            <button class="modal-nav-item" data-section="appearance">
+              <i data-lucide="palette" style="width:16px;height:16px;margin-right:6px;display:inline-block;vertical-align:middle;"></i> Appearance
+            </button>
+
+            <button class="modal-nav-item" data-section="gemini">
+              <i data-lucide="sparkles" style="width:16px;height:16px;margin-right:6px;display:inline-block;vertical-align:middle;"></i> Gemini API
+            </button>
+            <button class="modal-nav-item" data-section="gateway">
+              <i data-lucide="server" style="width:16px;height:16px;margin-right:6px;display:inline-block;vertical-align:middle;"></i> Local Gateway
+            </button>
+            <button class="modal-nav-item" data-section="reasoning">
+              <i data-lucide="brain" style="width:16px;height:16px;margin-right:6px;display:inline-block;vertical-align:middle;"></i> Reasoning Mode
+            </button>
+            <button class="modal-nav-item" data-section="kaggle">
+              <i data-lucide="square-terminal" style="width:16px;height:16px;margin-right:6px;display:inline-block;vertical-align:middle;"></i> Kaggle GPU
+            </button>
+
+            <button class="modal-nav-item" data-section="skills">
+              <i data-lucide="blocks" style="width:16px;height:16px;margin-right:6px;display:inline-block;vertical-align:middle;"></i> Skills &amp; Plugins
+            </button>
+            <button class="modal-nav-item" data-section="about">
+              <i data-lucide="info" style="width:16px;height:16px;margin-right:6px;display:inline-block;vertical-align:middle;"></i> About Hekki
+            </button>
+          </div>
+
+          <!-- Right content (Always main page background color) -->
+          <div class="modal-content">
+            <!-- Save indicator -->
+            <div id="settings-save-indicator" style="position:absolute;top:24px;right:48px;font-size:12px;color:#16a34a;opacity:0;transition:opacity 0.5s;display:flex;align-items:center;gap:6px;">
+              <i data-lucide="check-circle" style="width:14px;height:14px;"></i> Saved
+            </div>
+
+            <!-- IDENTITY (General) -->
+            <section class="settings-section active" id="section-general">
+              <h2 class="section-title">Identity</h2>
+              <p class="section-sub">How Hekki addresses you and understands your context.</p>
+
+              <!-- Top Promo Hero Banner (ChatGPT Style) -->
+              <div class="settings-promo-card">
+                <div class="settings-promo-left">
+                  <div class="settings-promo-icon">
+                    <i data-lucide="sparkles" style="width:16px;height:16px;"></i>
+                  </div>
+                  <div>
+                    <div class="settings-promo-title">Personalized Assistant Context</div>
+                    <div class="settings-promo-desc">Hekki remembers your preferences and constraints across all chats.</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="settings-row">
+                <div class="row-info">
+                  <span class="row-label">Your Name</span>
+                  <span class="row-desc">The name Hekki uses to address you in conversation.</span>
+                </div>
+                <input class="settings-input" type="text" id="settings-user-name" placeholder="e.g. Anshu" style="width:180px; text-align:left;">
+              </div>
+
+              <div style="margin-top:20px; padding-top:14px; border-top:1px solid var(--border);">
+                <div class="row-info" style="margin-bottom:10px;">
+                  <span class="row-label">Custom Instructions</span>
+                  <span class="row-desc">Rules Hekki will strictly follow in every conversation — tone, style, language, constraints.</span>
+                </div>
+                <textarea class="settings-textarea" id="settings-user-instructions" placeholder="e.g. Always reply in Hinglish. Be concise. Never use bullet points unless asked."></textarea>
+                <div style="display:flex;justify-content:flex-end;margin-top:14px;">
+                  <button id="btn-save-identity" class="btn-pill-save">Save Identity</button>
+                </div>
+              </div>
+            </section>
+
+            <!-- APPEARANCE -->
+            <section class="settings-section" id="section-appearance">
+              <h2 class="section-title">Appearance</h2>
+              <p class="section-sub">Visual theme and overlay preferences for the Hekki interface.</p>
+
+              <div class="settings-row">
+                <div class="row-info">
+                  <span class="row-label">Interface Theme</span>
+                  <span class="row-desc">Select between OLED Pure Black or Light Mode aesthetic.</span>
+                </div>
+                <div class="theme-toggle-group">
+                  <button class="theme-opt" data-theme="oled" title="OLED Black"><i data-lucide="moon"></i></button>
+                  <button class="theme-opt" data-theme="light" title="Light Mode"><i data-lucide="sun"></i></button>
+                </div>
+              </div>
+
+              <div class="settings-row">
+                <div class="row-info">
+                  <span class="row-label">Quick Voice Overlay</span>
+                  <span class="row-desc">Press Ctrl+Shift+Space anywhere on your desktop to invoke Hekki voice mini-hud.</span>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="settings-quick-voice" checked>
+                  <span class="toggle-track"></span>
+                </label>
+              </div>
+              <div class="settings-row">
+                <div class="row-info">
+                  <span class="row-label">Interface Font</span>
+                  <span class="row-desc">Choose the typeface used across the entire interface.</span>
+                </div>
+                <select class="settings-select" id="settings-font-family">
+                  <option value="system">System Default</option>
+                  <option value="lato">Lato — Warm, natural</option>
+                  <option value="karla">Karla — Friendly, slightly quirky</option>
+                  <option value="cabin">Cabin — Human and clean</option>
+                  <option value="mulish">Mulish — Soft, elegant</option>
+                  <option value="assistant">Assistant — Simple, narrow, gentle</option>
+                  <option value="alegreya-sans">Alegreya Sans — Very human, editorial</option>
+                  <option value="source-sans">Source Sans 3 — Natural reading</option>
+                  <option value="lora">Lora — Book, reading feeling</option>
+                  <option value="merriweather-sans">Merriweather Sans — Warm and readable</option>
+                  <option value="varela-round">Varela Round — Soft, friendly</option>
+                </select>
+              </div>
+            </section>
+
+            <!-- GEMINI API -->
+            <section class="settings-section" id="section-gemini">
+              <h2 class="section-title">Gemini API &amp; Model Selection</h2>
+              <p class="section-sub">Configure your Google Gemini API Key and active reasoning model.</p>
+
+              <div class="settings-row" style="flex-direction:column; align-items:flex-start; gap:8px; padding-bottom:18px;">
+                <div class="row-info" style="width:100%;">
+                  <span class="row-label">Google Gemini API Key</span>
+                  <span class="row-desc">Get your free key from <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:var(--text-primary);text-decoration:underline;">Google AI Studio &rarr;</a></span>
+                </div>
+                <div style="display:flex; gap:8px; align-items:center; width:100%; margin-top:4px;">
+                  <input class="settings-input" id="settings-gemini-key" type="password" placeholder="AIzaSy..." style="flex:1; font-family:monospace; text-align:left;">
+                  <button id="btn-toggle-key-visibility" style="padding:7px 12px; border:1px solid var(--border); border-radius:8px; background:var(--hover); color:var(--text-2); cursor:pointer; font-size:12px;">
+                    <i data-lucide="eye" style="width:14px;height:14px;pointer-events:none;"></i>
+                  </button>
+                </div>
+                <div id="api-key-status" style="font-size:11.5px; color:var(--text-3);"></div>
+              </div>
+
+              <div class="settings-row">
+                <div class="row-info">
+                  <span class="row-label">Active Gemini Model</span>
+                  <span class="row-desc">Primary AI model used for generating chat responses.</span>
+                </div>
+                <select class="settings-select" id="settings-hekki-model">
+                  <option value="gemini-3.1-flash-lite">Gemini 3.1 Flash Lite (Fast)</option>
+                  <option value="gemini-3.1-flash">Gemini 3.1 Flash (Pro)</option>
+                  <option value="gemini-3.1-pro">Gemini 3.1 Pro (Deep)</option>
+                  <option value="openrouter_nemotron">Nemotron 3 Ultra (OpenRouter)</option>
+                </select>
+              </div>
+            </section>
+
+            <!-- LOCAL GATEWAY -->
+            <section class="settings-section" id="section-gateway">
+              <h2 class="section-title">Local Universal Model Gateway</h2>
+              <p class="section-sub">Connect Hekki to local models (Ollama, LM Studio, vLLM, Jan.ai) via OpenAI-compatible endpoints.</p>
+
+              <div class="settings-row">
+                <div class="row-info">
+                  <span class="row-label">Enable Local Model Gateway</span>
+                  <span class="row-desc">Route prompts to local hardware server instead of cloud API.</span>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="settings-use-ollama">
+                  <span class="toggle-track"></span>
+                </label>
+              </div>
+
+              <div class="settings-row">
+                <div class="row-info">
+                  <span class="row-label">Local Server Base URL</span>
+                  <span class="row-desc">Endpoint address of your Ollama or OpenAI-compatible server.</span>
+                </div>
+                <div style="display:flex; gap:8px; align-items:center;">
+                  <input class="settings-input" id="settings-ollama-url" type="text" placeholder="http://localhost:11434" style="width:180px; text-align:left;">
+                  <button id="btn-fetch-local-models" type="button" style="padding:6px 12px; border-radius:8px; border:none; background:var(--hover); color:var(--text-primary); cursor:pointer; font-size:12px; font-weight:600; display:flex; align-items:center; gap:6px;">
+                    <i data-lucide="refresh-cw" style="width:13px;height:13px;"></i> Fetch
+                  </button>
+                </div>
+              </div>
+
+              <div class="settings-row">
+                <div class="row-info">
+                  <span class="row-label">Active Local Model</span>
+                  <span class="row-desc">Target LLM model running on your local machine.</span>
+                </div>
+                <div style="display:flex; gap:8px; align-items:center;">
+                  <select class="settings-select" id="settings-local-model-dropdown" style="max-width:240px;">
+                    <option value="">Click Fetch or type Base URL...</option>
+                  </select>
+                  <input id="settings-ollama-model" type="hidden">
+                </div>
+              </div>
+            </section>
+
+            <!-- REASONING MODE -->
+            <section class="settings-section" id="section-reasoning">
+              <h2 class="section-title">Reasoning &amp; Thinking Depth</h2>
+              <p class="section-sub">Configure how deeply Hekki analyzes and formulates responses.</p>
+
+              <div class="settings-row">
+                <div class="row-info">
+                  <span class="row-label">Thinking Depth</span>
+                  <span class="row-desc">Higher depth increases planning quality and reasoning steps.</span>
+                </div>
+                <select class="settings-select" id="settings-reasoning-mode">
+                  <option value="fast">Fast — Quick, direct answers</option>
+                  <option value="normal">Normal — Balanced</option>
+                  <option value="pro">Pro — Deep research &amp; analysis</option>
+                  <option value="thinking">Thinking — Full chain-of-thought</option>
+                </select>
+              </div>
+            </section>
+
+            <!-- KAGGLE GPU ACCELERATOR -->
+            <section class="settings-section" id="section-kaggle">
+              <h2 class="section-title">Kaggle GPU Cloud Accelerator</h2>
+              <p class="section-sub">Offload heavy neural simulations and CAD synthesis to Kaggle Tesla T4/P100 GPUs.</p>
+
+              <div class="settings-row">
+                <div class="row-info">
+                  <span class="row-label">Kaggle Username</span>
+                  <span class="row-desc">Your Kaggle profile handle.</span>
+                </div>
+                <input class="settings-input" type="text" id="settings-kaggle-user" placeholder="e.g. anshu_mariano" style="width:180px; text-align:left;">
+              </div>
+
+              <div class="settings-row">
+                <div class="row-info">
+                  <span class="row-label">Kaggle API Token</span>
+                  <span class="row-desc">Found in your Kaggle Account Settings.</span>
+                </div>
+                <div style="display:flex; gap:8px; align-items:center;">
+                  <input class="settings-input" type="password" id="settings-kaggle-key" placeholder="e.g. 5f8a..." style="width:180px; font-family:monospace; text-align:left;">
+                  <button id="btn-toggle-kaggle-visibility" style="padding:6px 10px; border:1px solid var(--border); border-radius:8px; background:var(--hover); color:var(--text-2); cursor:pointer; font-size:12px;">
+                    <i data-lucide="eye" style="width:14px;height:14px;pointer-events:none;"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div style="display:flex; align-items:center; justify-content:space-between; margin-top:20px; padding-top:14px; border-top:1px solid var(--border);">
+                <div id="kaggle-status-badge" style="font-size:12px; color:var(--text-3); display:flex; align-items:center; gap:6px;">
+                  <span style="width:8px; height:8px; border-radius:50%; background:#888; display:inline-block;"></span>
+                  <span id="kaggle-status-text">Not Verified</span>
+                </div>
+                <div style="display:flex; gap:8px;">
+                  <button id="btn-test-kaggle" style="padding:7px 16px; background:var(--hover); color:var(--text-primary); border:none; border-radius:9999px; font-size:13px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:6px;">
+                    <i data-lucide="activity" style="width:14px;height:14px;"></i> Test Connection
+                  </button>
+                  <button id="btn-save-kaggle" class="btn-pill-save">Save</button>
+                </div>
+              </div>
+            </section>
+
+            <!-- SKILLS -->
+            <section class="settings-section" id="section-skills">
+              <h2 class="section-title">Active Skills &amp; Plugins</h2>
+              <p class="section-sub">All skills registered and available to Hekki. Each runs as an isolated module.</p>
+              <div class="skills-grid" id="skills-grid"></div>
+            </section>
+
+            <!-- ABOUT HEKKI -->
+            <section class="settings-section" id="section-about">
+              <h2 class="section-title">About Hekki</h2>
+              <p class="section-sub">System specifications &amp; architecture ledger.</p>
+
+              <div class="settings-row">
+                <div class="row-info">
+                  <span class="row-label">Version</span>
+                  <span class="row-desc">Active build release identifier</span>
+                </div>
+                <span style="font-weight:600; color:var(--text-primary); font-family:monospace; font-size:12.5px;">v3.8.0-fullpage-settings</span>
+              </div>
+
+              <div class="settings-row">
+                <div class="row-info">
+                  <span class="row-label">Processor (CPU)</span>
+                  <span class="row-desc">Local host processing unit</span>
+                </div>
+                <span style="font-size:12.5px; color:var(--text-2);">Intel 11th Gen Core i5-1135G7</span>
+              </div>
+
+              <div class="settings-row">
+                <div class="row-info">
+                  <span class="row-label">System Memory</span>
+                  <span class="row-desc">Available RAM capacity</span>
+                </div>
+                <span style="font-size:12.5px; color:var(--text-2);">8.0 GB DDR4</span>
+              </div>
+
+              <div class="settings-row">
+                <div class="row-info">
+                  <span class="row-label">GPU Acceleration</span>
+                  <span class="row-desc">Hardware acceleration backend</span>
+                </div>
+                <span style="font-size:12.5px; color:var(--text-2);">Intel Iris Xe + Kaggle Cloud GPU</span>
+              </div>
+
+              <div class="settings-row">
+                <div class="row-info">
+                  <span class="row-label">Architecture Rules</span>
+                  <span class="row-desc">Enforced codebase constraints</span>
+                </div>
+                <span style="font-size:12px; color:var(--text-3);">Rule #1 (Ledger), Rule #2 (&lt;500 Lines), Rule #3 (Flat), Rule #5 (Title Case)</span>
+              </div>
+            </section>
+
+          </div><!-- end modal-content -->
+        </div><!-- end settings-page-box -->
+      </div><!-- end settings-pane -->
+
 
 
     </div>
@@ -778,32 +794,33 @@
 <input type="file" id="attach-file-input" style="display:none" multiple>
 
 <!-- Full-Screen Image Lightbox Modal -->
-<div id="image-lightbox-modal" class="modal-overlay hidden" style="z-index: 10000; background: rgba(0, 0, 0, 0.88); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; position: fixed; inset: 0;">
+<div id="image-lightbox-modal" class="modal-overlay hidden" style="z-index: 10000; background: rgba(0, 0, 0, 0.90); backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: center; position: fixed; inset: 0;">
   <div class="lightbox-container" style="position: relative; max-width: 92vw; max-height: 92vh; display: flex; flex-direction: column; align-items: center; justify-content: center;">
     
-    <!-- Floating Toolbar ON Image / Top-Right of Modal -->
-    <div class="lightbox-toolbar" style="position: absolute; top: -48px; right: 0; display: flex; align-items: center; gap: 6px; background: rgba(24, 24, 27, 0.85); backdrop-filter: blur(12px); padding: 5px 12px; border-radius: 30px; z-index: 10001; box-shadow: 0 4px 20px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1);">
-      <button id="lightbox-btn-download" class="lightbox-tool-btn" title="Download Image" style="background: transparent; border: none; color: #e4e4e7; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; transition: background 0.15s;">
-        <i data-lucide="download" style="width: 15px; height: 15px;"></i>
-      </button>
-      <button id="lightbox-btn-copy" class="lightbox-tool-btn" title="Copy Image Link" style="background: transparent; border: none; color: #e4e4e7; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; transition: background 0.15s;">
-        <i data-lucide="copy" style="width: 15px; height: 15px;"></i>
-      </button>
-      <a id="lightbox-btn-external" target="_blank" rel="noopener noreferrer" class="lightbox-tool-btn" title="Open Source Link" style="background: transparent; border: none; color: #e4e4e7; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; transition: background 0.15s; text-decoration: none;">
-        <i data-lucide="external-link" style="width: 15px; height: 15px;"></i>
-      </a>
-      <button id="lightbox-btn-zoom" class="lightbox-tool-btn" title="Toggle Zoom" style="background: transparent; border: none; color: #e4e4e7; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; transition: background 0.15s;">
-        <i data-lucide="maximize-2" style="width: 15px; height: 15px;"></i>
-      </button>
-      <div style="width: 1px; height: 16px; background: rgba(255,255,255,0.2); margin: 0 2px;"></div>
-      <button id="lightbox-btn-close" class="lightbox-tool-btn" title="Close (Esc)" style="background: transparent; border: none; color: #ef4444; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; transition: background 0.15s;">
-        <i data-lucide="x" style="width: 16px; height: 16px;"></i>
-      </button>
-    </div>
+    <!-- Image Display Box with Floating Overlay Toolbar -->
+    <div class="lightbox-img-wrapper" style="position: relative; max-width: 90vw; max-height: 88vh; border-radius: 20px; overflow: hidden; display: flex; align-items: center; justify-content: center; box-shadow: 0 25px 65px rgba(0,0,0,0.75); background: #09090b;">
+      
+      <!-- Floating Translucent Toolbar Overlaying Top-Right INSIDE Image Frame -->
+      <div class="lightbox-toolbar" style="position: absolute; top: 14px; right: 14px; display: flex; align-items: center; gap: 6px; background: rgba(24, 24, 27, 0.75); backdrop-filter: blur(16px); padding: 5px 10px; border-radius: 30px; z-index: 100; border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 4px 20px rgba(0,0,0,0.4);">
+        <button id="lightbox-btn-download" class="lightbox-tool-btn" title="Download Image" style="background: rgba(255, 255, 255, 0.12); border: none; color: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; transition: all 0.15s ease;">
+          <i data-lucide="download" style="width: 15px; height: 15px; color:#ffffff;"></i>
+        </button>
+        <button id="lightbox-btn-copy" class="lightbox-tool-btn" title="Copy Image Link" style="background: rgba(255, 255, 255, 0.12); border: none; color: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; transition: all 0.15s ease;">
+          <i data-lucide="copy" style="width: 15px; height: 15px; color:#ffffff;"></i>
+        </button>
+        <a id="lightbox-btn-external" target="_blank" rel="noopener noreferrer" class="lightbox-tool-btn" title="Open Source Link" style="background: rgba(255, 255, 255, 0.12); border: none; color: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; transition: all 0.15s ease; text-decoration: none;">
+          <i data-lucide="external-link" style="width: 15px; height: 15px; color:#ffffff;"></i>
+        </a>
+        <button id="lightbox-btn-zoom" class="lightbox-tool-btn" title="Toggle Zoom" style="background: rgba(255, 255, 255, 0.12); border: none; color: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; transition: all 0.15s ease;">
+          <i data-lucide="maximize-2" style="width: 15px; height: 15px; color:#ffffff;"></i>
+        </button>
+        <div style="width: 1px; height: 16px; background: rgba(255,255,255,0.2); margin: 0 2px;"></div>
+        <button id="lightbox-btn-close" class="lightbox-tool-btn close" title="Close (Esc)" style="background: rgba(255, 255, 255, 0.12); border: none; color: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; transition: all 0.15s ease;">
+          <i data-lucide="x" style="width: 15px; height: 15px; color:#ffffff;"></i>
+        </button>
+      </div>
 
-    <!-- Image Display Box -->
-    <div class="lightbox-img-wrapper" style="position: relative; max-width: 90vw; max-height: 85vh; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; box-shadow: 0 25px 60px rgba(0,0,0,0.7);">
-      <img id="lightbox-img" src="" alt="Full preview" style="max-width: 100%; max-height: 85vh; object-fit: contain; display: block; border-radius: 12px; user-select: none; transition: transform 0.2s ease-out; cursor: zoom-in;" />
+      <img id="lightbox-img" src="" alt="Full preview" style="max-width: 100%; max-height: 88vh; object-fit: contain; display: block; border-radius: 20px; user-select: none; transition: transform 0.2s ease-out; cursor: zoom-in;" />
     </div>
 
   </div>
@@ -1050,33 +1067,33 @@
   <!-- IMAGE PREVIEW LIGHTBOX OVERLAY -->
   <div id="image-lightbox" class="lightbox-overlay hidden">
     <div class="lightbox-backdrop" id="lightbox-backdrop"></div>
-    <div class="lightbox-header">
-      <span class="lightbox-filename" id="lightbox-filename">Image Preview</span>
-      <div class="lightbox-controls">
-        <button class="lightbox-btn" id="btn-lightbox-zoom-in" title="Zoom In">
-          <i data-lucide="zoom-in"></i>
+    <div class="lightbox-content" id="lightbox-content" style="position: relative; max-width: 90vw; max-height: 88vh; border-radius: 20px; overflow: hidden; display: flex; align-items: center; justify-content: center; box-shadow: 0 25px 65px rgba(0,0,0,0.75); background: #09090b;">
+      
+      <!-- Floating Translucent Toolbar Overlaying Top-Right INSIDE Image Frame -->
+      <div class="lightbox-controls" style="position: absolute; top: 14px; right: 14px; display: flex; align-items: center; gap: 6px; background: rgba(24, 24, 27, 0.75); backdrop-filter: blur(16px); padding: 5px 10px; border-radius: 30px; z-index: 100; border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 4px 20px rgba(0,0,0,0.4);">
+        <button class="lightbox-btn" id="btn-lightbox-zoom-in" title="Zoom In" style="background: rgba(255, 255, 255, 0.12); border: none; color: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; transition: all 0.15s ease;">
+          <i data-lucide="zoom-in" style="width: 15px; height: 15px; color:#ffffff;"></i>
         </button>
-        <button class="lightbox-btn" id="btn-lightbox-zoom-out" title="Zoom Out">
-          <i data-lucide="zoom-out"></i>
+        <button class="lightbox-btn" id="btn-lightbox-zoom-out" title="Zoom Out" style="background: rgba(255, 255, 255, 0.12); border: none; color: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; transition: all 0.15s ease;">
+          <i data-lucide="zoom-out" style="width: 15px; height: 15px; color:#ffffff;"></i>
         </button>
-        <button class="lightbox-btn" id="btn-lightbox-reset" title="Reset Zoom">
-          <i data-lucide="maximize-2"></i>
+        <button class="lightbox-btn" id="btn-lightbox-reset" title="Reset Zoom" style="background: rgba(255, 255, 255, 0.12); border: none; color: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; transition: all 0.15s ease;">
+          <i data-lucide="maximize-2" style="width: 15px; height: 15px; color:#ffffff;"></i>
         </button>
-        <button class="lightbox-btn" id="btn-lightbox-download" title="Download Image">
-          <i data-lucide="download"></i>
+        <button class="lightbox-btn" id="btn-lightbox-download" title="Download Image" style="background: rgba(255, 255, 255, 0.12); border: none; color: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; transition: all 0.15s ease;">
+          <i data-lucide="download" style="width: 15px; height: 15px; color:#ffffff;"></i>
         </button>
-        <div class="lightbox-divider" style="width: 1px; height: 16px; background: rgba(255,255,255,0.2); margin: 0 4px;"></div>
-        <button class="lightbox-btn close" id="btn-lightbox-close" title="Close">
-          <i data-lucide="x"></i>
+        <div class="lightbox-divider" style="width: 1px; height: 16px; background: rgba(255,255,255,0.2); margin: 0 2px;"></div>
+        <button class="lightbox-btn close" id="btn-lightbox-close" title="Close" style="background: rgba(255, 255, 255, 0.12); border: none; color: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; transition: all 0.15s ease;">
+          <i data-lucide="x" style="width: 15px; height: 15px; color:#ffffff;"></i>
         </button>
       </div>
-    </div>
-    <div class="lightbox-content" id="lightbox-content" style="cursor: grab;">
-      <img src="" id="lightbox-img" alt="Preview Image" draggable="false" />
+
+      <img src="" id="lightbox-img" alt="Preview Image" draggable="false" style="max-width: 100%; max-height: 88vh; object-fit: contain; display: block; border-radius: 20px; user-select: none;" />
     </div>
   </div>
 
-  <script src="/static/main.js?v=201" type="module"></script>
+  <script src="/static/main.js?v=211" type="module"></script>
 
 
 

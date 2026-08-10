@@ -56,7 +56,10 @@ function _renderImageCard(a, srcUrl, href) {
   a.dataset.hasPreview = 'img';
 
   let displaySrc = srcUrl;
-  if (srcUrl.startsWith('http://') || srcUrl.startsWith('https://')) {
+  if (srcUrl.startsWith('file://') || /^[a-zA-Z]:[\\\/]/.test(srcUrl)) {
+    const cleanPath = srcUrl.replace(/^file:\/\/\//i, '').replace(/^file:\/\//i, '').replace(/\\/g, '/');
+    displaySrc = `/api/workspace/render?path=${encodeURIComponent(cleanPath)}`;
+  } else if (srcUrl.startsWith('http://') || srcUrl.startsWith('https://')) {
     displaySrc = `/api/image-proxy?url=${encodeURIComponent(srcUrl)}`;
   }
 
@@ -234,10 +237,34 @@ export function moveTipsToBottom(container) {
 export function enhanceImagePreviews(container) {
   if (!container) return;
 
-  // ── Reference images from AI are BLOCKED (user preference) ──────────────
-  // Hide all inline <img> tags rendered from AI markdown (not user-uploaded)
+  // Convert local file:/// or absolute paths on <img> tags to HTTP /api/workspace/render endpoint
   container.querySelectorAll('img').forEach(img => {
-    if (img.closest('.chat-image-preview-card') || img.closest('.yt-preview-card')) return;
+    const src = img.getAttribute('src') || '';
+    if (src.startsWith('file://') || /^[a-zA-Z]:[\\\/]/.test(src)) {
+      const cleanPath = src.replace(/^file:\/\/\//i, '').replace(/^file:\/\//i, '').replace(/\\/g, '/');
+      img.src = `/api/workspace/render?path=${encodeURIComponent(cleanPath)}`;
+    }
+  });
+
+  // Convert local file:/// links on <a> tags
+  container.querySelectorAll('a').forEach(a => {
+    const href = a.getAttribute('href') || '';
+    if (href.startsWith('file://') || /^[a-zA-Z]:[\\\/]/.test(href)) {
+      const cleanPath = href.replace(/^file:\/\/\//i, '').replace(/^file:\/\//i, '').replace(/\\/g, '/');
+      const httpUrl = `/api/workspace/render?path=${encodeURIComponent(cleanPath)}`;
+      a.href = httpUrl;
+      
+      // If link is an image, convert to image preview card!
+      if (/\.(png|jpg|jpeg|webp|gif)$/i.test(cleanPath) && !a.dataset.hasPreview) {
+        _renderImageCard(a, httpUrl, httpUrl);
+      }
+    }
+  });
+
+  // ── Reference images from AI are BLOCKED (user preference) ──────────────
+  // Hide all inline <img> tags rendered from AI markdown (not user-uploaded or generated cards)
+  container.querySelectorAll('img').forEach(img => {
+    if (img.closest('.chat-image-preview-card') || img.closest('.yt-preview-card') || img.closest('.image-generation-card') || img.closest('.chat-image-generating-card')) return;
     if (img.closest('.msg.user')) return; // Keep user-uploaded images
     // Remove the wrapping <p> or the img itself
     const parent = img.closest('p') || img.parentNode;
@@ -248,7 +275,7 @@ export function enhanceImagePreviews(container) {
     }
   });
 
-  // 2. Scan all links — ONLY render YouTube cards, skip all other image links
+  // 2. Scan all links — render YouTube cards or local image cards
   const links = container.querySelectorAll('a[href]');
   links.forEach(a => {
     const href = a.getAttribute('href');

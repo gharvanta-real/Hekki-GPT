@@ -37,6 +37,10 @@ data/user_persona.json
 data/dynamic_settings.json
 data/disabled_skills.json
 
+# Scratch & Temporary data
+scratch/
+data/generated_images/
+
 # Logs and Binaries
 *.log
 *.exe

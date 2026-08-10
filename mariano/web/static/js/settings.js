@@ -11,29 +11,32 @@ export function initSettings(setGreetingCallback) {
   _settingsBound = true;
 
   const $ = id => document.getElementById(id);
-  const modal   = $('settings-modal');
-  const openBtn = $('btn-open-settings');
-  const closeBtn = $('btn-close-settings');
-  if (!modal) return;
+  const pane = $('settings-pane');
 
-  // ── Open / Close ─────────────────────────────────────────────────────
-  const openModal = () => {
-    modal.classList.remove('hidden');
+  const openSettingsPage = () => {
+    document.getElementById('user-menu-dropdown')?.classList.add('hidden');
+    if (window.router) {
+      window.router.navigate('settings');
+    }
+  };
+
+  window._loadSettingsOnPage = () => {
     loadAllSettings();
     loadActiveSkills();
+    const _fk = localStorage.getItem('hekki_font') || 'system';
+    const _fontSel = document.getElementById('settings-font-family');
+    if (_fontSel) _fontSel.value = _fk;
   };
-  openBtn?.addEventListener('click', openModal);
-  $('btn-user-settings')?.addEventListener('click', openModal);
 
-  closeBtn?.addEventListener('click', () => modal.classList.add('hidden'));
-  modal.addEventListener('click', e => { if (e.target === modal) modal.classList.add('hidden'); });
-  window.addEventListener('keydown', e => { if (e.key === 'Escape') modal.classList.add('hidden'); });
+  $('btn-open-settings')?.addEventListener('click', openSettingsPage);
+  $('btn-user-settings')?.addEventListener('click', openSettingsPage);
 
   // ── Nav switching ─────────────────────────────────────────────────────
-  modal.querySelectorAll('.modal-nav-item').forEach(btn => {
+  const container = pane || document;
+  container.querySelectorAll('.modal-nav-item').forEach(btn => {
     btn.addEventListener('click', () => {
-      modal.querySelectorAll('.modal-nav-item').forEach(b => b.classList.remove('active'));
-      modal.querySelectorAll('.settings-section').forEach(s => s.classList.remove('active'));
+      container.querySelectorAll('.modal-nav-item').forEach(b => b.classList.remove('active'));
+      container.querySelectorAll('.settings-section').forEach(s => s.classList.remove('active'));
       btn.classList.add('active');
       const sec = $('section-' + btn.dataset.section);
       if (sec) sec.classList.add('active');
@@ -43,7 +46,7 @@ export function initSettings(setGreetingCallback) {
   // ── Settings Search Filter ─────────────────────────────────────────────
   $('settings-search')?.addEventListener('input', (e) => {
     const query = e.target.value.toLowerCase().trim();
-    modal.querySelectorAll('.modal-nav-item').forEach(btn => {
+    container.querySelectorAll('.modal-nav-item').forEach(btn => {
       const text = btn.textContent.toLowerCase();
       const secId = btn.dataset.section;
       const sec = $('section-' + secId);
@@ -70,10 +73,10 @@ export function initSettings(setGreetingCallback) {
   if (window._applyThemeGlobal) {
     window._applyThemeGlobal(savedTheme, document.getElementById('btn-user-theme'));
   }
-  modal.querySelectorAll('.theme-opt').forEach(b => {
+  container.querySelectorAll('.theme-opt').forEach(b => {
     b.classList.toggle('active', b.dataset.theme === savedTheme);
     b.addEventListener('click', () => {
-      modal.querySelectorAll('.theme-opt').forEach(x => x.classList.remove('active'));
+      container.querySelectorAll('.theme-opt').forEach(x => x.classList.remove('active'));
       b.classList.add('active');
       localStorage.setItem('hekki_theme', b.dataset.theme);
       
@@ -106,6 +109,42 @@ export function initSettings(setGreetingCallback) {
     if (window._applyThemeGlobal) {
       window._applyThemeGlobal(theme, document.getElementById('btn-user-theme'));
     }
+  }
+
+  // ── Font Family (localStorage) ─────────────────────────────────────────
+  const FONT_MAP = {
+    'system':           '-apple-system-body, ui-sans-serif, "Segoe UI", Roboto, sans-serif',
+    'lato':             '"Lato", ui-sans-serif, sans-serif',
+    'karla':            '"Karla", ui-sans-serif, sans-serif',
+    'cabin':            '"Cabin", ui-sans-serif, sans-serif',
+    'mulish':           '"Mulish", ui-sans-serif, sans-serif',
+    'assistant':        '"Assistant", ui-sans-serif, sans-serif',
+    'alegreya-sans':    '"Alegreya Sans", ui-sans-serif, sans-serif',
+    'source-sans':      '"Source Sans 3", ui-sans-serif, sans-serif',
+    'lora':             '"Lora", ui-serif, serif',
+    'merriweather-sans':'"Merriweather Sans", ui-sans-serif, sans-serif',
+    'varela-round':     '"Varela Round", ui-sans-serif, sans-serif',
+  };
+
+  function applyFont(key) {
+    const stack = FONT_MAP[key] || FONT_MAP['system'];
+    document.documentElement.style.setProperty('--font', stack);
+    document.documentElement.style.setProperty('--font-sans', stack);
+    document.documentElement.style.setProperty('--font-serif', stack);
+    document.documentElement.style.setProperty('--font-ai', stack);
+  }
+
+  const fontSel = $('settings-font-family');
+  if (fontSel) {
+    const savedFont = localStorage.getItem('hekki_font') || 'system';
+    fontSel.value = savedFont;
+    applyFont(savedFont);
+
+    fontSel.addEventListener('change', () => {
+      const key = fontSel.value;
+      localStorage.setItem('hekki_font', key);
+      applyFont(key);
+    });
   }
 
   // ── API key visibility toggle ─────────────────────────────────────────
@@ -186,6 +225,13 @@ export function initSettings(setGreetingCallback) {
       if (kUser) kUser.value = cfg.kaggle_username || '';
       if (kKey) kKey.value = cfg.kaggle_api_key || '';
       updateKaggleStatus(cfg.kaggle_username, cfg.kaggle_api_key);
+
+      // Re-sync font dropdown from localStorage (client-only setting)
+      const fontDropdown = $('settings-font-family');
+      if (fontDropdown) {
+        const savedFontKey = localStorage.getItem('hekki_font') || 'system';
+        fontDropdown.value = savedFontKey;
+      }
 
     } catch (err) {
       console.error('[Settings] Load failed:', err);

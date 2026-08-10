@@ -126,6 +126,23 @@ export const ChatSessionManager = {
     }
   },
 
+  // Append suffix to the last saved message of a given role (no new entry).
+  // Used to merge late-arriving error events into the already-finalized response
+  // so reload doesn't render two separate bubbles.
+  patchLastMessage(role, suffix) {
+    if (!_activeChatId) return;
+    const chats = this.getChats();
+    const chat = chats.find(c => c.id === _activeChatId);
+    if (!chat) return;
+    for (let i = chat.messages.length - 1; i >= 0; i--) {
+      if (chat.messages[i].role === role) {
+        chat.messages[i].text = (chat.messages[i].text || '') + suffix;
+        this.saveChats(chats);
+        return;
+      }
+    }
+  },
+
   deleteChat(id) {
     let chats = this.getChats();
     chats = chats.filter(c => c.id !== id);
@@ -483,7 +500,7 @@ export const ChatSessionManager = {
     dropdown.innerHTML = `
       <button class="chat-dropdown-item open-opt"><i data-lucide="message-circle" style="width:14px;height:14px;margin-right:8px;display:inline-block;vertical-align:middle;flex-shrink:0;"></i> Open</button>
       <button class="chat-dropdown-item pin-opt">${isPinned ? '<i data-lucide="pin-off" style="width:14px;height:14px;margin-right:8px;display:inline-block;vertical-align:middle;flex-shrink:0;"></i> Unpin' : '<i data-lucide="pin" style="width:14px;height:14px;margin-right:8px;display:inline-block;vertical-align:middle;flex-shrink:0;"></i> Pin'}</button>
-      <button class="chat-dropdown-item rename-opt"><i data-lucide="square-pen" style="width:14px;height:14px;margin-right:8px;display:inline-block;vertical-align:middle;flex-shrink:0;"></i> Rename</button>
+      <button class="chat-dropdown-item rename-opt"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-compose" style="width:14px;height:14px;margin-right:8px;display:inline-block;vertical-align:middle;flex-shrink:0;"><path d="M10 3H7a4 4 0 0 0-4 4v9a4 4 0 0 0 4 4h10a4 4 0 0 0 4-4v-4"></path><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"></path></svg> Rename</button>
       <button class="chat-dropdown-item archive-opt"><i data-lucide="archive" style="width:14px;height:14px;margin-right:8px;display:inline-block;vertical-align:middle;flex-shrink:0;"></i> Archive</button>
       <button class="chat-dropdown-item delete-opt delete"><i data-lucide="trash-2" style="width:14px;height:14px;margin-right:8px;display:inline-block;vertical-align:middle;flex-shrink:0;"></i> Delete</button>
     `;

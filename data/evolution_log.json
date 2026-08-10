@@ -1,5 +1,375 @@
 [
   {
+    "timestamp": "2026-08-10T22:36:10Z",
+    "version": "3.9.5-debate-input-and-main-area-width-unification",
+    "category": "UI Layout & Alignment — 780px Max-Width Unification for Debate Stream & Input Bar",
+    "summary": "Unified the max-width of Debate page input bar, response stream, and summary card to 780px to match Main Chat pages.",
+    "details": "1. Updated max-width: 780px on .debate-thread, .debate-round-sep, and .debate-msg in 1b_debate_cards.css. 2. Updated max-width: 780px on .debate-input-wrapper, .debate-summary-card, and progress cards in 1c_debate_stream.css.",
+    "files": [
+      "mariano/web/static/css/debate/1b_debate_cards.css",
+      "mariano/web/static/css/debate/1c_debate_stream.css"
+    ]
+  },
+  {
+    "timestamp": "2026-08-10T22:34:53Z",
+    "version": "3.9.4-revert-playground-icons",
+    "category": "UI Restoration — Reverted Playground Icons to Original Flask/Swords",
+    "summary": "Restored the original flask-conical, beaker, and swords icons for Playground dock items and section list per user request.",
+    "details": "1. Restored mode-playground, btn-nav-playground, and section-hdr icons in index.html. 2. Restored swords icon in session.js.",
+    "files": [
+      "mariano/web/static/index.html",
+      "mariano/web/static/js/chat/session.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-10T22:33:36Z",
+    "version": "3.9.3-debate-chat-compose-icon-unification",
+    "category": "UI Customization — Debate Chat & Playground Compose SVG Icon Unification",
+    "summary": "Updated all Debate chat icons (dock item, nav action button, section header, and chat item badges) to use the exact same main page Compose SVG icon.",
+    "details": "1. Replaced mode-playground, btn-nav-playground, and section-hdr icons in index.html. 2. Replaced debate chat item badge in session.js.",
+    "files": [
+      "mariano/web/static/index.html",
+      "mariano/web/static/js/chat/session.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-10T22:31:52Z",
+    "version": "3.9.2-global-plugins-icon-replacement",
+    "category": "UI Customization — Global SVG Plugins Connector Icon",
+    "summary": "Replaced the old plugin plug icon across the sidebar nav, user menu, debate panel, and plugins hub with the custom SVG Plugins Connector Icon.",
+    "details": "1. Replaced btn-nav-plugins & btn-user-plugins in index.html. 2. Replaced btn-debate-user-plugins in debate_page.js. 3. Replaced fallback icon in plugins_page.js.",
+    "files": [
+      "mariano/web/static/index.html",
+      "mariano/web/static/js/debate/debate_page.js",
+      "mariano/web/static/js/pages/plugins_page.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-10T22:30:58Z",
+    "version": "3.9.1-global-compose-icon-replacement",
+    "category": "UI Customization — Global Compose SVG Icon Integration",
+    "summary": "Replaced all old pencil, edit, and New Debate icons across the application with the new custom SVG Compose icon.",
+    "details": "1. Replaced New Debate button icon in debate_page.js. 2. Replaced edit prompt icon in messages.js. 3. Replaced rename chat icon in session.js. 4. Replaced Write shortcut icon in index.html.",
+    "files": [
+      "mariano/web/static/js/debate/debate_page.js",
+      "mariano/web/static/js/chat/messages.js",
+      "mariano/web/static/js/chat/session.js",
+      "mariano/web/static/index.html"
+    ]
+  },
+  {
+    "timestamp": "2026-08-10T22:29:55Z",
+    "version": "3.9.0-compose-icon-left-edge-rounded",
+    "category": "UI Aesthetics — Uniform Smooth Rounded Edges for Left Chat Compose Icon",
+    "summary": "Rounded the top-left edge of the SVG compose icon and set uniform border-radius: 12px for dock items.",
+    "details": "1. Updated top-left corner arc in index.html to a4 radius matching bottom corners. 2. Updated .dock-item border-radius to 12px in 2_sidebar_dock.css.",
+    "files": [
+      "mariano/web/static/index.html",
+      "mariano/web/static/css/layout/2_sidebar_dock.css"
+    ]
+  },
+  {
+    "timestamp": "2026-08-10T22:29:35Z",
+    "version": "3.8.9-compose-icon-pencil-top-right-gap",
+    "category": "UI SVG Vector Refinement — Top-Right Gap Separation for Compose Pencil",
+    "summary": "Separated the pencil tip/top-right edge from touching the outer square border stroke line.",
+    "details": "Adjusted SVG path stroke in index.html to end at M10 3 and v-4, giving a clean floating space around the pencil in top-right corner.",
+    "files": [
+      "mariano/web/static/index.html"
+    ]
+  },
+  {
+    "timestamp": "2026-08-10T22:28:55Z",
+    "version": "3.8.8-compose-icon-rounded-bottom-edges",
+    "category": "UI Aesthetics — Smooth Rounded Bottom Edges for Left Chat Compose Icon",
+    "summary": "Increased bottom-left and bottom-right corner rounding (border-radius & SVG path curve radii) for the left sidebar dock compose icon.",
+    "details": "1. Updated SVG path box corners in index.html to use a4 arc radius at bottom-left and bottom-right. 2. Set border-radius: 8px 8px 12px 12px on .dock-item in 2_sidebar_dock.css.",
+    "files": [
+      "mariano/web/static/index.html",
+      "mariano/web/static/css/layout/2_sidebar_dock.css"
+    ]
+  },
+  {
+    "timestamp": "2026-08-10T22:26:30Z",
+    "version": "3.8.7-compose-icon-left-sidebar-chat-replacement",
+    "category": "UI Customization — Left Dock & Navigation Chat Compose Icon",
+    "summary": "Replaced the standard chat icon with the Compose SVG icon in the left sidebar dock (mode-home) and New Chat button (btn-new-chat).",
+    "details": "Updated index.html to use SVG Compose Icon for mode-home Chat Dashboard and btn-new-chat buttons.",
+    "files": [
+      "mariano/web/static/index.html"
+    ]
+  },
+  {
+    "timestamp": "2026-08-10T16:00:00Z",
+    "version": "3.8.6-settings-nav-pill-rounded-active-outline",
+    "category": "UI Aesthetics — Pill Rounded Active Nav Items with Border Outline",
+    "summary": "Updated Settings navigation items to use smooth full-pill rounded corners (border-radius: 9999px) with a crisp 1px active border outline.",
+    "details": "Set border-radius: 9999px and border: 1px solid var(--border) on .modal-nav-item.active in 1_settings_base.css to match modern pill selection styling.",
+    "files": [
+      "mariano/web/static/css/settings/1_settings_base.css"
+    ]
+  },
+  {
+    "timestamp": "2026-08-10T15:58:00Z",
+    "version": "3.8.5-settings-nav-active-outline",
+    "category": "UI Aesthetics — Active Nav Item Outline Highlight in Settings Leftbar",
+    "summary": "Added a clean 1px border outline around active/selected navigation items in Settings leftbar for sharp visual distinction.",
+    "details": "Updated .modal-nav-item.active in 1_settings_base.css with border: 1px solid var(--border) and border-radius: 8px.",
+    "files": [
+      "mariano/web/static/css/settings/1_settings_base.css"
+    ]
+  },
+  {
+    "timestamp": "2026-08-10T15:55:00Z",
+    "version": "3.8.4-100percent-unified-top-title-alignment",
+    "category": "UI Alignment — 100% Parallel Horizontal Top Title Beam",
+    "summary": "Unified the top title height and vertical flex center across all 3 columns so 'Hekki', 'Settings', and 'Identity' align on the exact same horizontal top beam.",
+    "details": "1. Set height: 48px with flex align-items: center on .modal-nav-header and .section-title in 1_settings_base.css. 2. Set modal-nav padding top to 0 and modal-content padding top to 0.",
+    "files": [
+      "mariano/web/static/css/settings/1_settings_base.css",
+      "mariano/web/static/index.html"
+    ]
+  },
+  {
+    "timestamp": "2026-08-10T15:52:00Z",
+    "version": "3.8.3-settings-trigger-fix",
+    "category": "UI Navigation — Decoupled Avatar Click from Direct Settings Page Launch",
+    "summary": "Updated user profile avatar click behavior so clicking the bottom avatar only toggles the user menu dropdown, requiring an explicit click on 'Settings' inside the menu to navigate to Settings page.",
+    "details": "1. Removed btn-sidebar-user-profile click listener from settings.js. 2. Added auto-dismiss of user-menu-dropdown inside openSettingsPage in settings.js.",
+    "files": [
+      "mariano/web/static/js/settings.js",
+      "mariano/web/static/index.html"
+    ]
+  },
+  {
+    "timestamp": "2026-08-10T15:48:00Z",
+    "version": "3.8.2-settings-top-positioning",
+    "category": "UI Layout & Spacing — Shifted Settings Page Higher Towards Top",
+    "summary": "Reduced top paddings of .modal-nav and .modal-content so the Settings title and section content sit cleanly near the top edge of the workspace.",
+    "details": "1. Set .modal-nav padding to 12px 16px 20px 16px in 1_settings_base.css. 2. Set .modal-content padding to 16px 48px 60px 48px. 3. Reduced inline header padding in index.html.",
+    "files": [
+      "mariano/web/static/css/settings/1_settings_base.css",
+      "mariano/web/static/index.html"
+    ]
+  },
+  {
+    "timestamp": "2026-08-10T15:45:00Z",
+    "version": "3.8.1-fix-settings-modal-reference-error",
+    "category": "Bug Fix — Resolved ReferenceError: modal is not defined in settings.js",
+    "summary": "Fixed leftover modal variable references in settings.js theme selection logic, updating them to use container element scope.",
+    "details": "Replaced modal.querySelectorAll with container.querySelectorAll on lines 76 & 79 in settings.js to support full-page settings-pane.",
+    "files": [
+      "mariano/web/static/js/settings.js",
+      "mariano/web/static/index.html"
+    ]
+  },
+  {
+    "timestamp": "2026-08-10T15:42:00Z",
+    "version": "3.8.0-fullpage-settings-refactor",
+    "category": "UI Page Navigation — Full-Page Clean Settings View Refactor",
+    "summary": "Converted Settings from a floating popup modal into a full-page workspace pane (#settings-pane) seamlessly integrated into the application router.",
+    "details": "1. Removed #settings-modal backdrop overlay. 2. Created #settings-pane full-page view inside #main container in index.html. 3. Updated router.js with 'settings' route and #settings-pane visibility management. 4. Updated settings.js and 1_settings_base.css to render a spacious 2-column full-page settings layout.",
+    "files": [
+      "mariano/web/static/index.html",
+      "mariano/web/static/js/router.js",
+      "mariano/web/static/js/settings.js",
+      "mariano/web/static/css/settings/1_settings_base.css"
+    ]
+  },
+  {
+    "timestamp": "2026-08-10T15:38:00Z",
+    "version": "3.7.1-recent-chats-text-only-format",
+    "category": "UI Layout — Text-Only Format for Recent Chat History Links",
+    "summary": "Removed leading icons from Recent Chats list items per user request, rendering clean text-only chat titles touch-aligned at 16px left grid line.",
+    "details": "Reverted chatIcon injection in session.js so Recent Chats list renders clean text-only titles while maintaining 16px left alignment grid across sidebar.",
+    "files": [
+      "mariano/web/static/js/chat/session.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-10T15:35:00Z",
+    "version": "3.7.0-leftbar-straight-alignment-from-top-to-bottom",
+    "category": "UI Layout & Alignment — Leftbar Straight Alignment Top-to-Bottom",
+    "summary": "Unified vertical left alignment across all leftbar elements from top header to bottom profile, including adding left icons to recent chat history links to match action items perfectly.",
+    "details": "1. Rendered chatIcon (message-square/pin/git-fork) for all recent chat links in session.js. 2. Removed inline padding/margin offsets on nav-header-title and section-hdr in index.html. 3. Ensured all leftbar icons sit at 16px from left edge and all item text labels sit at 40px from left edge.",
+    "files": [
+      "mariano/web/static/js/chat/session.js",
+      "mariano/web/static/index.html"
+    ]
+  },
+  {
+    "timestamp": "2026-08-10T15:32:00Z",
+    "version": "3.6.9-leftbar-unified-left-alignment",
+    "category": "UI Layout & Alignment — Leftbar Unified Left Alignment (16px Grid Line)",
+    "summary": "Unified left alignment across all leftbar elements so that headers, new chat link, section titles, navigation buttons, recent history links, and user profile avatar sit at the exact same 16px left grid line.",
+    "details": "Updated 3_sidebar_nav.css, 6a_pills.css, and 1_coder_layout.css to set nav-header padding: 0 16px, nav-inner padding: 0 8px 16px 8px, section-hdr padding: 0 8px, and sidebar-user-profile margin: 8px 8px 12px 8px.",
+    "files": [
+      "mariano/web/static/css/layout/3_sidebar_nav.css",
+      "mariano/web/static/css/layout/6a_pills.css",
+      "mariano/web/static/css/coder/1_coder_layout.css"
+    ]
+  },
+  {
+    "timestamp": "2026-08-10T15:30:00Z",
+    "version": "3.6.8-gallery-lightbox-overlay-toolbar-refactor",
+    "category": "UI & Lightbox Modal — Images Gallery Lightbox Overlay Refactor",
+    "summary": "Removed dark topbar container above preview images in Images Gallery Page lightbox, placing floating translucent action buttons directly over the top-right corner of the image frame.",
+    "details": "1. Removed .img-lightbox-topbar in images_page.js and 8d_lightbox_chips.css. 2. Positioned .img-lightbox-actions floating pill inside top-right corner of .img-lightbox-body overlaying the image.",
+    "files": [
+      "mariano/web/static/js/pages/images_page.js",
+      "mariano/web/static/css/chat/8d_lightbox_chips.css",
+      "mariano/web/static/js/router.js",
+      "mariano/web/static/index.html"
+    ]
+  },
+  {
+    "timestamp": "2026-08-10T15:28:00Z",
+    "version": "3.6.7-lightbox-floating-overlay-toolbar-topright",
+    "category": "UI & Lightbox Modal — Floating Image Overlay Toolbar (No Topnav Bar)",
+    "summary": "Removed topnav header bar above image preview lightbox modals and placed translucent floating action tools directly overlaying the top-right corner inside the image preview frame.",
+    "details": "1. Removed .lightbox-header topnav bar in index.html and 6b_user_menu.css. 2. Positioned floating translucent pill toolbar (.lightbox-toolbar / .lightbox-controls) absolute inside top-right corner of image frame with blur backdrop, circular translucent action buttons (Download, Delete/Copy, Close).",
+    "files": [
+      "mariano/web/static/index.html",
+      "mariano/web/static/css/layout/6b_user_menu.css"
+    ]
+  },
+  {
+    "timestamp": "2026-08-10T15:25:00Z",
+    "version": "3.6.6-focus-selection-retention-cache-buster",
+    "category": "Bug Fix & UX — Active Selection Retention & Script Cache Busting",
+    "summary": "Enforced focus and selectionStart/selectionEnd range preservation on search fields and updated ES module imports with version cache busters (?v=205).",
+    "details": "1. Added active input element detection and setSelectionRange restoration in skills_page.js and plugins_page.js. 2. Added ?v=205 query params to main.js, router.js, and index.html to force browser cache reload.",
+    "files": [
+      "mariano/web/static/js/pages/skills_page.js",
+      "mariano/web/static/js/pages/plugins_page.js",
+      "mariano/web/static/main.js",
+      "mariano/web/static/js/router.js",
+      "mariano/web/static/index.html"
+    ]
+  },
+  {
+    "timestamp": "2026-08-10T15:22:00Z",
+    "version": "3.6.5-skills-plugins-search-focus-fix",
+    "category": "Bug Fix & UX — Skills & Plugins Search Input Focus Persistence",
+    "summary": "Fixed issue where typing in Skills and Plugins search fields destroyed input focus on every keypress due to full root re-renders.",
+    "details": "Refactored skills_page.js and plugins_page.js to target #skills-grid-container and #plugins-grid-container on keypress events instead of destroying and replacing the parent header and input element in DOM.",
+    "files": [
+      "mariano/web/static/js/pages/skills_page.js",
+      "mariano/web/static/js/pages/plugins_page.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-10T15:19:00Z",
+    "version": "3.6.4-sweeping-shimmer-effect-photo-gen",
+    "category": "UI & Animation — Sweeping Shimmer Skeleton Pass for Photo Generator Cards",
+    "summary": "Removed wave canvas animation loop and implemented a sleek, high-performance CSS sweeping shimmer overlay effect for image generation loading cards.",
+    "details": "1. Removed canvas elements from agent_stream.js. 2. Added @keyframes shimmer-sweep diagonal light pass overlay (.image-generation-shimmer) in 7a_cards_base.css and 8b_live_terminal.css.",
+    "files": [
+      "mariano/web/static/js/agent_stream.js",
+      "mariano/web/static/css/chat/7a_cards_base.css",
+      "mariano/web/static/css/chat/8b_live_terminal.css"
+    ]
+  },
+  {
+    "timestamp": "2026-08-10T15:17:00Z",
+    "version": "3.6.3-monochromatic-fluid-wave-canvas-engine",
+    "category": "UI & Animation — Sleek Monochromatic Fluid Wave Form Animation Engine",
+    "summary": "Updated canvas engine to render 5 multi-harmonic organic fluid sine wave ribbons in sleek monochromatic dark tones (#09090b charcoal, #18181b slate, #27272a zinc, #f4f4f5 silver crest highlights).",
+    "details": "Replaced stripe field canvas logic in lovable_gradient.js with 60 FPS multi-layered sine wave ribbon animation engine featuring monochromatic vertical gradients, wave crest strokes, and unquantised phase movement.",
+    "files": [
+      "mariano/web/static/js/lovable_gradient.js",
+      "mariano/web/static/css/chat/7a_cards_base.css",
+      "mariano/web/static/css/chat/8b_live_terminal.css"
+    ]
+  },
+  {
+    "timestamp": "2026-08-10T15:15:00Z",
+    "version": "3.6.2-local-image-url-render-fix-and-lovable-canvas-visibility",
+    "category": "Bug Fix & UI Enhancement — Local Image URL Proxying & Full-Bleed Lovable Gradient Canvas",
+    "summary": "Fixed 'Not allowed to load local resource file:///' browser error by converting local file URLs to /api/workspace/render endpoint and updated image generation card markup for full-bleed Lovable Ribbon gradient canvas.",
+    "details": "1. Converted file:/// and local Windows image paths in markdown.js and media.js to /api/workspace/render?path=... HTTP URLs so browsers allow rendering generated images without CORS/file permission errors. 2. Positioned LovableGradientCanvas full-bleed inside .chat-image-generating-card with high-contrast white headers and text overlays.",
+    "files": [
+      "mariano/web/static/js/chat/markdown.js",
+      "mariano/web/static/js/chat/media.js",
+      "mariano/web/static/js/agent_stream.js",
+      "mariano/web/static/js/lovable_gradient.js",
+      "mariano/web/static/css/chat/7a_cards_base.css",
+      "mariano/web/static/css/chat/8b_live_terminal.css"
+    ]
+  },
+  {
+    "timestamp": "2026-08-10T15:12:00Z",
+    "version": "3.6.1-lovable-gradient-photo-gen",
+    "category": "UI & Animation — 21st.dev Lovable Ribbon Field Canvas Gradient Integration",
+    "summary": "Replaced photo generator loading placeholder animation with 21st.dev 'Lovable' Ribbon Field Canvas Gradient animation engine.",
+    "details": "1. Created lovable_gradient.js with 60 FPS requestAnimationFrame Ribbon Field canvas engine featuring exact color palette (#232423 Charcoal, #315190 Lapis, #4D77EA Hanada, #FE3E91 Crimson, #FD3A4A Crimson, #F980E1 Orchid), 7deg angle, wave modulation, and continuous unquantised motion. 2. Included script in index.html. 3. Updated .image-generation-body & .chat-image-generating-card in 8b_live_terminal.css, 7a_cards_base.css, and agent_stream.js.",
+    "files": [
+      "mariano/web/static/js/lovable_gradient.js",
+      "mariano/web/static/index.html",
+      "mariano/web/static/js/agent_stream.js",
+      "mariano/web/static/css/chat/8b_live_terminal.css",
+      "mariano/web/static/css/chat/7a_cards_base.css"
+    ]
+  },
+  {
+    "timestamp": "2026-08-10T15:09:00Z",
+    "version": "3.6.0-debate-sidebar-links-font-size-14px",
+    "category": "UI & Typography — Debate Sidebar Links Font Size Adjustment",
+    "summary": "Updated font size of all debate left sidebar action buttons and links (.debate-list-btn, .debate-sidebar-action-btn, .debate-nav-item, .debate-sidebar-item, .debate-hist-item) to 14px.",
+    "details": "Changed .debate-list-btn font-size to 14px in 1a_debate_layout.css and enforced font-size: 14px !important across all debate sidebar action links in 4_badges_fonts.css and 6b_user_menu.css.",
+    "files": [
+      "mariano/web/static/css/debate/1a_debate_layout.css",
+      "mariano/web/static/css/debate/4_badges_fonts.css",
+      "mariano/web/static/css/layout/6b_user_menu.css"
+    ]
+  },
+  {
+    "timestamp": "2026-08-10T12:22:00Z",
+    "version": "3.5.9-user-font-selection-settings",
+    "category": "UI & UX — User-Configurable Interface Font Selection",
+    "summary": "Added 'Interface Font' selector in Settings > Appearance. Users can now switch the global typeface from 6 curated options: System Default (ChatGPT stack), Inter, Open Sans, Plus Jakarta Sans, DM Sans, Outfit.",
+    "details": "1. Added <select id='settings-font-family'> row in Appearance section of index.html. 2. Added FONT_MAP + applyFont() + localStorage persistence in settings.js so the font switches globally in real-time. 3. Added boot-time IIFE _restoreFont() in main.js to apply saved font zero-flash on page load. 4. Updated Google Fonts link to include DM Sans and Outfit. All fonts apply via CSS custom properties --font and --font-sans on :root.",
+    "files": [
+      "mariano/web/static/index.html",
+      "mariano/web/static/js/settings.js",
+      "mariano/web/static/main.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-10T09:56:00Z",
+    "version": "3.5.8-master-build-verified-success",
+    "category": "Build & Distribution — 100% Verified EXE & NSIS Setup Build Complete",
+    "summary": "100% Successful Build & Packaging of Hekki-Assistant Setup 1.0.0.exe and Hekki-Assistant.exe.",
+    "details": "PyInstaller + Electron NSIS Builder pipeline succeeded without errors. Artifacts: 1. dist/Hekki-Assistant Setup 1.0.0.exe (172.95 MB). 2. dist/Hekki-Assistant.exe (110.92 MB). Added automatic process lock cleanup to build.py.",
+    "files": [
+      "dist/Hekki-Assistant Setup 1.0.0.exe",
+      "dist/Hekki-Assistant.exe",
+      "build.py"
+    ]
+  },
+  {
+    "timestamp": "2026-08-10T09:53:00Z",
+    "version": "3.5.7-exe-master-build-complete",
+    "category": "Build & Distribution — Unified Master Build EXE & NSIS Setup Installer",
+    "summary": "Compiled and packaged new desktop standalone EXE and NSIS Setup Installer containing all ChatGPT UI & typography updates.",
+    "details": "Ran python build.py master pipeline: 1. PyInstaller core backend compile -> dist/Hekki-Assistant.exe (139.7 MB). 2. Electron-builder NSIS packaging -> dist/Hekki-Assistant Setup 1.0.0.exe (172.9 MB).",
+    "files": [
+      "dist/Hekki-Assistant.exe",
+      "dist/Hekki-Assistant Setup 1.0.0.exe",
+      "build.py"
+    ]
+  },
+  {
+    "timestamp": "2026-08-10T09:51:00Z",
+    "version": "3.5.6-chatgpt-official-font-stack-and-color",
+    "category": "Typography & Color — Official ChatGPT Font Stack & #0D0D0D Color",
+    "summary": "Matched official ChatGPT font stack (-apple-system-body, ui-sans-serif, Segoe UI, Roboto) and primary text color #0D0D0D.",
+    "details": "Updated --font, --font-sans, --font-serif, --font-ai, primary text color --text (#0D0D0D), and --fs-md (14px) scale in base.css exactly matching the user devtools screenshot.",
+    "files": [
+      "mariano/web/static/css/base.css"
+    ]
+  },
+  {
     "timestamp": "2026-08-10T09:48:00Z",
     "version": "3.5.5-inter-soft-modern-font",
     "category": "Typography — Set Inter as Soft Modern Primary Font Family",
@@ -2153,6 +2523,17 @@
     "files": [
       "mariano/web/static/css/base.css",
       "mariano/web/static/css/chat/9_live_canvas.css"
+    ]
+  },
+  {
+    "timestamp": "2026-08-10T22:20:00.000000+00:00",
+    "version": "3.4.1-gafb-hmm-research-prototype-v0.1-reality-check",
+    "category": "Algorithmic Finance — GAFB-HMM Research Prototype v0.1 Specifications & Microarchitecture Corrections",
+    "summary": "Revised Option Chain Microstructure Architecture to Research Prototype v0.1 (TRL 1-2) with technical corrections",
+    "details": "Corrected microarchitecture misconceptions: replaced _mm_clflush invalidation misuse with L1 cache-line alignment, corrected 60 cycle / 17ns misprediction math, replaced non-commutative OOO merging with sequence reorder ring buffer, and established rigorous ML validation pipeline (Ground Truth, Precision/Recall, Walk-Forward testing).",
+    "files": [
+      "scratch/ultimate_option_debate_output.txt",
+      "data/evolution_log.json"
     ]
   }
 ]

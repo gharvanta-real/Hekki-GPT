@@ -9,7 +9,7 @@ import { initSettings }    from '/static/js/settings.js';
 import { bindNavigation }  from '/static/js/nav.js';
 import { router, initRouterState } from '/static/js/router.js';
 import { SearchModal }     from '/static/js/components/search_modal.js';
-import { SkillsPage }      from '/static/js/pages/skills_page.js';
+import { SkillsPage }      from '/static/js/pages/skills_page.js?v=205';
 import { handleChatAgentEvent } from '/static/js/agent_stream.js';
 import { sounds } from '/static/js/sound_effects.js';
 
@@ -45,6 +45,29 @@ if ('serviceWorker' in navigator) {
   });
 }
 
+// ── Boot-time Font Restore (runs instantly, zero flash) ───────────────────
+(function _restoreFont() {
+  const FONT_MAP = {
+    'system':           '-apple-system-body, ui-sans-serif, "Segoe UI", Roboto, sans-serif',
+    'lato':             '"Lato", ui-sans-serif, sans-serif',
+    'karla':            '"Karla", ui-sans-serif, sans-serif',
+    'cabin':            '"Cabin", ui-sans-serif, sans-serif',
+    'mulish':           '"Mulish", ui-sans-serif, sans-serif',
+    'assistant':        '"Assistant", ui-sans-serif, sans-serif',
+    'alegreya-sans':    '"Alegreya Sans", ui-sans-serif, sans-serif',
+    'source-sans':      '"Source Sans 3", ui-sans-serif, sans-serif',
+    'lora':             '"Lora", ui-serif, serif',
+    'merriweather-sans':'"Merriweather Sans", ui-sans-serif, sans-serif',
+    'varela-round':     '"Varela Round", ui-sans-serif, sans-serif',
+  };
+  const key   = localStorage.getItem('hekki_font') || 'system';
+  const stack = FONT_MAP[key] || FONT_MAP['system'];
+  document.documentElement.style.setProperty('--font', stack);
+  document.documentElement.style.setProperty('--font-sans', stack);
+  document.documentElement.style.setProperty('--font-serif', stack);
+  document.documentElement.style.setProperty('--font-ai', stack);
+})();
+
 let deferredPwaPrompt = null;
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
@@ -67,6 +90,28 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+
+  // Double-enforce font persistence — CSS custom props from stylesheet
+  // load synchronously before this, so inline style always wins here.
+  const FONT_MAP_BOOT = {
+    'system':           '-apple-system-body, ui-sans-serif, "Segoe UI", Roboto, sans-serif',
+    'lato':             '"Lato", ui-sans-serif, sans-serif',
+    'karla':            '"Karla", ui-sans-serif, sans-serif',
+    'cabin':            '"Cabin", ui-sans-serif, sans-serif',
+    'mulish':           '"Mulish", ui-sans-serif, sans-serif',
+    'assistant':        '"Assistant", ui-sans-serif, sans-serif',
+    'alegreya-sans':    '"Alegreya Sans", ui-sans-serif, sans-serif',
+    'source-sans':      '"Source Sans 3", ui-sans-serif, sans-serif',
+    'lora':             '"Lora", ui-serif, serif',
+    'merriweather-sans':'"Merriweather Sans", ui-sans-serif, sans-serif',
+    'varela-round':     '"Varela Round", ui-sans-serif, sans-serif',
+  };
+  const _fk    = localStorage.getItem('hekki_font') || 'system';
+  const _stack = FONT_MAP_BOOT[_fk] || FONT_MAP_BOOT['system'];
+  document.documentElement.style.setProperty('--font', _stack);
+  document.documentElement.style.setProperty('--font-sans', _stack);
+  document.documentElement.style.setProperty('--font-serif', _stack);
+  document.documentElement.style.setProperty('--font-ai', _stack);
 });
 
 

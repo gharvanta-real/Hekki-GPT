@@ -140,7 +140,7 @@ export class SkillsPage {
 
   toggleActiveCollapsible() {
     this._activeCollapsibleOpen = !this._activeCollapsibleOpen;
-    this.render();
+    this._renderCatalogGrid();
   }
 
   mount(container) {
@@ -191,7 +191,15 @@ export class SkillsPage {
     this.render();
   }
 
-  _renderCatalog() {
+  _renderCatalogGrid() {
+    const gridContainer = this._root ? this._root.querySelector('#skills-grid-container') : null;
+    if (!gridContainer) return;
+
+    const activeInput = document.activeElement;
+    const isSearchInput = activeInput && activeInput.id === 'skills-search-input';
+    const selStart = isSearchInput ? activeInput.selectionStart : null;
+    const selEnd = isSearchInput ? activeInput.selectionEnd : null;
+
     const activeList = this._skills.filter(s => s.enabled !== false);
     const filtered = this._skills.filter(item => {
       if (!this._searchQuery) return true;
@@ -204,11 +212,59 @@ export class SkillsPage {
 
     const categories = ['Core Intelligence', 'System & Files', 'Web & Search', 'Media & Utilities'];
 
+    gridContainer.innerHTML = `
+      <!-- ACTIVE SKILLS PILLS (COLLAPSIBLE, DEFAULT COLLAPSED) -->
+      <div style="margin-bottom:24px;">
+        <div onclick="window.skillsPageInstance.toggleActiveCollapsible()" style="font-size:11.5px; font-weight:600; color:var(--text-3); margin-bottom:8px; display:inline-flex; align-items:center; gap:6px; cursor:pointer; user-select:none; padding:4px 10px; border-radius:20px; transition:all 0.15s ease;" onmouseover="this.style.background='var(--hover)';" onmouseout="this.style.background='transparent';">
+          <i data-lucide="${this._activeCollapsibleOpen ? 'chevron-down' : 'chevron-right'}" style="width:14px; height:14px;"></i>
+          <span>Active Capabilities</span>
+          <span style="font-size:10.5px; background:var(--input-bg); padding:1px 8px; border-radius:20px; color:var(--text-2);">${activeList.length}</span>
+          <span style="font-size:10px; color:var(--text-3); font-weight:400; margin-left:2px;">(${this._activeCollapsibleOpen ? 'collapse' : 'expand'})</span>
+        </div>
+        <div style="display:${this._activeCollapsibleOpen ? 'flex' : 'none'}; gap:8px; flex-wrap:wrap; align-items:center; margin-top:6px;">
+          ${activeList.length === 0 ? `
+            <div style="font-size:11.5px; color:var(--text-3); background:var(--card); border:none !important; padding:8px 14px; border-radius:20px; width:100%; box-sizing:border-box;">
+              No active capabilities. Click the <strong>＋ icon</strong> on any skill below to enable.
+            </div>
+          ` : activeList.map(s => `
+            <div onclick="window.skillsPageInstance.showDetail('${s.name}')" style="display:flex; align-items:center; gap:8px; background:var(--card); border:none !important; padding:6px 14px; border-radius:20px; cursor:pointer; transition:background 0.15s ease;" onmouseover="this.style.background='var(--hover)';" onmouseout="this.style.background='var(--card)';">
+              ${getSkillRealLogoSvg(s.name, 16)}
+              <span style="font-size:12px; font-weight:600; color:var(--text);">${esc(formatSkillName(s.name))}</span>
+              <span style="width:6px; height:6px; border-radius:50%; background:#16a34a; margin-left:2px;"></span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+
+      <!-- CATEGORIZED 2-COLUMN GRID -->
+      ${categories.map(cat => {
+        const items = filtered.filter(i => getSkillCategory(i.name, i.tags) === cat);
+        if (items.length === 0) return '';
+        return `
+          <div style="margin-bottom:28px;">
+            <h3 style="font-size:13px; font-weight:600; color:var(--text); margin-bottom:10px;">${cat}</h3>
+            <div style="display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:10px;">
+              ${items.map(item => this._renderSkillCard(item)).join('')}
+            </div>
+          </div>
+        `;
+      }).join('')}
+    `;
+
+    if (window.lucide) lucide.createIcons({ parent: gridContainer });
+
+    if (isSearchInput && document.body.contains(activeInput)) {
+      activeInput.focus();
+      if (selStart !== null && selEnd !== null) {
+        try { activeInput.setSelectionRange(selStart, selEnd); } catch (e) {}
+      }
+    }
+  }
+
+  _buildShell() {
     this._root.innerHTML = `
       <div class="skills-wrapper" style="display:flex; flex-direction:column; width:100%; height:100%; flex:1; min-width:0; overflow-y:auto; padding:40px 24px 48px; background:var(--bg); color:var(--text); font-family:var(--font); box-sizing:border-box;">
         <div style="max-width:780px; margin:0 auto; width:100%;">
-          
-          <!-- TOP HEADER -->
           <div style="display:flex; align-items:center; justify-content:space-between; margin-top:8px; margin-bottom:24px; width:100%;">
             <div>
               <h1 style="font-size:18px; font-weight:600; color:var(--text); margin:0;">Capabilities &amp; Skills</h1>
@@ -217,64 +273,33 @@ export class SkillsPage {
             <div style="display:flex; align-items:center; gap:10px;">
               <div style="position:relative; width:220px;">
                 <i data-lucide="search" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); width:13px; height:13px; color:var(--text-3);"></i>
-                <input type="text" id="skills-search-input" value="${esc(this._searchQuery)}" placeholder="Search skills..." style="width:100%; height:30px; padding:0 12px 0 32px; background:var(--input-bg); border:none !important; border-radius:20px; color:var(--text); font-size:11.5px; outline:none !important; box-shadow:none !important;" />
+                <input type="text" id="skills-search-input" placeholder="Search skills..." style="width:100%; height:30px; padding:0 12px 0 32px; background:var(--input-bg); border:none !important; border-radius:20px; color:var(--text); font-size:11.5px; outline:none !important; box-shadow:none !important;" />
               </div>
-              <button onclick="window.skillsPageInstance.cleanStats()" title="Reset call statistics across all capabilities" style="height:30px; padding:0 14px; background:var(--input-bg); border:none !important; border-radius:20px; color:var(--text-2); font-size:11.5px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:5px; transition:background 0.15s ease;" onmouseover="this.style.background='var(--hover)';" onmouseout="this.style.background='var(--input-bg)';">
+              <button onclick="window.skillsPageInstance.cleanStats()" title="Reset call statistics" style="height:30px; padding:0 14px; background:var(--input-bg); border:none !important; border-radius:20px; color:var(--text-2); font-size:11.5px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:5px; transition:background 0.15s ease;" onmouseover="this.style.background='var(--hover)';" onmouseout="this.style.background='var(--input-bg)';">
                 <i data-lucide="refresh-cw" style="width:12px; height:12px;"></i>
                 <span>Clean Stats</span>
               </button>
             </div>
           </div>
-
-          <!-- ACTIVE SKILLS PILLS (COLLAPSIBLE, DEFAULT COLLAPSED) -->
-          <div style="margin-bottom:24px;">
-            <div onclick="window.skillsPageInstance.toggleActiveCollapsible()" style="font-size:11.5px; font-weight:600; color:var(--text-3); margin-bottom:8px; display:inline-flex; align-items:center; gap:6px; cursor:pointer; user-select:none; padding:4px 10px; border-radius:20px; transition:all 0.15s ease;" onmouseover="this.style.background='var(--hover)';" onmouseout="this.style.background='transparent';">
-              <i data-lucide="${this._activeCollapsibleOpen ? 'chevron-down' : 'chevron-right'}" style="width:14px; height:14px;"></i>
-              <span>Active Capabilities</span>
-              <span style="font-size:10.5px; background:var(--input-bg); padding:1px 8px; border-radius:20px; color:var(--text-2);">${activeList.length}</span>
-              <span style="font-size:10px; color:var(--text-3); font-weight:400; margin-left:2px;">(${this._activeCollapsibleOpen ? 'collapse' : 'expand'})</span>
-            </div>
-            <div style="display:${this._activeCollapsibleOpen ? 'flex' : 'none'}; gap:8px; flex-wrap:wrap; align-items:center; margin-top:6px;">
-              ${activeList.length === 0 ? `
-                <div style="font-size:11.5px; color:var(--text-3); background:var(--card); border:none !important; padding:8px 14px; border-radius:20px; width:100%; box-sizing:border-box;">
-                  No active capabilities. Click the <strong>＋ icon</strong> on any skill below to enable.
-                </div>
-              ` : activeList.map(s => `
-                <div onclick="window.skillsPageInstance.showDetail('${s.name}')" style="display:flex; align-items:center; gap:8px; background:var(--card); border:none !important; padding:6px 14px; border-radius:20px; cursor:pointer; transition:background 0.15s ease;" onmouseover="this.style.background='var(--hover)';" onmouseout="this.style.background='var(--card)';">
-                  ${getSkillRealLogoSvg(s.name, 16)}
-                  <span style="font-size:12px; font-weight:600; color:var(--text);">${esc(formatSkillName(s.name))}</span>
-                  <span style="width:6px; height:6px; border-radius:50%; background:#16a34a; margin-left:2px;"></span>
-                </div>
-              `).join('')}
-            </div>
-          </div>
-
-          <!-- CATEGORIZED 2-COLUMN GRID -->
-          ${categories.map(cat => {
-            const items = filtered.filter(i => getSkillCategory(i.name, i.tags) === cat);
-            if (items.length === 0) return '';
-            return `
-              <div style="margin-bottom:28px;">
-                <h3 style="font-size:13px; font-weight:600; color:var(--text); margin-bottom:10px;">${cat}</h3>
-                <div style="display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:10px;">
-                  ${items.map(item => this._renderSkillCard(item)).join('')}
-                </div>
-              </div>
-            `;
-          }).join('')}
-
+          <div id="skills-grid-container"></div>
         </div>
       </div>
     `;
-
-    if (window.lucide) lucide.createIcons();
+    if (window.lucide) lucide.createIcons({ parent: this._root });
     const input = this._root.querySelector('#skills-search-input');
     if (input) {
       input.addEventListener('input', (e) => {
         this._searchQuery = e.target.value;
-        this._renderCatalog();
+        this._renderCatalogGrid();
       });
     }
+  }
+
+  _renderCatalog() {
+    if (!this._root.querySelector('#skills-grid-container')) {
+      this._buildShell();
+    }
+    this._renderCatalogGrid();
   }
 
   _renderSkillCard(item) {

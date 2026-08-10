@@ -12,8 +12,14 @@ if (window.marked) {
           if (!href) return text || '';
           const titleAttr = title ? ` title="${escapeHtmlLocal(title)}"` : '';
           const isExternal = /^https?:\/\//i.test(href) || /^www\./i.test(href);
-          const isFile = /^file:\/\/\//i.test(href);
-          const fullHref = /^www\./i.test(href) ? `https://${href}` : href;
+          const isFile = /^file:\/\/\//i.test(href) || /^file:\/\//i.test(href) || /^[a-zA-Z]:[\\\/]/.test(href);
+
+          let fullHref = /^www\./i.test(href) ? `https://${href}` : href;
+          if (isFile) {
+            const cleanPath = fullHref.replace(/^file:\/\/\//i, '').replace(/^file:\/\//i, '').replace(/\\/g, '/');
+            fullHref = `/api/workspace/render?path=${encodeURIComponent(cleanPath)}`;
+          }
+
           const target = (isExternal || isFile) ? ' target="_blank" rel="noopener noreferrer"' : '';
 
           let linkClass = 'chat-link';
@@ -23,7 +29,7 @@ if (window.marked) {
             iconMarkup = `<i data-lucide="external-link" class="chat-link-icon" style="width:12px;height:12px;display:inline-block;vertical-align:middle;margin-left:3px;"></i>`;
           } else if (isFile) {
             linkClass += ' file-link';
-            iconMarkup = `<i data-lucide="file-text" class="chat-link-icon"></i>`;
+            iconMarkup = `<i data-lucide="file-text" class="chat-link-icon" style="width:12px;height:12px;display:inline-block;vertical-align:middle;margin-left:3px;"></i>`;
           }
 
           return `<a href="${escapeHtmlLocal(fullHref)}"${titleAttr}${target} class="${linkClass}">${text || href}${iconMarkup}</a>`;

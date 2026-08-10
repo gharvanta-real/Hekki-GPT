@@ -62,7 +62,7 @@ function _buildLayout() {
           <!-- Sidebar Controls List -->
           <div class="debate-sidebar-controls-list">
             <button class="debate-list-btn" id="btn-sidebar-new-debate" title="New Debate">
-              <i data-lucide="message-circle-plus" style="width: 15px; height: 15px; margin-right: 8px;"></i>
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-compose" style="width:15px; height:15px; margin-right:8px; display:inline-block; vertical-align:middle; flex-shrink:0;"><path d="M10 3H7a4 4 0 0 0-4 4v9a4 4 0 0 0 4 4h10a4 4 0 0 0 4-4v-4"></path><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"></path></svg>
               <span>New Debate</span>
             </button>
             <button class="debate-list-btn" id="btn-sidebar-research-directory" title="Research Directory">
@@ -184,7 +184,7 @@ function _buildLayout() {
               <span>Toggle Theme</span>
             </button>
             <button class="user-menu-item" id="btn-debate-user-plugins">
-              <i data-lucide="plug" style="width: 16px; height: 16px; margin-right: 8px;"></i>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-plugins" style="width:16px; height:16px; margin-right:8px; display:inline-block; vertical-align:middle; flex-shrink:0;"><path d="M9 2v6M15 2v6M12 17v5M5 8h14a1 1 0 0 1 1 1v4a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V9a1 1 0 0 1 1-1z"></path></svg>
               <span>Plugins & Connectors</span>
             </button>
             <button class="user-menu-item" id="btn-debate-user-skills">
@@ -262,7 +262,7 @@ function _buildLayout() {
                 </button>
                 <div class="doc-viewer-controls" style="display: flex; align-items: center; gap: 4px;">
                   <button class="doc-icon-btn" id="btn-doc-go-chat" title="View Chat" style="display: none; background: transparent; border: none !important; box-shadow: none !important; cursor: pointer; padding: 6px; border-radius: 6px; color: var(--text-secondary); align-items: center; justify-content: center;">
-                    <i data-lucide="square-pen" style="width:15px; height:15px;"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-compose" style="width:15px; height:15px; display:inline-block; vertical-align:middle; flex-shrink:0;"><path d="M10 3H7a4 4 0 0 0-4 4v9a4 4 0 0 0 4 4h10a4 4 0 0 0 4-4v-4"></path><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"></path></svg>
                   </button>
                   <div class="doc-hdr-sep" id="sep-doc-chat" style="display: none; width: 1px; height: 16px; background: var(--border); margin: 0 4px;"></div>
                   

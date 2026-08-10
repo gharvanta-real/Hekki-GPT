@@ -69,12 +69,12 @@
   to { transform: rotate(360deg); }
 }
 
-/* === CHATGPT-STYLE DALL-E IMAGE GENERATION CARD & FLUID WAVE ANIMATION === */
+/* === IMAGE GENERATION CARD & SWEEPING SHIMMER EFFECT === */
 .chat-image-generating-card {
   width: 360px;
   height: 360px;
   border-radius: 24px !important;
-  background: var(--input-bg, #f4f4f6);
+  background: var(--card, #18181b);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -85,12 +85,11 @@
   border: none !important;
   box-shadow: none !important;
   outline: none !important;
-  transition: all 0.25s ease;
 }
 
 body.dark .chat-image-generating-card,
 body.oled .chat-image-generating-card {
-  background: #27272a;
+  background: #18181b;
   border: none !important;
   box-shadow: none !important;
 }
@@ -101,16 +100,64 @@ body.oled .chat-image-generating-card {
   left: 22px;
   font-size: 14.5px;
   font-weight: 600;
-  color: var(--text-2, #52525b);
-  z-index: 2;
+  color: var(--text-primary);
+  z-index: 3;
   display: flex;
   align-items: center;
   gap: 8px;
+  font-family: var(--font);
 }
 
-body.dark .chat-image-gen-header,
-body.oled .chat-image-gen-header {
-  color: #a1a1aa;
+.image-generation-center-content {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+
+/* Sweeping Shimmer Overlay Pass */
+.image-generation-shimmer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    110deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.04) 30%,
+    rgba(255, 255, 255, 0.16) 50%,
+    rgba(255, 255, 255, 0.04) 70%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer-sweep 2s infinite linear;
+  pointer-events: none;
+  z-index: 2;
+}
+
+body:not(.dark):not(.oled) .image-generation-shimmer {
+  background: linear-gradient(
+    110deg,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.03) 30%,
+    rgba(0, 0, 0, 0.09) 50%,
+    rgba(0, 0, 0, 0.03) 70%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  background-size: 200% 100%;
+}
+
+@keyframes shimmer-sweep {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
 }
 
 /* Fluid Wave Bar Animation */
