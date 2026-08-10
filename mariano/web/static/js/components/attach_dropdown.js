@@ -9,7 +9,12 @@ const ARENA_MODELS = [
   { id: 'gemini-3.1-flash-lite', name: 'Gemini 3.1 Flash Lite' }
 ];
 
+let _attachDropdownsBound = false;
+
 export function initAttachDropdowns(inConversationState) {
+  if (_attachDropdownsBound) return;
+  _attachDropdownsBound = true;
+
   const $ = (id) => document.getElementById(id);
   const fileInput = $('attach-file-input');
   

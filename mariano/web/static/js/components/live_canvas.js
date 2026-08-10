@@ -305,17 +305,20 @@ export class LiveCanvasEngine {
     // 3-dot dropdown menu toggle
     const moreBtn = this._appPane.querySelector('#canvas-btn-more');
     const dropdownMenu = this._appPane.querySelector('#canvas-dropdown-menu');
+    if (this._dropdownClickListener) document.removeEventListener('click', this._dropdownClickListener);
+    
     if (moreBtn && dropdownMenu) {
       moreBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         dropdownMenu.classList.toggle('hidden');
       });
 
-      document.addEventListener('click', (e) => {
+      this._dropdownClickListener = (e) => {
         if (!dropdownMenu.contains(e.target) && e.target !== moreBtn) {
           dropdownMenu.classList.add('hidden');
         }
-      });
+      };
+      document.addEventListener('click', this._dropdownClickListener);
     }
 
     // Close button
@@ -440,7 +443,9 @@ export class LiveCanvasEngine {
         updateLineNumbers();
       });
 
-      window.addEventListener('resize', updateLineNumbers);
+      if (this._resizeListener) window.removeEventListener('resize', this._resizeListener);
+      this._resizeListener = updateLineNumbers;
+      window.addEventListener('resize', this._resizeListener);
 
       if (lineNumbers) {
         codeInput.addEventListener('scroll', () => {

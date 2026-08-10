@@ -125,9 +125,15 @@ async def save_canvas_artifact(req: CanvasSaveRequest):
     workspace_dir.mkdir(parents=True, exist_ok=True)
     safe_filename = Path(req.filename).name
     file_path = workspace_dir / safe_filename
-    with open(file_path, "w", encoding="utf-8") as f:
-        f.write(req.code)
-    return {"status": "ok", "filename": safe_filename, "path": str(file_path.resolve())}
+    try:
+        with open(file_path, "w", encoding="utf-8") as f:
+            f.write(req.code)
+        return {"status": "ok", "filename": safe_filename, "path": str(file_path.resolve())}
+    except Exception as e:
+        import structlog
+        structlog.get_logger(__name__).error("failed_to_save_canvas", filename=safe_filename, error=str(e))
+        from fastapi import HTTPException
+        raise HTTPException(status_code=500, detail="Failed to save canvas artifact to disk")
 
 
 @router.get("/overlay")

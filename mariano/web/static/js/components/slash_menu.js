@@ -6,6 +6,10 @@
 
 export class SlashMenuManager {
   constructor(sendCallback) {
+    if (window._slashMenuBound) return window.slashMenu;
+    window._slashMenuBound = true;
+    window.slashMenu = this;
+
     this.sendCallback = sendCallback;
     this.activeInput = null;
     this.activeTag = null;

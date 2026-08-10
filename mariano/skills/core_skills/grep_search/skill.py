@@ -25,9 +25,15 @@ class GrepSearchSkill(BaseSkill):
         is_regex = kwargs.get("is_regex", kwargs.get("IsRegex", False))
         match_per_line = kwargs.get("match_per_line", kwargs.get("MatchPerLine", True))
         includes = kwargs.get("includes", kwargs.get("Includes", []))
+        if includes is None:
+            includes = []
+        if not isinstance(includes, list):
+            includes = [includes]
+        includes = [i for i in includes if i]
 
         if not query:
             return SkillResult(success=False, data=None, error="Parameter 'query' is required.")
+        query = str(query)
 
         try:
             active_proj_path = PathGuard.get_active_project_path()

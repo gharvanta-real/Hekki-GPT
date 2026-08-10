@@ -4,7 +4,12 @@
  * Client-only     → localStorage (theme only)
  */
 
+let _settingsBound = false;
+
 export function initSettings(setGreetingCallback) {
+  if (_settingsBound) return;
+  _settingsBound = true;
+
   const $ = id => document.getElementById(id);
   const modal   = $('settings-modal');
   const openBtn = $('btn-open-settings');

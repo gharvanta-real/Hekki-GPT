@@ -49,6 +49,9 @@ class MemoryManager:
         if not chat_id:
             return self._default_context
         if chat_id not in self._contexts:
+            if len(self._contexts) > 100:
+                oldest = next(iter(self._contexts))
+                del self._contexts[oldest]
             self._contexts[chat_id] = ContextWindow(chat_id=chat_id)
         return self._contexts[chat_id]
 

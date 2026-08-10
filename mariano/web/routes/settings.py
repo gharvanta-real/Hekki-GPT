@@ -49,7 +49,7 @@ async def get_local_models(base_url: str | None = None):
     """Dynamically queries the local server (Ollama / LM Studio / vLLM / LiteLLM)
     for all installed/available models via standard /v1/models or /api/tags endpoints.
     """
-    import urllib.request
+    import httpx
     import json
 
     settings = get_settings()
@@ -63,12 +63,12 @@ async def get_local_models(base_url: str | None = None):
         f"{target_url}/api/tags"  # Ollama native fallback
     ]
 
-    for url in urls_to_try:
-        try:
-            req = urllib.request.Request(url, headers={"User-Agent": "Hekki-Assistant/1.0"})
-            with urllib.request.urlopen(req, timeout=3) as resp:
-                if resp.status == 200:
-                    data = json.loads(resp.read().decode("utf-8"))
+    async with httpx.AsyncClient(timeout=3.0) as client:
+        for url in urls_to_try:
+            try:
+                resp = await client.get(url, headers={"User-Agent": "Hekki-Assistant/1.0"})
+                if resp.status_code == 200:
+                    data = resp.json()
                     if "data" in data and isinstance(data["data"], list):
                         for m in data["data"]:
                             m_id = m.get("id") or m.get("name")
@@ -81,8 +81,10 @@ async def get_local_models(base_url: str | None = None):
                                 models.append(m_name)
                     if models:
                         break
-        except Exception:
-            continue
+            except Exception as e:
+                import structlog
+                structlog.get_logger(__name__).error("failed_to_fetch_models", url=url, error=str(e))
+                continue
 
     if not models:
         models = [settings.active_ollama_model, "qwen2.5-coder", "llama3", "deepseek-r1", "mistral"]
@@ -152,8 +154,14 @@ async def update_api_settings(req: SettingsUpdateRequest):
     if req.kaggle_api_key is not None:
         update_dict["kaggle_api_key"] = req.kaggle_api_key
         os.environ["KAGGLE_KEY"] = req.kaggle_api_key
-    settings.save_dynamic_config(update_dict)
-    return {"success": True}
+    try:
+        settings.save_dynamic_config(update_dict)
+        return {"success": True}
+    except Exception as e:
+        from fastapi import HTTPException
+        import structlog
+        structlog.get_logger(__name__).error("failed_to_save_settings", error=str(e))
+        raise HTTPException(status_code=500, detail="Failed to save settings to disk")
 
 
 @router.post("/api/kaggle/verify")
@@ -180,9 +188,18 @@ async def verify_kaggle_connection(payload: dict):
         try: os.chmod(kaggle_file, 0o600)
         except Exception: pass
     try:
-        res = subprocess.run(["kaggle", "competitions", "list"], capture_output=True, text=True, timeout=8)
-        if res.returncode == 0 or "title" in res.stdout.lower():
+        import asyncio
+        proc = await asyncio.create_subprocess_exec(
+            "kaggle", "competitions", "list",
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE
+        )
+        stdout, stderr = await asyncio.wait_for(proc.communicate(), timeout=8.0)
+        stdout_text = stdout.decode("utf-8") if stdout else ""
+        if proc.returncode == 0 or "title" in stdout_text.lower():
             return {"success": True, "message": "Kaggle API Token Verified!"}
         return {"success": True, "message": "Kaggle Token Saved (~/.kaggle/access_token written)"}
-    except Exception:
+    except Exception as e:
+        import structlog
+        structlog.get_logger(__name__).error("kaggle_verification_failed", error=str(e))
         return {"success": True, "message": "Kaggle Token Saved (~/.kaggle/access_token written)"}

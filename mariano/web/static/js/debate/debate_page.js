@@ -475,9 +475,13 @@ function _bindEvents() {
       });
     });
 
-    document.addEventListener('click', () => {
-      if (topbarRoundsMenu) topbarRoundsMenu.classList.remove('show');
-    });
+    if (!window._topbarRoundsMenuClickBound) {
+      document.addEventListener('click', () => {
+        const menu = document.getElementById('topbar-rounds-menu');
+        if (menu) menu.classList.remove('show');
+      });
+      window._topbarRoundsMenuClickBound = true;
+    }
   }
 
   _syncRoundsSelect('main');
@@ -528,9 +532,13 @@ function _bindEvents() {
       e.stopPropagation();
       exportMenu.classList.toggle('show');
     });
-    document.addEventListener('click', () => {
-      exportMenu.classList.remove('show');
-    });
+    if (!window._docExportMenuClickBound) {
+      document.addEventListener('click', () => {
+        const menu = document.getElementById('doc-export-menu');
+        if (menu) menu.classList.remove('show');
+      });
+      window._docExportMenuClickBound = true;
+    }
   }
 
   exportMenu?.querySelectorAll('.dropdown-item').forEach(item => {
@@ -565,9 +573,13 @@ function _bindEvents() {
       $('doc-export-menu')?.classList.remove('show');
       docsDropdownMenu.classList.toggle('show');
     });
-    document.addEventListener('click', () => {
-      docsDropdownMenu.classList.remove('show');
-    });
+    if (!window._docsDropdownMenuClickBound) {
+      document.addEventListener('click', () => {
+        const menu = document.getElementById('debate-docs-dropdown-menu');
+        if (menu) menu.classList.remove('show');
+      });
+      window._docsDropdownMenuClickBound = true;
+    }
   }
 
   // Action: Clean All Saved Documents
@@ -688,9 +700,13 @@ function _bindEvents() {
       e.stopPropagation();
       debateUserMenuDropdown.classList.toggle('hidden');
     });
-    document.addEventListener('click', () => {
-      debateUserMenuDropdown.classList.add('hidden');
-    });
+    if (!window._debateUserMenuClickBound) {
+      document.addEventListener('click', () => {
+        const menu = document.getElementById('debate-user-menu-dropdown');
+        if (menu) menu.classList.add('hidden');
+      });
+      window._debateUserMenuClickBound = true;
+    }
   }
 
   $('btn-debate-user-settings')?.addEventListener('click', (e) => {
@@ -1022,9 +1038,10 @@ function _resetDebate() {
 
 // ── Debate event handler ─────────────────────────────────────────────────────
 export function handleDebateEvent(event) {
-  const { kind, sender, target, data, round } = event;
+  try {
+    const { kind, sender, target, data, round } = event;
 
-  switch (kind) {
+    switch (kind) {
     case 'init': {
       ALPHA_NAME = event.alpha_name || 'Tony Stark';
       BETA_NAME = event.beta_name || 'Bruce Banner';
@@ -1166,7 +1183,7 @@ export function handleDebateEvent(event) {
           if (window.loadSimulationDetail) {
             window.loadSimulationDetail(data.filename);
           }
-        });
+        }).catch(err => console.error("Simulation list load error:", err));
       }
       if (window.showToast) {
         window.showToast("Autonomous Simulation Complete", `AI solved and loaded ${data.name} in 3D.`, 4000);
@@ -1253,6 +1270,9 @@ export function handleDebateEvent(event) {
       appendHudLog(`✕ Failed: Debate error in agent ${_nameOf(sender)}: ${data}`);
       break;
     }
+    }
+  } catch (err) {
+    console.error('Error handling debate event:', err);
   }
 }
 
@@ -1451,7 +1471,7 @@ function _makeBubbleCollapsibleAndCopyable(bubble, text) {
           copyBtn.innerHTML = `<i data-lucide="copy" style="width:14px; height:14px; margin-right:4px;"></i><span>Copy</span>`;
           if (window.lucide) lucide.createIcons({ parent: copyBtn });
         }, 3000);
-      });
+      }).catch(err => console.error("Clipboard copy error:", err));
     });
   }, 50);
 }
@@ -2236,7 +2256,9 @@ function _documentaryToMarkdown(doc) {
     }
   });
   return md;
-}function _copyAllDebateContent() {
+}
+
+function _copyAllDebateContent() {
   const activeId = localStorage.getItem('mariano_active_chat_id');
   if (!activeId) return;
 

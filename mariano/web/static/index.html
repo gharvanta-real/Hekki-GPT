@@ -47,40 +47,64 @@
         <i data-lucide="check-circle" style="width:13px;height:13px;"></i> Saved
       </div>
 
-      <!-- IDENTITY -->
+      <!-- IDENTITY (General) -->
       <section class="settings-section active" id="section-general">
         <h2 class="section-title">Identity</h2>
         <p class="section-sub">How Hekki addresses you and understands your context.</p>
-        <div class="settings-row border-b">
-          <span class="row-label">Your name</span>
-          <input class="settings-input" type="text" id="settings-user-name" placeholder="e.g. Anshu" style="width:180px;">
+
+        <!-- Top Promo Hero Banner (ChatGPT Style) -->
+        <div class="settings-promo-card">
+          <div class="settings-promo-left">
+            <div class="settings-promo-icon">
+              <i data-lucide="sparkles" style="width:16px;height:16px;"></i>
+            </div>
+            <div>
+              <div class="settings-promo-title">Personalized Assistant Context</div>
+              <div class="settings-promo-desc">Hekki remembers your preferences and constraints across all chats.</div>
+            </div>
+          </div>
         </div>
-        <h2 class="section-title" style="margin-top:28px">Custom Instructions</h2>
-        <p class="section-sub">Hekki will follow these rules in every conversation — tone, style, language, constraints.</p>
-        <textarea class="settings-textarea" id="settings-user-instructions" placeholder="e.g. Always reply in Hinglish. Be concise. Never use bullet points unless asked."></textarea>
-        <div style="display:flex;justify-content:flex-end;margin-top:10px;">
-          <button id="btn-save-identity" style="padding:7px 18px;background:var(--text-primary);color:var(--bg);border:none;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;">Save</button>
+
+        <div class="settings-row">
+          <div class="row-info">
+            <span class="row-label">Your Name</span>
+            <span class="row-desc">The name Hekki uses to address you in conversation.</span>
+          </div>
+          <input class="settings-input" type="text" id="settings-user-name" placeholder="e.g. Anshu" style="width:180px; text-align:left;">
+        </div>
+
+        <div style="margin-top:20px; padding-top:14px; border-top:1px solid var(--border);">
+          <div class="row-info" style="margin-bottom:10px;">
+            <span class="row-label">Custom Instructions</span>
+            <span class="row-desc">Rules Hekki will strictly follow in every conversation — tone, style, language, constraints.</span>
+          </div>
+          <textarea class="settings-textarea" id="settings-user-instructions" placeholder="e.g. Always reply in Hinglish. Be concise. Never use bullet points unless asked."></textarea>
+          <div style="display:flex;justify-content:flex-end;margin-top:14px;">
+            <button id="btn-save-identity" class="btn-pill-save">Save Identity</button>
+          </div>
         </div>
       </section>
 
       <!-- APPEARANCE -->
       <section class="settings-section" id="section-appearance">
         <h2 class="section-title">Appearance</h2>
-        <p class="section-sub">Visual theme of the Hekki interface.</p>
-        <div class="settings-row border-b">
-          <span class="row-label">Theme</span>
+        <p class="section-sub">Visual theme and overlay preferences for the Hekki interface.</p>
+
+        <div class="settings-row">
+          <div class="row-info">
+            <span class="row-label">Interface Theme</span>
+            <span class="row-desc">Select between OLED Pure Black or Light Mode aesthetic.</span>
+          </div>
           <div class="theme-toggle-group">
             <button class="theme-opt" data-theme="oled" title="OLED Black"><i data-lucide="moon"></i></button>
             <button class="theme-opt" data-theme="light" title="Light Mode"><i data-lucide="sun"></i></button>
           </div>
         </div>
-        <div class="settings-row border-b">
-          <div style="display:flex;flex-direction:column;gap:2px;">
-            <span class="row-label" style="display:flex;align-items:center;gap:7px;">
-              <i data-lucide="mic" style="width:14px;height:14px;color:var(--text-3);"></i>
-              Quick Voice Overlay
-            </span>
-            <span style="font-size:12px;color:var(--text-3);">Ctrl+Shift+Space to open a mini voice assistant anywhere on your desktop</span>
+
+        <div class="settings-row">
+          <div class="row-info">
+            <span class="row-label">Quick Voice Overlay</span>
+            <span class="row-desc">Press Ctrl+Shift+Space anywhere on your desktop to invoke Hekki voice mini-hud.</span>
           </div>
           <label class="toggle-switch">
             <input type="checkbox" id="settings-quick-voice" checked>
@@ -91,22 +115,28 @@
 
       <!-- GEMINI API -->
       <section class="settings-section" id="section-gemini">
-        <h2 class="section-title">Gemini API Key</h2>
-        <p class="section-sub">Required to use Hekki with Gemini. Get your key from <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:var(--text-primary);text-decoration:underline;">Google AI Studio &rarr;</a></p>
-        <div class="settings-row border-b" style="flex-direction:column;align-items:flex-start;gap:8px;">
-          <div style="display:flex;gap:8px;align-items:center;width:100%;">
-            <input class="settings-input" id="settings-gemini-key" type="password" placeholder="AIza..." style="flex:1;font-family:monospace;">
-            <button id="btn-toggle-key-visibility" style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text-2);cursor:pointer;font-size:12px;">
+        <h2 class="section-title">Gemini API &amp; Model Selection</h2>
+        <p class="section-sub">Configure your Google Gemini API Key and active reasoning model.</p>
+
+        <div class="settings-row" style="flex-direction:column; align-items:flex-start; gap:8px; padding-bottom:18px;">
+          <div class="row-info" style="width:100%;">
+            <span class="row-label">Google Gemini API Key</span>
+            <span class="row-desc">Get your free key from <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:var(--text-primary);text-decoration:underline;">Google AI Studio &rarr;</a></span>
+          </div>
+          <div style="display:flex; gap:8px; align-items:center; width:100%; margin-top:4px;">
+            <input class="settings-input" id="settings-gemini-key" type="password" placeholder="AIzaSy..." style="flex:1; font-family:monospace; text-align:left;">
+            <button id="btn-toggle-key-visibility" style="padding:7px 12px; border:1px solid var(--border); border-radius:8px; background:var(--hover); color:var(--text-2); cursor:pointer; font-size:12px;">
               <i data-lucide="eye" style="width:14px;height:14px;pointer-events:none;"></i>
             </button>
           </div>
-          <div id="api-key-status" style="font-size:11px;color:var(--text-3);"></div>
+          <div id="api-key-status" style="font-size:11.5px; color:var(--text-3);"></div>
         </div>
 
-        <h2 class="section-title" style="margin-top:28px">Gemini Model</h2>
-        <p class="section-sub">Which Gemini model Hekki uses for responses.</p>
-        <div class="settings-row border-b">
-          <span class="row-label">Active Model</span>
+        <div class="settings-row">
+          <div class="row-info">
+            <span class="row-label">Active Gemini Model</span>
+            <span class="row-desc">Primary AI model used for generating chat responses.</span>
+          </div>
           <select class="settings-select" id="settings-hekki-model">
             <option value="gemini-3.1-flash-lite">Gemini 3.1 Flash Lite (Fast)</option>
             <option value="gemini-3.1-flash">Gemini 3.1 Flash (Pro)</option>
@@ -119,24 +149,39 @@
       <!-- LOCAL GATEWAY -->
       <section class="settings-section" id="section-gateway">
         <h2 class="section-title">Local Universal Model Gateway</h2>
-        <p class="section-sub">Connect Hekki to ANY local model (Ollama, LM Studio, vLLM, Jan.ai, LocalAI, LiteLLM) via standard OpenAI-compatible API. Zero files required per model.</p>
-        <div class="settings-row border-b">
-          <span class="row-label" style="white-space:nowrap;">Enable Local Gateway</span>
-          <label class="toggle-switch"><input type="checkbox" id="settings-use-ollama"><span class="toggle-track"></span></label>
+        <p class="section-sub">Connect Hekki to local models (Ollama, LM Studio, vLLM, Jan.ai) via OpenAI-compatible endpoints.</p>
+
+        <div class="settings-row">
+          <div class="row-info">
+            <span class="row-label">Enable Local Model Gateway</span>
+            <span class="row-desc">Route prompts to local hardware server instead of cloud API.</span>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="settings-use-ollama">
+            <span class="toggle-track"></span>
+          </label>
         </div>
-        <div class="settings-row border-b">
-          <span class="row-label" style="white-space:nowrap;">Local Server Base URL</span>
+
+        <div class="settings-row">
+          <div class="row-info">
+            <span class="row-label">Local Server Base URL</span>
+            <span class="row-desc">Endpoint address of your Ollama or OpenAI-compatible server.</span>
+          </div>
           <div style="display:flex; gap:8px; align-items:center;">
-            <input class="settings-input" id="settings-ollama-url" type="text" placeholder="http://localhost:11434" style="width:200px;">
-            <button id="btn-fetch-local-models" type="button" style="padding:6px 12px; border-radius:8px; border:none; background:var(--hover); color:var(--text); cursor:pointer; font-size:12px; font-weight:500; display:flex; align-items:center; gap:6px;">
+            <input class="settings-input" id="settings-ollama-url" type="text" placeholder="http://localhost:11434" style="width:180px; text-align:left;">
+            <button id="btn-fetch-local-models" type="button" style="padding:6px 12px; border-radius:8px; border:none; background:var(--hover); color:var(--text-primary); cursor:pointer; font-size:12px; font-weight:600; display:flex; align-items:center; gap:6px;">
               <i data-lucide="refresh-cw" style="width:13px;height:13px;"></i> Fetch
             </button>
           </div>
         </div>
-        <div class="settings-row border-b">
-          <span class="row-label" style="white-space:nowrap;">Active Local Model</span>
-          <div style="display:flex; gap:8px; align-items:center; flex:1; justify-content:flex-end;">
-            <select class="settings-input" id="settings-local-model-dropdown" style="width:260px; font-size:12.5px;">
+
+        <div class="settings-row">
+          <div class="row-info">
+            <span class="row-label">Active Local Model</span>
+            <span class="row-desc">Target LLM model running on your local machine.</span>
+          </div>
+          <div style="display:flex; gap:8px; align-items:center;">
+            <select class="settings-select" id="settings-local-model-dropdown" style="max-width:240px;">
               <option value="">Click Fetch or type Base URL...</option>
             </select>
             <input id="settings-ollama-model" type="hidden">
@@ -146,14 +191,18 @@
 
       <!-- REASONING MODE -->
       <section class="settings-section" id="section-reasoning">
-        <h2 class="section-title">Reasoning Mode</h2>
-        <p class="section-sub">How deeply Hekki thinks and plans before responding.</p>
-        <div class="settings-row border-b">
-          <span class="row-label">Thinking Depth</span>
+        <h2 class="section-title">Reasoning &amp; Thinking Depth</h2>
+        <p class="section-sub">Configure how deeply Hekki analyzes and formulates responses.</p>
+
+        <div class="settings-row">
+          <div class="row-info">
+            <span class="row-label">Thinking Depth</span>
+            <span class="row-desc">Higher depth increases planning quality and reasoning steps.</span>
+          </div>
           <select class="settings-select" id="settings-reasoning-mode">
             <option value="fast">Fast — Quick, direct answers</option>
             <option value="normal">Normal — Balanced</option>
-            <option value="pro">Pro — Research and deep analysis</option>
+            <option value="pro">Pro — Deep research &amp; analysis</option>
             <option value="thinking">Thinking — Full chain-of-thought</option>
           </select>
         </div>
@@ -162,33 +211,39 @@
       <!-- KAGGLE GPU ACCELERATOR -->
       <section class="settings-section" id="section-kaggle">
         <h2 class="section-title">Kaggle GPU Cloud Accelerator</h2>
-        <p class="section-sub">Connect your Kaggle account to offload heavy Neural Implicit SDF &amp; B-Rep CAD synthesis to Kaggle Tesla T4/P100 GPUs.</p>
-        
-        <div class="settings-row border-b">
-          <span class="row-label">Kaggle Username</span>
-          <input class="settings-input" type="text" id="settings-kaggle-user" placeholder="e.g. anshu_mariano" style="width:200px;">
+        <p class="section-sub">Offload heavy neural simulations and CAD synthesis to Kaggle Tesla T4/P100 GPUs.</p>
+
+        <div class="settings-row">
+          <div class="row-info">
+            <span class="row-label">Kaggle Username</span>
+            <span class="row-desc">Your Kaggle profile handle.</span>
+          </div>
+          <input class="settings-input" type="text" id="settings-kaggle-user" placeholder="e.g. anshu_mariano" style="width:180px; text-align:left;">
         </div>
 
-        <div class="settings-row border-b">
-          <span class="row-label">Kaggle API Key</span>
-          <div style="display:flex;gap:8px;align-items:center;flex:1;justify-content:flex-end;">
-            <input class="settings-input" type="password" id="settings-kaggle-key" placeholder="e.g. 5f8a..." style="width:220px;font-family:monospace;">
-            <button id="btn-toggle-kaggle-visibility" style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text-2);cursor:pointer;font-size:12px;">
+        <div class="settings-row">
+          <div class="row-info">
+            <span class="row-label">Kaggle API Token</span>
+            <span class="row-desc">Found in your Kaggle Account Settings.</span>
+          </div>
+          <div style="display:flex; gap:8px; align-items:center;">
+            <input class="settings-input" type="password" id="settings-kaggle-key" placeholder="e.g. 5f8a..." style="width:180px; font-family:monospace; text-align:left;">
+            <button id="btn-toggle-kaggle-visibility" style="padding:6px 10px; border:1px solid var(--border); border-radius:8px; background:var(--hover); color:var(--text-2); cursor:pointer; font-size:12px;">
               <i data-lucide="eye" style="width:14px;height:14px;pointer-events:none;"></i>
             </button>
           </div>
         </div>
 
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:18px;">
-          <div id="kaggle-status-badge" style="font-size:12px;color:var(--text-3);display:flex;align-items:center;gap:6px;">
-            <span style="width:8px;height:8px;border-radius:50%;background:#888;display:inline-block;"></span>
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-top:20px; padding-top:14px; border-top:1px solid var(--border);">
+          <div id="kaggle-status-badge" style="font-size:12px; color:var(--text-3); display:flex; align-items:center; gap:6px;">
+            <span style="width:8px; height:8px; border-radius:50%; background:#888; display:inline-block;"></span>
             <span id="kaggle-status-text">Not Verified</span>
           </div>
-          <div style="display:flex;gap:8px;">
-            <button id="btn-test-kaggle" style="padding:7px 16px;background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border);border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;">
+          <div style="display:flex; gap:8px;">
+            <button id="btn-test-kaggle" style="padding:7px 16px; background:var(--hover); color:var(--text-primary); border:none; border-radius:9999px; font-size:13px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:6px;">
               <i data-lucide="activity" style="width:14px;height:14px;"></i> Test Connection
             </button>
-            <button id="btn-save-kaggle" style="padding:7px 18px;background:var(--text-primary);color:var(--bg);border:none;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;">Save</button>
+            <button id="btn-save-kaggle" class="btn-pill-save">Save</button>
           </div>
         </div>
       </section>
@@ -204,27 +259,45 @@
       <section class="settings-section" id="section-about">
         <h2 class="section-title">About Hekki</h2>
         <p class="section-sub">System specifications &amp; architecture ledger.</p>
-        <div style="display:flex;flex-direction:column;gap:12px;background:var(--hover);padding:16px;border-radius:12px;margin-top:12px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;">
-            <span style="color:var(--text-3);">Version</span>
-            <span style="font-weight:600;color:var(--text-primary);font-family:monospace;">v1.4.1-unclustered-settings</span>
+
+        <div class="settings-row">
+          <div class="row-info">
+            <span class="row-label">Version</span>
+            <span class="row-desc">Active build release identifier</span>
           </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;">
-            <span style="color:var(--text-3);">CPU</span>
-            <span style="color:var(--text-2);">Intel 11th Gen Core i5-1135G7</span>
+          <span style="font-weight:600; color:var(--text-primary); font-family:monospace; font-size:12.5px;">v3.4.0-clean-settings</span>
+        </div>
+
+        <div class="settings-row">
+          <div class="row-info">
+            <span class="row-label">Processor (CPU)</span>
+            <span class="row-desc">Local host processing unit</span>
           </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;">
-            <span style="color:var(--text-3);">System RAM</span>
-            <span style="color:var(--text-2);">8.0 GB DDR4</span>
+          <span style="font-size:12.5px; color:var(--text-2);">Intel 11th Gen Core i5-1135G7</span>
+        </div>
+
+        <div class="settings-row">
+          <div class="row-info">
+            <span class="row-label">System Memory</span>
+            <span class="row-desc">Available RAM capacity</span>
           </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;">
-            <span style="color:var(--text-3);">GPU Acceleration</span>
-            <span style="color:var(--text-2);">Intel Iris Xe Graphics (2GB Shared) + Kaggle Cloud</span>
+          <span style="font-size:12.5px; color:var(--text-2);">8.0 GB DDR4</span>
+        </div>
+
+        <div class="settings-row">
+          <div class="row-info">
+            <span class="row-label">GPU Acceleration</span>
+            <span class="row-desc">Hardware acceleration backend</span>
           </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;">
-            <span style="color:var(--text-3);">Architecture Rules</span>
-            <span style="color:var(--text-2);">Rule #1 (Ledger), Rule #2 (&lt;500 Lines), Rule #3 (Flat), Rule #5 (Title Case)</span>
+          <span style="font-size:12.5px; color:var(--text-2);">Intel Iris Xe + Kaggle Cloud GPU</span>
+        </div>
+
+        <div class="settings-row">
+          <div class="row-info">
+            <span class="row-label">Architecture Rules</span>
+            <span class="row-desc">Enforced codebase constraints</span>
           </div>
+          <span style="font-size:12px; color:var(--text-3);">Rule #1 (Ledger), Rule #2 (&lt;500 Lines), Rule #3 (Flat), Rule #5 (Title Case)</span>
         </div>
       </section>
 
@@ -883,107 +956,6 @@
   <input type="file" id="browser-folder-picker" webkitdirectory directory style="display:none">
 </div>
 
-<!-- ═══════════════ CODER WORKSPACE SETUP POPUP ═══════════════ -->
-<div id="coder-workspace-popup" class="modal-overlay hidden" style="z-index:9000;">
-  <div class="modal-box compact" style="width:400px;">
-
-    <!-- STEP 1: Choose -->
-    <div id="coder-popup-step-choose" style="display:flex; flex-direction:column; gap:12px; width:100%;">
-      <div style="display:flex; align-items:center; justify-content:space-between;">
-        <h3 style="margin:0; font-size:15px; font-weight:600; color:var(--text-primary);">Setup Workspace</h3>
-        <button id="coder-popup-close" class="icon-btn" title="Close" style="width:24px; height:24px;">
-          <i data-lucide="x" style="width:14px; height:14px;"></i>
-        </button>
-      </div>
-      <p style="margin:0; font-size:12px; color:var(--text-3); line-height:1.5;">Choose how you want to initialize Hekki Coder</p>
-      
-      <div style="display:flex; flex-direction:column; gap:8px; margin-top:4px;">
-        <button id="coder-card-new" class="coder-popup-choice-btn" style="width:100%; display:flex; align-items:center; gap:10px; padding:10px 12px; background:var(--hover); border:1px solid var(--border); border-radius:8px; cursor:pointer; color:var(--text); font-family:var(--font); font-size:13px; text-align:left; transition:all 0.1s;">
-          <i data-lucide="folder-plus" style="width:15px; height:15px; color:var(--text-3); flex-shrink:0;"></i>
-          <span style="font-weight:500; flex:1;">Create New Workspace</span>
-          <i data-lucide="chevron-right" style="width:13px; height:13px; color:var(--text-3);"></i>
-        </button>
-
-        <button id="coder-card-existing" class="coder-popup-choice-btn" style="width:100%; display:flex; align-items:center; gap:10px; padding:10px 12px; background:var(--hover); border:1px solid var(--border); border-radius:8px; cursor:pointer; color:var(--text); font-family:var(--font); font-size:13px; text-align:left; transition:all 0.1s;">
-          <i data-lucide="folder-open" style="width:15px; height:15px; color:var(--text-3); flex-shrink:0;"></i>
-          <span style="font-weight:500; flex:1;">Open Existing Workspace</span>
-          <i data-lucide="chevron-right" style="width:13px; height:13px; color:var(--text-3);"></i>
-        </button>
-      </div>
-    </div>
-
-    <!-- STEP 2: New Project -->
-    <div id="coder-popup-step-new" class="hidden" style="display:flex; flex-direction:column; gap:12px; width:100%;">
-      <div style="display:flex; align-items:center; gap:8px;">
-        <button class="coder-popup-back icon-btn" style="width:24px; height:24px;">
-          <i data-lucide="arrow-left" style="width:14px; height:14px;"></i>
-        </button>
-        <h3 style="margin:0; font-size:15px; font-weight:600; color:var(--text-primary);">New Workspace</h3>
-      </div>
-
-      <div>
-        <label style="display:block; font-size:11px; font-weight:600; color:var(--text-3); margin-bottom:6px;">Project Name</label>
-        <input id="coder-new-project-name" type="text" placeholder="e.g. coffee-brand"
-          style="width:100%; padding:8px 12px; border:1px solid var(--border); border-radius:6px; font-size:13px; background:var(--bg); color:var(--text); outline:none; box-sizing:border-box; font-family:var(--font);">
-      </div>
-
-      <div style="background:var(--hover); border-radius:6px; padding:8px 12px; font-size:11px; line-height:1.4;">
-        <div style="color:var(--text-3); font-size:10px; font-weight:600; margin-bottom:2px;">Target Path</div>
-        <div style="font-family:monospace; color:var(--text-2);">data/workspaces/&lt;name&gt;</div>
-      </div>
-
-      <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:6px;">
-        <button class="coder-popup-back msg-edit-btn btn-cancel" style="font-size:11px;">Back</button>
-        <button id="coder-btn-create-project" class="msg-edit-btn save btn-save" style="padding:6px 16px; font-size:11px;">Create Workspace</button>
-      </div>
-    </div>
-
-    <!-- STEP 3: Existing Project -->
-    <div id="coder-popup-step-existing" class="hidden" style="display:flex; flex-direction:column; gap:12px; width:100%;">
-      <div style="display:flex; align-items:center; gap:8px;">
-        <button class="coder-popup-back icon-btn" style="width:24px; height:24px;">
-          <i data-lucide="arrow-left" style="width:14px; height:14px;"></i>
-        </button>
-        <h3 style="margin:0; font-size:15px; font-weight:600; color:var(--text-primary);">Open Existing</h3>
-      </div>
-
-      <div>
-        <label style="display:block; font-size:11px; font-weight:600; color:var(--text-3); margin-bottom:6px;">Local Folder Path</label>
-        <div style="display:flex; gap:8px;">
-          <input id="coder-exist-path" type="text" placeholder="e.g. D:\\Projects\\my-site"
-            style="flex:1; padding:8px 12px; border:1px solid var(--border); border-radius:6px; font-size:13px; background:var(--bg); color:var(--text); outline:none; font-family:monospace; box-sizing:border-box;">
-          <button id="coder-btn-browse-existing" style="padding:0 12px; background:var(--hover); border:1px solid var(--border); border-radius:6px; cursor:pointer; color:var(--text); font-family:var(--font); font-size:13px; font-weight:600; display:flex; align-items:center; gap:6px; transition:border-color 0.12s, background 0.12s;" onmouseover="this.style.borderColor='var(--text-3)'" onmouseout="this.style.borderColor='var(--border)'">
-            <i data-lucide="folder" style="width:14px; height:14px; color:var(--text-3); flex-shrink:0;"></i>
-            <span>Browse</span>
-          </button>
-        </div>
-      </div>
-
-      <div style="background:var(--hover); border-radius:6px; padding:8px 12px; font-size:11px; line-height:1.4;">
-        <div style="color:var(--text-3); font-size:10px; font-weight:600; margin-bottom:2px;">Selected Path Preview</div>
-    </div>
-    <div class="modal-body" style="padding: 14px 0 0 0; width: 100%;">
-      <div class="select-folder-label" style="font-size: 13px; color: var(--text-2); margin-bottom: 12px; text-align: left;">Select Folder(s)</div>
-      
-      <button class="add-folder-btn" id="btn-trigger-folder-picker" style="width: 100%; border: none; border-radius: 8px; background: var(--hover); color: var(--text); font-family: var(--font); font-size: 13px; font-weight: 500; padding: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; transition: all 0.12s ease;">
-        <i data-lucide="plus" style="width: 16px; height: 16px;"></i>
-        <span>Add Folder</span>
-      </button>
-      
-      <!-- Hidden native directory folder picker -->
-      <input type="file" id="project-folder-picker" webkitdirectory directory style="display:none">
-    </div>
-    <div class="modal-footer" style="justify-content: flex-end; padding: 16px 0 0 0; width: 100%; display: flex; gap: 8px; border-top: none;">
-      <button class="msg-edit-btn btn-cancel" id="btn-skip-create-project" style="padding: 6px 16px; font-size: 12px; background: var(--hover); color: var(--text-2); border: none; border-radius: 6px; cursor: pointer;">Skip</button>
-    </div>
-  </div>
-</div>
-
-
-  
-  <!-- Hidden browser folder selector -->
-  <input type="file" id="browser-folder-picker" webkitdirectory directory style="display:none">
-</div>
 
 <!-- ═══════════════ CODER WORKSPACE SETUP POPUP ═══════════════ -->
 <div id="coder-workspace-popup" class="modal-overlay hidden" style="z-index:9000;">

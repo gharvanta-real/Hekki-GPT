@@ -15,6 +15,7 @@ import json
 import asyncio
 import tempfile
 from contextlib import asynccontextmanager
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -329,7 +330,7 @@ async def quick_voice(req: QuickVoiceRequest):
         )
 
         client_sdk = genai_sdk.Client(api_key=settings_obj.active_gemini_api_key)
-        loop = asyncio.get_event_loop()
+        loop = asyncio.get_running_loop()
         await GeminiRateLimiter.get_instance().acquire(token_count=500)
 
         response = await loop.run_in_executor(
@@ -410,7 +411,7 @@ async def screen_capture():
             "Keep total response under 4 conversational sentences. Be warm and direct."
         )
 
-        loop = asyncio.get_event_loop()
+        loop = asyncio.get_running_loop()
         await GeminiRateLimiter.get_instance().acquire(token_count=1200)
 
         # ── Step 4: Send to Gemini Vision (correct Content/Part format) ────
@@ -476,13 +477,16 @@ async def websocket_endpoint(websocket: WebSocket):
             if is_debate_query:
                 raw_topic = query_text.replace("/debate", "").replace("run debate on", "").replace("expert debate on", "").replace("run debate", "").replace("expert debate", "").strip()
                 topic = raw_topic if raw_topic else "Technical Architecture & System Design"
+                
+                # Dynamic round scaling: 1 fast round for simple/short topics, 2 rounds for deep prompts
+                rounds_count = 1 if len(topic.split()) < 8 else 2
 
-                await websocket.send_json({"type": "agent_event", "kind": "thinking", "data": f"⚡ Initializing Expert Consensus Engine for '{topic}'...", "metadata": {}})
+                await websocket.send_json({"type": "agent_event", "kind": "thinking", "data": f"⚡ Initializing Expert Debate Engine for '{topic}'...", "metadata": {}})
                 await websocket.send_json({
                     "type": "agent_event",
                     "kind": "tool_start",
                     "data": "expert_debate",
-                    "metadata": {"name": "expert_debate", "args": {"topic": topic, "rounds": 2}}
+                    "metadata": {"name": "expert_debate", "args": {"topic": topic, "rounds": rounds_count}}
                 })
 
                 from mariano.config import get_settings
@@ -498,14 +502,14 @@ async def websocket_endpoint(websocket: WebSocket):
                     api_key=api_key,
                     model_alpha=m_alpha,
                     model_beta=m_beta,
-                    max_rounds=2
+                    max_rounds=rounds_count
                 )
 
                 async def _debate_event_callback(event_dict):
                     ev_type = event_dict.get("type")
                     agent_name = event_dict.get("agent", "Expert")
                     rnd = event_dict.get("round", 1)
-                    total_r = 2
+                    total_r = rounds_count
 
                     msg = ""
                     if ev_type == "turn_start":
@@ -602,7 +606,11 @@ async def websocket_endpoint(websocket: WebSocket):
     try:
         while True:
             data = await websocket.receive_text()
-            payload = json.loads(data)
+            try:
+                payload = json.loads(data)
+            except json.JSONDecodeError:
+                log.warning("web.ws_invalid_json_received")
+                continue
             action_type = payload.get("type")
             
             if action_type == "query":
@@ -758,11 +766,15 @@ async def websocket_endpoint(websocket: WebSocket):
                 try:
                     audio_bytes = base64.b64decode(b64_audio)
                     temp_dir = Path(tempfile.gettempdir())
-                    # [M-8] Unique filename to prevent concurrent request collision
                     temp_wav = temp_dir / f"mariano_voice_{uuid.uuid4().hex[:8]}.wav"
                     temp_wav.write_bytes(audio_bytes)
-                    
-                    transcript = await voice_controller.transcribe_audio(temp_wav)
+                    try:
+                        transcript = await voice_controller.transcribe_audio(temp_wav)
+                    finally:
+                        try:
+                            temp_wav.unlink(missing_ok=True)
+                        except Exception:
+                            pass
                     await websocket.send_json({
                         "type": "voice_transcript",
                         "text": transcript
@@ -780,6 +792,8 @@ async def websocket_endpoint(websocket: WebSocket):
     except Exception as e:
         log.error("web.websocket_error", error=str(e))
     finally:
+        if query_task and not query_task.done():
+            query_task.cancel()
         if websocket in active_connections:
             active_connections.remove(websocket)
 
@@ -887,7 +901,7 @@ async def live_audio_websocket_endpoint(websocket: WebSocket):
             except Exception:
                 pass
     finally:
-        if send_task and not send_task.done():
+        if 'send_task' in dir() and send_task and not send_task.done():
             send_task.cancel()
         if session:
             await engine.close_session(session_id)
@@ -998,7 +1012,7 @@ async def openai_chat_completions(
 
         except Exception as e:
             log.error("web.openai_sse_stream_error", error=str(e))
-            err_payload = {"error": {"message": str(e), "type": "server_error"}}
+            err_payload = {"error": {"message": str(e)[:300], "type": "server_error"}}
             yield f"data: {json.dumps(err_payload)}\n\n"
 
     if req.stream is not False:

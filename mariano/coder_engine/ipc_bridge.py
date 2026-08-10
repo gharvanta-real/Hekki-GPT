@@ -83,14 +83,14 @@ class MemoryMappedBridge:
         if self.mmap_obj:
             try:
                 self.mmap_obj.close()
-            except Exception:
-                pass
+            except Exception as e:
+                log.debug("Failed to close mmap_obj: %s", e)
             self.mmap_obj = None
             
         if self._file_handle:
             try:
                 self._file_handle.close()
-            except Exception:
-                pass
+            except Exception as e:
+                log.debug("Failed to close file handle: %s", e)
             self._file_handle = None
         log.info("ipc.mmap_closed")

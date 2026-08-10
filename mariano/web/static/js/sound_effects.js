@@ -6,7 +6,8 @@
 class SoundEngine {
   constructor() {
     this._audioCtx = null;
-    this.enabled = localStorage.getItem('hekki_sound_enabled') !== 'false';
+    const hasStorage = typeof localStorage !== 'undefined';
+    this.enabled = hasStorage ? (localStorage.getItem('hekki_sound_enabled') !== 'false') : true;
   }
 
   _getCtx() {
@@ -32,19 +33,22 @@ class SoundEngine {
     return this.enabled;
   }
 
-  /** Soft pop when sending user message */
+  /** Soft crisp pop when sending user message */
   playSend() {
     if (!this.enabled) return;
     const ctx = this._getCtx();
     if (!ctx) return;
     try {
+      if (ctx.state === 'suspended') {
+        ctx.resume().catch(() => {});
+      }
       const now = ctx.currentTime;
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.type = 'sine';
-      osc.frequency.setValueAtTime(320, now);
-      osc.frequency.exponentialRampToValueAtTime(540, now + 0.08);
-      gain.gain.setValueAtTime(0.12, now);
+      osc.frequency.setValueAtTime(360, now);
+      osc.frequency.exponentialRampToValueAtTime(620, now + 0.08);
+      gain.gain.setValueAtTime(0.20, now);
       gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
       osc.connect(gain);
       gain.connect(ctx.destination);

@@ -121,6 +121,7 @@ def get_transcript_events(session_id: str) -> list:
             if l:
                 try:
                     events.append(json.loads(l))
-                except Exception:
-                    pass
+                except Exception as e:
+                    import logging
+                    logging.getLogger(__name__).warning("Failed to decode event: %s", e)
     return events

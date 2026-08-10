@@ -186,7 +186,7 @@
   border: none;
   border-radius: 8px;
   font-family: var(--font);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
   cursor: pointer;
   display: flex;
@@ -268,9 +268,17 @@ body.dark .btn-new-chat-dock:hover {
   color: var(--text);
 }
 .section-item .lbl,
-#recent-list .section-item .lbl,
 #sidebar-nav .recent-item span {
-  font-size: 14px !important;
+  font-size: 13px;
+  color: var(--text-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+}
+/* Recent chat history links — 1px smaller than nav items */
+#recent-list .section-item .lbl {
+  font-size: 12px !important;
   color: var(--text-2);
   white-space: nowrap;
   overflow: hidden;

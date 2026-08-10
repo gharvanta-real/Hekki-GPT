@@ -233,11 +233,12 @@ export function bindImageLightbox() {
   $('lightbox-backdrop')?.addEventListener('click', closeLightbox);
   
   // Close on Escape key
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && !lightbox.classList.contains('hidden')) {
+  const escapeListener = (e) => {
+    if (e.key === 'Escape' && lightbox && !lightbox.classList.contains('hidden')) {
       closeLightbox();
     }
-  });
+  };
+  document.addEventListener('keydown', escapeListener);
 
   // Zoom controls
   $('btn-lightbox-zoom-in')?.addEventListener('click', () => {

@@ -146,7 +146,7 @@ export function createMessageElement(type, text, timestamp, index, ChatSessionMa
           userCopyBtn.innerHTML = '<i data-lucide="copy"></i>';
           if (window.lucide) lucide.createIcons({ parent: userCopyBtn });
         }, 3000);
-      });
+      }).catch(err => console.warn('Clipboard write failed', err));
     });
 
     actions.querySelector('.btn-edit').addEventListener('click', () => {
@@ -261,10 +261,12 @@ export function createMessageElement(type, text, timestamp, index, ChatSessionMa
         const ignoreList = ['localhost', '127.0.0.1', 'cloudflare.com', 'cloudflare.net', 'nel.cloudflare.com', 'w3.org', 'schema.org', 'gstatic.com', 'googleapis.com'];
         matches.forEach(u => {
           try {
-            const cleanUrl = u.replace(/[`'"><\)]+$/, '');
+            const cleanUrl = u.replace(/[`'"><\)]+$/, '').replace(/\.$/, '');
             const parsed = new URL(cleanUrl);
             let host = parsed.hostname.toLowerCase().replace(/^www\./, '').trim();
-            if (host && host.includes('.') && !ignoreList.some(ig => host === ig || host.endsWith('.' + ig))) {
+            // Strict domain check: must contain a valid alpha TLD (at least 2 letters, e.g. .com, .org, .in) and not be an IP/number
+            const isValidDomain = /^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?(\.[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)*\.[a-z]{2,}$/i.test(host);
+            if (isValidDomain && !ignoreList.some(ig => host === ig || host.endsWith('.' + ig))) {
               domains.add(host);
             }
           } catch (err) {}
@@ -321,21 +323,29 @@ export function createMessageElement(type, text, timestamp, index, ChatSessionMa
           }
         });
 
-        // Check if message references web apps or files
-        const fileMatch = text.match(/([\w\-_\/\\\.]+\.(html|js|css|py|json|md))/i);
-        if (fileMatch || text.includes('```html') || text.includes('```mermaid') || text.includes('```javascript') || text.includes('```py')) {
+        // Render Open Canvas action button ONLY if message contains actual multiline code blocks or diagrams
+        const codeBlockMatch = text.match(/```(\w+)?\n([\s\S]*?)```/);
+        const validCanvasLangs = ['html', 'htm', 'js', 'javascript', 'jsx', 'ts', 'typescript', 'tsx', 'css', 'py', 'python', 'svg', 'mermaid', 'json', 'yaml', 'xml', 'sql', 'cpp', 'c', 'java', 'vue', 'react'];
+        const isCanvasArtifact = codeBlockMatch && (
+          (codeBlockMatch[2] || '').trim().length >= 15 && (
+            validCanvasLangs.includes((codeBlockMatch[1] || '').toLowerCase()) ||
+            /<[a-z][\s\S]*>/i.test(codeBlockMatch[2]) ||
+            /function|const|let|var|class|import|def\s+/i.test(codeBlockMatch[2])
+          )
+        );
+
+        if (isCanvasArtifact) {
           const canvasActionBtn = document.createElement('button');
           canvasActionBtn.className = 'action-btn btn-canvas-launch';
           canvasActionBtn.title = 'Open in Live Canvas';
           canvasActionBtn.innerHTML = '<i data-lucide="layout" style="width:13px;height:13px"></i> Open Canvas';
           canvasActionBtn.addEventListener('click', () => {
             if (window.liveCanvas) {
-              const codeBlockMatch = text.match(/```(\w+)?\n([\s\S]*?)```/);
-              const extractedCode = codeBlockMatch ? codeBlockMatch[2] : text;
-              const extractedLang = codeBlockMatch ? (codeBlockMatch[1] || 'html') : 'html';
+              const extractedCode = codeBlockMatch[2];
+              const extractedLang = (codeBlockMatch[1] || 'html').toLowerCase();
               window.liveCanvas.openArtifact({
                 type: extractedLang === 'mermaid' ? 'diagram' : (extractedLang === 'html' || extractedCode.includes('<html') ? 'web_app' : 'code'),
-                title: fileMatch ? fileMatch[1] : 'Interactive Artifact',
+                title: 'Interactive Artifact',
                 code: extractedCode,
                 language: extractedLang
               });
@@ -355,7 +365,7 @@ export function createMessageElement(type, text, timestamp, index, ChatSessionMa
               aiCopyBtn.innerHTML = '<i data-lucide="copy"></i>';
               if (window.lucide) lucide.createIcons({ parent: aiCopyBtn });
             }, 3000);
-          });
+          }).catch(err => console.warn('Clipboard write failed', err));
         });
 
         actions.querySelector('.btn-like').addEventListener('click', () => {

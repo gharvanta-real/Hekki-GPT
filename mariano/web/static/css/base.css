@@ -23,15 +23,15 @@
   --font-mono:   "JetBrains Mono", "Fira Code", "Cascadia Code", "Consolas", ui-monospace, monospace;
   --font-ai:     "Google Sans Flex", "Google Sans", "Open Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
-  /* ── PREMIUM TYPE SCALE (12 – 18 px) ── */
-  --fs-xs:   12px;   /* timestamps, badges, meta          */
+  /* ── PREMIUM TYPE SCALE (11 – 18 px) ── */
+  --fs-xs:   11px;   /* timestamps, badges, meta          */
   --fs-sm:   12px;   /* secondary text, code, tool steps  */
-  --fs-base: 12px;   /* body default, nav items, labels   */
-  --fs-md:   12px;   /* primary content, chat bubbles     */
-  --fs-lg:   12px;   /* AI responses, inputs              */
+  --fs-base: 13px;   /* body default, nav items, labels   */
+  --fs-md:   15px;   /* primary content, chat bubbles     */
+  --fs-lg:   15px;   /* AI responses, inputs              */
   --fs-xl:   16px;   /* nav section titles                */
   --fs-2xl:  18px;   /* sub-headings, h2                  */
-  --fs-3xl:  18px;   /* page headings, h1                 */
+  --fs-3xl:  19px;   /* page headings, h1                 */
 
   --radius-sm:   6px;
   --radius-md:   14px;

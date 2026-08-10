@@ -9,17 +9,25 @@ router = APIRouter()
 
 @router.get("/api/chats")
 async def get_chats():
-    """Fetch all chat sessions from SQLite database."""
-    chats = await MemoryManager.get_instance().get_all_chats()
-    return {"chats": chats}
+    try:
+        chats = await MemoryManager.get_instance().get_all_chats()
+        return {"chats": chats}
+    except Exception as e:
+        import structlog
+        structlog.get_logger(__name__).error("failed_to_get_chats", error=str(e))
+        raise HTTPException(status_code=500, detail="Database error while fetching chats")
 
 
 @router.post("/api/chats/sync")
 async def sync_chats(req: dict):
-    """Overwrite all chat sessions in SQLite database."""
-    chats = req.get("chats", [])
-    await MemoryManager.get_instance().sync_chats(chats)
-    return {"success": True}
+    try:
+        chats = req.get("chats", [])
+        await MemoryManager.get_instance().sync_chats(chats)
+        return {"success": True}
+    except Exception as e:
+        import structlog
+        structlog.get_logger(__name__).error("failed_to_sync_chats", error=str(e))
+        raise HTTPException(status_code=500, detail="Database error while syncing chats")
 
 
 @router.post("/api/chats/message")
@@ -31,5 +39,10 @@ async def save_single_message(req: dict):
     metadata = req.get("metadata")
     if not chat_id or not text:
         raise HTTPException(status_code=400, detail="Missing required parameters: chat_id, text")
-    await MemoryManager.get_instance().save_single_message(chat_id, role, text, metadata)
-    return {"success": True}
+    try:
+        await MemoryManager.get_instance().save_single_message(chat_id, role, text, metadata)
+        return {"success": True}
+    except Exception as e:
+        import structlog
+        structlog.get_logger(__name__).error("failed_to_save_message", error=str(e))
+        raise HTTPException(status_code=500, detail="Database error while saving message")

@@ -21,12 +21,24 @@ async def get_skills():
 @router.post("/api/skills/toggle")
 async def toggle_skill(req: SkillToggleRequest):
     """Enable or disable a specific skill."""
-    SkillRegistry.get_instance().set_enabled(req.name, req.enabled)
-    return {"success": True, "name": req.name, "enabled": req.enabled}
+    try:
+        SkillRegistry.get_instance().set_enabled(req.name, req.enabled)
+        return {"success": True, "name": req.name, "enabled": req.enabled}
+    except Exception as e:
+        import structlog
+        structlog.get_logger(__name__).error("skill_toggle_failed", error=str(e))
+        from fastapi import HTTPException
+        raise HTTPException(status_code=500, detail="Failed to toggle skill")
 
 
 @router.post("/api/skills/clean")
 async def clean_skills():
     """Resets call statistics for all skills."""
-    SkillRegistry.get_instance().clean_stats()
-    return {"success": True}
+    try:
+        SkillRegistry.get_instance().clean_stats()
+        return {"success": True}
+    except Exception as e:
+        import structlog
+        structlog.get_logger(__name__).error("skill_clean_failed", error=str(e))
+        from fastapi import HTTPException
+        raise HTTPException(status_code=500, detail="Failed to clean skill stats")

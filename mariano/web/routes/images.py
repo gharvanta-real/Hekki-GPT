@@ -33,8 +33,9 @@ async def list_images():
                     "modified": stat.st_mtime, "modified_iso": datetime.fromtimestamp(stat.st_mtime).isoformat(),
                     "render_url": f"/api/workspace/render?path={urllib.parse.quote(abs_path)}",
                 })
-            except Exception:
-                pass
+            except Exception as e:
+                import structlog
+                structlog.get_logger(__name__).error("failed_to_stat_image", path=str(img_path), error=str(e))
     images.sort(key=lambda x: x["modified"], reverse=True)
     return {"images": images, "count": len(images)}
 
@@ -86,8 +87,9 @@ async def proxy_image(url: str):
                 if not content_type.startswith("image/"): content_type = "image/jpeg"
                 return Response(content=resp.content, media_type=content_type,
                                 headers={"Cache-Control": "public, max-age=86400", "Access-Control-Allow-Origin": "*"})
-    except Exception:
-        pass
+    except Exception as e:
+        import structlog
+        structlog.get_logger(__name__).error("image_proxy_failed", url=url, error=str(e))
     return Response(status_code=404, content=b"Image unavailable")
 
 

@@ -52,6 +52,7 @@ CREATE TABLE IF NOT EXISTS chat_sessions (
     project TEXT,
     pinned INTEGER DEFAULT 0,
     archived INTEGER DEFAULT 0,
+    is_playground INTEGER DEFAULT 0,
     created_at TEXT NOT NULL
 )
 """
@@ -88,6 +89,11 @@ class EpisodicStore:
         await db.execute(CREATE_TASK_LOG)
         await db.execute(CREATE_CHAT_SESSIONS)
         await db.execute(CREATE_CHAT_MESSAGES)
+        try:
+            await db.execute("ALTER TABLE chat_sessions ADD COLUMN is_playground INTEGER DEFAULT 0")
+        except Exception as e:
+            if "duplicate column name" not in str(e).lower():
+                log.warning("failed_to_alter_table", error=str(e))
         await db.commit()
 
     async def initialize(self) -> None:
@@ -196,6 +202,7 @@ class EpisodicStore:
             for s in sessions:
                 s["pinned"] = bool(s.get("pinned", 0))
                 s["archived"] = bool(s.get("archived", 0))
+                s["isPlayground"] = bool(s.get("is_playground", 0)) or (str(s.get("id", "")).startswith("playground_"))
                 s["messages"] = []
 
             cursor = await db.execute("SELECT * FROM chat_messages ORDER BY timestamp ASC")
@@ -237,9 +244,10 @@ class EpisodicStore:
                 chat_id = c.get("id")
                 if not chat_id:
                     continue
+                is_pg = 1 if (c.get("isPlayground") or str(chat_id).startswith("playground_")) else 0
                 await db.execute(
-                    "INSERT INTO chat_sessions (id, title, project, pinned, archived, created_at) VALUES (?, ?, ?, ?, ?, ?)",
-                    (chat_id, c.get("title", ""), c.get("project"), int(c.get("pinned", False)), int(c.get("archived", False)), c.get("timestamp", datetime.utcnow().isoformat()))
+                    "INSERT INTO chat_sessions (id, title, project, pinned, archived, is_playground, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                    (chat_id, c.get("title", ""), c.get("project"), int(c.get("pinned", False)), int(c.get("archived", False)), is_pg, c.get("timestamp", datetime.utcnow().isoformat()))
                 )
                 for m in c.get("messages", []):
                     meta_str = json.dumps(m.get("metadata", {})) if m.get("metadata") else "{}"
@@ -257,9 +265,10 @@ class EpisodicStore:
             cursor = await db.execute("SELECT 1 FROM chat_sessions WHERE id = ?", (chat_id,))
             exists = await cursor.fetchone()
             if not exists:
+                is_pg = 1 if (chat_id and str(chat_id).startswith("playground_")) else 0
                 await db.execute(
-                    "INSERT INTO chat_sessions (id, title, project, created_at) VALUES (?, ?, ?, ?)",
-                    (chat_id, text[:30] + "..." if len(text) > 30 else text, None, now_iso)
+                    "INSERT INTO chat_sessions (id, title, project, is_playground, created_at) VALUES (?, ?, ?, ?, ?)",
+                    (chat_id, text[:30] + "..." if len(text) > 30 else text, None, is_pg, now_iso)
                 )
             else:
                 await db.execute(

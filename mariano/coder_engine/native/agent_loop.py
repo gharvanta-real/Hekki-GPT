@@ -136,38 +136,7 @@ def build_antigravity_activity_meta(tool_name: str, args: dict) -> dict:
         }
 
 
-async def run_native_agent_loop(
-    prompt: str,
-    workspace: str = "",
-    model: str = "gemini-3.1-flash-lite",
-    history: list[dict] = None,
-    session_id: str = None
-) -> AsyncGenerator[str, None]:
-    """
-    Executes ReAct native loop with zero-failure self-correction and SSE streaming.
-    Persists events line-by-line to session transcript.jsonl.
-    """
-    if session_id:
-        append_transcript_event(session_id, {"role": "user", "type": "prompt", "content": prompt})
 
-    ctx_mgr = WorkspaceContextManager(workspace)
-    ctx_mgr.build_symbol_index()
-    tree = tool_list_workspace_tree(workspace) if workspace else "No workspace open"
-    sys_prompt = ctx_mgr.prepare_system_prompt(tree)
-
-    messages = (history or []).copy()
-    if not messages or messages[0].get("role") != "system":
-        messages.insert(0, {"role": "system", "content": sys_prompt})
-
-    messages.append({"role": "user", "content": prompt})
-
-    retry_count = 0
-    max_steps = 25
-
-    for step in range(max_steps):
-        step_response = ""
-        async for chunk in stream_brain(prompt="", model_key=model, history=messages):
-            step_response += chunk
 
 def summarize_tool_result(tool_name: str, output: str) -> str:
     if not output:

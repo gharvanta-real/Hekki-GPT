@@ -251,12 +251,14 @@ class Router {
         if (window.updateTitleBreadcrumb) {
           window.updateTitleBreadcrumb('Images', '');
         }
-        if (!window.imagesPageInstance) {
+        if (!window.imagesPageInstance && !window._loadingImagesPage) {
+          window._loadingImagesPage = true;
           import('/static/js/pages/images_page.js').then(({ ImagesPage }) => {
             window.imagesPageInstance = new ImagesPage(window.showToast);
             window.imagesPageInstance.mount(document.getElementById('images-pane'));
-          }).catch(err => console.error('Failed to load ImagesPage:', err));
-        } else {
+          }).catch(err => console.error('Failed to load ImagesPage:', err))
+            .finally(() => window._loadingImagesPage = false);
+        } else if (window.imagesPageInstance) {
           window.imagesPageInstance.refresh();
         }
         break;
@@ -276,12 +278,14 @@ class Router {
         if (window.updateTitleBreadcrumb) {
           window.updateTitleBreadcrumb('Plugins & Connectors', '');
         }
-        if (!window.pluginsPageInstance) {
+        if (!window.pluginsPageInstance && !window._loadingPluginsPage) {
+          window._loadingPluginsPage = true;
           import('/static/js/pages/plugins_page.js').then(({ PluginsPage }) => {
             window.pluginsPageInstance = new PluginsPage(window.showToast);
             window.pluginsPageInstance.mount(document.getElementById('plugins-pane'));
-          }).catch(err => console.error('Failed to load PluginsPage:', err));
-        } else {
+          }).catch(err => console.error('Failed to load PluginsPage:', err))
+            .finally(() => window._loadingPluginsPage = false);
+        } else if (window.pluginsPageInstance) {
           window.pluginsPageInstance.refresh();
         }
         break;
@@ -301,12 +305,14 @@ class Router {
         if (window.updateTitleBreadcrumb) {
           window.updateTitleBreadcrumb('Search Chats', '');
         }
-        if (!window.historyPageInstance) {
+        if (!window.historyPageInstance && !window._loadingHistoryPage) {
+          window._loadingHistoryPage = true;
           import('/static/js/pages/history_page.js').then(({ HistoryPage }) => {
             window.historyPageInstance = new HistoryPage(window.chatSessionManager);
             window.historyPageInstance.mount(document.getElementById('history-pane'));
-          }).catch(err => console.error('Failed to load HistoryPage:', err));
-        } else {
+          }).catch(err => console.error('Failed to load HistoryPage:', err))
+            .finally(() => window._loadingHistoryPage = false);
+        } else if (window.historyPageInstance) {
           window.historyPageInstance.refresh();
         }
         break;
@@ -324,14 +330,12 @@ class Router {
         if (innerChat) innerChat.style.display = 'flex';
         if (innerCoder) innerCoder.style.display = 'none';
         
-        const returnBtn = document.getElementById('btn-return-chat-nav');
         if (returnBtn) returnBtn.style.display = 'none';
         break;
     }
 
     // Show the return to chat chevron on non-chat pages if it exists
     if (page !== 'chat') {
-      const returnBtn = document.getElementById('btn-return-chat-nav');
       if (returnBtn) returnBtn.style.display = '';
     }
 

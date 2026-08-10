@@ -40,6 +40,7 @@ let _activeModel = 'Gemini 3.1 Flash Lite';
 let _localModels = [];
 let _dropdownOpen = false;
 let _dropdownEl = null;
+let _dropdownCloseHandler = null;
 
 async function fetchSettings() {
   try {
@@ -81,6 +82,10 @@ function closeDropdown() {
   if (_dropdownEl) {
     _dropdownEl.remove();
     _dropdownEl = null;
+  }
+  if (_dropdownCloseHandler) {
+    document.removeEventListener('click', _dropdownCloseHandler);
+    _dropdownCloseHandler = null;
   }
   _dropdownOpen = false;
 }
@@ -158,12 +163,13 @@ function openLocalModelDropdown(anchorBtn) {
 
   // Close on outside click
   setTimeout(() => {
-    document.addEventListener('click', function closeHandler(e) {
+    if (_dropdownCloseHandler) document.removeEventListener('click', _dropdownCloseHandler);
+    _dropdownCloseHandler = function(e) {
       if (!dropdown.contains(e.target)) {
         closeDropdown();
-        document.removeEventListener('click', closeHandler);
       }
-    });
+    };
+    document.addEventListener('click', _dropdownCloseHandler);
   }, 0);
 }
 

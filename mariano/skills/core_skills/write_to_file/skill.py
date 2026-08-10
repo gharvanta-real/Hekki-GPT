@@ -20,6 +20,8 @@ class WriteToFileSkill(BaseSkill):
     async def execute(self, **kwargs: Any) -> SkillResult:
         target_file_raw = kwargs.get("target_file", kwargs.get("path", kwargs.get("file", "")))
         code_content = kwargs.get("code_content", kwargs.get("content", kwargs.get("code", "")))
+        if code_content is None:
+            code_content = ""
         overwrite = kwargs.get("overwrite", True)
 
         if not target_file_raw:

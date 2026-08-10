@@ -69,20 +69,102 @@
   to { transform: rotate(360deg); }
 }
 
+/* === CHATGPT-STYLE DALL-E IMAGE GENERATION CARD & FLUID WAVE ANIMATION === */
+.chat-image-generating-card {
+  width: 360px;
+  height: 360px;
+  border-radius: 24px !important;
+  background: var(--input-bg, #f4f4f6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  margin: 14px 0;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  transition: all 0.25s ease;
+}
+
+body.dark .chat-image-generating-card,
+body.oled .chat-image-generating-card {
+  background: #27272a;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.chat-image-gen-header {
+  position: absolute;
+  top: 20px;
+  left: 22px;
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--text-2, #52525b);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+body.dark .chat-image-gen-header,
+body.oled .chat-image-gen-header {
+  color: #a1a1aa;
+}
+
+/* Fluid Wave Bar Animation */
+.image-gen-wave-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 100px;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.wave-bar {
+  width: 5px;
+  height: 56px;
+  border-radius: 9999px;
+  background: var(--text-primary, #2563eb);
+  opacity: 0.3;
+  animation: wave-bar-anim 1.4s ease-in-out infinite;
+}
+
+@keyframes wave-bar-anim {
+  0%, 100% {
+    transform: scaleY(0.25);
+    opacity: 0.25;
+  }
+  50% {
+    transform: scaleY(1.15);
+    opacity: 0.95;
+  }
+}
+
 /* === CHAT IMAGE PREVIEW CARD === */
 .chat-image-preview-card {
   margin: 10px 0;
   border: none !important;
-  border-radius: 12px;
+  border-radius: 20px !important;
   overflow: hidden;
-  width: fit-content;
-  max-width: 210px; /* Reduced to ~half-size compact preview */
+  width: 360px;
+  max-width: 85vw;
   box-shadow: none !important;
+  outline: none !important;
   transition: transform 0.18s;
-  display: inline-block;
+  display: block;
   position: relative;
-  background: transparent;
-  line-height: 0;
+  background: var(--bg, #ffffff);
+}
+
+body.dark .chat-image-preview-card,
+body.oled .chat-image-preview-card {
+  background: #18181b;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 .img-preview-box {
@@ -92,7 +174,6 @@
 
 .chat-image-preview-card:hover {
   transform: translateY(-2px);
-  box-shadow: none !important;
 }
 
 /* Header floats as overlay ON TOP of image — no background box */
@@ -105,27 +186,21 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 12px 24px 12px;
-  background: transparent;
+  padding: 10px 14px;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0) 100%);
   border: none;
-  font-size: 11.5px;
+  font-size: 12px;
   gap: 8px;
   user-select: none;
   box-sizing: border-box;
   pointer-events: auto;
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
   opacity: 0;
   transition: opacity 0.2s;
 }
 
-/* Show overlay on hover */
 .chat-image-preview-card:hover .chat-image-preview-header {
-  opacity: 1;
-}
-
-/* Always show it (non-hover state, subtle) */
-.chat-image-preview-card .chat-image-preview-header {
   opacity: 1;
 }
 
@@ -133,29 +208,26 @@
   flex-grow: 1;
   font-weight: 500;
   font-family: var(--font);
-  color: rgba(255,255,255,0.95);
+  color: #ffffff;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  text-shadow: 0 1px 6px rgba(0,0,0,0.9), 0 0px 2px rgba(0,0,0,0.7);
-  font-size: 11.5px;
+  font-size: 12px;
 }
 
 .chat-image-preview-open {
-  color: rgba(255,255,255,0.88);
+  color: rgba(255, 255, 255, 0.9);
   display: flex;
   align-items: center;
   transition: color 0.15s, transform 0.15s;
   flex-shrink: 0;
-  filter: drop-shadow(0 1px 4px rgba(0,0,0,0.9));
 }
 
 .chat-image-preview-open:hover {
   color: #ffffff;
-  transform: scale(1.15);
+  transform: scale(1.1);
 }
 
-/* Body = image fills entire card from top-left corner, no extra padding */
 .chat-image-preview-body {
   display: block;
   width: 100%;
@@ -165,12 +237,11 @@
 
 .chat-image-preview-body img {
   display: block;
-  width: auto;
-  max-width: 100%;
-  max-height: 160px; /* Compact half-size height */
+  width: 100%;
   height: auto;
+  max-height: 380px;
   object-fit: contain;
-  border-radius: 11px;
+  border-radius: 20px !important;
   transition: filter 0.2s;
 }
 

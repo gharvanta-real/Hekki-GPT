@@ -52,6 +52,8 @@ export function attachAiActions(msgEl, text, toolRuns = []) {
     faviconsHtml = `
       <div class="ai-bottom-right-sources" style="display:inline-flex; align-items:center; gap:5px; margin-right:auto; flex-wrap:wrap; opacity:0.9;">
         ${domainList.map(dom => {
+          const isValidDomain = /^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?(\.[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)*\.[a-z]{2,}$/i.test(dom);
+          if (!isValidDomain) return '';
           const rootDom = (dom || '').split('.').slice(-2).join('.');
           const faviconUrl = `https://www.google.com/s2/favicons?domain=${encodeURIComponent(rootDom)}&sz=32`;
           const cat = getCat(dom);
@@ -89,8 +91,18 @@ export function attachAiActions(msgEl, text, toolRuns = []) {
     }
   });
 
-  const fileMatch = text.match(/([\w\-_\/\\\.]+\.(html|js|css|py|json|md))/i);
-  if (fileMatch || text.includes('```html') || text.includes('```mermaid') || text.includes('```javascript') || text.includes('```py') || text.includes('```text') || text.includes('Resume')) {
+  // Render Open Canvas action button ONLY if message contains actual multiline code blocks or diagrams
+  const codeBlockMatch = text.match(/```(\w+)?\n([\s\S]*?)```/);
+  const validCanvasLangs = ['html', 'htm', 'js', 'javascript', 'jsx', 'ts', 'typescript', 'tsx', 'css', 'py', 'python', 'svg', 'mermaid', 'json', 'yaml', 'xml', 'sql', 'cpp', 'c', 'java', 'vue', 'react'];
+  const isCanvasArtifact = codeBlockMatch && (
+    (codeBlockMatch[2] || '').trim().length >= 15 && (
+      validCanvasLangs.includes((codeBlockMatch[1] || '').toLowerCase()) ||
+      /<[a-z][\s\S]*>/i.test(codeBlockMatch[2]) ||
+      /function|const|let|var|class|import|def\s+/i.test(codeBlockMatch[2])
+    )
+  );
+
+  if (isCanvasArtifact) {
     const canvasActionBtn = document.createElement('button');
     canvasActionBtn.className = 'action-btn btn-canvas-launch';
     canvasActionBtn.title = 'Open in Live Canvas';
@@ -98,12 +110,11 @@ export function attachAiActions(msgEl, text, toolRuns = []) {
     canvasActionBtn.style.cssText = 'display:flex; align-items:center; gap:4px; font-size:11.5px; font-weight:600; color:var(--blue); background:rgba(37,99,235,0.08); padding:3px 8px; border-radius:6px; border:none; cursor:pointer;';
     canvasActionBtn.addEventListener('click', () => {
       if (window.liveCanvas) {
-        const codeBlockMatch = text.match(/```(\w+)?\n([\s\S]*?)```/);
-        const extractedCode = codeBlockMatch ? codeBlockMatch[2] : text;
-        const extractedLang = codeBlockMatch ? (codeBlockMatch[1] || 'html') : 'html';
+        const extractedCode = codeBlockMatch[2];
+        const extractedLang = (codeBlockMatch[1] || 'html').toLowerCase();
         window.liveCanvas.openArtifact({
           type: extractedLang === 'mermaid' ? 'diagram' : (extractedLang === 'html' || extractedCode.includes('<html') ? 'web_app' : 'code'),
-          title: fileMatch ? fileMatch[1] : 'Interactive Artifact',
+          title: 'Interactive Artifact',
           code: extractedCode,
           language: extractedLang
         });

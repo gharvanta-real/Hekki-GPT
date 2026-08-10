@@ -497,8 +497,12 @@ export function enhanceCitationsAndFootnotes(container) {
     const href = link.getAttribute('href') || '';
     let domain = '';
     try {
-      const parsed = new URL(href);
-      domain = parsed.hostname.replace(/^www\./, '');
+      const cleanHref = href.replace(/[`'"><\)]+$/, '').replace(/\.$/, '');
+      const parsed = new URL(cleanHref);
+      const host = parsed.hostname.toLowerCase().replace(/^www\./, '').trim();
+      if (/^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?(\.[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)*\.[a-z]{2,}$/i.test(host)) {
+        domain = host;
+      }
     } catch (e) {}
 
     if (!domain) return;
@@ -512,6 +516,7 @@ export function enhanceCitationsAndFootnotes(container) {
 
     link.addEventListener('mouseenter', () => {
       if (tooltipEl) tooltipEl.remove();
+      document.querySelectorAll('.ref-hover-tooltip').forEach(el => el.remove());
 
       tooltipEl = document.createElement('div');
       tooltipEl.className = 'ref-hover-tooltip';

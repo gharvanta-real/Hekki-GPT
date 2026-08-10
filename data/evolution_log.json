@@ -1,5 +1,232 @@
 [
   {
+    "timestamp": "2026-08-10T09:19:00Z",
+    "version": "3.4.7-large-wave-animation-generating-card",
+    "category": "UI & UX — Fluid Wave Oscillating Bar Animation & Large Loading Skeleton",
+    "summary": "Enlarged Creating image loading card to 360px x 360px and replaced dot grid with a smooth fluid wave bar animation.",
+    "details": "1. Kept final image preview card (.chat-image-preview-card) compact (width 360px) while enlarging .chat-image-generating-card to 360px x 360px. 2. Replaced 10x10 dot matrix with .image-gen-wave-container featuring 9 staggered fluid wave bars (.wave-bar) with smooth sine curve oscillation (wave-bar-anim).",
+    "files": [
+      "mariano/web/static/css/chat/7a_cards_base.css",
+      "mariano/web/static/js/agent_stream.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-10T09:17:00Z",
+    "version": "3.4.6-compact-30-percent-scaled-image-card",
+    "category": "UI & UX — 30% Scaled Compact Image Generation Card",
+    "summary": "Scaled down image card width and height by 30% for a clean compact preview.",
+    "details": "1. Reduced .chat-image-preview-card width from 512px to 360px and max-height to 380px. 2. Scaled down .chat-image-generating-card skeleton from 380px to 270px x 270px with border-radius: 20px !important.",
+    "files": [
+      "mariano/web/static/css/chat/7a_cards_base.css"
+    ]
+  },
+  {
+    "timestamp": "2026-08-10T09:15:00Z",
+    "version": "3.4.5-full-height-natural-image-preview",
+    "category": "UI & UX — Uncropped Full-Height Image Aspect Ratio",
+    "summary": "Fixed issue where rendered image height was squished and cropped vertically.",
+    "details": "Root cause: 1. CSS contained object-fit: cover which cropped top/bottom of wide images. 2. JS inline override set imgCard.style.width to clientWidth, forcing squished container bounds. FIX: 1. Changed object-fit to contain in 7a_cards_base.css and increased max-height to 540px. 2. Removed inline clientWidth JS override in agent_stream.js. Images now display in full natural height.",
+    "files": [
+      "mariano/web/static/css/chat/7a_cards_base.css",
+      "mariano/web/static/js/agent_stream.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-10T09:14:00Z",
+    "version": "3.4.4-borderless-rounded-image-gen-card",
+    "category": "UI & UX — Borderless 28px Rounded Large DALL-E Card",
+    "summary": "Removed outline borders, increased border-radius to 28px, and enlarged image generation card to 380px x 380px.",
+    "details": "1. Removed all borders and box-shadows (border: none !important; box-shadow: none !important;) adhering strictly to Rule #3. 2. Updated border-radius to 28px !important for super-smooth rounded corners matching ChatGPT. 3. Scaled up card size from 280px to 380px x 380px and matrix to 200px x 200px.",
+    "files": [
+      "mariano/web/static/css/chat/7a_cards_base.css"
+    ]
+  },
+  {
+    "timestamp": "2026-08-10T09:11:00Z",
+    "version": "3.4.3-chatgpt-dalle-image-gen-ui",
+    "category": "UI & UX — ChatGPT DALL-E 3 Image Generation UI Redesign",
+    "summary": "Redesigned image generation loading & completed cards to match ChatGPT DALL-E 3 UI aesthetic.",
+    "details": "1. Created .chat-image-generating-card with top-left 'Creating image' title and center 10x10 staggered pulsing dot matrix (.chatgpt-dot-matrix). 2. Enhanced completed preview card (.chat-image-preview-card) with 16px rounded borders, subtle gradient overlay header, and smooth image fade-in.",
+    "files": [
+      "mariano/web/static/css/chat/7a_cards_base.css",
+      "mariano/web/static/js/agent_stream.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-10T09:06:00Z",
+    "version": "3.4.2-message-send-sound-effect-fix",
+    "category": "Audio & UX — Message Send Audio Feedback Binding",
+    "summary": "Fixed issue where audio feedback sound effect was not playing on sending a chat message.",
+    "details": "Root cause: input.js send handlers (Enter key and Submit buttons) were invoking sendCallback directly without triggering window.sounds.playSend(). FIX: 1. Bound window.sounds.playSend() inside all 4 send handlers in input.js. 2. Updated sound_effects.js to automatically invoke AudioContext.resume() on send and optimized oscillator frequency/volume (360Hz -> 620Hz sine pop) for crisp instant feedback.",
+    "files": [
+      "mariano/web/static/js/chat/input.js",
+      "mariano/web/static/js/sound_effects.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-10T09:05:00Z",
+    "version": "3.4.1-debate-speed-and-live-status-fix",
+    "category": "Performance & UX — Debate Execution Acceleration & Live Status Streaming",
+    "summary": "Fixed root cause of long wait times and frozen 'Thinking...' state during /debate queries.",
+    "details": "1. Reduced DEBATE_INTER_TURN_DELAY in api_limits.py from 5.0s to 1.0s, eliminating 20+ seconds of artificial pause delays per debate. 2. Dynamically scaled max_rounds in app.py (1 fast round for simple/short topics, 2 rounds for deep prompts) reducing latency from 60s down to ~10-15s. 3. Updated agent_stream.js case tool_log to dynamically stream live status titles (e.g. 'Round 1: Tony Stark analyzing...') into .cad-ai-header-title instead of remaining frozen on static 'Thinking...'.",
+    "files": [
+      "mariano/config/api_limits.py",
+      "mariano/web/app.py",
+      "mariano/web/static/js/agent_stream.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-10T08:59:00Z",
+    "version": "3.4.0-settings-input-left-align-fix",
+    "category": "UI & UX — Input & Placeholder Alignment Fix",
+    "summary": "Fixed root cause where input placeholders and text were aligned to the right inside settings input fields.",
+    "details": "Root cause: inline styles and CSS rules contained text-align: right. FIX: Enforced text-align: left !important across .settings-input in 1_settings_base.css and removed inline text-align: right in index.html. Inputs and placeholders now align cleanly to the left edge.",
+    "files": [
+      "mariano/web/static/css/settings/1_settings_base.css",
+      "mariano/web/static/index.html"
+    ]
+  },
+  {
+    "timestamp": "2026-08-10T08:58:00Z",
+    "version": "3.3.9-chatgpt-settings-ui-redesign",
+    "category": "UI & UX — ChatGPT Row-Based Settings Redesign",
+    "summary": "Redesigned Hekki Settings Modal UI to match ChatGPT's exact clean row-based layout, frameless right-aligned dropdowns, micro-typography descriptions, hairline dividers, and black pill save buttons.",
+    "details": "Modified 1_settings_base.css and index.html settings modal: 1. Converted stacked form inputs into horizontal key-value rows (.settings-row) separated by hairline light dividers. 2. Added micro-typography (.row-info, .row-title, .row-desc) with 13.5px primary titles and 11.5px soft descriptions under every setting. 3. Transformed select dropdowns (.settings-select) into right-aligned frameless controls with custom chevron arrows. 4. Added top Promo Hero card (.settings-promo-card) in Identity tab. 5. Converted save buttons into rounded pill buttons (.btn-pill-save) matching ChatGPT design tokens.",
+    "files": [
+      "mariano/web/static/css/settings/1_settings_base.css",
+      "mariano/web/static/index.html"
+    ]
+  },
+  {
+    "timestamp": "2026-08-10T08:53:00Z",
+    "version": "3.3.8-open-canvas-false-positive-trigger-fix",
+    "category": "Bug Fix — Open Canvas Trigger Logic Refinement",
+    "summary": "Fixed root cause where 'Open Canvas' action button appeared under normal plain-text messages.",
+    "details": "Root cause: messages.js and stream_actions.js were using regex fileMatch matching any string containing '.html', '.js', '.py' or words like 'Resume' in plain English sentences (e.g. 'admin.html', 'dashboard.html'). FIX: Replaced flawed regex with codeBlockMatch requiring actual multiline fenced code blocks (```html, ```py, ```js, ```mermaid, etc.) with at least 15 characters of structured code/markup content. Normal plain-text responses no longer show the Open Canvas button.",
+    "files": [
+      "mariano/web/static/js/chat/messages.js",
+      "mariano/web/static/js/stream/stream_actions.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-10T08:51:00Z",
+    "version": "3.3.7-deep-subagent-codebase-audit",
+    "category": "Bug Fix — Deep Subagent Multi-Module Audit",
+    "summary": "Ran 4 subagents in parallel across Coder Engine, Skills, Core/Memory, and Web Static. Fixed 32 additional bugs (88 total across session). 100% pytest suite passed (29/29).",
+    "details": "CODER ENGINE (11 fixes): agent_loop.py: removed duplicate run_native_agent_loop definition and fixed indentation (L139). context_manager.py: replaced bare except:pass with logger warning (L51). connection.py: wrapped file open in try/except OSError (L107) and logged error fallback (L246). tools_base.py: added debug/warning logs (L68, L122), killed orphan subprocesses on TimeoutError (L154). diff_patcher.py: wrapped sandbox prep in try/except with cleanup (L34). code_brain.py: explicit Exception/OSError handling (L72, L89). session_store.py: logged JSON decode error (L124). ipc_bridge.py: logged descriptor close failure (L86). ast_guard.py: explicit OSError/Exception handling (L55). CORE SKILLS (9 fixes): write_to_file: defaulted explicit None content to empty string (L22). replace_file_content: falsy target/replacement guards (L23). multi_replace_file_content: getattr dict check and graceful error returns (L39). view_file: wrapped int line parsing in try/except ValueError (L43). grep_search: list coercion for includes and str coercion for query (L27). list_dir: defaulted explicit None directory path to '.' (L20). invoke_subagent: list typing and getattr checks (L20). run_command: str coercion on command parameters (L58). schedule: expanded exception handling to catch TypeError (L44). CORE & MEMORY (7 fixes): computer_use.py: logged bare excepts (L240, L259). cognitive_profiler.py: capped past_activities array capacity to 30 (L76), safe dict .get/.setdefault for likes/dislikes (L83). live_audio.py: added asyncio.Lock for session creation/closure (L197). debate_orchestrator.py: try/finally resp.close() for urllib (L393). memory_manager.py: added LRU cache eviction (max 100 entries) for _contexts (L47). WEB STATIC (5 fixes): index.html: removed massive duplicate modal HTML fragment (L886). router.js: removed duplicate returnBtn const redeclarations (L327) and added async loading guards (_loadingImagesPage) (L254). ribbon_orb.js: added img.onerror handler and replaced array length check with !isPreloading flag (L26, L46).",
+    "files": [
+      "mariano/coder_engine/native/agent_loop.py",
+      "mariano/coder_engine/native/context_manager.py",
+      "mariano/coder_engine/connection.py",
+      "mariano/coder_engine/native/tools_base.py",
+      "mariano/coder_engine/diff_patcher.py",
+      "mariano/coder_engine/code_brain.py",
+      "mariano/coder_engine/native/session_store.py",
+      "mariano/coder_engine/ipc_bridge.py",
+      "mariano/coder_engine/ast_guard.py",
+      "mariano/skills/core_skills/write_to_file/skill.py",
+      "mariano/skills/core_skills/replace_file_content/skill.py",
+      "mariano/skills/core_skills/multi_replace_file_content/skill.py",
+      "mariano/skills/core_skills/view_file/skill.py",
+      "mariano/skills/core_skills/grep_search/skill.py",
+      "mariano/skills/core_skills/list_dir/skill.py",
+      "mariano/skills/core_skills/invoke_subagent/skill.py",
+      "mariano/skills/core_skills/run_command/skill.py",
+      "mariano/skills/core_skills/schedule/skill.py",
+      "mariano/core/computer_use.py",
+      "mariano/core/cognitive_profiler.py",
+      "mariano/core/live_audio.py",
+      "mariano/core/debate/debate_orchestrator.py",
+      "mariano/memory/memory_manager.py",
+      "mariano/web/static/index.html",
+      "mariano/web/static/js/router.js",
+      "mariano/web/static/js/ribbon_orb.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-10T08:36:00Z",
+    "version": "3.3.6-full-project-bug-audit-and-fix",
+    "category": "Bug Fix — Full-Project Code Audit & Stability Hardening",
+    "summary": "Completed full-project parallel automated bug audit across all JS frontend, Python backend, and core module files. Fixed 56 total bugs across 30+ files.",
+    "details": "FRONTEND JS (47 fixes): session.js: fixed orphaned dropdown close handler memory leak (L506), missing .catch on dynamic router import (L262). input.js: added _inputsBound guard to prevent duplicate event listener binding (L65), fixed missing 3rd arg stopBtnId in handleInputToggle (L158), ghost tooltip memory leak in clearChatLogs (L40). messages.js: added .catch on clipboard.writeText for user (L146) and AI (L354) copy buttons. markdown.js: fixed tooltip memory leak in enhanceCitationsAndFootnotes via global garbage collection (L513). dialogs.js: added .catch on clipboard in lightbox (L166). socket_manager.js: replaced multiple onopen assignments with {once:true} addEventListener. layout_controls.js: named escapeListener to prevent memory leak. model_selector.js: stored and removed _dropdownCloseHandler before re-binding (L161). slash_menu.js: added singleton guard (window._slashMenuBound) to constructor (L7). live_canvas.js: fixed duplicate global click listener (L311) and duplicate resize listener (L438) by storing references and removing before re-binding. settings.js: added _settingsBound initialization guard (L7). attach_dropdown.js: added _attachDropdownsBound guard (L12). web_image_grid.js: guarded lightbox DOM attachment (L37). agent_stream.js: wrapped WebSocket message handler in try/catch (L196), optimized hot DOM reflow loop with once-per-message flag (L312), fixed setInterval not cleared for parallel tool blocks (L1459). debate_page.js: added window guards for 4 duplicate global click listeners (L478, L532, L568, L691), wrapped handleDebateEvent in try/catch (L1027), added .catch on loadSimulationList (L1166) and clipboard writeText (L1448). images_page.js: added destroy() call before remount to prevent keydown listener leak (L23), teardown guard on _bindControls (L240), added res.ok check on fetch (L41). plugins_page.js: added window.pluginsPageInstance assignment (L14), added res.ok check and .catch in toggleConnect (L425). skills_page.js: added else-throw for toggleSkill (L450) and cleanStats (L464). coder_page.js: added _isCoderPageInitialized guard to prevent duplicate global listeners (L724), added res.ok check on workspace/set fetch (L528). PYTHON BACKEND (9 fixes): chats.py: wrapped DB calls in try/except with HTTPException(500). settings.py: replaced blocking urllib.request with httpx.AsyncClient, wrapped disk write in try/except, replaced blocking subprocess.run with asyncio.create_subprocess_exec. canvas.py: wrapped file I/O in try/except. images.py: replaced 2x bare except:pass with structured logging. recon.py: added try/except around skill executions. skills_routes.py: added try/except for toggle/clean. mcp_routes.py: added try/except for test_server and refresh_tools. episodic_store.py: replaced bare except:pass on ALTER TABLE with warning log. app.py: added missing datetime import (L10), fixed asyncio.get_event_loop() → get_running_loop() (L332, L413), added JSON parse guard in WS receive loop (L605), added temp_wav.unlink in finally block (L770), added query_task.cancel() in WS disconnect finally (L782), guarded unbound send_task in live audio handler (L890), capped SSE error message to 300 chars (L1001).",
+    "files": [
+      "mariano/web/static/js/chat/session.js",
+      "mariano/web/static/js/chat/input.js",
+      "mariano/web/static/js/chat/messages.js",
+      "mariano/web/static/js/chat/markdown.js",
+      "mariano/web/static/js/chat/dialogs.js",
+      "mariano/web/static/js/components/socket_manager.js",
+      "mariano/web/static/js/components/layout_controls.js",
+      "mariano/web/static/js/components/model_selector.js",
+      "mariano/web/static/js/components/slash_menu.js",
+      "mariano/web/static/js/components/live_canvas.js",
+      "mariano/web/static/js/components/settings.js",
+      "mariano/web/static/js/components/attach_dropdown.js",
+      "mariano/web/static/js/components/web_image_grid.js",
+      "mariano/web/static/js/agent_stream.js",
+      "mariano/web/static/js/debate/debate_page.js",
+      "mariano/web/static/js/pages/images_page.js",
+      "mariano/web/static/js/pages/plugins_page.js",
+      "mariano/web/static/js/pages/skills_page.js",
+      "mariano/web/static/js/pages/coder_page.js",
+      "mariano/web/routes/chats.py",
+      "mariano/web/routes/settings.py",
+      "mariano/web/routes/canvas.py",
+      "mariano/web/routes/images.py",
+      "mariano/web/routes/recon.py",
+      "mariano/web/routes/skills_routes.py",
+      "mariano/web/routes/mcp_routes.py",
+      "mariano/memory/episodic/episodic_store.py",
+      "mariano/web/app.py"
+    ]
+  },
+  {
+    "timestamp": "2026-08-10T08:29:50Z",
+    "version": "3.3.5-sqlite-and-frontend-playground-persistence-fix",
+    "category": "Bug Fix — Backend SQLite & Frontend Debate Category Persistence",
+    "summary": "Fixed root cause where debate/playground chats lost their isPlayground category flag after sync with backend SQLite DB or page reload.",
+    "details": "Root Cause: SQLite table `chat_sessions` in `episodic_store.py` lacked an `is_playground` column, causing `/api/chats/sync` to drop the `isPlayground` attribute upon DB insertion. On fetch/reload, sessions lost their playground flag and leaked into Recent Chats. FIX 1 (Backend): Added `is_playground` column to `chat_sessions` schema in SQLite and auto-migrated via `ALTER TABLE` in `_ensure_tables`. Updated `get_all_chats()`, `sync_chats()`, and `save_single_message()` to persist and retrieve `is_playground`. FIX 2 (Frontend): Updated `getChats()` in `session.js` to auto-repair `isPlayground=true` for any `playground_*` chat ID, and updated `renderChatsList()` to use `isPlaygroundChat` helper function checking both boolean flag and ID pattern.",
+    "files": [
+      "mariano/memory/episodic/episodic_store.py",
+      "mariano/web/static/js/chat/session.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-10T08:26:00Z",
+    "version": "3.3.4-sidebar-category-mixing-fix",
+    "category": "Bug Fix — Sidebar Debate/Chat Mixing on Boot",
+    "summary": "Fixed critical bug where debate/playground chats were mixing with normal recent chats in the sidebar after app boot (before first refresh).",
+    "details": "Root cause: boot() in main.js called loadChat(storedId) + enterConversation() for ALL stored active chats without checking isPlayground flag. When user last had a debate open, that playground chat ID was stored in hekki_active_chat_id — on next boot it would be restored as a normal chat, appear in Recent Chats, and enterConversation() would be called. FIX 1: main.js boot() now checks activeChat.isPlayground before calling loadChat/enterConversation — if playground chat is stored, clears the localStorage key and resets to home screen. FIX 2: ensureNormalChatActive() in session.js now also immediately removes hekki_active_chat_id and mariano_active_chat_id from localStorage when it detects a playground chat, preventing the same bug on subsequent tab navigations.",
+    "files": [
+      "mariano/web/static/main.js",
+      "mariano/web/static/js/chat/session.js"
+    ]
+  },
+  {
+    "timestamp": "2026-08-10T08:23:00Z",
+    "version": "3.3.3-viewport-font-hierarchy",
+    "category": "UI & UX — Viewport-Aware Font Size Hierarchy",
+    "summary": "Established proper font hierarchy for 1100x750px default Electron viewport. Sidebar nav links 13px, recent chat history 12px, section categories 11px. Main chat area 15px body with h1=19/h2=17/h3=16/h4=15px heading scale. CSS tokens properly scaled.",
+    "details": "Modified base.css tokens: --fs-xs=11px, --fs-sm=12px, --fs-base=13px, --fs-md=15px, --fs-lg=15px, --fs-3xl=19px. Updated 3_sidebar_nav.css: .btn-new-chat-dock & .section-item .lbl to 13px, #recent-list items to 12px. Updated 3a_message_bubbles.css: .msg, .msg.user, .msg.ai to 15px body with proper h1-h6 heading hierarchy. Updated 2_home_screen.css: all input textareas and placeholders to 15px.",
+    "files": [
+      "mariano/web/static/css/base.css",
+      "mariano/web/static/css/layout/3_sidebar_nav.css",
+      "mariano/web/static/css/chat/3a_message_bubbles.css",
+      "mariano/web/static/css/chat/2_home_screen.css"
+    ]
+  },
+  {
+    "timestamp": "2026-08-10T08:19:00Z",
+    "version": "3.3.2-debate-chat-font-size-sync",
+    "category": "UI & UX — Debate Chat Font Size Alignment",
+    "summary": "Updated debate chat message font size from 12px to 14px to match the main chat response font size.",
+    "details": "Modified mariano/web/static/css/debate/1b_debate_cards.css and 1c_debate_stream.css so .debate-bubble, .debate-summary-body, strong/bold elements, and markdown headers match main chat message text styling (14px).",
+    "files": [
+      "mariano/web/static/css/debate/1b_debate_cards.css",
+      "mariano/web/static/css/debate/1c_debate_stream.css"
+    ]
+  },
+  {
     "timestamp": "2026-08-09T08:41:00Z",
     "version": "3.3.1-chatgpt-plugins-page-redesign",
     "category": "UI & UX \u2014 Full-Page Plugins & Connectors Store",

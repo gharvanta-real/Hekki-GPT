@@ -74,16 +74,19 @@ class UserProfiler:
 
     def record_activity(self, date_str: str, activity: str) -> None:
         activities = self.profile.setdefault("past_activities", {})
+        if len(activities) > 30:
+            oldest = min(activities.keys())
+            del activities[oldest]
         day_logs = activities.setdefault(date_str, [])
         if activity not in day_logs:
             day_logs.append(activity)
             self.save_profile()
 
     def update_preferences(self, like: str = "", dislike: str = "") -> None:
-        if like and like not in self.profile["likes"]:
-            self.profile["likes"].append(like)
-        if dislike and dislike not in self.profile["dislikes"]:
-            self.profile["dislikes"].append(dislike)
+        if like and like not in self.profile.get("likes", []):
+            self.profile.setdefault("likes", []).append(like)
+        if dislike and dislike not in self.profile.get("dislikes", []):
+            self.profile.setdefault("dislikes", []).append(dislike)
         self.save_profile()
 
 
@@ -140,8 +143,8 @@ class FeedbackAnalyzer:
                 user_input,
                 assistant_output[:200],
                 sentiment,
-                ", ".join(self.user_profiler.profile["likes"][-3:]),
-                ", ".join(self.user_profiler.profile["dislikes"][-3:])
+                ", ".join(self.user_profiler.profile.get("likes", [])[-3:]),
+                ", ".join(self.user_profiler.profile.get("dislikes", [])[-3:])
             ])
 
         return sentiment
@@ -149,8 +152,10 @@ class FeedbackAnalyzer:
     def get_dynamic_prompt_rules(self) -> str:
         """Generates dynamic safety directives based on user likes/dislikes data analysis."""
         profile = self.user_profiler.profile
-        likes_str = ", ".join(profile["likes"]) if profile["likes"] else "None logged yet"
-        dislikes_str = ", ".join(profile["dislikes"]) if profile["dislikes"] else "None logged yet"
+        likes = profile.get("likes", [])
+        dislikes = profile.get("dislikes", [])
+        likes_str = ", ".join(likes) if likes else "None logged yet"
+        dislikes_str = ", ".join(dislikes) if dislikes else "None logged yet"
         
         return (
             f"\n\n[USER PERSONA & ALIGNMENT DICTATES]\n"

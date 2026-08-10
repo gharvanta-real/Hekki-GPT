@@ -449,6 +449,8 @@ export class SkillsPage {
       if (res.ok) {
         item.enabled = nextState;
         this._showToast('Skills Engine', `${nextState ? 'Enabled' : 'Disabled'} capability "${friendly}"`, 2500);
+      } else {
+        throw new Error('Toggle failed');
       }
     } catch (e) {
       this._showToast('Skills Engine', `Failed to toggle ${friendly}`, 3000);
@@ -461,6 +463,8 @@ export class SkillsPage {
       const res = await fetch('/api/skills/clean', { method: 'POST' });
       if (res.ok) {
         this._showToast('Skills Telemetry', 'Successfully reset call counts and latencies across all skills', 2500);
+      } else {
+        throw new Error('Clean failed');
       }
     } catch (e) {
       this._showToast('Skills Telemetry', 'Failed to clean statistics', 3000);

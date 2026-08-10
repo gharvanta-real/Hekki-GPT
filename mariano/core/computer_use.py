@@ -236,8 +236,8 @@ class ComputerUseEngine:
             if result.stdout.strip():
                 lines = result.stdout.strip().splitlines()[:5]
                 results = lines
-        except Exception:
-            pass
+        except Exception as e:
+            print(f"Search error: {e}")
 
         # Fallback: os.walk for broader search (limited depth)
         if not results:
@@ -256,8 +256,8 @@ class ComputerUseEngine:
                                 break
                     if len(results) >= 5:
                         break
-            except Exception:
-                pass
+            except Exception as e:
+                print(f"Fallback search error: {e}")
 
         if results:
             found_str = "\n".join(results[:5])

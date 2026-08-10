@@ -65,8 +65,8 @@ def tool_write_file(file_path: str, content: str) -> str:
         try:
             with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
                 old_content = f.read()
-        except Exception:
-            pass
+        except Exception as e:
+            logger.warning("Could not read old content of %s: %s", file_path, e)
 
     with open(file_path, "w", encoding="utf-8") as f:
         f.write(content)
@@ -119,8 +119,8 @@ def tool_grep_search(workspace: str, query: str) -> str:
                             results.append(f"{os.path.relpath(path, workspace)}:{i}: {line.strip()[:100]}")
                             if len(results) >= 25:
                                 return "\n".join(results)
-            except Exception:
-                pass
+            except Exception as e:
+                logger.debug("Failed to grep %s: %s", path, e)
     return "\n".join(results) if results else f"No matches found for '{query}'"
 
 
@@ -152,6 +152,10 @@ async def tool_run_command(cmd: str, cwd: str) -> str:
         res = (out_str + "\n" + err_str).strip() or f"[Command '{cmd}' finished with exit code {proc.returncode}]"
         return res[:1200]
     except asyncio.TimeoutError:
+        try:
+            proc.kill()
+        except OSError:
+            pass
         return "[Error: Command execution timed out after 45 seconds]"
     except Exception as e:
         return f"[Execution error: {e}]"

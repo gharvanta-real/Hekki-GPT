@@ -255,7 +255,7 @@ body.dark .des-card-avatar {
 .debate-bubble,
 .debate-summary-body {
   font-family: -apple-system-body, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.65;
   font-weight: 400;
   color: var(--text);
@@ -272,7 +272,7 @@ body.dark .des-card-avatar {
 .debate-summary-body b {
   font-weight: 600;
   color: var(--text-primary);
-  font-size: 12px;
+  font-size: 14px;
 }
 .debate-bubble p,
 .debate-summary-body p {
@@ -283,3 +283,8 @@ body.dark .des-card-avatar {
 .debate-summary-body p:last-child {
   margin-bottom: 0;
 }
+.debate-bubble h1, .debate-summary-body h1 { font-size: 18px; margin: 16px 0 8px 0; }
+.debate-bubble h2, .debate-summary-body h2 { font-size: 16px; margin: 14px 0 6px 0; }
+.debate-bubble h3, .debate-summary-body h3 { font-size: 15px; margin: 12px 0 4px 0; }
+.debate-bubble h4, .debate-bubble h5, .debate-bubble h6,
+.debate-summary-body h4, .debate-summary-body h5, .debate-summary-body h6 { font-size: 14px; margin: 10px 0 4px 0; }

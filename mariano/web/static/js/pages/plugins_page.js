@@ -18,6 +18,8 @@ export class PluginsPage {
     this._mcpServers = [];
     this._allSkills = [];
 
+    window.pluginsPageInstance = this;
+
     this._catalog = [
       {
         id: 'github', name: 'GitHub', icon: 'github', category: 'Featured',
@@ -416,22 +418,28 @@ export class PluginsPage {
     if (!item) return;
     const existing = this._mcpServers.find(s => s.id === pluginId || s.name.toLowerCase() === item.name.toLowerCase());
 
-    if (existing) {
-      this._showToast('MCP Connectors', `Disconnecting ${item.name}…`, 2500);
-      await fetch(`/api/mcp/servers/${existing.id}`, { method: 'DELETE' });
-      this._showToast('MCP Connectors', `Disconnected ${item.name}`, 2500);
-    } else {
-      this._showToast('MCP Connectors', `Connecting ${item.name}…`, 2500);
-      const body = {
-        id: item.id,
-        name: item.name, transport: 'stdio', enabled: true,
-        command: item.command.split(' ')[0], args: item.command.split(' ').slice(1),
-        env: item.envVar ? { [item.envVar]: '' } : {}
-      };
-      await fetch('/api/mcp/servers', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
-      });
-      this._showToast('MCP Connectors', `Connected ${item.name}!`, 2500);
+    try {
+      if (existing) {
+        this._showToast('MCP Connectors', `Disconnecting ${item.name}…`, 2500);
+        const res = await fetch(`/api/mcp/servers/${existing.id}`, { method: 'DELETE' });
+        if (!res.ok) throw new Error('Failed to disconnect');
+        this._showToast('MCP Connectors', `Disconnected ${item.name}`, 2500);
+      } else {
+        this._showToast('MCP Connectors', `Connecting ${item.name}…`, 2500);
+        const body = {
+          id: item.id,
+          name: item.name, transport: 'stdio', enabled: true,
+          command: item.command.split(' ')[0], args: item.command.split(' ').slice(1),
+          env: item.envVar ? { [item.envVar]: '' } : {}
+        };
+        const res = await fetch('/api/mcp/servers', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
+        });
+        if (!res.ok) throw new Error('Failed to connect');
+        this._showToast('MCP Connectors', `Connected ${item.name}!`, 2500);
+      }
+    } catch (err) {
+      this._showToast('MCP Connectors', `Error: ${err.message}`, 3000);
     }
     await this._loadData();
   }

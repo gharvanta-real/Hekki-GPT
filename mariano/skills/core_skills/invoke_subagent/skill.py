@@ -18,6 +18,10 @@ class InvokeSubagentSkill(BaseSkill):
 
     async def execute(self, **kwargs: Any) -> SkillResult:
         subagents = kwargs.get("subagents", kwargs.get("Subagents", []))
+        if subagents is None:
+            subagents = []
+        if not isinstance(subagents, list):
+            subagents = [subagents]
         prompt = kwargs.get("prompt", kwargs.get("Prompt", ""))
         role = kwargs.get("role", kwargs.get("Role", "Background Worker"))
 
@@ -29,6 +33,8 @@ class InvokeSubagentSkill(BaseSkill):
 
         results = []
         for sa in subagents:
+            if getattr(sa, "get", None) is None:
+                continue
             sa_role = sa.get("role", sa.get("Role", "Worker"))
             sa_prompt = sa.get("prompt", sa.get("Prompt", ""))
             

@@ -23,6 +23,7 @@ export class ImagesPage {
       this.refresh();
       return;
     }
+    this.destroy(); // Fix: Clean up old event listeners if remounting
     this._root = container;
     this._mounted = true;
     this._render();
@@ -39,6 +40,7 @@ export class ImagesPage {
     this._showLoading();
     try {
       const res = await fetch('/api/images');
+      if (!res.ok) throw new Error(`HTTP error ${res.status}`);
       const data = await res.json();
       this._images = data.images || [];
       this._applyFilter();
@@ -238,6 +240,9 @@ export class ImagesPage {
     });
 
     // Keyboard nav
+    if (this._keyHandler) {
+      document.removeEventListener('keydown', this._keyHandler);
+    }
     document.addEventListener('keydown', this._keyHandler = (e) => {
       const modal = this._root.querySelector('#img-confirm-modal');
       if (modal && !modal.classList.contains('hidden')) {

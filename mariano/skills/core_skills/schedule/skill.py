@@ -41,7 +41,7 @@ class ScheduleSkill(BaseSkill):
                     data=f"Scheduled one-shot timer [{task_id}] for {secs} seconds. Notification prompt: '{prompt}' (Condition: {timer_condition}).",
                     metadata={"task_id": task_id, "duration_seconds": secs, "timer_condition": timer_condition, "prompt": prompt}
                 )
-            except ValueError:
+            except (ValueError, TypeError):
                 return SkillResult(success=False, data=None, error="Parameter 'duration_seconds' must be a valid number.")
 
         if cron_expression:

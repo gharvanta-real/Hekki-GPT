@@ -123,9 +123,14 @@ async def remove_server(server_id: str):
 @router.post("/servers/{server_id}/test")
 async def test_server(server_id: str):
     """Probe a server connection and return status + tool count."""
-    from mariano.mcp.server_manager import MCPServerManager
-    result = await MCPServerManager.get_instance().test_connection(server_id)
-    return result
+    try:
+        from mariano.mcp.server_manager import MCPServerManager
+        result = await MCPServerManager.get_instance().test_connection(server_id)
+        return result
+    except Exception as e:
+        import structlog
+        structlog.get_logger(__name__).error("test_connection_failed", server_id=server_id, error=str(e))
+        raise HTTPException(status_code=500, detail="Failed to test connection")
 
 
 @router.post("/servers/{server_id}/toggle")
@@ -171,8 +176,13 @@ async def list_all_tools():
 @router.post("/refresh")
 async def refresh_tools():
     """Re-sync all MCP server tool registrations."""
-    from mariano.mcp.bridge import MCPSkillBridge
-    from mariano.skills._registry.registry import SkillRegistry
-    results = await MCPSkillBridge.refresh_all(SkillRegistry.get_instance())
-    total = sum(len(v) for v in results.values())
-    return {"refreshed": results, "total_tools": total}
+    try:
+        from mariano.mcp.bridge import MCPSkillBridge
+        from mariano.skills._registry.registry import SkillRegistry
+        results = await MCPSkillBridge.refresh_all(SkillRegistry.get_instance())
+        total = sum(len(v) for v in results.values())
+        return {"refreshed": results, "total_tools": total}
+    except Exception as e:
+        import structlog
+        structlog.get_logger(__name__).error("refresh_tools_failed", error=str(e))
+        raise HTTPException(status_code=500, detail="Failed to refresh tools")

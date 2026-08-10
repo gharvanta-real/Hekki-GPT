@@ -41,8 +41,14 @@ class ViewFileSkill(BaseSkill):
             total_lines = len(lines)
 
             # Process 1-indexed line range slicing if provided
-            s_line = int(start_line) if start_line is not None else 1
-            e_line = int(end_line) if end_line is not None else min(total_lines, s_line + 800)
+            try:
+                s_line = int(start_line) if start_line is not None else 1
+            except ValueError:
+                s_line = 1
+            try:
+                e_line = int(end_line) if end_line is not None else min(total_lines, s_line + 800)
+            except ValueError:
+                e_line = min(total_lines, s_line + 800)
 
             s_line = max(1, s_line)
             e_line = min(total_lines, e_line)

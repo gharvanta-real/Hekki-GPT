@@ -104,8 +104,15 @@ async def _handle_refactor_command(websocket: WebSocket, payload: dict) -> None:
         }))
         return
 
-    with open(resolved_path, "r", encoding="utf-8") as f:
-        content = f.read()
+    try:
+        with open(resolved_path, "r", encoding="utf-8") as f:
+            content = f.read()
+    except OSError as e:
+        await websocket.send_text(json.dumps({
+            "event": "error",
+            "reason": f"Failed to read file: {e}"
+        }))
+        return
 
     # --- Initialize FSM ---
     file_size_tokens = max(200, len(content) // 4)
@@ -243,8 +250,8 @@ async def _handle_chat_command(websocket: WebSocket, payload: dict) -> None:
                 "kind": "error",
                 "data": f"Agent error: {exc}"
             }))
-        except Exception:
-            pass
+        except Exception as e:
+            log.error("coder.chat_stream_error.fallback_failed", error=str(e))
 
 
 @router.websocket("/ws")

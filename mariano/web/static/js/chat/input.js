@@ -37,6 +37,7 @@ export function clearInputs() {
 }
 
 export function clearChatLogs() {
+  document.querySelectorAll('.ref-hover-tooltip').forEach(el => el.remove());
   const col = document.getElementById('chat-col');
   if (col) {
     Array.from(col.children).forEach(child => {
@@ -62,7 +63,14 @@ export function formatTime(timestamp) {
   return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
 }
 
+let _inputsBound = false;
+
 export function bindInputs(sendCallback, ChatSessionManager) {
+  if (_inputsBound) {
+    globalSendCallback = sendCallback;
+    return;
+  }
+  _inputsBound = true;
   globalSendCallback = sendCallback;
   const $ = id => document.getElementById(id);
 
@@ -110,6 +118,7 @@ export function bindInputs(sendCallback, ChatSessionManager) {
       let text = getFullPromptText('chat-input');
       if (!text && !attachmentManager.hasFiles()) return;
       if (!text && attachmentManager.hasFiles()) text = "Analyze attached file(s)";
+      if (window.sounds && window.sounds.playSend) window.sounds.playSend();
       sendCallback(text);
     }
   });
@@ -124,6 +133,7 @@ export function bindInputs(sendCallback, ChatSessionManager) {
       let text = getFullPromptText('chat-input-conv');
       if (!text && !attachmentManager.hasFiles()) return;
       if (!text && attachmentManager.hasFiles()) text = "Analyze attached file(s)";
+      if (window.sounds && window.sounds.playSend) window.sounds.playSend();
       sendCallback(text);
     }
   });
@@ -135,6 +145,7 @@ export function bindInputs(sendCallback, ChatSessionManager) {
     let text = getFullPromptText('chat-input');
     if (!text && !attachmentManager.hasFiles()) return;
     if (!text && attachmentManager.hasFiles()) text = "Analyze attached file(s)";
+    if (window.sounds && window.sounds.playSend) window.sounds.playSend();
     sendCallback(text);
   });
 
@@ -142,6 +153,7 @@ export function bindInputs(sendCallback, ChatSessionManager) {
     let text = getFullPromptText('chat-input-conv');
     if (!text && !attachmentManager.hasFiles()) return;
     if (!text && attachmentManager.hasFiles()) text = "Analyze attached file(s)";
+    if (window.sounds && window.sounds.playSend) window.sounds.playSend();
     sendCallback(text);
   });
 
@@ -155,7 +167,11 @@ export function bindInputs(sendCallback, ChatSessionManager) {
         activeInput.value = '/debate ' + activeInput.value.trim();
       }
       activeInput.focus();
-      handleInputToggle(activeInput, activeInput.id === 'chat-input-conv' ? 'btn-submit-conv' : 'btn-submit-home');
+      handleInputToggle(
+        activeInput,
+        activeInput.id === 'chat-input-conv' ? 'btn-submit-conv' : 'btn-submit-home',
+        activeInput.id === 'chat-input-conv' ? 'btn-stop-gen-conv' : 'btn-stop-gen'
+      );
     }
   });
 

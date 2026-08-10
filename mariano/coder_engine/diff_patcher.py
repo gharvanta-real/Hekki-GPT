@@ -33,22 +33,27 @@ class DiffPatcher:
 
     def _prepare_sandbox(self) -> None:
         """Create a temporary replica of the target file to patch in isolation."""
-        if not self.target_path.exists():
-            # Create parent directories if missing
-            self.target_path.parent.mkdir(parents=True, exist_ok=True)
-            self.target_path.touch()
+        try:
+            if not self.target_path.exists():
+                # Create parent directories if missing
+                self.target_path.parent.mkdir(parents=True, exist_ok=True)
+                self.target_path.touch()
 
-        # Read original backup
-        with open(self.target_path, "r", encoding="utf-8") as f:
-            self.original_backup = f.read()
+            # Read original backup
+            with open(self.target_path, "r", encoding="utf-8") as f:
+                self.original_backup = f.read()
 
-        # Setup temp path
-        self.temp_dir = tempfile.mkdtemp()
-        self.temp_file_path = Path(self.temp_dir) / self.target_path.name
-        
-        # Copy file to temp replica
-        shutil.copy2(self.target_path, self.temp_file_path)
-        log.debug("patcher.sandbox_prepared", sandbox_path=str(self.temp_file_path))
+            # Setup temp path
+            self.temp_dir = tempfile.mkdtemp()
+            self.temp_file_path = Path(self.temp_dir) / self.target_path.name
+            
+            # Copy file to temp replica
+            shutil.copy2(self.target_path, self.temp_file_path)
+            log.debug("patcher.sandbox_prepared", sandbox_path=str(self.temp_file_path))
+        except OSError as e:
+            log.error("patcher.sandbox_init_failed", error=str(e))
+            self.cleanup()
+            raise
 
     def preview_patch(self, old_content: str, new_content: str) -> Optional[str]:
         """

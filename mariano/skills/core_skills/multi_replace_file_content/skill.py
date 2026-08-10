@@ -37,8 +37,14 @@ class MultiReplaceFileContentSkill(BaseSkill):
             applied_count = 0
 
             for chunk in chunks:
+                if getattr(chunk, "get", None) is None:
+                    continue
                 target = chunk.get("target_content", chunk.get("TargetContent", chunk.get("target", "")))
                 replacement = chunk.get("replacement_content", chunk.get("ReplacementContent", chunk.get("replacement", "")))
+                if not target:
+                    return SkillResult(success=False, data=None, error="Target content is required in all chunks.")
+                if replacement is None:
+                    replacement = ""
                 
                 if target in content:
                     content = content.replace(target, replacement, 1)

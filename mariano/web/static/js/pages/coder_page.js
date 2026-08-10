@@ -524,7 +524,10 @@ function activateProject(name, path, type) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ project_id: name, project_path: path }),
   })
-    .then(r => r.json())
+    .then(r => {
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      return r.json();
+    })
     .then(data => {
       if (data && data.project_path) {
         _activeProject.path = data.project_path;
@@ -690,6 +693,8 @@ export function teardownCoderPage() {
 }
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
+let _isCoderPageInitialized = false;
+
 export function initCoderPage() {
   // Boot streaming modules first so WS connects before any project is loaded
   initStreamModules();
@@ -721,6 +726,9 @@ export function initCoderPage() {
       localStorage.removeItem('hekki_coder_active_project');
     }
   }
+
+  if (_isCoderPageInitialized) return;
+  _isCoderPageInitialized = true;
 
   // 1. Click outside handler to close any opened dropdown menus
   document.addEventListener('click', (e) => {

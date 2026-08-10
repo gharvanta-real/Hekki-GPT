@@ -58,6 +58,7 @@ class RunCommandSkill(BaseSkill):
             yield ("log", "ERROR: No command provided.")
             yield ("done", 1)
             return
+        command = str(command)
 
         # Security check
         blocked = self._check_delete_blocked(command)
@@ -69,7 +70,7 @@ class RunCommandSkill(BaseSkill):
         # Inline python -c guard
         cmd_strip = command.strip()
         if cmd_strip.startswith("python -c") or cmd_strip.startswith("python3 -c"):
-            if "#" in command or "\n" in command or len(command) > 100:
+            if "#" in command or "\n" in command or len(command) > 250:
                 yield ("log", "ERROR: Execution Policy Error: Inline 'python -c' with '#' comments or long scripts is forbidden. You MUST write your python code to a file (e.g. scratch/temp_script.py) using file_manager / write_to_file and then execute 'python scratch/temp_script.py'.")
                 yield ("done", 1)
                 return
@@ -112,11 +113,12 @@ class RunCommandSkill(BaseSkill):
 
         if not command:
             return SkillResult(success=False, data=None, error="Parameter 'command' is required.")
+        command = str(command)
 
         # Inline python -c guard
         cmd_strip = command.strip()
         if cmd_strip.startswith("python -c") or cmd_strip.startswith("python3 -c"):
-            if "#" in command or "\n" in command or len(command) > 100:
+            if "#" in command or "\n" in command or len(command) > 250:
                 return SkillResult(
                     success=False,
                     data=None,

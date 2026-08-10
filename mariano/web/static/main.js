@@ -448,13 +448,29 @@ function boot() {
   });
 
   // Restore active chat if stored in localStorage
+  // CRITICAL: Must check isPlayground flag before deciding how to restore.
+  // Debate/Playground chats must NEVER be loaded as normal chats — they belong
+  // in the Debates & Playgrounds section and must restore through debate page.
   const storedId = localStorage.getItem('hekki_active_chat_id') || localStorage.getItem('mariano_active_chat_id');
   if (storedId) {
     const chats = ChatSessionManager.getChats();
     const activeChat = chats.find(c => c.id === storedId);
     if (activeChat) {
-      ChatSessionManager.loadChat(storedId);
-      enterConversation();
+      if (activeChat.isPlayground) {
+        // Playground chat: clear the stored active id so sidebar renders cleanly,
+        // reset to home screen. The debate session will be accessible from sidebar.
+        ChatSessionManager.setActiveChatId(null);
+        localStorage.removeItem('hekki_active_chat_id');
+        localStorage.removeItem('mariano_active_chat_id');
+        $('home-screen')?.classList.remove('hidden');
+        $('bottom-input-bar')?.classList.add('hidden');
+        inConversationState.val = false;
+        ChatSessionManager.renderChatsList();
+      } else {
+        // Normal chat: restore it
+        ChatSessionManager.loadChat(storedId);
+        enterConversation();
+      }
     }
   }
 

@@ -21,12 +21,14 @@ class ReplaceFileContentSkill(BaseSkill):
         target_file_raw = kwargs.get("target_file", kwargs.get("path", kwargs.get("file", "")))
         target_content = kwargs.get("target_content", kwargs.get("target", ""))
         replacement_content = kwargs.get("replacement_content", kwargs.get("replacement", ""))
+        if replacement_content is None:
+            replacement_content = ""
         start_line = kwargs.get("start_line", kwargs.get("StartLine"))
         end_line = kwargs.get("end_line", kwargs.get("EndLine"))
 
         if not target_file_raw:
             return SkillResult(success=False, data=None, error="Parameter 'target_file' is required.")
-        if target_content is None:
+        if not target_content:
             return SkillResult(success=False, data=None, error="Parameter 'target_content' is required.")
 
         try:

@@ -67,7 +67,7 @@
   background: transparent;
   color: var(--text);
   font-family: var(--font);
-  font-size: 14px;
+  font-size: 15px;
   resize: none;
   outline: none !important;
   line-height: 1.55;
@@ -77,7 +77,7 @@
 }
 #chat-input::placeholder, #agent-task-input::placeholder {
   color: var(--text-3);
-  font-size: 14px;
+  font-size: 15px;
 }
 
 
@@ -102,7 +102,7 @@
   background: transparent;
   color: var(--text);
   font-family: var(--font);
-  font-size: 14px;
+  font-size: 15px;
   resize: none;
   outline: none;
   line-height: 1.55;
@@ -113,7 +113,7 @@
 }
 #chat-input-conv::placeholder {
   color: var(--text-3);
-  font-size: 14px;
+  font-size: 15px;
 }
 
 

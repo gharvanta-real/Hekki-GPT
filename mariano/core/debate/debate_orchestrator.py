@@ -394,20 +394,26 @@ class DebateOrchestrator:
                     loop = asyncio.get_event_loop()
                     def read_stream():
                         nonlocal full_text
-                        for line in resp:
-                            if self._stopped:
-                                break
-                            if line:
-                                parsed = json.loads(line.decode("utf-8"))
-                                chunk_text = parsed.get("message", {}).get("content", "")
-                                full_text += chunk_text
-                                if on_chunk:
-                                    loop.call_soon_threadsafe(on_chunk, chunk_text)
+                        try:
+                            for line in resp:
+                                if self._stopped:
+                                    break
+                                if line:
+                                    parsed = json.loads(line.decode("utf-8"))
+                                    chunk_text = parsed.get("message", {}).get("content", "")
+                                    full_text += chunk_text
+                                    if on_chunk:
+                                        loop.call_soon_threadsafe(on_chunk, chunk_text)
+                        finally:
+                            resp.close()
                     await asyncio.to_thread(read_stream)
                 else:
-                    body = await asyncio.to_thread(resp.read)
-                    parsed = json.loads(body.decode("utf-8"))
-                    full_text = parsed.get("message", {}).get("content", "")
+                    try:
+                        body = await asyncio.to_thread(resp.read)
+                        parsed = json.loads(body.decode("utf-8"))
+                        full_text = parsed.get("message", {}).get("content", "")
+                    finally:
+                        resp.close()
             except Exception as e:
                 log.error("debate.ollama_call_error", model=ollama_model, error=str(e))
                 full_text = f"[Ollama Error: {str(e)[:100]}]"

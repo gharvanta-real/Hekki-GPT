@@ -166,7 +166,7 @@ export function openImageLightbox(src, redirectUrl = '') {
             if (window.lucide) lucide.createIcons({ parent: btnCopy });
           }, 3000);
         }
-      });
+      }).catch(err => console.warn('Clipboard write failed:', err));
     };
   }
 

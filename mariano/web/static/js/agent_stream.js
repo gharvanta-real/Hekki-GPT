@@ -194,15 +194,17 @@ function playReminderChime() {
 
 
 export function handleChatAgentEvent(e, enterConversationCallback) {
-  const col = document.getElementById('chat-col') || document.getElementById('chat-log');
-  if (!col) return;
+  try {
+    const col = document.getElementById('chat-col') || document.getElementById('chat-log');
+    if (!col) return;
 
-  if (!_currentMessageActive && e.kind !== 'done' && e.kind !== 'error') {
-    _currentMessageActive = true;
-    _currentMessageToolRuns = [];
-  }
+    if (!_currentMessageActive && e.kind !== 'done' && e.kind !== 'error') {
+      _currentMessageActive = true;
+      _currentMessageToolRuns = [];
+      window._firstResponseChunkProcessed = false;
+    }
 
-  switch (e.kind) {
+    switch (e.kind) {
     case 'reminder_trigger': {
       const text = e.data || 'Reminder Notification';
       playReminderChime();
@@ -309,16 +311,17 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
     }
 
     case 'response_chunk': {
-      col.querySelectorAll('.think-label-temp').forEach(el => el.remove());
-      // Remove typing dots once AI starts writing (orb stays, dots go)
-      const activeOrb = document.querySelector('.chat-ai-stream-header #chat-stream-typing-dots');
-      if (activeOrb) activeOrb.remove();
-      // Keep tool container active across turn steps; update status text smoothly
-      if (_streamToolContainer) {
-        const statusEl = _streamToolContainer.querySelector('.tool-group-status');
-        if (statusEl && statusEl.innerHTML.includes('running')) {
-          statusEl.innerHTML = '<span style="color: var(--text-3);">&#10003; completed</span>';
+      if (!window._firstResponseChunkProcessed) {
+        col.querySelectorAll('.think-label-temp').forEach(el => el.remove());
+        const activeOrb = document.querySelector('.chat-ai-stream-header #chat-stream-typing-dots');
+        if (activeOrb) activeOrb.remove();
+        if (_streamToolContainer) {
+          const statusEl = _streamToolContainer.querySelector('.tool-group-status');
+          if (statusEl && statusEl.innerHTML.includes('running')) {
+            statusEl.innerHTML = '<span style="color: var(--text-3);">&#10003; completed</span>';
+          }
         }
+        window._firstResponseChunkProcessed = true;
       }
       
       if (_aiderActive) {
@@ -782,6 +785,33 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
       if (window.lucide) lucide.createIcons({ parent: card });
       _lastToolBlock = card;
 
+      // ── Fluid Wave Animation "Creating image" Card ──
+      if (toolName === 'generate_image') {
+        const oldCard = document.getElementById('active-image-gen-card');
+        if (oldCard) oldCard.remove();
+
+        const imgGenCard = document.createElement('div');
+        imgGenCard.className = 'chat-image-generating-card';
+        imgGenCard.id = 'active-image-gen-card';
+        
+        let waveBarsHtml = '';
+        const delays = [0.0, 0.15, 0.30, 0.45, 0.60, 0.75, 0.90, 1.05, 1.20];
+        delays.forEach(d => {
+          waveBarsHtml += `<div class="wave-bar" style="animation-delay:${d}s;"></div>`;
+        });
+        
+        imgGenCard.innerHTML = `
+          <div class="chat-image-gen-header">
+            <span>Creating image</span>
+          </div>
+          <div class="image-gen-wave-container">
+            ${waveBarsHtml}
+          </div>
+        `;
+        col.appendChild(imgGenCard);
+        scrollChat();
+      }
+
       _currentMessageToolRuns.push({
         icon: meta.icon,
         label: meta.label,
@@ -806,8 +836,18 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
 
     case 'tool_log': {
       // ── Live streaming terminal output lines ──────────────────────────────
-      if (!_lastToolBlock) break;
       const logLine = e.data || '';
+
+      // Update active stream header title with real-time log (e.g. Expert Debate progress)
+      const activeHeaderTitle = col.querySelector('.cad-ai-header-title');
+      if (activeHeaderTitle && logLine.trim()) {
+        const cleanStatusText = logLine.replace(/^\[INFO\]\s*/, '').trim();
+        if (cleanStatusText) {
+          activeHeaderTitle.textContent = cleanStatusText.slice(0, 80);
+        }
+      }
+
+      if (!_lastToolBlock) break;
 
       // Create or reuse the live-log container inside the tool card
       let liveLog = _lastToolBlock.querySelector('.tool-live-log');
@@ -909,18 +949,6 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
                   </div>
                 `;
                 
-                const imgEl = imgCard.querySelector('img');
-                if (imgEl) {
-                  imgEl.onload = () => {
-                    if (imgEl.clientWidth > 0) {
-                      imgCard.style.width = imgEl.clientWidth + 'px';
-                    }
-                  };
-                  if (imgEl.complete && imgEl.clientWidth > 0) {
-                    imgCard.style.width = imgEl.clientWidth + 'px';
-                  }
-                }
-
                 if (_currentMessageToolRuns.length > 0) {
                   _currentMessageToolRuns[_currentMessageToolRuns.length - 1].image_path = relativeOrAbsolute;
                 }
@@ -944,9 +972,11 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
             const domains = new Set();
             matches.forEach(u => {
               try {
-                const parsed = new URL(u);
-                let host = parsed.hostname.replace(/^www\./, '');
-                if (host && host.includes('.') && !host.includes('localhost') && !host.includes('127.0.0.1')) {
+                const cleanUrl = u.replace(/[`'"><\)]+$/, '').replace(/\.$/, '');
+                const parsed = new URL(cleanUrl);
+                let host = parsed.hostname.toLowerCase().replace(/^www\./, '').trim();
+                const isValidDomain = /^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?(\.[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)*\.[a-z]{2,}$/i.test(host);
+                if (isValidDomain && !host.includes('localhost') && !host.includes('127.0.0.1')) {
                   domains.add(host);
                 }
               } catch (err) {}
@@ -1312,6 +1342,9 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
       if (window.setGeneratingState) window.setGeneratingState(false);
       break;
     }
+    }
+  } catch (err) {
+    console.error('Error handling chat agent event:', err);
   }
 }
 
@@ -1458,9 +1491,13 @@ function _ensureToolContainer(col, enterConversationCallback) {
 }
 
 function _finalizeToolContainer(isSuccess = true) {
-  if (_lastToolBlock && _lastToolBlock._dotsInterval) {
-    clearInterval(_lastToolBlock._dotsInterval);
-    _lastToolBlock._dotsInterval = null;
+  if (_streamToolBody) {
+    _streamToolBody.querySelectorAll('.tool-log-card').forEach(card => {
+      if (card._dotsInterval) {
+        clearInterval(card._dotsInterval);
+        card._dotsInterval = null;
+      }
+    });
   }
   _lastToolBlock = null;
 

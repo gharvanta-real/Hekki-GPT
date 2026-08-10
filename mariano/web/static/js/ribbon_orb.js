@@ -23,7 +23,7 @@
     }
     if (isPreloading) {
       const checkInterval = setInterval(() => {
-        if (loadedImages.length === FRAME_PATHS.length) {
+        if (!isPreloading) {
           clearInterval(checkInterval);
           if (callback) callback();
         }
@@ -45,6 +45,11 @@
       };
       img.onerror = (e) => {
         console.warn('[HekkiLogoOrb] Failed to load frame:', path, e);
+        loadedCount++;
+        if (loadedCount === FRAME_PATHS.length) {
+          isPreloading = false;
+          if (callback) callback();
+        }
       };
     });
   }

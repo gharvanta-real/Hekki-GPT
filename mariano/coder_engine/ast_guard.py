@@ -52,8 +52,9 @@ def _cache_set(file_path: str, nodes: List[ASTNodeInfo]) -> None:
             oldest_key = next(iter(_ast_cache))
             del _ast_cache[oldest_key]
         _ast_cache[(file_path, mtime)] = nodes
-    except OSError:
-        pass
+    except OSError as e:
+        import logging
+        logging.getLogger(__name__).warning("Failed to cache AST: %s", e)
 
 
 class ASTGuard:
@@ -131,7 +132,9 @@ class ASTGuard:
 
             Visitor(self).visit(tree)
 
-        except Exception:
+        except Exception as e:
+            import logging
+            logging.getLogger(__name__).warning("Python ast parse failed, using fallback: %s", e)
             self._parse_fallback()
 
     def _parse_fallback(self) -> None:

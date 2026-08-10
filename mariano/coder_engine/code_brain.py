@@ -69,8 +69,8 @@ async def stream_gemini(
                         )
                         if text:
                             yield text
-                    except Exception:
-                        pass
+                    except Exception as e:
+                        logger.warning("Failed to parse gemini chunk: %s", e)
 
 
 def _get_env_key(key: str) -> str:
@@ -86,8 +86,8 @@ def _get_env_key(key: str) -> str:
                     line = line.strip()
                     if line.startswith(f"{key}="):
                         return line.split("=", 1)[1].strip().strip('"').strip("'")
-        except Exception:
-            pass
+        except OSError as e:
+            logger.warning("Failed to read .env file: %s", e)
     return ""
 
 

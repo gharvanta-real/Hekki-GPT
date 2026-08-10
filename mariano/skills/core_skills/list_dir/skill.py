@@ -18,6 +18,8 @@ class ListDirSkill(BaseSkill):
 
     async def execute(self, **kwargs: Any) -> SkillResult:
         directory_path_raw = kwargs.get("directory_path", kwargs.get("DirectoryPath", kwargs.get("path", ".")))
+        if not directory_path_raw:
+            directory_path_raw = "."
 
         try:
             active_proj_path = PathGuard.get_active_project_path()

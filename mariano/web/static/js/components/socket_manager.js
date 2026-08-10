@@ -41,7 +41,7 @@ export function rebindSocket(onMessageCallback, log) {
   if (socket.readyState === WebSocket.OPEN) {
     syncSession();
   } else {
-    socket.onopen = syncSession;
+    socket.addEventListener('open', syncSession, { once: true });
   }
 
   socket.onclose = () => {

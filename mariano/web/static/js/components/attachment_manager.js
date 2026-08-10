@@ -245,9 +245,11 @@ class AttachmentManager {
 export const attachmentManager = new AttachmentManager();
 
 // Auto-bind paste listeners when DOM is ready
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => attachmentManager.bindPasteSupport());
-} else {
-  attachmentManager.bindPasteSupport();
+if (typeof document !== 'undefined') {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => attachmentManager.bindPasteSupport());
+  } else {
+    attachmentManager.bindPasteSupport();
+  }
 }
 

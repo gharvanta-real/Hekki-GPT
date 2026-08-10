@@ -48,8 +48,8 @@ class WorkspaceContextManager:
                         if len(parts) > 1:
                             symbol = parts[1].split("(")[0].strip()
                             self._insert_symbol(symbol, file_path)
-        except Exception:
-            pass
+        except Exception as e:
+            logger.warning(f"Failed to index symbols for {file_path}: {e}")
 
     def _insert_symbol(self, symbol: str, file_path: str):
         node = self.root

@@ -34,7 +34,15 @@ export const ChatSessionManager = {
   getSendCallback() { return _globalSendCallback; },
 
   getChats() {
-    try { return JSON.parse(localStorage.getItem('hekki_chats') || '[]'); } catch { return []; }
+    try {
+      const raw = JSON.parse(localStorage.getItem('hekki_chats') || '[]');
+      return raw.map(c => {
+        if (c.id && String(c.id).startsWith('playground_')) {
+          c.isPlayground = true;
+        }
+        return c;
+      });
+    } catch { return []; }
   },
 
   saveChats(chats) {
@@ -173,6 +181,11 @@ export const ChatSessionManager = {
     const activeId = localStorage.getItem('hekki_active_chat_id');
     const activeChat = chats.find(c => c.id === activeId);
     if (activeId && activeChat && activeChat.isPlayground) {
+      // Clear the stale playground ID from localStorage immediately
+      // so it never leaks into the normal chat view on subsequent boots.
+      localStorage.removeItem('hekki_active_chat_id');
+      localStorage.removeItem('mariano_active_chat_id');
+
       const normalChats = chats.filter(c => !c.isPlayground && !c.project && !c.archived);
       if (normalChats.length > 0) {
         normalChats.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
@@ -250,7 +263,7 @@ export const ChatSessionManager = {
       import('/static/js/router.js').then(module => {
         module.router.navigateTo('debate');
         if (window.loadDebateHistory) window.loadDebateHistory(chat);
-      });
+      }).catch(err => console.error('Failed to load router:', err));
       this.renderChatsList();
       return;
     }
@@ -333,8 +346,10 @@ export const ChatSessionManager = {
       return 0;
     };
 
+    const isPlaygroundChat = (c) => Boolean(c && (c.isPlayground || (c.id && String(c.id).startsWith('playground_'))));
+
     if (chatList) {
-      const chats = this.getChats().filter(c => !c.project && !c.archived && !c.isPlayground);
+      const chats = this.getChats().filter(c => !c.project && !c.archived && !isPlaygroundChat(c));
       chats.sort((a, b) => {
         const aPinned = a.pinned ? 1 : 0, bPinned = b.pinned ? 1 : 0;
         if (aPinned !== bPinned) return bPinned - aPinned;
@@ -381,7 +396,7 @@ export const ChatSessionManager = {
     }
 
     if (playgroundList) {
-      const pChats = this.getChats().filter(c => c.isPlayground && !c.archived);
+      const pChats = this.getChats().filter(c => isPlaygroundChat(c) && !c.archived);
       pChats.sort((a, b) => {
         const aPinned = a.pinned ? 1 : 0, bPinned = b.pinned ? 1 : 0;
         if (aPinned !== bPinned) return bPinned - aPinned;
@@ -449,6 +464,10 @@ export const ChatSessionManager = {
       const savedTitle = item.getAttribute('data-title');
       if (savedTitle) { item.setAttribute('title', savedTitle); item.removeAttribute('data-title'); }
     });
+    if (window._dropdownCloseHandler) {
+      document.removeEventListener('click', window._dropdownCloseHandler);
+      window._dropdownCloseHandler = null;
+    }
   },
 
   toggleDropdown(e, chatId, optBtn, isPinned) {
@@ -486,8 +505,9 @@ export const ChatSessionManager = {
     optBtn.parentNode.appendChild(dropdown);
     if (window.lucide) lucide.createIcons({ parent: dropdown });
     const closeHandler = (ev) => {
-      if (!dropdown.contains(ev.target) && ev.target !== optBtn) { this.closeAllDropdowns(); document.removeEventListener('click', closeHandler); }
+      if (!dropdown.contains(ev.target) && ev.target !== optBtn) { this.closeAllDropdowns(); }
     };
+    window._dropdownCloseHandler = closeHandler;
     setTimeout(() => document.addEventListener('click', closeHandler), 50);
   }
 };

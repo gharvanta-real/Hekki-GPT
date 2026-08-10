@@ -184,6 +184,7 @@ class LiveAudioEngine:
         self._active_sessions: Dict[str, LiveAudioSession] = {}
         self._total_session_count = 0
         self._max_simultaneous_sessions = 20  # High concurrent sessions backed by 1M TPM quota
+        self._lock = asyncio.Lock()
 
     @classmethod
     def get_instance(cls) -> LiveAudioEngine:
@@ -196,27 +197,37 @@ class LiveAudioEngine:
 
     async def create_session(self, session_id: str) -> LiveAudioSession:
         """Creates and starts a new LiveAudioSession, enforcing session limits."""
-        # Cleanup inactive sessions
-        inactive = [sid for sid, sess in self._active_sessions.items() if not sess.is_active]
-        for sid in inactive:
-            self._active_sessions.pop(sid, None)
+        async with self._lock:
+            # Cleanup inactive sessions
+            inactive = [sid for sid, sess in self._active_sessions.items() if not sess.is_active]
+            for sid in inactive:
+                self._active_sessions.pop(sid, None)
+    
+            if len(self._active_sessions) >= self._max_simultaneous_sessions:
+                raise RuntimeError(f"Max active Live Audio sessions reached ({self._max_simultaneous_sessions}). Please wait.")
+    
+            client = self._get_genai_client()
+            session = LiveAudioSession(session_id=session_id, client=client, model_name=LIVE_AUDIO_MODEL)
+            
+            # Pre-register to prevent race conditions during await
+            self._active_sessions[session_id] = session
+            self._total_session_count += 1
 
-        if len(self._active_sessions) >= self._max_simultaneous_sessions:
-            raise RuntimeError(f"Max active Live Audio sessions reached ({self._max_simultaneous_sessions}). Please wait.")
-
-        client = self._get_genai_client()
-        session = LiveAudioSession(session_id=session_id, client=client, model_name=LIVE_AUDIO_MODEL)
-        await session.start()
-        
-        self._active_sessions[session_id] = session
-        self._total_session_count += 1
+        try:
+            await session.start()
+        except Exception:
+            async with self._lock:
+                self._active_sessions.pop(session_id, None)
+            raise
+            
         return session
 
     def get_session(self, session_id: str) -> Optional[LiveAudioSession]:
         return self._active_sessions.get(session_id)
 
     async def close_session(self, session_id: str) -> None:
-        session = self._active_sessions.pop(session_id, None)
+        async with self._lock:
+            session = self._active_sessions.pop(session_id, None)
         if session:
             await session.close()
 
