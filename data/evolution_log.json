@@ -1,5 +1,15 @@
 [
   {
+    "timestamp": "2026-08-10T09:47:00Z",
+    "version": "3.5.4-open-sans-primary-font",
+    "category": "Typography — Set Open Sans as Primary Default Font Family",
+    "summary": "Updated CSS design tokens --font, --font-sans, --font-serif, --font-ai to use Open Sans as primary font family.",
+    "details": "Enforced Open Sans as primary font family across sidebar menus, chat bubbles, headers, and UI controls in base.css as requested.",
+    "files": [
+      "mariano/web/static/css/base.css"
+    ]
+  },
+  {
     "timestamp": "2026-08-10T09:44:00Z",
     "version": "3.5.3-fcfcfc-theme-background-update",
     "category": "Theme & Styling — #FCFCFC Soft Neutral Background Tokens",
