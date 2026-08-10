@@ -35,10 +35,27 @@ def run_cmd(cmd, cwd=PROJECT_ROOT):
         log(f"Command failed with exit code {result.returncode}: {cmd}", "❌")
         sys.exit(result.returncode)
 
+def kill_competing_processes():
+    log("Terminating running app processes to release file locks...", "🛑")
+    for proc_name in ["Hekki-Assistant.exe", "hekki_backend.exe", "electron.exe"]:
+        try:
+            subprocess.run(f"taskkill /F /IM {proc_name} /T", shell=True, capture_output=True)
+        except Exception:
+            pass
+
 def clean_directory(dir_path):
     if dir_path.exists():
         log(f"Cleaning: {dir_path}", "🧹")
-        shutil.rmtree(dir_path, ignore_errors=True)
+        def remove_readonly(func, path, excinfo):
+            try:
+                os.chmod(path, 0o777)
+                func(path)
+            except Exception:
+                pass
+        try:
+            shutil.rmtree(dir_path, onerror=remove_readonly)
+        except Exception:
+            pass
 
 def step_check_prerequisites():
     log("Checking Build Prerequisites...", "🔍")
@@ -66,6 +83,7 @@ def step_check_prerequisites():
 
 def step_clean():
     log("Step 1: Cleaning previous build artifacts...", "🧹")
+    kill_competing_processes()
     clean_directory(PROJECT_ROOT / "build")
     clean_directory(PROJECT_ROOT / "dist")
     clean_directory(PROJECT_ROOT / "backend_dist")
