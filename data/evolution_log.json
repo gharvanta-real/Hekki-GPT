@@ -1,5 +1,17 @@
 [
   {
+    "timestamp": "2026-08-10T09:35:00Z",
+    "version": "3.5.1-pure-transparent-ghost-sprites",
+    "category": "Branding & UX — 100% Pure Transparency Matting for Ghost Sprites",
+    "summary": "Fixed root cause where sliced ghost sprites had a solid black box background in light mode.",
+    "details": "Root cause: sprite sheet cells contained opaque black background pixels (r<20, g<20, b<20) surrounding the ghost figure. FIX: 1. Re-processed all 35 sprite PNGs in Python using NumPy pixel mask stripping to purge both black and white background pixels with smooth alpha anti-aliasing. 2. Enforced background: transparent !important on .ghost-avatar-container in base.css and ghost_avatar.js.",
+    "files": [
+      "mariano/web/static/assets/ghost/sprites/",
+      "mariano/web/static/js/ghost_avatar.js",
+      "mariano/web/static/css/base.css"
+    ]
+  },
+  {
     "timestamp": "2026-08-10T09:32:00Z",
     "version": "3.5.0-luminous-ghost-mascot-engine",
     "category": "Branding & UX — Luminous Ghost Mascot & Dynamic Reactive Sprite Avatar System",

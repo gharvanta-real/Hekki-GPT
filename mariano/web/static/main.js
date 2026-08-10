@@ -12,9 +12,6 @@ import { SearchModal }     from '/static/js/components/search_modal.js';
 import { SkillsPage }      from '/static/js/pages/skills_page.js';
 import { handleChatAgentEvent } from '/static/js/agent_stream.js';
 import { sounds } from '/static/js/sound_effects.js';
-import { ghostAvatar } from '/static/js/ghost_avatar.js';
-
-window.ghostAvatar = ghostAvatar;
 
 // Modular UI component imports
 import { showToast } from '/static/js/components/toast.js';
@@ -497,11 +494,6 @@ function boot() {
       });
     }
   });
-
-  const dockAvatar = $('dock-ghost-avatar');
-  if (dockAvatar) {
-    ghostAvatar.registerContainer(dockAvatar, 36);
-  }
 
   // Fade out loader and fade in shell
   setTimeout(() => {
