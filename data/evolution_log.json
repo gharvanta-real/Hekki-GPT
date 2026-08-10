@@ -1,5 +1,16 @@
 [
   {
+    "timestamp": "2026-08-10T09:48:00Z",
+    "version": "3.5.5-inter-soft-modern-font",
+    "category": "Typography — Set Inter as Soft Modern Primary Font Family",
+    "summary": "Updated primary font family to Inter with Open Sans fallback for a softer, hyper-readable modern UI feel.",
+    "details": "Added Google Fonts import for Inter & Plus Jakarta Sans in index.html and updated --font design tokens in base.css.",
+    "files": [
+      "mariano/web/static/css/base.css",
+      "mariano/web/static/index.html"
+    ]
+  },
+  {
     "timestamp": "2026-08-10T09:47:00Z",
     "version": "3.5.4-open-sans-primary-font",
     "category": "Typography — Set Open Sans as Primary Default Font Family",
