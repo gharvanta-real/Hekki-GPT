@@ -17,6 +17,12 @@ import shutil
 import subprocess
 from pathlib import Path
 
+# Force UTF-8 output on Windows console
+if hasattr(sys.stdout, 'reconfigure'):
+    sys.stdout.reconfigure(encoding='utf-8')
+if hasattr(sys.stderr, 'reconfigure'):
+    sys.stderr.reconfigure(encoding='utf-8')
+
 PROJECT_ROOT = Path(__file__).resolve().parent
 
 def log(msg, symbol="🚀"):
