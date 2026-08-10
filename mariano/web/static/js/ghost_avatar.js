@@ -81,9 +81,9 @@ export class GhostAvatarEngine {
     containerEl.dataset.ghostAvatar = 'true';
     containerEl.style.width = size + 'px';
     containerEl.style.height = size + 'px';
-    containerEl.style.display = 'inline-flex';
-    containerEl.style.alignItems = 'center';
-    containerEl.style.justifyContent = 'center';
+    containerEl.style.background = 'transparent';
+    containerEl.style.border = 'none';
+    containerEl.style.boxShadow = 'none';
     containerEl.style.position = 'relative';
 
     this.activeContainers.add(containerEl);

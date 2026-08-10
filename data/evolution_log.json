@@ -1,5 +1,20 @@
 [
   {
+    "timestamp": "2026-08-10T09:32:00Z",
+    "version": "3.5.0-luminous-ghost-mascot-engine",
+    "category": "Branding & UX — Luminous Ghost Mascot & Dynamic Reactive Sprite Avatar System",
+    "summary": "Processed Main-logo-ghost.png and Frame Luminous ghost.png sprite sheet into clean transparent assets and built a dynamic state-reactive mascot avatar engine.",
+    "details": "1. Used PIL & NumPy to crop Main-logo-ghost.png into clean transparent logo_cropped.png, hekki.png, and multi-resolution favicon.ico. 2. Sliced Frame Luminous ghost.png into 35 clean transparent individual PNG sprites in mariano/web/static/assets/ghost/sprites/. 3. Created GhostAvatarEngine (ghost_avatar.js) with real-time state reactivity (idle floating, active thinking flight, coding mode with tablet, success/happy jump, and idle sleeping mode with floating zzz). 4. Integrated mascot container across sidebar dock and live streaming headers.",
+    "files": [
+      "mariano/web/static/assets/ghost/sprites/",
+      "mariano/web/static/js/ghost_avatar.js",
+      "mariano/web/static/index.html",
+      "mariano/web/static/main.js",
+      "mariano/web/static/js/agent_stream.js",
+      "mariano/web/static/css/base.css"
+    ]
+  },
+  {
     "timestamp": "2026-08-10T09:19:00Z",
     "version": "3.4.7-large-wave-animation-generating-card",
     "category": "UI & UX — Fluid Wave Oscillating Bar Animation & Large Loading Skeleton",
