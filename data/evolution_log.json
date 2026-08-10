@@ -1,5 +1,18 @@
 [
   {
+    "timestamp": "2026-08-10T09:40:00Z",
+    "version": "3.5.2-restored-original-brand-logo",
+    "category": "Branding & UX — Reverted to Original Hekki Logo & Ribbon Orb Avatar",
+    "summary": "Restored original Hekki brand logo and Ribbon Gradient Orb avatar as requested.",
+    "details": "1. Restored original mariano/web/static/hekki.png logo from commit history. 2. Reverted sidebar dock logo to original /static/hekki.png. 3. Restored original RibbonGradientOrb canvas avatar in streaming header in agent_stream.js. 4. Pushed revert to GitHub origin/main.",
+    "files": [
+      "mariano/web/static/hekki.png",
+      "mariano/web/static/index.html",
+      "mariano/web/static/js/agent_stream.js",
+      "mariano/web/static/main.js"
+    ]
+  },
+  {
     "timestamp": "2026-08-10T09:35:00Z",
     "version": "3.5.1-pure-transparent-ghost-sprites",
     "category": "Branding & UX — 100% Pure Transparency Matting for Ghost Sprites",
