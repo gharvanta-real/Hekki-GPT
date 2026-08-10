@@ -1,5 +1,17 @@
 [
   {
+    "timestamp": "2026-08-10T09:44:00Z",
+    "version": "3.5.3-fcfcfc-theme-background-update",
+    "category": "Theme & Styling — #FCFCFC Soft Neutral Background Tokens",
+    "summary": "Replaced full white (#ffffff) with soft warm neutral #FCFCFC across all page background design tokens.",
+    "details": "Updated --bg, --card, and --sidebar-bg design tokens in base.css, 1_settings_base.css, and index.html theme-color meta tag from #ffffff to #FCFCFC.",
+    "files": [
+      "mariano/web/static/css/base.css",
+      "mariano/web/static/css/settings/1_settings_base.css",
+      "mariano/web/static/index.html"
+    ]
+  },
+  {
     "timestamp": "2026-08-10T09:40:00Z",
     "version": "3.5.2-restored-original-brand-logo",
     "category": "Branding & UX — Reverted to Original Hekki Logo & Ribbon Orb Avatar",
