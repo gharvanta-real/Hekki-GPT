@@ -316,7 +316,7 @@ body.oled .settings-select {
   border: 1px solid var(--border, rgba(0, 0, 0, 0.12)) !important;
   outline: none !important;
   box-shadow: none !important;
-  background: var(--bg, #ffffff);
+  background: var(--bg, #FCFCFC);
   color: var(--text-primary);
   font-family: var(--font);
   font-size: 13px !important;

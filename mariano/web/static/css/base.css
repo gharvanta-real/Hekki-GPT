@@ -1,9 +1,9 @@
 /* === BASE VARIABLES & RESET === */
 :root {
-  --bg:          #ffffff; /* full clean white background */
-  --card:        #ffffff;
-  --input-bg:    #F4F4F6; /* soft light neutral tint so input capsule stands out cleanly from white bg */
-  --sidebar-bg:  #ffffff; /* full clean white for all left sidebars */
+  --bg:          #FCFCFC; /* soft warm neutral background */
+  --card:        #FCFCFC;
+  --input-bg:    #F4F4F6; /* soft light neutral tint so input capsule stands out cleanly from bg */
+  --sidebar-bg:  #FCFCFC; /* soft warm neutral for all left sidebars */
   --border:      #E8E8E6; 
   --hover:       #EEEEEC;
 
