@@ -114,8 +114,9 @@ body.light .modal-nav-item:hover,
 
 body.light .modal-nav-item.active,
 :root[data-theme="light"] .modal-nav-item.active {
-  background: #ffffff !important;
+  background: var(--hover, #EEEEEC) !important;
   color: var(--text, #0f172a) !important;
+  font-weight: 600;
   border: none !important;
   box-shadow: none !important;
 }
