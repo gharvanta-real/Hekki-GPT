@@ -1,5 +1,6 @@
 /* === chat/input.js — Input binding, scroll, clear helpers, shared state === */
 import { attachmentManager } from '../components/attachment_manager.js';
+import { updateInputStatsIndicator } from './input_stats.js';
 
 // Shared mutable state (exported for session.js to access)
 export let activeChatId = localStorage.getItem('hekki_active_chat_id') || null;
@@ -34,6 +35,8 @@ export function clearInputs() {
   });
   document.getElementById('btn-submit-home')?.classList.add('hidden');
   document.getElementById('btn-submit-conv')?.classList.add('hidden');
+  document.getElementById('chat-input-stats-badge')?.remove();
+  document.getElementById('chat-input-conv-stats-badge')?.remove();
 }
 
 export function clearChatLogs() {
@@ -138,8 +141,16 @@ export function bindInputs(sendCallback, ChatSessionManager) {
     }
   });
 
-  $('chat-input')?.addEventListener('input', () => handleInputToggle($('chat-input'), 'btn-submit-home', 'btn-stop-gen'));
-  $('chat-input-conv')?.addEventListener('input', () => handleInputToggle($('chat-input-conv'), 'btn-submit-conv', 'btn-stop-gen-conv'));
+  $('chat-input')?.addEventListener('input', () => {
+    handleInputToggle($('chat-input'), 'btn-submit-home', 'btn-stop-gen');
+    updateInputStatsIndicator('chat-input', 'chat-input-stats-badge');
+  });
+
+  $('chat-input-conv')?.addEventListener('input', () => {
+    handleInputToggle($('chat-input-conv'), 'btn-submit-conv', 'btn-stop-gen-conv');
+    updateInputStatsIndicator('chat-input-conv', 'chat-input-conv-stats-badge');
+  });
+
 
   $('btn-submit-home')?.addEventListener('click', () => {
     let text = getFullPromptText('chat-input');

@@ -2,6 +2,7 @@
  * attachment_manager.js — Handles file attachments across all input capsules.
  * Renders ChatGPT-style preview chips with thumbnails & remove (X) buttons.
  */
+import { calculateTextStats, openSnippetModal } from '../chat/input_stats.js';
 
 class AttachmentManager {
   constructor() {
@@ -148,8 +149,10 @@ class AttachmentManager {
         mediaHtml = `<div class="chip-doc-icon">${displayExt}</div>`;
       }
 
+      const isTextSnippet = Boolean(f.text || ['txt', 'md', 'py', 'js', 'json', 'log', 'csv'].includes(f.ext));
+
       return `
-        <div class="attachment-chip" data-id="${f.id}" title="${this._esc(f.name)}">
+        <div class="attachment-chip ${isTextSnippet ? 'attachment-chip-clickable' : ''}" data-id="${f.id}" title="${this._esc(f.name)} ${isTextSnippet ? '(Click to view/edit snippet)' : ''}">
           ${mediaHtml}
           <div class="chip-info">
             <span class="chip-name">${this._esc(f.name)}</span>
@@ -169,6 +172,25 @@ class AttachmentManager {
         e.stopPropagation();
         const id = btn.dataset.id;
         this.removeFile(id);
+      });
+    });
+
+    container.querySelectorAll('.attachment-chip-clickable').forEach(chip => {
+      chip.addEventListener('click', (e) => {
+        if (e.target.closest('.chip-remove-btn')) return;
+        const id = chip.dataset.id;
+        const item = this._files.find(f => f.id === id);
+        if (item) {
+          openSnippetModal(item, (revertedItem) => {
+            this.removeFile(revertedItem.id);
+            const activeInput = document.getElementById('chat-input-conv') || document.getElementById('chat-input');
+            if (activeInput) {
+              activeInput.value = (activeInput.value ? activeInput.value + '\n\n' : '') + (revertedItem.text || '');
+              activeInput.focus();
+              activeInput.dispatchEvent(new Event('input', { bubbles: true }));
+            }
+          });
+        }
       });
     });
   }
@@ -204,7 +226,7 @@ class AttachmentManager {
 
   /**
    * Bind Clipboard Paste (Ctrl+V / Cmd+V) to textareas.
-   * Pasted images and files automatically become preview chips!
+   * Pasted images, files, and large text pastes automatically become preview chips!
    */
   bindPasteSupport(textareaIds = ['chat-input', 'chat-input-conv', 'coder-input', 'debate-input']) {
     textareaIds.forEach(id => {
@@ -214,28 +236,51 @@ class AttachmentManager {
 
       el.addEventListener('paste', async (e) => {
         const clipboardItems = e.clipboardData?.items;
-        if (!clipboardItems) return;
 
-        const filesToAttach = [];
-        for (const item of clipboardItems) {
-          if (item.kind === 'file') {
-            const file = item.getAsFile();
-            if (file) {
-              // Give pasted screenshot blobs a readable timestamped name
-              if (!file.name || file.name === 'image.png' || file.name === 'blob') {
-                const ext = (file.type.split('/')[1] || 'png').toLowerCase();
-                const namedFile = new File([file], `Pasted_Image_${Date.now()}.${ext}`, { type: file.type });
-                filesToAttach.push(namedFile);
-              } else {
-                filesToAttach.push(file);
+        // 1. Check for attached file items (images, pdfs, etc.)
+        if (clipboardItems) {
+          const filesToAttach = [];
+          for (const item of clipboardItems) {
+            if (item.kind === 'file') {
+              const file = item.getAsFile();
+              if (file) {
+                if (!file.name || file.name === 'image.png' || file.name === 'blob') {
+                  const ext = (file.type.split('/')[1] || 'png').toLowerCase();
+                  const namedFile = new File([file], `Pasted_Image_${Date.now()}.${ext}`, { type: file.type });
+                  filesToAttach.push(namedFile);
+                } else {
+                  filesToAttach.push(file);
+                }
               }
             }
           }
+
+          if (filesToAttach.length > 0) {
+            e.preventDefault();
+            await this.addFiles(filesToAttach);
+            return;
+          }
         }
 
-        if (filesToAttach.length > 0) {
-          e.preventDefault(); // Don't paste file path/binary string into textarea text
-          await this.addFiles(filesToAttach);
+        // 2. Check for large plain text paste (e.g. >1000 words, >500 lines, or >4000 chars)
+        const pastedText = e.clipboardData?.getData('text/plain');
+        if (pastedText) {
+          const stats = calculateTextStats(pastedText);
+          if (stats.lineCount >= 500 || stats.wordCount >= 1000 || stats.charCount >= 4000) {
+            e.preventDefault();
+            const blob = new Blob([pastedText], { type: 'text/plain;charset=utf-8' });
+            const fileName = `Pasted_Snippet_${stats.lineCount}lines.txt`;
+            const textFile = new File([blob], fileName, { type: 'text/plain' });
+            await this.addFiles([textFile]);
+            
+            if (window.showToast) {
+              window.showToast(
+                'Large Text Auto-Attached',
+                `Pasted ${stats.lineCount} lines (${stats.wordCount} words) auto-attached as a file card to keep your input clean.`,
+                5000
+              );
+            }
+          }
         }
       });
     });
@@ -252,4 +297,5 @@ if (typeof document !== 'undefined') {
     attachmentManager.bindPasteSupport();
   }
 }
+
 

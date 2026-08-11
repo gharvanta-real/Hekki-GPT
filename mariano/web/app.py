@@ -648,7 +648,14 @@ async def websocket_endpoint(websocket: WebSocket):
                                     extra_context.append(f"\n\n[Attached Image: {name} (Error: {err})]")
 
                             elif att.get("text"):
-                                extra_context.append(f"\n\n--- Attached Document: {name} ---\n{att['text']}\n--- End Document ---")
+                                doc_text = att["text"]
+                                line_count = len(doc_text.splitlines())
+                                char_count = len(doc_text)
+                                extra_context.append(
+                                    f"\n\n--- Attached Document: {name} ({line_count} lines, {char_count} chars) ---\n"
+                                    f"{doc_text}\n"
+                                    f"--- End Document: {name} ---"
+                                )
 
                             elif att.get("base64"):
                                 try:

@@ -36,6 +36,7 @@ data/user_feedback_data.csv
 data/user_persona.json
 data/dynamic_settings.json
 data/disabled_skills.json
+data/evolution_log.json
 
 # Scratch & Temporary data
 scratch/
