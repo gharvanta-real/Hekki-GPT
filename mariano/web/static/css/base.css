@@ -237,7 +237,7 @@ button:hover, .btn:hover, .icon-btn:hover, .dock-item:hover, .sidebar-action-btn
 }
 
 /* Minimum Touch Target Bounds for Interactive Buttons */
-button:not(.cap-icon-btn):not(.circle-btn):not(.img-lightbox-btn):not(.img-card-btn):not(.img-card-checkbox):not(.icon-btn):not(.modal-close):not(.btn-icon-circle):not(.submit-btn):not(#btn-submit-home):not(#btn-submit-conv):not(#btn-debate-start):not(#btn-debate-intervene):not(#coder-btn-send) {
+button:not(.cap-icon-btn):not(.circle-btn):not(.img-lightbox-btn):not(.img-card-btn):not(.img-card-checkbox):not(.icon-btn):not(.modal-close):not(.btn-icon-circle):not(.submit-btn):not(#btn-submit-home):not(#btn-submit-conv):not(#btn-debate-start):not(#btn-debate-intervene):not(#coder-btn-send):not(.action-btn):not(.msg-expand-btn) {
   min-height: 36px;
   box-sizing: border-box;
 }
