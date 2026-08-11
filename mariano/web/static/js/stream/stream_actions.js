@@ -91,38 +91,7 @@ export function attachAiActions(msgEl, text, toolRuns = []) {
     }
   });
 
-  // Render Open Canvas action button ONLY if message contains actual multiline code blocks or diagrams
-  const codeBlockMatch = text.match(/```(\w+)?\n([\s\S]*?)```/);
-  const validCanvasLangs = ['html', 'htm', 'js', 'javascript', 'jsx', 'ts', 'typescript', 'tsx', 'css', 'py', 'python', 'svg', 'mermaid', 'json', 'yaml', 'xml', 'sql', 'cpp', 'c', 'java', 'vue', 'react'];
-  const isCanvasArtifact = codeBlockMatch && (
-    (codeBlockMatch[2] || '').trim().length >= 15 && (
-      validCanvasLangs.includes((codeBlockMatch[1] || '').toLowerCase()) ||
-      /<[a-z][\s\S]*>/i.test(codeBlockMatch[2]) ||
-      /function|const|let|var|class|import|def\s+/i.test(codeBlockMatch[2])
-    )
-  );
 
-  if (isCanvasArtifact) {
-    const canvasActionBtn = document.createElement('button');
-    canvasActionBtn.className = 'action-btn btn-canvas-launch';
-    canvasActionBtn.title = 'Open in Live Canvas';
-    canvasActionBtn.innerHTML = '<i data-lucide="layout" style="width:13px;height:13px"></i> Open Canvas';
-    canvasActionBtn.style.cssText = 'display:flex; align-items:center; gap:4px; font-size:11.5px; font-weight:600; color:var(--blue); background:rgba(37,99,235,0.08); padding:3px 8px; border-radius:6px; border:none; cursor:pointer;';
-    canvasActionBtn.addEventListener('click', () => {
-      if (window.liveCanvas) {
-        const extractedCode = codeBlockMatch[2];
-        const extractedLang = (codeBlockMatch[1] || 'html').toLowerCase();
-        window.liveCanvas.openArtifact({
-          type: extractedLang === 'mermaid' ? 'diagram' : (extractedLang === 'html' || extractedCode.includes('<html') ? 'web_app' : 'code'),
-          title: 'Interactive Artifact',
-          code: extractedCode,
-          language: extractedLang
-        });
-      }
-    });
-    actions.insertBefore(canvasActionBtn, actions.firstChild);
-    if (window.lucide) lucide.createIcons({ parent: canvasActionBtn });
-  }
 
   const streamCopyBtn = actions.querySelector('.btn-copy');
   streamCopyBtn?.addEventListener('click', () => {
