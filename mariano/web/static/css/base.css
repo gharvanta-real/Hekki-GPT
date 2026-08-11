@@ -174,7 +174,7 @@ body.light,
   body:not(.light):not([data-theme="light"]):not(.dark):not(.oled) {
     --bg:          #1F1F1E;
     --card:        #2C2C2B;
-    --input-bg:    #2B2B2B;
+    --input-bg:    #212121;
     --sidebar-bg:  #1F1F1E;
     --border:      #333332;
     --hover:       #2A2A29;
@@ -192,7 +192,7 @@ body.dark,
 :root[data-theme="dark"] {
   --bg:          #1F1F1E !important;
   --card:        #2C2C2B !important;
-  --input-bg:    #2B2B2B !important;
+  --input-bg:    #212121 !important;
   --sidebar-bg:  #1F1F1E !important;
   --border:      #333332 !important;
   --hover:       #2A2A29 !important;
@@ -209,7 +209,7 @@ body.oled,
 :root[data-theme="oled"] {
   --bg:          #000000 !important;
   --card:        #0E0E0E !important;
-  --input-bg:    #2B2B2B !important;
+  --input-bg:    #212121 !important;
   --sidebar-bg:  #000000 !important;
   --border:      #1F1F1F !important;
   --hover:       #2B2B2B !important;
