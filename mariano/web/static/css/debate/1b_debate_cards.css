@@ -225,9 +225,11 @@ body.dark .des-card-avatar {
 }
 
 .debate-sender-badge {
-  font-size: 12px;
-  font-weight: 600;
-  padding: 4px 12px;
+  font-family: var(--font) !important;
+  font-size: 10.5px !important;
+  line-height: 14px !important;
+  font-weight: 500 !important;
+  padding: 3px 10px;
   border-radius: 20px;
   border: none;
   background: var(--sidebar-bg);
@@ -241,8 +243,10 @@ body.dark .des-card-avatar {
   color: var(--text-primary);
   border-radius: 20px;
   padding: 3px 10px;
-  font-size: 11px;
-  font-weight: 600;
+  font-family: var(--font) !important;
+  font-size: 10.5px !important;
+  line-height: 14px !important;
+  font-weight: 500 !important;
   display: inline-flex;
   align-items: center;
   gap: 4px;
@@ -251,14 +255,15 @@ body.dark .des-card-avatar {
 .debate-arrow { font-size: 10px; color: var(--text-3); }
 .debate-target-badge { font-size: 10px; color: var(--text-3); }
 
-/* Bubbles & Summary Cards */
+/* Bubbles & Summary Cards (Exact ChatGPT Specs: Segoe UI 400 16px/26px) */
 .debate-bubble,
-.debate-summary-body {
-  font-family: var(--font);
-  font-size: 14px;
-  line-height: 1.65;
-  font-weight: 400;
-  color: var(--text);
+.debate-summary-body,
+.debate-msg {
+  font-family: var(--font-ai, var(--font)) !important;
+  font-size: 16px !important;
+  line-height: 26px !important;
+  font-weight: 400 !important;
+  color: var(--text) !important;
 }
 .debate-bubble em,
 .debate-bubble i,
@@ -270,21 +275,27 @@ body.dark .des-card-avatar {
 .debate-bubble b,
 .debate-summary-body strong,
 .debate-summary-body b {
-  font-weight: 600;
-  color: var(--text-primary);
-  font-size: 14px;
+  font-weight: 600 !important;
+  color: var(--text) !important;
+  font-size: 16px !important;
 }
 .debate-bubble p,
-.debate-summary-body p {
-  margin: 0 0 14px 0;
-  line-height: 1.75;
+.debate-summary-body p,
+.debate-msg p {
+  margin: 0 0 12px 0;
+  font-family: var(--font-ai, var(--font)) !important;
+  font-size: 16px !important;
+  line-height: 26px !important;
+  font-weight: 400 !important;
 }
 .debate-bubble p:last-child,
-.debate-summary-body p:last-child {
+.debate-summary-body p:last-child,
+.debate-msg p:last-child {
   margin-bottom: 0;
 }
-.debate-bubble h1, .debate-summary-body h1 { font-size: 18px; margin: 16px 0 8px 0; }
-.debate-bubble h2, .debate-summary-body h2 { font-size: 16px; margin: 14px 0 6px 0; }
-.debate-bubble h3, .debate-summary-body h3 { font-size: 15px; margin: 12px 0 4px 0; }
-.debate-bubble h4, .debate-bubble h5, .debate-bubble h6,
-.debate-summary-body h4, .debate-summary-body h5, .debate-summary-body h6 { font-size: 14px; margin: 10px 0 4px 0; }
+.debate-bubble h1, .debate-summary-body h1, .debate-msg h1 { font-size: 24px !important; line-height: 32px !important; font-weight: 600 !important; margin: 20px 0 8px 0; }
+.debate-bubble h2, .debate-summary-body h2, .debate-msg h2 { font-size: 20px !important; line-height: 28px !important; font-weight: 600 !important; margin: 18px 0 6px 0; }
+.debate-bubble h3, .debate-summary-body h3, .debate-msg h3 { font-size: 18px !important; line-height: 28px !important; font-weight: 600 !important; margin: 16px 0 6px 0; }
+.debate-bubble h4, .debate-summary-body h4, .debate-msg h4 { font-size: 16px !important; line-height: 24px !important; font-weight: 600 !important; margin: 14px 0 4px 0; }
+.debate-bubble h5, .debate-summary-body h5, .debate-msg h5 { font-size: 16px !important; line-height: 26px !important; font-weight: 600 !important; margin: 12px 0 4px 0; }
+.debate-bubble h6, .debate-summary-body h6, .debate-msg h6 { font-size: 16px !important; line-height: 26px !important; font-weight: 600 !important; margin: 12px 0 4px 0; }

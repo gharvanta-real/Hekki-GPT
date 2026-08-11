@@ -45,53 +45,70 @@
   max-width: 320px;
 }
 
-.attach-dropdown-item {
-  height: 34px;
-  border: none;
-  background: transparent;
-  color: var(--text-2);
-  font-family: var(--font);
-  font-size: var(--fs-base);   /* 13px */
+.attach-dropdown-item,
+.doc-dropdown-menu .dropdown-item,
+.dropdown-menu .dropdown-item,
+.dropdown-item {
+  height: 34px !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  color: var(--text-2) !important;
+  font-family: var(--font) !important;
+  font-size: 13px !important;
   font-weight: 400 !important;
-  padding: 0 10px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  cursor: pointer;
-  border-radius: 8px;
-  text-align: left;
-  width: 100%;
-  transition: background 0.12s, color 0.12s;
+  padding: 0 10px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  cursor: pointer !important;
+  border-radius: 8px !important;
+  text-align: left !important;
+  width: 100% !important;
+  transition: background 0.12s ease, color 0.12s ease !important;
   position: relative;
+  box-sizing: border-box !important;
 }
 
 /* Compact model select items */
 .model-dropdown .attach-dropdown-item {
-  font-size: 12px;
-  height: 30px;
-  padding: 0 8px;
+  font-size: 12px !important;
+  height: 30px !important;
+  padding: 0 8px !important;
 }
 
-/* Auto height for permission selection items (avoids squishing two-line content) */
+/* Auto height for permission selection items */
 .permission-dropdown .attach-dropdown-item {
   height: auto !important;
   padding: 6px 10px !important;
 }
 
-.attach-dropdown-item:hover {
-  background: var(--hover);
-  color: var(--text);
+.attach-dropdown-item:hover,
+.doc-dropdown-menu .dropdown-item:hover,
+.dropdown-menu .dropdown-item:hover,
+.dropdown-item:hover {
+  background: var(--hover) !important;
+  color: var(--text) !important;
 }
 
-.attach-dropdown-item .lucide {
-  width: 15px;
-  height: 15px;
-  color: var(--text-3);
-  transition: color 0.12s;
+.attach-dropdown-item .lucide,
+.doc-dropdown-menu .dropdown-item .lucide,
+.dropdown-item .lucide,
+.dropdown-item i,
+.dropdown-item svg {
+  width: 15px !important;
+  height: 15px !important;
+  color: var(--text-3) !important;
+  transition: color 0.12s ease !important;
 }
 
-.attach-dropdown-item:hover .lucide {
-  color: var(--text);
+.attach-dropdown-item:hover .lucide,
+.doc-dropdown-menu .dropdown-item:hover .lucide,
+.dropdown-item:hover .lucide,
+.dropdown-item:hover i,
+.dropdown-item:hover svg {
+  color: var(--text) !important;
 }
 
 .attach-dropdown-item .shortcut-hint {
@@ -230,7 +247,7 @@
 }
 #search-modal-input {
   width: 100%;
-  padding: 8px 36px 8px 34px !important;
+  padding: 8px 36px 8px 38px !important;
   font-family: var(--font);
   font-size: 13px;
   font-weight: 400;

@@ -294,17 +294,23 @@
 }
 
 .img-lightbox-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 30px !important;
-  height: 30px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  min-height: 32px !important;
+  max-width: 32px !important;
+  max-height: 32px !important;
   border: none !important;
   box-shadow: none !important;
   border-radius: 50% !important;
-  background: rgba(255, 255, 255, 0.12) !important;
+  background: rgba(255, 255, 255, 0.14) !important;
   color: #ffffff !important;
   cursor: pointer;
+  padding: 0 !important;
+  flex-shrink: 0 !important;
   transition: all 0.15s ease;
 }
 .img-lightbox-btn:hover { background: rgba(255, 255, 255, 0.25) !important; color: #ffffff !important; transform: scale(1.08); }

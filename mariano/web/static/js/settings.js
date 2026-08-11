@@ -23,7 +23,7 @@ export function initSettings(setGreetingCallback) {
   window._loadSettingsOnPage = () => {
     loadAllSettings();
     loadActiveSkills();
-    const _fk = localStorage.getItem('hekki_font') || 'system';
+    const _fk = localStorage.getItem('hekki_font') || 'google-sans';
     const _fontSel = document.getElementById('settings-font-family');
     if (_fontSel) _fontSel.value = _fk;
   };
@@ -113,30 +113,39 @@ export function initSettings(setGreetingCallback) {
 
   // ── Font Family (localStorage) ─────────────────────────────────────────
   const FONT_MAP = {
-    'system':           '-apple-system-body, ui-sans-serif, "Segoe UI", Roboto, sans-serif',
-    'lato':             '"Lato", ui-sans-serif, sans-serif',
-    'karla':            '"Karla", ui-sans-serif, sans-serif',
-    'cabin':            '"Cabin", ui-sans-serif, sans-serif',
-    'mulish':           '"Mulish", ui-sans-serif, sans-serif',
-    'assistant':        '"Assistant", ui-sans-serif, sans-serif',
-    'alegreya-sans':    '"Alegreya Sans", ui-sans-serif, sans-serif',
-    'source-sans':      '"Source Sans 3", ui-sans-serif, sans-serif',
-    'lora':             '"Lora", ui-serif, serif',
-    'merriweather-sans':'"Merriweather Sans", ui-sans-serif, sans-serif',
-    'varela-round':     '"Varela Round", ui-sans-serif, sans-serif',
+    'google-sans': {
+      font:  '"Google Sans", "Google Sans Flex", "Open Sans", sans-serif',
+      serif: '"Google Sans", "Google Sans Flex", sans-serif',
+      ai:    '"Google Sans", "Google Sans Flex", sans-serif'
+    },
+    'open-sans': {
+      font:  '"Open Sans", "Google Sans", sans-serif',
+      serif: '"Open Sans", "Google Sans", sans-serif',
+      ai:    '"Open Sans", "Google Sans", sans-serif'
+    },
+    'system': {
+      font:  '-apple-system-body, ui-sans-serif, -apple-system, "system-ui", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, "sans-serif", "Segoe UI Emoji", "Segoe UI Symbol"',
+      serif: '-apple-system-body, ui-sans-serif, -apple-system, "system-ui", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, "sans-serif", "Segoe UI Emoji", "Segoe UI Symbol"',
+      ai:    '-apple-system-body, ui-sans-serif, -apple-system, "system-ui", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, "sans-serif", "Segoe UI Emoji", "Segoe UI Symbol"'
+    },
+    'anthropic': {
+      font:  '"anthropic-sans", system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+      serif: '"anthropic-serif", "Anthropic Serif Fallback Georgia", Georgia, "Times New Roman", serif',
+      ai:    '"anthropic-serif", "Anthropic Serif Fallback Georgia", Georgia, "Times New Roman", serif'
+    }
   };
 
   function applyFont(key) {
-    const stack = FONT_MAP[key] || FONT_MAP['system'];
-    document.documentElement.style.setProperty('--font', stack);
-    document.documentElement.style.setProperty('--font-sans', stack);
-    document.documentElement.style.setProperty('--font-serif', stack);
-    document.documentElement.style.setProperty('--font-ai', stack);
+    const cfg = FONT_MAP[key] || FONT_MAP['google-sans'] || FONT_MAP['system'];
+    document.documentElement.style.setProperty('--font', cfg.font);
+    document.documentElement.style.setProperty('--font-sans', cfg.font);
+    document.documentElement.style.setProperty('--font-serif', cfg.serif);
+    document.documentElement.style.setProperty('--font-ai', cfg.ai);
   }
 
   const fontSel = $('settings-font-family');
   if (fontSel) {
-    const savedFont = localStorage.getItem('hekki_font') || 'system';
+    const savedFont = localStorage.getItem('hekki_font') || 'google-sans';
     fontSel.value = savedFont;
     applyFont(savedFont);
 
@@ -219,12 +228,7 @@ export function initSettings(setGreetingCallback) {
       const quickVoice = $('settings-quick-voice');
       if (quickVoice) quickVoice.checked = cfg.quick_voice_enabled !== false;
 
-      // Kaggle GPU
-      const kUser = $('settings-kaggle-user');
-      const kKey = $('settings-kaggle-key');
-      if (kUser) kUser.value = cfg.kaggle_username || '';
-      if (kKey) kKey.value = cfg.kaggle_api_key || '';
-      updateKaggleStatus(cfg.kaggle_username, cfg.kaggle_api_key);
+
 
       // Re-sync font dropdown from localStorage (client-only setting)
       const fontDropdown = $('settings-font-family');
@@ -372,68 +376,7 @@ export function initSettings(setGreetingCallback) {
     save({ quick_voice_enabled: e.target.checked });
   });
 
-  // ── Kaggle GPU Accelerator ────────────────────────────────────────────
-  function updateKaggleStatus(user, key) {
-    const textEl = $('kaggle-status-text');
-    const badgeEl = $('kaggle-status-badge')?.querySelector('span');
-    if (!textEl) return;
-    if (user && key) {
-      textEl.textContent = `Configured (${user})`;
-      textEl.style.color = '#16a34a';
-      if (badgeEl) badgeEl.style.background = '#16a34a';
-    } else {
-      textEl.textContent = 'Not Verified';
-      textEl.style.color = 'var(--text-3)';
-      if (badgeEl) badgeEl.style.background = '#888';
-    }
-  }
 
-  $('btn-toggle-kaggle-visibility')?.addEventListener('click', () => {
-    const inp = $('settings-kaggle-key');
-    if (!inp) return;
-    inp.type = inp.type === 'password' ? 'text' : 'password';
-    const icon = $('btn-toggle-kaggle-visibility').querySelector('[data-lucide]');
-    if (icon) {
-      icon.setAttribute('data-lucide', inp.type === 'password' ? 'eye' : 'eye-off');
-      if (window.lucide) lucide.createIcons();
-    }
-  });
-
-  $('btn-save-kaggle')?.addEventListener('click', () => {
-    const user = $('settings-kaggle-user')?.value.trim() || '';
-    const key = $('settings-kaggle-key')?.value.trim() || '';
-    save({ kaggle_username: user, kaggle_api_key: key });
-    updateKaggleStatus(user, key);
-  });
-
-  $('btn-test-kaggle')?.addEventListener('click', async () => {
-    const user = $('settings-kaggle-user')?.value.trim() || '';
-    const key = $('settings-kaggle-key')?.value.trim() || '';
-    const textEl = $('kaggle-status-text');
-    const badgeEl = $('kaggle-status-badge')?.querySelector('span');
-    if (textEl) { textEl.textContent = 'Testing API Connection...'; textEl.style.color = '#3b82f6'; }
-    if (badgeEl) badgeEl.style.background = '#3b82f6';
-
-    try {
-      const res = await fetch('/api/kaggle/verify', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ kaggle_username: user, kaggle_api_key: key })
-      });
-      const data = await res.json();
-      if (data.success) {
-        if (textEl) { textEl.textContent = data.message; textEl.style.color = '#16a34a'; }
-        if (badgeEl) badgeEl.style.background = '#16a34a';
-        save({ kaggle_username: user, kaggle_api_key: key });
-      } else {
-        if (textEl) { textEl.textContent = data.message || 'Verification Failed'; textEl.style.color = '#dc2626'; }
-        if (badgeEl) badgeEl.style.background = '#dc2626';
-      }
-    } catch (e) {
-      if (textEl) { textEl.textContent = 'Connection error'; textEl.style.color = '#dc2626'; }
-      if (badgeEl) badgeEl.style.background = '#dc2626';
-    }
-  });
 
   // ── Skills grid ───────────────────────────────────────────────────────
   async function loadActiveSkills() {

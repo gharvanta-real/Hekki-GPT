@@ -15,35 +15,9 @@ export function calculateTextStats(text) {
  * Creates or updates a live text statistics indicator under active input capsules.
  */
 export function updateInputStatsIndicator(textareaId, indicatorId) {
-  const textarea = document.getElementById(textareaId);
-  let indicator = document.getElementById(indicatorId);
-  
-  if (!textarea) return;
-
-  const text = textarea.value;
-  const stats = calculateTextStats(text);
-
-  if (!indicator && stats.wordCount > 50) {
-    indicator = document.createElement('div');
-    indicator.id = indicatorId;
-    indicator.className = 'input-stats-badge';
-    textarea.parentNode?.appendChild(indicator);
-  }
-
+  const indicator = document.getElementById(indicatorId);
   if (indicator) {
-    if (stats.wordCount === 0) {
-      indicator.style.display = 'none';
-    } else {
-      indicator.style.display = 'inline-flex';
-      let formattedWordCount = stats.wordCount >= 1000 ? `${(stats.wordCount / 1000).toFixed(1)}k` : stats.wordCount;
-      indicator.textContent = `${formattedWordCount} words • ${stats.lineCount} lines`;
-      
-      if (stats.lineCount >= 400 || stats.wordCount >= 800) {
-        indicator.classList.add('near-limit');
-      } else {
-        indicator.classList.remove('near-limit');
-      }
-    }
+    indicator.remove();
   }
 }
 

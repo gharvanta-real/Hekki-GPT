@@ -51,66 +51,73 @@
 }
 
 .modal-nav-item {
-  height: 38px !important;
+  height: 32px !important;
   width: 100% !important;
   box-sizing: border-box !important;
-  border: 1px solid transparent !important;
+  border: none !important;
   outline: none !important;
   box-shadow: none !important;
-  background: transparent;
-  color: var(--text-2, #52525b);
+  background: transparent !important;
+  color: var(--text-2, #94a3b8);
   cursor: pointer;
   font-family: var(--font, sans-serif);
-  font-size: 13px;
-  font-weight: 500;
-  border-radius: 9999px !important;
+  font-size: 14px;
+  font-weight: 400;
+  border-radius: 8px !important;
   display: flex !important;
   align-items: center !important;
-  gap: 10px;
-  padding: 0 14px !important;
+  gap: 8px;
+  padding: 0 8px !important;
   text-align: left;
-  transition: all 0.15s ease;
+  transition: all 0.12s ease;
+  position: relative;
 }
 
 .modal-nav-item .lucide {
   width: 16px;
   height: 16px;
-  color: var(--text-3, #71717a);
+  color: var(--text-3, #64748b);
   flex-shrink: 0;
-  transition: color 0.15s ease;
+  transition: color 0.12s ease;
 }
 
 .modal-nav-item:hover {
-  background: rgba(0, 0, 0, 0.05) !important;
-  color: var(--text-primary) !important;
-  border-radius: 9999px !important;
+  background: var(--hover, rgba(255, 255, 255, 0.08)) !important;
+  color: var(--text, #ffffff) !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 8px !important;
 }
 
-body.dark .modal-nav-item:hover,
-body.oled .modal-nav-item:hover {
-  background: rgba(255, 255, 255, 0.08) !important;
-  color: #ffffff !important;
-  border-radius: 9999px !important;
+.modal-nav-item:hover .lucide {
+  color: var(--text, #ffffff) !important;
 }
 
 .modal-nav-item.active {
-  background: var(--hover, #f1f5f9) !important;
-  color: var(--text-primary, #09090b) !important;
-  font-weight: 600;
-  border: 1px solid var(--border, rgba(0, 0, 0, 0.15)) !important;
-  border-radius: 9999px !important;
-}
-
-body.dark .modal-nav-item.active,
-body.oled .modal-nav-item.active {
-  background: #27272a !important;
-  color: #ffffff !important;
-  border: 1px solid rgba(255, 255, 255, 0.25) !important;
-  border-radius: 9999px !important;
+  background: var(--hover, rgba(255, 255, 255, 0.12)) !important;
+  color: var(--text, #ffffff) !important;
+  font-weight: 500;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 8px !important;
 }
 
 .modal-nav-item.active .lucide {
-  color: var(--text-primary) !important;
+  color: var(--text, #ffffff) !important;
+}
+
+body.light .modal-nav-item:hover,
+:root[data-theme="light"] .modal-nav-item:hover {
+  background: var(--hover, #f1f5f9) !important;
+  color: var(--text, #0f172a) !important;
+}
+
+body.light .modal-nav-item.active,
+:root[data-theme="light"] .modal-nav-item.active {
+  background: #ffffff !important;
+  color: var(--text, #0f172a) !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 /* === RIGHT CONTENT PANEL (Main Page BG) === */
@@ -165,7 +172,7 @@ body.oled .modal-close:hover {
 /* Header & Subtitle Typography */
 .section-title {
   font-family: var(--font, sans-serif);
-  font-size: 16px;
+  font-size: var(--fs-xl);
   font-weight: 600;
   color: var(--text-primary, #09090b);
   height: 48px;
@@ -176,10 +183,10 @@ body.oled .modal-close:hover {
 }
 
 .section-sub {
-  font-size: 12.5px;
+  font-size: var(--fs-sm);
   color: var(--text-3, #71717a);
   margin-bottom: 20px;
-  line-height: 1.45;
+  line-height: 1.5;
 }
 
 /* PROMO HERO CARD (ChatGPT Style Top Callout) */
@@ -254,13 +261,13 @@ body.oled .settings-promo-card {
 }
 
 .row-label {
-  font-size: 13.5px;
+  font-size: var(--fs-base);
   font-weight: 500;
   color: var(--text-primary, #09090b);
 }
 
 .row-desc {
-  font-size: 11.5px;
+  font-size: var(--fs-sm);
   color: var(--text-3, #71717a);
   line-height: 1.4;
 }
@@ -357,7 +364,7 @@ body.oled .settings-textarea {
   color: var(--bg, #ffffff);
   border: none;
   border-radius: 9999px;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   transition: opacity 0.15s ease;

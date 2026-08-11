@@ -441,10 +441,22 @@ function _bindEvents() {
     textarea.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault();
+        const hasText = textarea.value.trim().length > 0;
         if (_debateRunning) {
-          _interveneDebate();
+          if (hasText) {
+            _interveneDebate();
+          } else {
+            _stopDebateOnly();
+          }
         } else {
-          _startDebate();
+          if (hasText) {
+            const threadHasMessages = document.querySelectorAll('#debate-thread .debate-message').length > 0;
+            if (threadHasMessages) {
+              _interveneDebate();
+            } else {
+              _startDebate();
+            }
+          }
         }
       }
     });
@@ -1555,10 +1567,16 @@ function _syncDebateInputButtons() {
   } else {
     if (stopBtn) stopBtn.style.display = 'none';
     if (hasText) {
-      if (startBtn)     startBtn.style.display     = 'none';
-      if (interveneBtn) interveneBtn.style.display = 'flex';
+      const threadHasMessages = document.querySelectorAll('#debate-thread .debate-message').length > 0;
+      if (threadHasMessages) {
+        if (startBtn)     startBtn.style.display     = 'none';
+        if (interveneBtn) interveneBtn.style.display = 'flex';
+      } else {
+        if (startBtn)     startBtn.style.display     = 'flex';
+        if (interveneBtn) interveneBtn.style.display = 'none';
+      }
     } else {
-      if (startBtn)     startBtn.style.display     = 'flex';
+      if (startBtn)     startBtn.style.display     = 'none';
       if (interveneBtn) interveneBtn.style.display = 'none';
     }
   }

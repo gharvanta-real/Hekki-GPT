@@ -316,7 +316,7 @@ export class SkillsPage {
             <div style="font-size:11.5px; color:var(--text-3); line-height:1.25; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${esc(item.description || 'Autonomous capability module')}</div>
           </div>
         </div>
-        <button onclick="event.stopPropagation(); window.skillsPageInstance.toggleSkill('${item.name}')" title="${isEnabled ? 'Disable' : 'Enable'} ${esc(friendlyName)}" style="width:26px; height:26px; border-radius:50%; background:var(--input-bg); border:none !important; outline:none !important; cursor:pointer; flex-shrink:0; display:flex; align-items:center; justify-content:center; transition:all 0.15s ease; color:${isEnabled ? '#16a34a' : 'var(--text)'};">
+        <button onclick="event.stopPropagation(); window.skillsPageInstance.toggleSkill('${item.name}')" title="${isEnabled ? 'Disable' : 'Enable'} ${esc(friendlyName)}" style="width:36px; height:36px; min-width:36px; min-height:36px; border-radius:10px; background:var(--input-bg); border:none !important; outline:none !important; cursor:pointer; flex-shrink:0; display:flex; align-items:center; justify-content:center; transition:all 0.15s ease; color:${isEnabled ? '#16a34a' : 'var(--text)'};">
           <i data-lucide="${isEnabled ? 'check' : 'plus'}" style="width:14px; height:14px;"></i>
         </button>
       </div>

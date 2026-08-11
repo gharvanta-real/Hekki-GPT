@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!DOCTYPE html>
 <html lang="en">
 <head>
   <style>
@@ -12,11 +11,12 @@
   <meta charset="UTF-8">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,400&family=Karla:wght@300;400;500;600;700&family=Cabin:wght@400;500;600;700&family=Mulish:wght@300;400;500;600;700&family=Assistant:wght@300;400;500;600;700&family=Alegreya+Sans:wght@300;400;500;700&family=Source+Sans+3:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Merriweather+Sans:wght@300;400;500;600;700&family=Varela+Round&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=Google+Sans+Flex:wght@400;500;600;700&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Instrument+Serif:ital@0;1&family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hekki</title>
   <meta name="application-name" content="Hekki">
   <meta name="apple-mobile-web-app-title" content="Hekki">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="theme-color" content="#FCFCFC">
@@ -466,9 +466,7 @@
             <button class="modal-nav-item" data-section="reasoning">
               <i data-lucide="brain" style="width:16px;height:16px;margin-right:6px;display:inline-block;vertical-align:middle;"></i> Reasoning Mode
             </button>
-            <button class="modal-nav-item" data-section="kaggle">
-              <i data-lucide="square-terminal" style="width:16px;height:16px;margin-right:6px;display:inline-block;vertical-align:middle;"></i> Kaggle GPU
-            </button>
+
 
             <button class="modal-nav-item" data-section="skills">
               <i data-lucide="blocks" style="width:16px;height:16px;margin-right:6px;display:inline-block;vertical-align:middle;"></i> Skills &amp; Plugins
@@ -489,19 +487,6 @@
             <section class="settings-section active" id="section-general">
               <h2 class="section-title">Identity</h2>
               <p class="section-sub">How Hekki addresses you and understands your context.</p>
-
-              <!-- Top Promo Hero Banner (ChatGPT Style) -->
-              <div class="settings-promo-card">
-                <div class="settings-promo-left">
-                  <div class="settings-promo-icon">
-                    <i data-lucide="sparkles" style="width:16px;height:16px;"></i>
-                  </div>
-                  <div>
-                    <div class="settings-promo-title">Personalized Assistant Context</div>
-                    <div class="settings-promo-desc">Hekki remembers your preferences and constraints across all chats.</div>
-                  </div>
-                </div>
-              </div>
 
               <div class="settings-row">
                 <div class="row-info">
@@ -555,17 +540,10 @@
                   <span class="row-desc">Choose the typeface used across the entire interface.</span>
                 </div>
                 <select class="settings-select" id="settings-font-family">
-                  <option value="system">System Default</option>
-                  <option value="lato">Lato — Warm, natural</option>
-                  <option value="karla">Karla — Friendly, slightly quirky</option>
-                  <option value="cabin">Cabin — Human and clean</option>
-                  <option value="mulish">Mulish — Soft, elegant</option>
-                  <option value="assistant">Assistant — Simple, narrow, gentle</option>
-                  <option value="alegreya-sans">Alegreya Sans — Very human, editorial</option>
-                  <option value="source-sans">Source Sans 3 — Natural reading</option>
-                  <option value="lora">Lora — Book, reading feeling</option>
-                  <option value="merriweather-sans">Merriweather Sans — Warm and readable</option>
-                  <option value="varela-round">Varela Round — Soft, friendly</option>
+                  <option value="google-sans" selected>Google Sans (Google UI)</option>
+                  <option value="open-sans">Open Sans (Clean Modern)</option>
+                  <option value="system">ChatGPT Segoe UI (System Default)</option>
+                  <option value="anthropic">Claude Anthropic (anthropic-sans)</option>
                 </select>
               </div>
             </section>
@@ -580,12 +558,12 @@
                   <span class="row-label">Google Gemini API Key</span>
                   <span class="row-desc">Get your free key from <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:var(--text-primary);text-decoration:underline;">Google AI Studio &rarr;</a></span>
                 </div>
-                <div style="display:flex; gap:8px; align-items:center; width:100%; margin-top:4px;">
-                  <input class="settings-input" id="settings-gemini-key" type="password" placeholder="AIzaSy..." style="flex:1; font-family:monospace; text-align:left;">
-                  <button id="btn-toggle-key-visibility" style="padding:7px 12px; border:1px solid var(--border); border-radius:8px; background:var(--hover); color:var(--text-2); cursor:pointer; font-size:12px;">
+                <form action="javascript:void(0);" onsubmit="return false;" style="display:flex; gap:8px; align-items:center; width:100%; margin-top:4px;">
+                  <input class="settings-input" id="settings-gemini-key" type="password" autocomplete="off" placeholder="AIzaSy..." style="flex:1; font-family:monospace; text-align:left;">
+                  <button type="button" id="btn-toggle-key-visibility" style="padding:7px 12px; border:1px solid var(--border); border-radius:8px; background:var(--hover); color:var(--text-2); cursor:pointer; font-size:12px;">
                     <i data-lucide="eye" style="width:14px;height:14px;pointer-events:none;"></i>
                   </button>
-                </div>
+                </form>
                 <div id="api-key-status" style="font-size:11.5px; color:var(--text-3);"></div>
               </div>
 
@@ -665,45 +643,7 @@
               </div>
             </section>
 
-            <!-- KAGGLE GPU ACCELERATOR -->
-            <section class="settings-section" id="section-kaggle">
-              <h2 class="section-title">Kaggle GPU Cloud Accelerator</h2>
-              <p class="section-sub">Offload heavy neural simulations and CAD synthesis to Kaggle Tesla T4/P100 GPUs.</p>
 
-              <div class="settings-row">
-                <div class="row-info">
-                  <span class="row-label">Kaggle Username</span>
-                  <span class="row-desc">Your Kaggle profile handle.</span>
-                </div>
-                <input class="settings-input" type="text" id="settings-kaggle-user" placeholder="e.g. anshu_mariano" style="width:180px; text-align:left;">
-              </div>
-
-              <div class="settings-row">
-                <div class="row-info">
-                  <span class="row-label">Kaggle API Token</span>
-                  <span class="row-desc">Found in your Kaggle Account Settings.</span>
-                </div>
-                <div style="display:flex; gap:8px; align-items:center;">
-                  <input class="settings-input" type="password" id="settings-kaggle-key" placeholder="e.g. 5f8a..." style="width:180px; font-family:monospace; text-align:left;">
-                  <button id="btn-toggle-kaggle-visibility" style="padding:6px 10px; border:1px solid var(--border); border-radius:8px; background:var(--hover); color:var(--text-2); cursor:pointer; font-size:12px;">
-                    <i data-lucide="eye" style="width:14px;height:14px;pointer-events:none;"></i>
-                  </button>
-                </div>
-              </div>
-
-              <div style="display:flex; align-items:center; justify-content:space-between; margin-top:20px; padding-top:14px; border-top:1px solid var(--border);">
-                <div id="kaggle-status-badge" style="font-size:12px; color:var(--text-3); display:flex; align-items:center; gap:6px;">
-                  <span style="width:8px; height:8px; border-radius:50%; background:#888; display:inline-block;"></span>
-                  <span id="kaggle-status-text">Not Verified</span>
-                </div>
-                <div style="display:flex; gap:8px;">
-                  <button id="btn-test-kaggle" style="padding:7px 16px; background:var(--hover); color:var(--text-primary); border:none; border-radius:9999px; font-size:13px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:6px;">
-                    <i data-lucide="activity" style="width:14px;height:14px;"></i> Test Connection
-                  </button>
-                  <button id="btn-save-kaggle" class="btn-pill-save">Save</button>
-                </div>
-              </div>
-            </section>
 
             <!-- SKILLS -->
             <section class="settings-section" id="section-skills">
@@ -746,7 +686,7 @@
                   <span class="row-label">GPU Acceleration</span>
                   <span class="row-desc">Hardware acceleration backend</span>
                 </div>
-                <span style="font-size:12.5px; color:var(--text-2);">Intel Iris Xe + Kaggle Cloud GPU</span>
+                <span style="font-size:12.5px; color:var(--text-2);">Intel Iris Xe</span>
               </div>
 
               <div class="settings-row">

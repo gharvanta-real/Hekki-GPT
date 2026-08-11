@@ -17,6 +17,11 @@ const chevronIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="10" height="
  * - Strips author prefix e.g. "huihui_ai/qwen2.5-coder-abliterate:3b" → "qwen2.5-coder:3b"
  * - Caps total display length at 22 chars with ellipsis
  */
+function formatModelTitle(name) {
+  if (!name) return '';
+  return name.replace(/-/g, ' ').replace(/\b[a-z]/g, letter => letter.toUpperCase());
+}
+
 function truncateModelName(name) {
   if (!name) return name;
   // Strip author namespace prefix (e.g. "huihui_ai/")
@@ -31,7 +36,7 @@ function truncateModelName(name) {
   short = base + tag;
   // Cap at 22 chars
   if (short.length > 22) short = short.slice(0, 20) + '…';
-  return short;
+  return formatModelTitle(short);
 }
 
 // Cached state
@@ -180,7 +185,8 @@ export async function updateModelPills() {
   }
 
   const icon = _isLocal ? localIcon : googleIcon;
-  const label = _isLocal ? truncateModelName(_activeModel) : _activeModel;
+  const rawLabel = _isLocal ? truncateModelName(_activeModel) : _activeModel;
+  const label = formatModelTitle(rawLabel);
   const showChevron = _isLocal && _localModels.length > 0;
 
   document.querySelectorAll('.model-pill').forEach(btn => {

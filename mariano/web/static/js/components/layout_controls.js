@@ -90,15 +90,15 @@ function _notifyElectronTheme(isDark) {
   }
 }
 
-/** Apply dark/light/oled class, update the icon, and sync the native titlebar. */
 function _applyTheme(theme, btn) {
-  if (theme === 'dark' || !theme) theme = 'oled';
+  if (!theme) theme = 'light';
   document.body.classList.remove('dark', 'light', 'oled');
-  if (theme === 'oled') {
-    document.body.classList.add('oled');
-  } else if (theme === 'light') {
-    document.body.classList.add('light');
-  }
+  document.documentElement.removeAttribute('data-theme');
+
+  document.body.classList.add(theme);
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem('hekki_theme', theme);
+
   // Keep native Windows titlebar in sync
   _notifyElectronTheme(theme !== 'light');
   if (btn) {
@@ -111,7 +111,7 @@ function _applyTheme(theme, btn) {
   }
   // Sync settings modal theme-opt pills if modal is open
   document.querySelectorAll('.theme-opt').forEach(b => {
-    if (b.dataset.theme === theme || (theme === 'oled' && b.dataset.theme === 'dark')) {
+    if (b.dataset.theme === theme) {
       b.classList.add('active');
     } else {
       b.classList.remove('active');

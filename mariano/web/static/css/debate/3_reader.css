@@ -63,8 +63,8 @@
   background: var(--card) !important;
   border: 1px solid var(--border) !important;
   border-radius: 12px !important;
-  min-width: 165px !important;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25), 0 2px 8px rgba(0, 0, 0, 0.12) !important;
+  min-width: 175px !important;
+  box-shadow: none !important;
   z-index: 110;
   padding: 6px !important;
   box-sizing: border-box;
@@ -75,27 +75,50 @@
 }
 
 .dropdown-item {
-  width: 100%;
-  padding: 8px 10px !important;
-  background: transparent;
+  width: 100% !important;
+  height: 34px !important;
+  padding: 0 10px !important;
+  background: transparent !important;
   border: none !important;
   border-radius: 8px !important;
-  font-size: 12px !important;
-  font-weight: 500 !important;
-  text-align: left;
-  color: var(--text-primary) !important;
-  cursor: pointer;
+  font-family: var(--font) !important;
+  font-size: 13px !important;
+  font-weight: 400 !important;
+  text-align: left !important;
+  color: var(--text-2) !important;
+  cursor: pointer !important;
   display: flex !important;
   align-items: center !important;
   gap: 10px !important;
-  white-space: nowrap !important;
-  transition: background 0.15s ease, color 0.15s ease;
-  box-sizing: border-box;
+  transition: background 0.12s ease, color 0.12s ease !important;
+  box-sizing: border-box !important;
 }
 
-.dropdown-item:hover {
+.dropdown-item span,
+.doc-dropdown-menu .dropdown-item span {
+  font-family: var(--font) !important;
+  font-size: 13px !important;
+  font-weight: 400 !important;
+  line-height: 20px !important;
+  color: var(--text-2) !important;
+  transition: color 0.12s ease !important;
+}
+
+.dropdown-item:hover,
+.doc-dropdown-menu .dropdown-item:hover {
   background: var(--hover) !important;
-  color: var(--text-primary) !important;
+  color: var(--text) !important;
+}
+
+.dropdown-item:hover span,
+.doc-dropdown-menu .dropdown-item:hover span {
+  color: var(--text) !important;
+}
+
+.dropdown-item.btn-clear-docs,
+.dropdown-item.btn-clear-docs span,
+.doc-dropdown-menu .dropdown-item.btn-clear-docs span {
+  color: #ef4444 !important;
 }
 
 /* Content Area */

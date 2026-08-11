@@ -48,24 +48,23 @@ if ('serviceWorker' in navigator) {
 // ── Boot-time Font Restore (runs instantly, zero flash) ───────────────────
 (function _restoreFont() {
   const FONT_MAP = {
-    'system':           '-apple-system-body, ui-sans-serif, "Segoe UI", Roboto, sans-serif',
-    'lato':             '"Lato", ui-sans-serif, sans-serif',
-    'karla':            '"Karla", ui-sans-serif, sans-serif',
-    'cabin':            '"Cabin", ui-sans-serif, sans-serif',
-    'mulish':           '"Mulish", ui-sans-serif, sans-serif',
-    'assistant':        '"Assistant", ui-sans-serif, sans-serif',
-    'alegreya-sans':    '"Alegreya Sans", ui-sans-serif, sans-serif',
-    'source-sans':      '"Source Sans 3", ui-sans-serif, sans-serif',
-    'lora':             '"Lora", ui-serif, serif',
-    'merriweather-sans':'"Merriweather Sans", ui-sans-serif, sans-serif',
-    'varela-round':     '"Varela Round", ui-sans-serif, sans-serif',
+    'system': {
+      font:  '-apple-system-body, ui-sans-serif, -apple-system, "system-ui", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, "sans-serif", "Segoe UI Emoji", "Segoe UI Symbol"',
+      serif: '-apple-system-body, ui-sans-serif, -apple-system, "system-ui", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, "sans-serif", "Segoe UI Emoji", "Segoe UI Symbol"',
+      ai:    '-apple-system-body, ui-sans-serif, -apple-system, "system-ui", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, "sans-serif", "Segoe UI Emoji", "Segoe UI Symbol"'
+    },
+    'anthropic': {
+      font:  '"anthropic-sans", system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+      serif: '"anthropic-serif", "Anthropic Serif Fallback Georgia", Georgia, "Times New Roman", serif',
+      ai:    '"anthropic-serif", "Anthropic Serif Fallback Georgia", Georgia, "Times New Roman", serif'
+    }
   };
-  const key   = localStorage.getItem('hekki_font') || 'system';
-  const stack = FONT_MAP[key] || FONT_MAP['system'];
-  document.documentElement.style.setProperty('--font', stack);
-  document.documentElement.style.setProperty('--font-sans', stack);
-  document.documentElement.style.setProperty('--font-serif', stack);
-  document.documentElement.style.setProperty('--font-ai', stack);
+  const key = localStorage.getItem('hekki_font') || 'system';
+  const cfg = FONT_MAP[key] || FONT_MAP['system'];
+  document.documentElement.style.setProperty('--font', cfg.font);
+  document.documentElement.style.setProperty('--font-sans', cfg.font);
+  document.documentElement.style.setProperty('--font-serif', cfg.serif);
+  document.documentElement.style.setProperty('--font-ai', cfg.ai);
 })();
 
 let deferredPwaPrompt = null;
@@ -94,24 +93,23 @@ document.addEventListener('DOMContentLoaded', () => {
   // Double-enforce font persistence — CSS custom props from stylesheet
   // load synchronously before this, so inline style always wins here.
   const FONT_MAP_BOOT = {
-    'system':           '-apple-system-body, ui-sans-serif, "Segoe UI", Roboto, sans-serif',
-    'lato':             '"Lato", ui-sans-serif, sans-serif',
-    'karla':            '"Karla", ui-sans-serif, sans-serif',
-    'cabin':            '"Cabin", ui-sans-serif, sans-serif',
-    'mulish':           '"Mulish", ui-sans-serif, sans-serif',
-    'assistant':        '"Assistant", ui-sans-serif, sans-serif',
-    'alegreya-sans':    '"Alegreya Sans", ui-sans-serif, sans-serif',
-    'source-sans':      '"Source Sans 3", ui-sans-serif, sans-serif',
-    'lora':             '"Lora", ui-serif, serif',
-    'merriweather-sans':'"Merriweather Sans", ui-sans-serif, sans-serif',
-    'varela-round':     '"Varela Round", ui-sans-serif, sans-serif',
+    'system': {
+      font:  '-apple-system-body, ui-sans-serif, -apple-system, "system-ui", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, "sans-serif", "Segoe UI Emoji", "Segoe UI Symbol"',
+      serif: '-apple-system-body, ui-sans-serif, -apple-system, "system-ui", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, "sans-serif", "Segoe UI Emoji", "Segoe UI Symbol"',
+      ai:    '-apple-system-body, ui-sans-serif, -apple-system, "system-ui", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, "sans-serif", "Segoe UI Emoji", "Segoe UI Symbol"'
+    },
+    'anthropic': {
+      font:  '"anthropic-sans", system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+      serif: '"anthropic-serif", "Anthropic Serif Fallback Georgia", Georgia, "Times New Roman", serif',
+      ai:    '"anthropic-serif", "Anthropic Serif Fallback Georgia", Georgia, "Times New Roman", serif'
+    }
   };
-  const _fk    = localStorage.getItem('hekki_font') || 'system';
-  const _stack = FONT_MAP_BOOT[_fk] || FONT_MAP_BOOT['system'];
-  document.documentElement.style.setProperty('--font', _stack);
-  document.documentElement.style.setProperty('--font-sans', _stack);
-  document.documentElement.style.setProperty('--font-serif', _stack);
-  document.documentElement.style.setProperty('--font-ai', _stack);
+  const _fk   = localStorage.getItem('hekki_font') || 'system';
+  const _cfg  = FONT_MAP_BOOT[_fk] || FONT_MAP_BOOT['system'];
+  document.documentElement.style.setProperty('--font', _cfg.font);
+  document.documentElement.style.setProperty('--font-sans', _cfg.font);
+  document.documentElement.style.setProperty('--font-serif', _cfg.serif);
+  document.documentElement.style.setProperty('--font-ai', _cfg.ai);
 });
 
 
@@ -672,25 +670,38 @@ window.setGeneratingState = function(isGenerating) {
   const btnHomeStop = $('btn-stop-gen');
   const btnConvStop = $('btn-stop-gen-conv');
 
+  const inputHome = $('chat-input');
+  const inputConv = $('chat-input-conv');
+
+  const hasTextHome = inputHome && inputHome.value.trim() !== '';
+  const hasTextConv = inputConv && inputConv.value.trim() !== '';
+
   if (isGenerating) {
-    // Single Button Rule: While generating, show Stop button ONLY. Never show Send button.
-    btnHomeSubmit?.classList.add('hidden');
-    btnConvSubmit?.classList.add('hidden');
-    btnHomeStop?.classList.remove('hidden');
-    btnConvStop?.classList.remove('hidden');
+    if (hasTextHome) {
+      btnHomeSubmit?.classList.remove('hidden');
+      btnHomeStop?.classList.add('hidden');
+    } else {
+      btnHomeSubmit?.classList.add('hidden');
+      btnHomeStop?.classList.remove('hidden');
+    }
+
+    if (hasTextConv) {
+      btnConvSubmit?.classList.remove('hidden');
+      btnConvStop?.classList.add('hidden');
+    } else {
+      btnConvSubmit?.classList.add('hidden');
+      btnConvStop?.classList.remove('hidden');
+    }
   } else {
     btnHomeStop?.classList.add('hidden');
     btnConvStop?.classList.add('hidden');
 
-    // Evaluate input fields to toggle Send button visibility
-    const inputHome = $('chat-input');
-    const inputConv = $('chat-input-conv');
-    if (inputHome && inputHome.value.trim() !== '') {
+    if (hasTextHome) {
       btnHomeSubmit?.classList.remove('hidden');
     } else {
       btnHomeSubmit?.classList.add('hidden');
     }
-    if (inputConv && inputConv.value.trim() !== '') {
+    if (hasTextConv) {
       btnConvSubmit?.classList.remove('hidden');
     } else {
       btnConvSubmit?.classList.add('hidden');

@@ -311,33 +311,39 @@
 
 /* Circular Checkbox */
 .img-card-checkbox {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  border: none;
-  background: #f8f8f6;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #191919;
-  transition: background 0.15s, transform 0.15s;
-  cursor: pointer;
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  min-height: 32px !important;
+  max-width: 32px !important;
+  max-height: 32px !important;
+  border-radius: 50% !important;
+  border: none !important;
+  background: #f8f8f6 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #191919 !important;
+  transition: background 0.15s, transform 0.15s !important;
+  cursor: pointer !important;
+  padding: 0 !important;
+  flex-shrink: 0 !important;
 }
 
 .img-card-checkbox i,
 .img-card-checkbox svg,
 .img-card-checkbox .lucide {
-  width: 13px;
-  height: 13px;
+  width: 14px;
+  height: 14px;
   stroke-width: 2.2;
   opacity: 0;
   transition: opacity 0.15s;
 }
 
 .img-card-checkbox.checked {
-  background: #191919;
-  border: none;
-  color: #ffffff;
+  background: #191919 !important;
+  border: none !important;
+  color: #ffffff !important;
   transform: scale(1.05);
 }
 
@@ -355,17 +361,23 @@
 }
 
 .img-card-btn {
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  background: #f8f8f6;
-  border: none;
-  color: #191919;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background 0.15s, transform 0.15s, color 0.15s;
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  min-height: 32px !important;
+  max-width: 32px !important;
+  max-height: 32px !important;
+  border-radius: 50% !important;
+  background: #f8f8f6 !important;
+  border: none !important;
+  color: #191919 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  padding: 0 !important;
+  flex-shrink: 0 !important;
+  transition: background 0.15s, transform 0.15s, color 0.15s !important;
 }
 
 .img-card-btn:hover {

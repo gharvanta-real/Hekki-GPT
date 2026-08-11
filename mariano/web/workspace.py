@@ -454,53 +454,13 @@ class SimulationRunRequest(BaseModel):
 @router.post("/simulations/run")
 async def run_simulation(req: SimulationRunRequest):
     """
-    Triggers a remote/local Modulus simulation run, saves results, and logs to history.
+    Simulation runner — Kaggle GPU backend has been removed.
+    Returns 503 to notify callers that this feature is no longer available.
     """
-    try:
-        import sys
-        # Resolve skill directories relative to workspace root
-        workspace_dir = Path(__file__).resolve().parent.parent.parent
-        skill_scripts_dir = workspace_dir / ".agents" / "skills" / "kaggle_modulus_orchestrator" / "scripts"
-        
-        if str(skill_scripts_dir) not in sys.path:
-            sys.path.insert(0, str(skill_scripts_dir))
-            
-        from parameter_mapper import ParameterMapper
-        from kaggle_api import KaggleAPIOrchestrator
-        from local_store import LocalStore
-        
-        # 1. Map & validate config
-        params = req.dict()
-        config = ParameterMapper.generate_config(params)
-        
-        # 2. Trigger solver
-        import json
-        config_temp_path = Path(__file__).resolve().parent / f"temp_run_config.json"
-        config_temp_path.write_text(json.dumps(config), encoding="utf-8")
-        
-        orchestrator = KaggleAPIOrchestrator()
-        job_details = orchestrator.trigger_modulus_solve(config_temp_path)
-        
-        # 3. Pull results (analytical solver completes instantly)
-        points = orchestrator.download_results(job_details, Path(__file__).resolve().parent)
-        
-        # Clean up temp file
-        if config_temp_path.exists():
-            config_temp_path.unlink()
-            
-        # 4. Save and index locally
-        store = LocalStore(workspace_dir / "mariano" / "data" / "simulations")
-        saved_filename = store.log_run(req.simulation_name, config, points, debate_context="Consensus run triggered from user interface.")
-        
-        return {
-            "status": "success",
-            "filename": saved_filename,
-            "simulation_name": req.simulation_name,
-            "fallback_used": job_details.get("fallback", False),
-            "points_count": len(points)
-        }
-    except Exception as exc:
-        raise HTTPException(status_code=500, detail=str(exc))
+    raise HTTPException(
+        status_code=503,
+        detail="GPU simulation via Kaggle has been removed. Feature unavailable."
+    )
 
 
 @router.delete("/simulations/{filename}")

@@ -25,8 +25,8 @@ body.oled .code-block-wrapper,
   background: transparent;
   padding: 10px 16px;
   border-bottom: 1px solid var(--border, #e5e7eb) !important;
-  font-family: var(--font-mono), monospace;
-  font-size: 12px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
   color: var(--text-secondary);
   user-select: none;
 }
@@ -43,7 +43,7 @@ body.oled .code-block-header,
   font-weight: 400 !important;
   text-transform: lowercase !important;
   letter-spacing: 0;
-  font-size: 12px;
+  font-size: var(--fs-xs);
   color: var(--text-secondary);
 }
 
@@ -117,10 +117,10 @@ body.oled .code-action-btn:hover,
   background: transparent !important;
   padding: 14px 16px !important;
   overflow-x: auto !important;
-  font-size: 13px;
+  font-size: var(--fs-sm);
   line-height: 1.6;
   font-weight: 400 !important;
-  font-family: var(--font-mono), monospace;
+  font-family: var(--font-mono);
   white-space: pre-wrap !important;
   word-break: break-word !important;
   overflow-wrap: break-word !important;
@@ -134,10 +134,10 @@ body.oled .code-action-btn:hover,
   padding: 0 !important;
   border-radius: 0 !important;
   border: none !important;
-  font-size: 13px !important;
+  font-size: var(--fs-sm) !important;
   font-weight: 400 !important;
   line-height: 1.6 !important;
-  font-family: var(--font-mono), monospace !important;
+  font-family: var(--font-mono) !important;
   white-space: pre !important;
   word-break: normal !important;
   display: block;

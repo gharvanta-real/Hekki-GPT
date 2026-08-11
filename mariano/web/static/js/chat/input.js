@@ -83,21 +83,27 @@ export function bindInputs(sendCallback, ChatSessionManager) {
   };
 
   const handleInputToggle = (textarea, submitBtnId, stopBtnId) => {
+    if (!textarea) return;
     adjustHeight(textarea);
     const submitBtn = $(submitBtnId);
     const stopBtn = $(stopBtnId);
+    const hasText = textarea.value.trim() !== '' || attachmentManager.hasFiles();
 
     if (window.isGenerating) {
-      submitBtn?.classList.add('hidden');
-      stopBtn?.classList.remove('hidden');
-      return;
-    }
-
-    stopBtn?.classList.add('hidden');
-    if (textarea.value.trim() !== '' || attachmentManager.hasFiles()) {
-      submitBtn?.classList.remove('hidden');
+      if (hasText) {
+        submitBtn?.classList.remove('hidden');
+        stopBtn?.classList.add('hidden');
+      } else {
+        submitBtn?.classList.add('hidden');
+        stopBtn?.classList.remove('hidden');
+      }
     } else {
-      submitBtn?.classList.add('hidden');
+      stopBtn?.classList.add('hidden');
+      if (hasText) {
+        submitBtn?.classList.remove('hidden');
+      } else {
+        submitBtn?.classList.add('hidden');
+      }
     }
   };
 
@@ -114,12 +120,13 @@ export function bindInputs(sendCallback, ChatSessionManager) {
   $('chat-input')?.addEventListener('keydown', e => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      if (window.isGenerating) {
-        $('btn-stop-gen')?.click();
+      let text = getFullPromptText('chat-input');
+      if (!text && !attachmentManager.hasFiles()) {
+        if (window.isGenerating) {
+          $('btn-stop-gen')?.click();
+        }
         return;
       }
-      let text = getFullPromptText('chat-input');
-      if (!text && !attachmentManager.hasFiles()) return;
       if (!text && attachmentManager.hasFiles()) text = "Analyze attached file(s)";
       if (window.sounds && window.sounds.playSend) window.sounds.playSend();
       sendCallback(text);
@@ -129,12 +136,13 @@ export function bindInputs(sendCallback, ChatSessionManager) {
   $('chat-input-conv')?.addEventListener('keydown', e => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      if (window.isGenerating) {
-        $('btn-stop-gen-conv')?.click();
+      let text = getFullPromptText('chat-input-conv');
+      if (!text && !attachmentManager.hasFiles()) {
+        if (window.isGenerating) {
+          $('btn-stop-gen-conv')?.click();
+        }
         return;
       }
-      let text = getFullPromptText('chat-input-conv');
-      if (!text && !attachmentManager.hasFiles()) return;
       if (!text && attachmentManager.hasFiles()) text = "Analyze attached file(s)";
       if (window.sounds && window.sounds.playSend) window.sounds.playSend();
       sendCallback(text);

@@ -4,9 +4,10 @@
   max-width: 100%;
   align-self: center;
   margin-bottom: 20px;
-  font-size: 15px;
-  font-weight: 300;            /* lighter weight */
-  line-height: 1.65;
+  font-family: var(--font);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 26px;
   animation: fadeIn 0.2s ease;
 }
 .msg hr {
@@ -25,9 +26,9 @@
   align-self: flex-end;
   color: var(--text);
   font-family: var(--font);
-  font-size: 15px;
-  font-weight: 400; /* Same regular weight matching AI response body */
-  line-height: 1.6;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 26px;
   word-break: break-word;
   white-space: pre-wrap;
   position: relative;
@@ -198,8 +199,8 @@
   background: var(--hover);
 }
 .action-btn .lucide {
-  width: 12px;
-  height: 12px;
+  width: 13px;
+  height: 13px;
   stroke-width: 2.2px;
 }
 
@@ -292,26 +293,25 @@ summary {
   max-width: 100%;
   box-sizing: border-box;
   color: var(--text);
-  font-family: var(--font-ai, var(--font));
-  font-size: 15px;
-  font-weight: 400; /* Regular weight for crisp, readable body text */
-  line-height: 1.65;
-  text-align: justify;
-}
-.msg.ai h1, .msg.ai h2, .msg.ai h3, .msg.ai h4, .msg.ai h5, .msg.ai h6 {
-  font-family: var(--font), sans-serif;
-  color: var(--text);
-  margin-top: 16px;
-  margin-bottom: 6px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  line-height: 1.4;
+  font-family: var(--font-ai, var(--font)) !important;
+  font-size: 16px !important;
+  font-weight: 400 !important;
+  line-height: 26px !important;
   text-align: left;
 }
-.msg.ai h1 { font-size: 19px; }
-.msg.ai h2 { font-size: 17px; }
-.msg.ai h3 { font-size: 16px; }
-.msg.ai h4, .msg.ai h5, .msg.ai h6 { font-size: 15px; }
+.msg.ai h1, .msg.ai h2, .msg.ai h3, .msg.ai h4, .msg.ai h5, .msg.ai h6 {
+  font-family: var(--font-ai, var(--font)) !important;
+  color: var(--text) !important;
+  font-weight: 600 !important;
+  letter-spacing: normal !important;
+  text-align: left;
+}
+.msg.ai h1 { font-size: 24px !important; line-height: 32px !important; margin-top: 20px; margin-bottom: 8px; }
+.msg.ai h2 { font-size: 20px !important; line-height: 28px !important; margin-top: 18px; margin-bottom: 6px; }
+.msg.ai h3 { font-size: 18px !important; line-height: 28px !important; margin-top: 16px; margin-bottom: 6px; }
+.msg.ai h4 { font-size: 16px !important; line-height: 24px !important; margin-top: 14px; margin-bottom: 4px; }
+.msg.ai h5 { font-size: 16px !important; line-height: 26px !important; margin-top: 12px; margin-bottom: 4px; }
+.msg.ai h6 { font-size: 16px !important; line-height: 26px !important; margin-top: 12px; margin-bottom: 4px; }
 
 .msg.ai h1:first-child, .msg.ai h2:first-child, .msg.ai h3:first-child, .msg.ai h4:first-child {
   margin-top: 4px;
@@ -319,27 +319,32 @@ summary {
 
 .msg.ai p {
   margin-top: 0;
-  margin-bottom: 8px; /* Clean, compact paragraph separation */
-  line-height: 1.65;
-  font-size: 15px;
-  text-align: justify;
+  margin-bottom: 12px;
+  font-family: var(--font-ai, var(--font)) !important;
+  font-size: 16px !important;
+  line-height: 26px !important;
+  font-weight: 400 !important;
+  text-align: left;
 }
 .msg.ai ul, .msg.ai ol {
   margin-top: 4px;
-  margin-bottom: 8px;
-  padding-left: 20px;
-  font-size: 15px;
+  margin-bottom: 12px;
+  padding-left: 24px;
+  font-size: 16px !important;
+  line-height: 26px !important;
 }
 .msg.ai li {
   margin-top: 0;
   margin-bottom: 6px;
-  line-height: 1.7;
-  font-size: 15px;
+  font-size: 16px !important;
+  line-height: 26px !important;
+  font-weight: 400 !important;
 }
 .msg.ai li p {
   margin-top: 0 !important;
   margin-bottom: 0 !important;
-  font-size: 15px;
+  font-size: 16px !important;
+  line-height: 26px !important;
 }
 .msg.ai li ul,
 .msg.ai li ol {

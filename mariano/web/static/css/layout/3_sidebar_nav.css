@@ -186,8 +186,9 @@
   border: none;
   border-radius: 8px;
   font-family: var(--font);
-  font-size: 13px;
-  font-weight: 500;
+  font-size: var(--fs-base);
+  font-weight: 400;
+  line-height: 20px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -233,9 +234,10 @@ body.dark .btn-new-chat-dock:hover {
   display: inline-flex;
   align-items: center;
   width: fit-content;
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--text-secondary);
+  font-size: var(--fs-xs) !important;
+  font-weight: 500 !important;
+  line-height: 16px !important;
+  color: var(--text-3, #8e8e93) !important;
   background-color: transparent;
   border-radius: 0;
   box-shadow: none;
@@ -268,18 +270,27 @@ body.dark .btn-new-chat-dock:hover {
   background: var(--hover);
   color: var(--text);
 }
+body.light .section-item.active,
+:root[data-theme="light"] .section-item.active {
+  background: #FFFFFF !important;
+  color: var(--text) !important;
+}
 .section-item .lbl,
 #sidebar-nav .recent-item span {
-  font-size: 13px;
+  font-size: var(--fs-base);
+  font-weight: 400;
+  line-height: 20px;
   color: var(--text-2);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   flex: 1;
 }
-/* Recent chat history links — 1px smaller than nav items */
+/* Recent chat history links */
 #recent-list .section-item .lbl {
-  font-size: 13px !important;
+  font-size: var(--fs-base) !important;
+  font-weight: 400;
+  line-height: 20px;
   color: var(--text-2);
   white-space: nowrap;
   overflow: hidden;
@@ -349,5 +360,24 @@ body.dark .btn-new-chat-dock:hover {
 .upgrade-btn:hover {
   background: var(--hover);
   color: var(--text);
+}
+
+/* === LEFT SIDEBAR BALANCED ICON WEIGHT (1.8px stroke) === */
+#sidebar-nav i,
+#sidebar-nav svg,
+#sidebar-nav .lucide,
+#sidebar-dock i,
+#sidebar-dock svg,
+#sidebar-dock .lucide,
+.debate-sidebar i,
+.debate-sidebar svg,
+.debate-sidebar .lucide,
+.sidebar-action-btn i,
+.sidebar-action-btn svg,
+.sidebar-action-btn .lucide,
+.section-item i,
+.section-item svg,
+.section-item .lucide {
+  stroke-width: 1.8px !important;
 }
 
