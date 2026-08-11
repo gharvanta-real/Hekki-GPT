@@ -243,8 +243,9 @@
 .img-lightbox-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,0.85);
-  backdrop-filter: blur(8px);
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .img-lightbox-modal {
@@ -254,8 +255,8 @@
   flex-direction: column;
   background: var(--card, #18181b);
   border: none !important;
-  box-shadow: 0 25px 65px rgba(0, 0, 0, 0.65) !important;
-  border-radius: 16px;
+  box-shadow: 0 25px 65px rgba(0, 0, 0, 0.45) !important;
+  border-radius: 24px;
   overflow: hidden;
   max-width: min(92vw, 920px);
   max-height: 90vh;
@@ -331,6 +332,7 @@
   max-height: 65vh;
   object-fit: contain;
   display: block;
+  border-radius: 20px;
 }
 
 .img-lb-nav {

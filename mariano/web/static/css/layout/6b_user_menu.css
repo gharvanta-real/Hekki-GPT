@@ -82,7 +82,7 @@
 .lightbox-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.90);
+  background: rgba(0, 0, 0, 0.45);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   z-index: 1;
@@ -154,8 +154,8 @@
   max-height: 85%;
   object-fit: contain;
   transition: transform 0.1s cubic-bezier(0.1, 0.8, 0.2, 1);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
-  border-radius: 4px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  border-radius: 24px;
   transform-origin: center center;
 }
 
