@@ -272,7 +272,7 @@ body.dark .btn-new-chat-dock:hover {
 }
 body.light .section-item.active,
 :root[data-theme="light"] .section-item.active {
-  background: #FFFFFF !important;
+  background: var(--hover) !important;
   color: var(--text) !important;
 }
 .section-item .lbl,
