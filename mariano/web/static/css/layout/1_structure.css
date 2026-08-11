@@ -98,10 +98,10 @@
   max-width: 32px !important;
   max-height: 32px !important;
   border-radius: 50% !important;
-  background: var(--hover) !important;
+  background: var(--hover);
   border: none !important;
-  color: var(--text-2) !important;
-  display: inline-flex !important;
+  color: var(--text-2);
+  display: inline-flex;
   align-items: center !important;
   justify-content: center !important;
   cursor: pointer;

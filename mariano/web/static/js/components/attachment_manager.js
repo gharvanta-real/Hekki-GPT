@@ -113,12 +113,20 @@ class AttachmentManager {
       if (btn) {
         if (hasAtt) {
           btn.classList.remove('hidden');
+          if (window.isGenerating) {
+            const stopId = btnId === 'btn-submit-home' ? 'btn-stop-gen' : (btnId === 'btn-submit-conv' ? 'btn-stop-gen-conv' : null);
+            if (stopId) document.getElementById(stopId)?.classList.add('hidden');
+          }
         } else {
           const txId = btnId === 'btn-submit-home' ? 'chat-input' : (btnId === 'btn-submit-conv' ? 'chat-input-conv' : (btnId === 'coder-btn-send' ? 'coder-input' : 'debate-input'));
           const tx = document.getElementById(txId);
           if (!tx || !tx.value.trim()) {
             if (btnId === 'btn-submit-home' || btnId === 'btn-submit-conv' || btnId === 'coder-btn-send') {
               btn.classList.add('hidden');
+              if (window.isGenerating) {
+                const stopId = btnId === 'btn-submit-home' ? 'btn-stop-gen' : (btnId === 'btn-submit-conv' ? 'btn-stop-gen-conv' : null);
+                if (stopId) document.getElementById(stopId)?.classList.remove('hidden');
+              }
             }
           }
         }
