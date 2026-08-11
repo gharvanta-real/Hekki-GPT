@@ -117,10 +117,10 @@ export function send(text, enterConversation, log) {
     model_beta: betaSel ? betaSel.value : null,
   }));
   
-  window.setGeneratingState(true);
   appendMsg('user', fullMessageText, enterConversation, scrollChat);
   attachmentManager.clear();
   clearInputs();
+  window.setGeneratingState(true);
   log(`Sent: "${text}" with ${files.length} attachment(s)`, 'ok');
 }
 

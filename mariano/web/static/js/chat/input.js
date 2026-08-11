@@ -33,10 +33,11 @@ export function clearInputs() {
     const el = document.getElementById(id);
     if (el) { el.value = ''; el.style.height = 'auto'; }
   });
-  document.getElementById('btn-submit-home')?.classList.add('hidden');
-  document.getElementById('btn-submit-conv')?.classList.add('hidden');
   document.getElementById('chat-input-stats-badge')?.remove();
   document.getElementById('chat-input-conv-stats-badge')?.remove();
+  if (window.setGeneratingState) {
+    window.setGeneratingState(window.isGenerating);
+  }
 }
 
 export function clearChatLogs() {

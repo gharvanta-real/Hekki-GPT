@@ -673,8 +673,9 @@ window.setGeneratingState = function(isGenerating) {
   const inputHome = $('chat-input');
   const inputConv = $('chat-input-conv');
 
-  const hasTextHome = inputHome && inputHome.value.trim() !== '';
-  const hasTextConv = inputConv && inputConv.value.trim() !== '';
+  const hasAtt = window.attachmentManager ? window.attachmentManager.hasFiles() : false;
+  const hasTextHome = (inputHome && inputHome.value.trim() !== '') || hasAtt;
+  const hasTextConv = (inputConv && inputConv.value.trim() !== '') || hasAtt;
 
   if (isGenerating) {
     if (hasTextHome) {
