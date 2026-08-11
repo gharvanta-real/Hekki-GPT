@@ -212,7 +212,7 @@ body.oled,
   --input-bg:    #0E0E0E !important;
   --sidebar-bg:  #000000 !important;
   --border:      #1F1F1F !important;
-  --hover:       #181818 !important;
+  --hover:       #2B2B2B !important;
 
   --text:        #e8e6e3 !important;
   --text-primary: var(--text) !important;
