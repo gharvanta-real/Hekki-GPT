@@ -1,6 +1,7 @@
 """MARIANO Core Skill — Wikipedia deep search and article reader."""
 from __future__ import annotations
 import asyncio
+import urllib.parse
 import httpx
 from mariano.skills._base import BaseSkill, SkillResult
 
@@ -21,12 +22,18 @@ class WikipediaSearchSkill(BaseSkill):
         try:
             base = f"https://{language}.wikipedia.org/api/rest_v1"
             search_url = f"https://{language}.wikipedia.org/w/api.php"
-            async with httpx.AsyncClient(timeout=15) as client:
+            headers = {
+                "User-Agent": "HekkiAssistant/1.0 (https://github.com/gharvanta-real/Hekki-GPT; contact@hekki.ai)"
+            }
+            async with httpx.AsyncClient(timeout=15, headers=headers) as client:
                 # Search for page
                 search_resp = await client.get(search_url, params={
                     "action": "query", "list": "search", "srsearch": query,
                     "format": "json", "srlimit": 3,
                 })
+                if search_resp.status_code != 200:
+                    return SkillResult(success=False, data=None, error=f"Wikipedia API HTTP {search_resp.status_code}")
+
                 search_data = search_resp.json()
                 results = search_data.get("query", {}).get("search", [])
                 if not results:
@@ -39,6 +46,8 @@ class WikipediaSearchSkill(BaseSkill):
                         "action": "query", "titles": title, "prop": "extracts",
                         "format": "json", "explaintext": True,
                     })
+                    if content_resp.status_code != 200:
+                        return SkillResult(success=False, data=None, error="Could not fetch full article extract")
                     pages = content_resp.json().get("query", {}).get("pages", {})
                     page = next(iter(pages.values()))
                     extract = page.get("extract", "No content")
@@ -49,7 +58,7 @@ class WikipediaSearchSkill(BaseSkill):
                     )
                 else:
                     # Get summary
-                    safe_title = title.replace(" ", "_")
+                    safe_title = urllib.parse.quote(title.replace(" ", "_"))
                     sum_resp = await client.get(f"{base}/page/summary/{safe_title}")
                     if sum_resp.status_code == 200:
                         data = sum_resp.json()
@@ -60,6 +69,15 @@ class WikipediaSearchSkill(BaseSkill):
                             data=f"**{title}**\n\n{summary}\n\nRead more: {url}",
                             metadata={"title": title, "url": url}
                         )
-                    return SkillResult(success=False, data=None, error="Could not fetch summary")
+                    # Fallback if summary REST endpoint fails: return snippet from search
+                    snippet = results[0].get("snippet", "").replace("<span class=\"searchmatch\">", "").replace("</span>", "")
+                    pageid = results[0].get("pageid", "")
+                    fallback_url = f"https://{language}.wikipedia.org/?curid={pageid}"
+                    return SkillResult(
+                        success=True,
+                        data=f"**{title}**\n\n{snippet}\n\nRead more: {fallback_url}",
+                        metadata={"title": title, "url": fallback_url}
+                    )
         except Exception as exc:
             return SkillResult(success=False, data=None, error=str(exc))
+
