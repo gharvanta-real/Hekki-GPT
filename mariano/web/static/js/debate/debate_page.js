@@ -390,8 +390,8 @@ function _buildLayout() {
                     </select>
                     
                     <!-- Stop Button -->
-                    <button class="input-action-btn" id="btn-debate-stop" title="Stop Generation" style="display: none; color: #ef4444;">
-                      <i data-lucide="square" style="width: 13px; height: 13px; fill: currentColor;"></i>
+                    <button class="submit-btn" id="btn-debate-stop" title="Stop Generation" style="display: none; background: var(--text-primary, #09090b) !important; color: var(--bg, #ffffff) !important; border: none;">
+                      <i data-lucide="square" style="fill: currentColor; width: 10px; height: 10px;"></i>
                     </button>
                     
                     <!-- Intervene Button -->
@@ -1553,16 +1553,17 @@ function _syncDebateInputButtons() {
   const stopBtn      = document.getElementById('btn-debate-stop');
   const textarea     = document.getElementById('debate-input');
 
-  const hasText = textarea ? textarea.value.trim().length > 0 : false;
+  const hasAtt  = window.attachmentManager ? window.attachmentManager.hasFiles() : false;
+  const hasText = (textarea ? textarea.value.trim().length > 0 : false) || hasAtt;
 
   if (_debateRunning) {
     if (startBtn) startBtn.style.display = 'none';
     if (hasText) {
-      if (interveneBtn) interveneBtn.style.display = 'flex';
+      if (interveneBtn) interveneBtn.style.display = 'inline-flex';
       if (stopBtn)      stopBtn.style.display      = 'none';
     } else {
       if (interveneBtn) interveneBtn.style.display = 'none';
-      if (stopBtn)      stopBtn.style.display      = 'flex';
+      if (stopBtn)      stopBtn.style.display      = 'inline-flex';
     }
   } else {
     if (stopBtn) stopBtn.style.display = 'none';
@@ -1570,9 +1571,9 @@ function _syncDebateInputButtons() {
       const threadHasMessages = document.querySelectorAll('#debate-thread .debate-message').length > 0;
       if (threadHasMessages) {
         if (startBtn)     startBtn.style.display     = 'none';
-        if (interveneBtn) interveneBtn.style.display = 'flex';
+        if (interveneBtn) interveneBtn.style.display = 'inline-flex';
       } else {
-        if (startBtn)     startBtn.style.display     = 'flex';
+        if (startBtn)     startBtn.style.display     = 'inline-flex';
         if (interveneBtn) interveneBtn.style.display = 'none';
       }
     } else {
