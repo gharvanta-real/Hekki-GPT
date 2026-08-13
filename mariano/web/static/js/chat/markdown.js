@@ -419,45 +419,42 @@ export function enhanceCallouts(container) {
     let type = null;
     const gfmMatch = text.match(/^\[\!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]/i);
     if (gfmMatch) { type = gfmMatch[1].toUpperCase(); }
-    else if (text.startsWith('💡 Tip:') || text.startsWith('Tip:') || text.toLowerCase().includes('tip:')) { type = 'TIP'; }
+    else if (text.startsWith('💡') || text.toLowerCase().includes('tip:')) { type = 'TIP'; }
+    else if (text.toLowerCase().includes('bottom line:')) { type = 'BOTTOMLINE'; }
     else if (text.toLowerCase().startsWith('note:')) { type = 'NOTE'; }
     else if (text.toLowerCase().startsWith('warning:')) { type = 'WARNING'; }
-    if (!type) return;
-
-    let iconName = 'sparkles', titleText = 'Tip', typeClass = 'callout-tip';
-    switch (type) {
-      case 'TIP': iconName = 'sparkles'; titleText = 'Tip'; typeClass = 'callout-tip'; break;
-      case 'IMPORTANT': iconName = 'alert-circle'; titleText = 'Important'; typeClass = 'callout-important'; break;
-      case 'WARNING': iconName = 'triangle-alert'; titleText = 'Warning'; typeClass = 'callout-warning'; break;
-      case 'CAUTION': iconName = 'shield-alert'; titleText = 'Caution'; typeClass = 'callout-caution'; break;
-      default: iconName = 'info'; titleText = 'Note'; typeClass = 'callout-note'; break;
-    }
 
     const callout = document.createElement('div');
-    callout.className = `chat-callout ${typeClass}`;
+    callout.className = 'chat-callout';
+
+    const hr = document.createElement('hr');
+    hr.className = 'callout-pagebreak';
+    callout.appendChild(hr);
+
     const body = document.createElement('div');
     body.className = 'callout-body';
     body.innerHTML = bq.innerHTML;
-    if (typeClass !== 'callout-tip') {
-      const header = document.createElement('div');
-      header.className = 'callout-header';
-      header.innerHTML = `<i data-lucide="${iconName}" class="callout-icon"></i><span>${titleText}</span>`;
-      callout.appendChild(header);
-    }
     callout.appendChild(body);
+
     if (bq.parentNode) bq.parentNode.replaceChild(callout, bq);
   });
 
   const standalonePs = Array.from(container.querySelectorAll('p')).filter(p => !p.closest('.chat-callout') && !p.closest('blockquote'));
   standalonePs.forEach(p => {
     const text = p.innerText.trim();
-    if (text.startsWith('💡 Tip:') || text.startsWith('Tip:')) {
+    if (text.startsWith('💡') || text.toLowerCase().startsWith('bottom line:') || text.toLowerCase().startsWith('tip:') || text.toLowerCase().startsWith('note:')) {
       const callout = document.createElement('div');
-      callout.className = 'chat-callout callout-tip';
+      callout.className = 'chat-callout';
+
+      const hr = document.createElement('hr');
+      hr.className = 'callout-pagebreak';
+      callout.appendChild(hr);
+
       const body = document.createElement('div');
       body.className = 'callout-body';
       body.innerHTML = p.innerHTML;
       callout.appendChild(body);
+
       p.parentNode.replaceChild(callout, p);
     }
   });

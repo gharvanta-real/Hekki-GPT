@@ -1,0 +1,143 @@
+/* === DESKTOP EXE TOP NAVIGATION MENU BAR === */
+#desktop-topnav {
+  display: none;
+  height: 36px;
+  width: 100vw;
+  background: var(--sidebar-bg);
+  border-bottom: none !important;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 140px 0 10px; /* leaves room for Windows native window controls on right */
+  box-sizing: border-box;
+  -webkit-app-region: drag;
+  user-select: none;
+  font-family: var(--font-segoe-ui, var(--font));
+  font-size: 14px;
+  color: var(--text-2);
+  z-index: 9999;
+  position: relative;
+  flex-shrink: 0;
+}
+
+/* Shown strictly when running in Electron EXE Desktop app */
+.is-electron #desktop-topnav {
+  display: flex !important;
+}
+
+.is-electron #shell {
+  height: calc(100vh - 36px) !important;
+}
+
+.topnav-left {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  -webkit-app-region: no-drag;
+}
+
+.topnav-logo {
+  width: 18px;
+  height: 18px;
+  margin-right: 6px;
+  margin-left: 2px;
+  vertical-align: middle;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.topnav-menu-btn {
+  height: 26px;
+  padding: 0 9px;
+  border: none;
+  background: transparent;
+  color: var(--text-2);
+  font-size: 13px;
+  font-family: inherit;
+  font-weight: 400;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: background 0.12s, color 0.12s;
+  position: relative;
+}
+
+.topnav-menu-btn:hover,
+.topnav-menu-btn.active {
+  background: var(--hover);
+  color: var(--text);
+}
+
+/* Draggable space between menu and right side */
+.topnav-drag-space {
+  flex: 1;
+  height: 100%;
+  -webkit-app-region: drag;
+}
+
+/* Dropdown Menu Popup */
+.topnav-dropdown-menu {
+  position: absolute;
+  top: 32px;
+  left: 0;
+  min-width: 230px;
+  background: var(--card, #FFFFFF);
+  border: 1px solid var(--border, rgba(0, 0, 0, 0.08));
+  border-radius: 12px;
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.18), 0 2px 8px rgba(0, 0, 0, 0.06);
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  z-index: 10000;
+  -webkit-app-region: no-drag;
+}
+
+.topnav-dropdown-menu.hidden {
+  display: none !important;
+}
+
+.topnav-item {
+  height: 32px;
+  padding: 0 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13.5px;
+  font-weight: 450;
+  color: var(--text, #141414);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.1s ease, color 0.1s ease;
+  white-space: nowrap;
+}
+
+.topnav-item:hover {
+  background: var(--hover, #F4F4F6);
+  color: var(--text, #000000);
+}
+
+.topnav-item .shortcut,
+.topnav-shortcut {
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  height: auto !important;
+  padding: 0 !important;
+  font-size: 12px !important;
+  color: var(--text-3, #888888) !important;
+  margin-left: 24px !important;
+  font-family: var(--font-segoe-ui, sans-serif) !important;
+  font-weight: 400 !important;
+  opacity: 0.75 !important;
+  pointer-events: none !important;
+}
+
+.topnav-divider {
+  height: 1px;
+  background: var(--border, #EEEEEE);
+  margin: 4px 2px;
+  opacity: 0.7;
+}

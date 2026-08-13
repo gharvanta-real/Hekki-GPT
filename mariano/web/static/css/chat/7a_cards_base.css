@@ -12,7 +12,7 @@
   align-items: center;
   gap: 8px;
   font-family: var(--font);
-  font-size: 12.5px;
+  font-size: 13.5px;
   font-weight: 500;
   color: var(--text-3);
   cursor: pointer;
@@ -49,7 +49,7 @@
 }
 .thought-step {
   margin: 0;
-  font-size: 12.5px;
+  font-size: 13.5px;
   color: var(--text-3);
   line-height: 1.65;
   white-space: pre-wrap;
@@ -272,7 +272,7 @@ body.oled .chat-image-preview-card {
 
 .chat-image-preview-open:hover {
   color: #ffffff;
-  transform: scale(1.1);
+  transform: none;
 }
 
 .chat-image-preview-body {

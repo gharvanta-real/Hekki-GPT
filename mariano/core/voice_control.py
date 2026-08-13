@@ -24,7 +24,7 @@ class VoiceController:
 
     def __init__(self) -> None:
         self.settings = get_settings()
-        self.client = genai.Client(api_key=self.settings.gemini_api_key)
+        self.client = genai.Client(api_key=self.settings.active_gemini_api_key)
         
         self.sample_rate = 16000  # Standard rate for speech recognition
         self.channels = 1

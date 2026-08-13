@@ -253,9 +253,9 @@
   z-index: 1;
   display: flex;
   flex-direction: column;
-  background: var(--card, #18181b);
+  background: var(--card, #121215);
   border: none !important;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45) !important;
+  box-shadow: none !important;
   border-radius: 24px !important;
   overflow: hidden;
   max-width: min(92vw, 920px);
@@ -279,19 +279,22 @@
 
 .img-lightbox-actions {
   position: absolute !important;
-  top: 14px !important;
-  right: 14px !important;
+  bottom: 18px !important;
+  left: 50% !important;
+  top: auto !important;
+  right: auto !important;
+  transform: translateX(-50%) !important;
   z-index: 100 !important;
   display: flex !important;
   align-items: center !important;
-  gap: 6px !important;
-  background: rgba(24, 24, 27, 0.75) !important;
+  gap: 8px !important;
+  background: rgba(24, 24, 27, 0.85) !important;
   backdrop-filter: blur(16px) !important;
   -webkit-backdrop-filter: blur(16px) !important;
-  padding: 5px 10px !important;
+  padding: 6px 14px !important;
   border-radius: 30px !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 .img-lightbox-btn {
@@ -314,7 +317,48 @@
   flex-shrink: 0 !important;
   transition: all 0.15s ease;
 }
-.img-lightbox-btn:hover { background: rgba(255, 255, 255, 0.25) !important; color: #ffffff !important; transform: scale(1.08); }
+
+.img-lightbox-btn i,
+.img-lightbox-btn svg {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
+  width: 15px !important;
+  height: 15px !important;
+}
+
+.img-lightbox-btn:hover {
+  background: rgba(255, 255, 255, 0.28) !important;
+  color: #ffffff !important;
+  transform: none;
+}
+
+/* Light Theme Explicit High-Contrast Visibility Support */
+body.light .img-lightbox-actions,
+:root[data-theme="light"] .img-lightbox-actions {
+  background: rgba(18, 18, 20, 0.88) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+}
+
+body.light .img-lightbox-btn,
+:root[data-theme="light"] .img-lightbox-btn {
+  background: rgba(255, 255, 255, 0.16) !important;
+  color: #ffffff !important;
+}
+
+body.light .img-lightbox-btn i,
+body.light .img-lightbox-btn svg,
+:root[data-theme="light"] .img-lightbox-btn i,
+:root[data-theme="light"] .img-lightbox-btn svg {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
+}
+
+body.light .img-lightbox-btn:hover,
+:root[data-theme="light"] .img-lightbox-btn:hover {
+  background: rgba(255, 255, 255, 0.30) !important;
+  color: #ffffff !important;
+}
 
 .img-lightbox-body {
   position: relative;
@@ -365,13 +409,13 @@
 }
 
 .img-lb-meta {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--text-3);
   font-family: var(--font);
 }
 
 .img-lb-counter {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--text-3);
   font-family: var(--font);
 }
@@ -389,8 +433,10 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 10px;
+  justify-content: space-between;
+  gap: 6px;
   width: 100%;
+  flex-shrink: 0;
 }
 
 .input-preview-area {
@@ -469,7 +515,7 @@
 }
 
 .chip-size {
-  font-size: 10px;
+  font-size: 11px;
   color: var(--text-3);
 }
 
@@ -487,7 +533,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 10px;
+  font-size: 11px;
   cursor: pointer;
   opacity: 0;
   pointer-events: none;

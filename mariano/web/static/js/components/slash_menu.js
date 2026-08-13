@@ -341,7 +341,7 @@ export class SlashMenuManager {
     this.menuEl.innerHTML = cmds.map((c, i) => `
       <button class="attach-dropdown-item ${i === this.selectedIndex ? 'active-item' : ''}" data-index="${i}" style="font-weight: 400 !important; ${i === this.selectedIndex ? 'background: var(--hover); color: var(--text);' : ''}">
         ${this.getLogoSvg(c.cmd, c.icon, 15)}
-        <span style="font-weight: 400 !important; font-size: 13px;">${c.cmd}</span>
+        <span style="font-weight: 400 !important; font-size: 14.5px;">${c.cmd}</span>
         <span class="shortcut-hint" style="font-weight: 400 !important;">${c.label}</span>
       </button>
     `).join('');
@@ -466,7 +466,7 @@ export class SlashMenuManager {
     listEl.innerHTML = filtered.map((it, i) => `
       <button class="attach-dropdown-item ${i === 0 ? 'active-item' : ''}" style="font-weight: 400 !important; ${i === 0 ? 'background: var(--hover); color: var(--text);' : ''}">
         <i data-lucide="${it.icon}"></i>
-        <span style="font-weight: 400 !important; font-size: 13px;">${it.title}</span>
+        <span style="font-weight: 400 !important; font-size: 14.5px;">${it.title}</span>
         <span class="shortcut-hint" style="font-weight: 400 !important;">${it.desc}</span>
       </button>
     `).join('');

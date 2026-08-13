@@ -748,6 +748,7 @@ class GeminiClient:
         def build_user_parts(text_str: str) -> list[types.Part]:
             parts = []
             import re
+            from pathlib import Path
             img_matches = re.findall(r'\[Attached Image:[^\]]*saved at ([^\]\)]+)\)', text_str)
             if img_matches:
                 for img_path_str in img_matches:

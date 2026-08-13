@@ -81,7 +81,6 @@ class Router {
 
     const panesUsingVisible = [
       'skills-pane',
-      'debate-pane',
       'coder-pane',
       'images-pane',
       'hekkicad-pane',
@@ -223,18 +222,7 @@ class Router {
         }
         break;
 
-      case 'debate':
-        this._showPane('debate-pane');
-        if (sidebarNav) {
-          sidebarNav.classList.add('hide-sidebar');
-        }
-        if (titlebarEl) titlebarEl.style.display = 'none';
-        const toggleBtnDebate = document.getElementById('btn-sidebar-toggle-main');
-        if (toggleBtnDebate) toggleBtnDebate.style.display = 'none';
-        if (window.updateTitleBreadcrumb) {
-          window.updateTitleBreadcrumb('Debate Playground', '');
-        }
-        break;
+
 
 
       case 'images':
@@ -306,16 +294,14 @@ class Router {
         if (window.updateTitleBreadcrumb) {
           window.updateTitleBreadcrumb('Search Chats', '');
         }
-        if (!window.historyPageInstance && !window._loadingHistoryPage) {
-          window._loadingHistoryPage = true;
-          import('/static/js/pages/history_page.js').then(({ HistoryPage }) => {
-            window.historyPageInstance = new HistoryPage(window.chatSessionManager);
-            window.historyPageInstance.mount(document.getElementById('history-pane'));
-          }).catch(err => console.error('Failed to load HistoryPage:', err))
-            .finally(() => window._loadingHistoryPage = false);
-        } else if (window.historyPageInstance) {
-          window.historyPageInstance.refresh();
-        }
+        window._loadingHistoryPage = true;
+        import('/static/js/pages/history_page.js?v=' + Date.now()).then(({ HistoryPage }) => {
+          const pane = document.getElementById('history-pane');
+          if (pane) pane.innerHTML = '';
+          window.historyPageInstance = new HistoryPage(window.chatSessionManager);
+          window.historyPageInstance.mount(pane);
+        }).catch(err => console.error('Failed to load HistoryPage:', err))
+          .finally(() => window._loadingHistoryPage = false);
         break;
 
       case 'settings':
@@ -376,12 +362,9 @@ class Router {
     // Step 5: Re-apply theme from localStorage — safety net in case any
     // event listener was lost. Zero-cost; just a classList toggle.
     const savedTheme = localStorage.getItem('hekki_theme') || 'dark';
-    document.body.classList.remove('dark', 'oled');
-    if (savedTheme === 'dark') {
-      document.body.classList.add('dark');
-    } else if (savedTheme === 'oled') {
-      document.body.classList.add('oled');
-    }
+    document.body.classList.remove('dark', 'oled', 'light');
+    document.body.classList.add(savedTheme);
+    document.documentElement.setAttribute('data-theme', savedTheme);
   }
 
   /**
@@ -394,7 +377,6 @@ class Router {
   _syncDockActiveState(page) {
     const MAP = {
       chat:      'mode-home',
-      debate:    'mode-playground',
       coder:     'mode-coder',
     };
 
@@ -411,21 +393,17 @@ class Router {
 
     // Sidebar nav action buttons
     const skillsBtn     = document.getElementById('nav-skills-btn');
-    const playgroundBtn = document.getElementById('btn-nav-playground');
     const coderBtn      = document.getElementById('btn-nav-coder');
+    const historyBtn    = document.getElementById('btn-nav-chat-history');
 
     skillsBtn?.classList.toggle('active', page === 'skills');
-    playgroundBtn?.classList.toggle('active', page === 'debate');
     coderBtn?.classList.toggle('active', page === 'coder');
+    historyBtn?.classList.toggle('active', page === 'history');
 
     // Main titlebar back button
     const mainBackBtn = document.getElementById('btn-main-back');
     if (mainBackBtn) {
-      if (page === 'debate') {
-        mainBackBtn.style.display = 'inline-flex';
-      } else {
-        mainBackBtn.style.display = 'none';
-      }
+      mainBackBtn.style.display = 'none';
     }
   }
 

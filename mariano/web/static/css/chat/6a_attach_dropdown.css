@@ -1,0 +1,164 @@
+/* ============================================================
+   6a_attach_dropdown.css
+   Attachment (+) Dropdown — Design-matched to .user-menu-dropdown
+   ============================================================
+   Tokens used:
+     --card        → dropdown background (adapts light/dark/oled)
+     --border      → 1px outline border
+     --hover       → solid hover fill (no opacity games)
+     --text        → primary text
+     --text-2      → icon color
+     --text-3      → muted labels / shortcuts
+     --font        → shared font stack
+   ============================================================ */
+
+/* ── Dropdown container ─────────────────────────────────────── */
+.attach-dropdown,
+.attach-sub-dropdown {
+  /* JS sets position via getBoundingClientRect() — do NOT set top/left/bottom here */
+  position: fixed;
+  min-width: 240px;
+  background: var(--card) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 12px !important;
+  padding: 6px !important;
+  box-shadow: none !important;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  opacity: 1 !important;
+  animation: none !important;
+}
+
+/* Sub-dropdown flyout: positioned by positionSubDropdown() in JS */
+.attach-sub-dropdown {
+  min-width: 250px !important;
+  z-index: 10002;
+}
+
+/* ── Section header label ───────────────────────────────────── */
+.attach-dropdown .sub-dropdown-header,
+.attach-sub-dropdown .sub-dropdown-header {
+  font-size: 11px !important;
+  color: var(--text-3) !important;
+  font-weight: 600 !important;
+  font-family: var(--font) !important;
+  padding: 6px 10px 4px !important;
+  letter-spacing: 0.03em;
+  opacity: 1 !important;
+}
+
+/* ── Divider ────────────────────────────────────────────────── */
+.attach-dropdown-sep {
+  height: 1px !important;
+  background: var(--border) !important;
+  margin: 4px 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+}
+
+/* ── Menu items — exact clone of .user-menu-item ────────────── */
+.attach-dropdown-item {
+  /* Layout */
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+
+  /* Sizing — match user-menu exactly */
+  height: 36px !important;
+  padding: 8px 10px !important;
+
+  /* Shape */
+  border-radius: 6px !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+
+  /* Colour */
+  background: transparent !important;
+  color: var(--text) !important;
+
+  /* Typography */
+  font-size: 14.5px !important;
+  font-weight: 400 !important;
+  font-family: var(--font) !important;
+  text-align: left !important;
+  white-space: nowrap;
+
+  /* Interaction */
+  cursor: pointer !important;
+
+  /* Override the global button:hover opacity bleed */
+  opacity: 1 !important;
+  transition: background 0.12s ease !important;
+}
+
+/* ── Hover state — solid fill, NO opacity change ────────────── */
+.attach-dropdown-item:hover {
+  background: var(--hover) !important;
+  color: var(--text) !important;
+  opacity: 1 !important;   /* explicitly block the global 0.95 bleed */
+}
+
+/* ── Active / selected state ────────────────────────────────── */
+.attach-dropdown-item.active {
+  background: var(--hover) !important;
+  color: var(--text) !important;
+  opacity: 1 !important;
+}
+
+/* ── Icons ──────────────────────────────────────────────────── */
+.attach-dropdown-item i,
+.attach-dropdown-item svg,
+.attach-dropdown-item .lucide {
+  width: 15px !important;
+  height: 15px !important;
+  color: var(--text-2) !important;
+  flex-shrink: 0 !important;
+  opacity: 1 !important;
+  transition: color 0.12s ease !important;
+}
+
+/* Icon colour on hover — fully opaque, slightly brighter */
+.attach-dropdown-item:hover i,
+.attach-dropdown-item:hover svg,
+.attach-dropdown-item:hover .lucide {
+  color: var(--text) !important;
+  opacity: 1 !important;
+}
+
+/* ── Trailing elements (shortcut hints, chevrons) ───────────── */
+.attach-dropdown-item .shortcut-hint,
+.attach-dropdown-item .submenu-arrow {
+  margin-left: auto !important;
+  font-size: 11px !important;
+  color: var(--text-3) !important;
+  font-weight: 400 !important;
+  opacity: 1 !important;
+  flex-shrink: 0;
+}
+
+/* Chevron icon size override */
+.attach-dropdown-item .submenu-arrow[data-lucide],
+.attach-dropdown-item i.submenu-arrow {
+  width: 14px !important;
+  height: 14px !important;
+}
+
+/* ── Permission sub-menu: auto-height items ─────────────────── */
+.permission-sub-menu {
+  min-width: 260px !important;
+}
+
+.permission-sub-menu .attach-dropdown-item {
+  height: auto !important;
+  min-height: 36px !important;
+  padding: 8px 10px !important;
+  font-size: 13px !important;
+  white-space: normal;
+  align-items: flex-start !important;
+}

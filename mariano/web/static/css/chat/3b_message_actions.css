@@ -21,6 +21,12 @@
   border-bottom: 1px solid var(--border);
   font-size: 13.5px;
 }
+.msg hr {
+  margin: 16px 0;
+  border: none;
+  border-top: 1px solid var(--border);
+  opacity: 0.45;
+}
 .msg.ai td {
   padding: 10px 14px;
   border-bottom: 1px solid var(--border);
@@ -139,13 +145,27 @@ body.dark a.chat-link.file-link:hover {
   text-decoration: underline;
 }
 
-/* ── Modern GitHub-style Callouts ── */
-.chat-callout {
-  margin: 12px 0;
-  padding: 10px 14px;
-  border-radius: var(--radius-md, 8px);
-  background: var(--hover, #f4f4f5);
-  border-left: 3.5px solid var(--text-primary);
+/* ── Clean Flat Callouts & Bottom Lines (No Card Box, Thin Divider Line Above) ── */
+.callout-pagebreak {
+  margin: 16px 0 12px 0 !important;
+  border: none !important;
+  border-top: 1px solid var(--border) !important;
+  opacity: 0.45 !important;
+  width: 100%;
+}
+
+.chat-callout,
+.markdown-body blockquote,
+.msg.ai blockquote {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 16px 0 12px 0 !important;
+  color: var(--text) !important;
+  opacity: 1 !important;
+  font-style: normal !important;
 }
 
 .chat-callout .callout-header {
@@ -153,29 +173,22 @@ body.dark a.chat-link.file-link:hover {
   align-items: center;
   gap: 6px;
   font-weight: 600;
-  font-size: 13px;
-  margin-bottom: 4px;
+  font-size: 14px;
+  margin-bottom: 6px;
   color: var(--text-primary);
 }
 
-.chat-callout.callout-info { border-left-color: var(--text-primary); }
 .chat-callout.callout-info .callout-header { color: var(--text-primary); }
-
-.chat-callout.callout-warning { border-left-color: #d97706; }
 .chat-callout.callout-warning .callout-header { color: #d97706; }
-
-.chat-callout.callout-tip { border-left-color: #16a34a; }
 .chat-callout.callout-tip .callout-header { color: #16a34a; }
-
-.chat-callout.callout-danger { border-left-color: #ef4444; }
 .chat-callout.callout-danger .callout-header { color: #ef4444; }
-
-.chat-callout.callout-note { border-left-color: var(--text-primary); }
 .chat-callout.callout-note .callout-header { color: var(--text-primary); }
 
-.chat-callout-body {
-  font-size: 13px;
-  color: var(--text);
+.chat-callout-body,
+.msg.ai blockquote p {
+  font-size: 16px !important;
+  line-height: 26px !important;
+  color: var(--text) !important;
 }
 
 /* User Prompt Checkboxes & Lists */
@@ -183,14 +196,6 @@ body.dark a.chat-link.file-link:hover {
 .chat-bubble input[type="checkbox"] {
   accent-color: var(--text-primary);
   cursor: pointer;
-}
-
-/* Markdown Blockquote styling */
-.markdown-body blockquote {
-  margin: 12px 0;
-  padding: 8px 14px;
-  background: var(--hover, #f4f4f5);
-  border-left: 3.5px solid var(--text-primary) !important;
 }
 
 [data-theme="dark"] .chat-callout.callout-note .callout-header,
@@ -224,20 +229,9 @@ body.dark .chat-callout.callout-caution .callout-header { color: #f87171; }
   cursor: pointer;
 }
 
-.msg.ai blockquote {
-  margin: 16px 0;
-  padding: 12px 18px;
-  border: none !important;
-  border-left: 3.5px solid var(--text-primary) !important;
-  background: var(--hover);
-  color: var(--text);
-  font-style: normal;
-  border-radius: 10px;
-  line-height: 1.7;
-}
 [data-theme="dark"] .msg.ai blockquote,
 body.dark .msg.ai blockquote {
-  background: rgba(59, 130, 246, 0.08) !important;
+  background: transparent !important;
   color: var(--text);
 }
 .msg.tool {

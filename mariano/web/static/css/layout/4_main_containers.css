@@ -263,27 +263,41 @@ body.oled .chat-dropdown-item,
   height: 14px;
   color: currentColor;
 }
-.chat-dropdown-item.delete {
-  color: #dc2626; /* Red delete text */
+/* Permanent Red Delete Icon Rule across all components, themes, and states */
+[data-lucide="trash"],
+[data-lucide="trash-2"],
+.lucide-trash,
+.lucide-trash-2,
+svg.lucide-trash,
+svg.lucide-trash-2 {
+  color: #ef4444 !important;
+  stroke: #ef4444 !important;
 }
-.chat-dropdown-item.delete .lucide {
-  color: #dc2626; /* Red delete icon */
+
+.chat-dropdown-item.delete,
+.chat-dropdown-item.delete:hover,
+.chat-dropdown-item.delete .lucide,
+.chat-dropdown-item.delete svg,
+.chat-dropdown-item.delete i,
+.chat-dropdown-item.delete span {
+  color: #ef4444 !important;
+  stroke: #ef4444 !important;
 }
 .chat-dropdown-item.delete:hover {
-  background: #fef2f2;
+  background: rgba(239, 68, 68, 0.1) !important;
 }
 body.dark .chat-dropdown-item.delete:hover,
 body.oled .chat-dropdown-item.delete:hover,
 [data-theme="dark"] .chat-dropdown-item.delete:hover,
 [data-theme="oled"] .chat-dropdown-item.delete:hover {
-  background: rgba(220, 38, 38, 0.15);
+  background: rgba(239, 68, 68, 0.15) !important;
 }
 
-/* Lucide Icons Styling — Full Theme Dependent, 100% Visible, Crisp 2.2px Stroke Weight */
+/* Lucide Icons Styling — Crisp, Refined 1.6px Vector Stroke Weight matching Target UI */
 .lucide, svg.lucide {
   width: 16px;
   height: 16px;
-  stroke-width: 2.2px;
+  stroke-width: 1.6px !important;
   stroke: currentColor;
   fill: none;
   display: inline-block;
@@ -292,34 +306,34 @@ body.oled .chat-dropdown-item.delete:hover,
   transition: color 0.15s ease, stroke-width 0.15s ease;
 }
 .dock-item .lucide, .dock-item svg {
-  width: 20px;
-  height: 20px;
-  stroke-width: 2.2px;
+  width: 19px;
+  height: 19px;
+  stroke-width: 1.6px !important;
   color: var(--text-2);
 }
 .btn-new-chat-dock .lucide {
   width: 15px;
   height: 15px;
-  stroke-width: 2.2px;
+  stroke-width: 1.6px !important;
   color: var(--text-2);
 }
 .icon-btn .lucide {
   width: 16px;
   height: 16px;
-  stroke-width: 2.2px;
+  stroke-width: 1.6px !important;
   color: var(--text-2);
 }
 .recent-item .lucide, .section-item .lucide, #sidebar-nav .lucide, #sidebar-nav svg {
-  width: 15px;
-  height: 15px;
-  stroke-width: 2.2px;
+  width: 16px;
+  height: 16px;
+  stroke-width: 1.6px !important;
   color: var(--text-2);
   opacity: 1 !important;
 }
 .upgrade-btn .lucide {
   width: 14px;
   height: 14px;
-  stroke-width: 2.2px;
+  stroke-width: 1.6px !important;
 }
 
 /* Tab Manager Buttons styling - Chip-like tabs */

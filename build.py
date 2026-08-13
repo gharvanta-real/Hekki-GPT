@@ -100,6 +100,7 @@ def step_build_pyinstaller():
         "--onefile",
         "--name=Hekki-Assistant",
         f"--distpath={dist_dir}",
+        f'--icon="{PROJECT_ROOT / "assets" / "hekki.ico"}"',
         
         # Static Assets & Bundled Data
         '--add-data="mariano/web/static;mariano/web/static"',

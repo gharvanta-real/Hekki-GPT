@@ -137,19 +137,19 @@ body.dark .modal-nav-pill.active {
   padding: 6px 8px;
   border-top: none !important;
   cursor: pointer;
-  background: var(--input-bg, #f6f7f9);
+  background: transparent !important;
   transition: background 0.15s ease, transform 0.12s ease;
   flex-shrink: 0;
   gap: 8px;
   position: relative;
   z-index: 100;
-  margin: 8px 8px 12px 8px;
-  border-radius: 10px;
+  margin: 4px 8px 8px 8px;
+  border-radius: 8px;
   border: none !important;
   box-shadow: none !important;
 }
 .sidebar-user-profile:hover {
-  background: var(--hover, #e2e8f0);
+  background: var(--hover, rgba(0,0,0,0.04)) !important;
 }
 .sidebar-user-avatar {
   width: 32px;

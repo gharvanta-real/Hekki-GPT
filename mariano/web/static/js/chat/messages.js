@@ -47,7 +47,7 @@ export function createMessageElement(type, text, timestamp, index, ChatSessionMa
         : `/api/workspace/render?path=${encodeURIComponent(rawPath)}`;
 
       attachmentCards.push(`
-        <div style="align-self: flex-end; margin-bottom: 4px; border-radius: 12px; overflow: hidden; width: 120px; height: 120px; border: 1px solid var(--border); flex-shrink: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.12);">
+        <div class="user-img-attachment-card" style="align-self: flex-end; margin-bottom: 0; border-radius: 12px; overflow: hidden; width: 120px; height: 120px; border: 1px solid var(--border); flex-shrink: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.12);">
           <img src="${renderUrl}" alt="${escapeHtml(fileName)}" style="width: 120px; height: 120px; object-fit: cover; display: block;" />
         </div>
       `);
@@ -63,7 +63,7 @@ export function createMessageElement(type, text, timestamp, index, ChatSessionMa
       else if (['PY', 'JS', 'HTML', 'CSS', 'JSON', 'CPP', 'C', 'TS'].includes(ext)) iconName = 'file-code';
 
       attachmentCards.push(`
-        <div class="user-file-attachment-card" style="align-self: flex-end; margin-bottom: 4px; padding: 7px 12px; border-radius: 12px; background: var(--card, #ffffff); border: 1px solid var(--border) !important; display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--text-primary); font-weight: 500; max-width: 280px; box-shadow: 0 2px 6px rgba(0,0,0,0.06);">
+        <div class="user-file-attachment-card" style="align-self: flex-end; margin-bottom: 0; padding: 7px 12px; border-radius: 12px; background: var(--card, #ffffff); border: 1px solid var(--border) !important; display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--text-primary); font-weight: 500; max-width: 280px; box-shadow: 0 2px 6px rgba(0,0,0,0.06);">
           <i data-lucide="${iconName}" style="width: 16px; height: 16px; color: var(--accent, #2563eb); flex-shrink: 0;"></i>
           <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1;">${escapeHtml(fileName)}</span>
           <span style="font-size: 9.5px; background: rgba(37, 99, 235, 0.12); color: var(--accent, #2563eb); padding: 1px 6px; border-radius: 6px; text-transform: uppercase; font-weight: 600; flex-shrink: 0;">${ext}</span>
@@ -73,10 +73,12 @@ export function createMessageElement(type, text, timestamp, index, ChatSessionMa
 
     if (attachmentCards.length > 0) {
       const attachContainer = document.createElement('div');
+      attachContainer.className = 'user-attachment-container';
       attachContainer.style.display = 'flex';
       attachContainer.style.flexDirection = 'column';
       attachContainer.style.alignItems = 'flex-end';
-      attachContainer.style.gap = '4px';
+      attachContainer.style.gap = '6px';
+      attachContainer.style.marginBottom = '8px';
       attachContainer.style.width = '100%';
       attachContainer.innerHTML = attachmentCards.join('');
       group.appendChild(attachContainer);
@@ -91,7 +93,7 @@ export function createMessageElement(type, text, timestamp, index, ChatSessionMa
       if (slashMatch) {
         const cmdTag = escapeHtml(slashMatch[1]);
         const restText = escapeHtml(slashMatch[2]);
-        bubble.innerHTML = `<span class="user-cmd-highlight" style="display:inline-flex; align-items:center; background:rgba(37,99,235,0.16); color:#60a5fa; padding:2px 7px; border-radius:5px; font-weight:500; margin-right:6px; font-size:12.5px; font-family:var(--font); letter-spacing:0.2px;">${cmdTag}</span>${restText}`;
+        bubble.innerHTML = `<span class="user-cmd-highlight" style="display:inline-flex; align-items:center; background:transparent !important; color:#3b82f6; padding:0 !important; font-weight:400 !important; margin-right:6px; font-size:15px !important; font-family:var(--font); letter-spacing:0.2px;">${cmdTag}</span>${restText}`;
       } else {
         bubble.innerHTML = escapeHtml(cleanText);
       }
@@ -396,7 +398,7 @@ export function createToolGroupCard(msg, escapeHtmlFn) {
                 <summary style="cursor:pointer; color:var(--text-3); font-size:11px; font-weight:500; outline:none; user-select:none; display:inline-flex; align-items:center; gap:4px; padding: 2px 0;">
                   <span>${isTerminal ? '&#9654; Terminal Output' : '&#9654; View output details'}</span>
                 </summary>
-                <pre style="margin:6px 0 2px 0; padding:10px 12px; background:var(--card); color:var(--text-primary); border-radius:8px; font-size:11px; font-family:var(--font-mono); line-height:1.55; overflow-x:auto; border:none !important; box-shadow:none !important; max-height:220px; width:100%; box-sizing:border-box; white-space:pre-wrap; word-break:break-all;">${escapeHtmlFn(r.output)}</pre>
+                <pre class="tool-output-block tool-terminal-block">${escapeHtmlFn(r.output)}</pre>
               </details>
             </div>`
           : '';

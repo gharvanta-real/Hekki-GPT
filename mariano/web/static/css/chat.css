@@ -5,6 +5,7 @@
 @import 'chat/4_code_blocks.css';
 @import 'chat/5_input_bar.css';
 @import 'chat/6_dropdowns.css';
+@import 'chat/6a_attach_dropdown.css';
 @import 'chat/7_cards.css';
 @import 'chat/8_stream_tools.css';
 @import 'chat/8e_snippet_modal.css';

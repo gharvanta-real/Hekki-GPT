@@ -41,7 +41,17 @@ def _open_app_ui():
 if __name__ == "__main__":
     # Essential for PyInstaller on Windows when using multiprocessing or async servers
     multiprocessing.freeze_support()
-    threading.Thread(target=_open_app_ui, daemon=True).start()
+
+    # Only open external browser tab if explicitly requested via --open-browser CLI flag
+    if "--open-browser" in sys.argv:
+        def _open_app_ui():
+            time.sleep(1.2)
+            try:
+                webbrowser.open("http://localhost:8000")
+            except Exception as e:
+                print(f"Browser launch note: {e}")
+        threading.Thread(target=_open_app_ui, daemon=True).start()
+
     print("====================================================")
     print("HEKKI ASSISTANT DESKTOP APP INITIATED")
     print("Local Access:   http://localhost:8000")

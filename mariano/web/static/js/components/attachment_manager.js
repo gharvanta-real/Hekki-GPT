@@ -97,10 +97,24 @@ class AttachmentManager {
       if (this._files.length === 0) {
         container.innerHTML = '';
         container.classList.add('hidden');
-        if (capsule) capsule.classList.remove('input-capsule-has-attachments');
+        if (capsule) {
+          capsule.classList.remove('input-capsule-has-attachments');
+          const ta = capsule.querySelector('textarea');
+          if (ta) {
+            const isMulti = (ta.value || '').includes('\n') || (ta.value.length > 80);
+            if (!isMulti) {
+              capsule.classList.remove('is-multiline');
+              capsule.classList.add('is-single-line');
+            }
+          }
+        }
       } else {
         container.classList.remove('hidden');
-        if (capsule) capsule.classList.add('input-capsule-has-attachments');
+        if (capsule) {
+          capsule.classList.add('input-capsule-has-attachments');
+          capsule.classList.add('is-multiline');
+          capsule.classList.remove('is-single-line');
+        }
         container.innerHTML = this._buildChipsHtml();
         this._bindChipEvents(container);
       }
@@ -118,15 +132,9 @@ class AttachmentManager {
             if (stopId) document.getElementById(stopId)?.classList.add('hidden');
           }
         } else {
-          const txId = btnId === 'btn-submit-home' ? 'chat-input' : (btnId === 'btn-submit-conv' ? 'chat-input-conv' : (btnId === 'coder-btn-send' ? 'coder-input' : 'debate-input'));
-          const tx = document.getElementById(txId);
-          if (!tx || !tx.value.trim()) {
-            if (btnId === 'btn-submit-home' || btnId === 'btn-submit-conv' || btnId === 'coder-btn-send') {
-              btn.classList.add('hidden');
-              if (window.isGenerating) {
-                const stopId = btnId === 'btn-submit-home' ? 'btn-stop-gen' : (btnId === 'btn-submit-conv' ? 'btn-stop-gen-conv' : null);
-                if (stopId) document.getElementById(stopId)?.classList.remove('hidden');
-              }
+          if (btnId === 'btn-submit-home' || btnId === 'btn-submit-conv') {
+            if (!window.isGenerating) {
+              btn.classList.remove('hidden');
             }
           }
         }

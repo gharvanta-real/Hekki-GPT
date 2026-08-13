@@ -11,7 +11,7 @@
   <meta charset="UTF-8">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=Google+Sans+Flex:wght@400;500;600;700&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Instrument+Serif:ital@0;1&family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Google+Sans:wght@400;500;600;700&family=Google+Sans+Flex:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hekki</title>
   <meta name="application-name" content="Hekki">
@@ -24,8 +24,9 @@
   <link rel="icon" type="image/png" href="/static/hekki.png">
   <link rel="apple-touch-icon" href="/static/hekki.png">
   <link class="cache-bust" rel="stylesheet" href="/static/theme.css?v=200">
+  <link class="cache-bust" rel="stylesheet" href="/static/css/layout/0_desktop_topnav.css?v=200">
   <link class="cache-bust" rel="stylesheet" href="/static/css/chat.css?v=201">
-  <link class="cache-bust" rel="stylesheet" href="/static/css/debate.css?v=201">
+
   <link class="cache-bust" rel="stylesheet" href="/static/css/coder.css?v=200">
 
 
@@ -94,6 +95,124 @@
 </head>
 <body>
 
+<!-- DESKTOP EXE TOP NAVIGATION BAR (Visible ONLY in Electron EXE App) -->
+<div id="desktop-topnav">
+  <div class="topnav-left">
+    <img class="topnav-logo" src="/static/hekki.png" alt="Hekki" />
+    
+    <!-- FILE MENU -->
+    <div style="position: relative;">
+      <button class="topnav-menu-btn" data-menu="topnav-menu-file">File</button>
+      <div class="topnav-dropdown-menu hidden" id="topnav-menu-file">
+        <div class="topnav-item" data-action="new-agent">
+          <span>New Agent</span>
+          <span class="topnav-shortcut">Ctrl+N</span>
+        </div>
+        <div class="topnav-item" data-action="open-folder">
+          <span>Open Folder</span>
+          <span class="topnav-shortcut">Ctrl+O</span>
+        </div>
+        <div class="topnav-divider"></div>
+        <div class="topnav-item" data-action="new-terminal">
+          <span>New Terminal</span>
+          <span class="topnav-shortcut">Ctrl+Shift+`</span>
+        </div>
+        <div class="topnav-item" data-action="new-browser">
+          <span>New Browser</span>
+        </div>
+        <div class="topnav-divider"></div>
+        <div class="topnav-item" data-action="open-ide">
+          <span>Open IDE</span>
+          <span class="topnav-shortcut">Ctrl+Shift+N</span>
+        </div>
+        <div class="topnav-divider"></div>
+        <div class="topnav-item" data-action="quit">
+          <span>Exit</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- EDIT MENU -->
+    <div style="position: relative;">
+      <button class="topnav-menu-btn" data-menu="topnav-menu-edit">Edit</button>
+      <div class="topnav-dropdown-menu hidden" id="topnav-menu-edit">
+        <div class="topnav-item" data-action="undo">
+          <span>Undo</span>
+          <span class="topnav-shortcut">Ctrl+Z</span>
+        </div>
+        <div class="topnav-item" data-action="redo">
+          <span>Redo</span>
+          <span class="topnav-shortcut">Ctrl+Y</span>
+        </div>
+        <div class="topnav-divider"></div>
+        <div class="topnav-item" data-action="cut">
+          <span>Cut</span>
+          <span class="topnav-shortcut">Ctrl+X</span>
+        </div>
+        <div class="topnav-item" data-action="copy">
+          <span>Copy</span>
+          <span class="topnav-shortcut">Ctrl+C</span>
+        </div>
+        <div class="topnav-item" data-action="paste">
+          <span>Paste</span>
+          <span class="topnav-shortcut">Ctrl+V</span>
+        </div>
+        <div class="topnav-divider"></div>
+        <div class="topnav-item" data-action="select-all">
+          <span>Select All</span>
+          <span class="topnav-shortcut">Ctrl+A</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW MENU -->
+    <div style="position: relative;">
+      <button class="topnav-menu-btn" data-menu="topnav-menu-view">View</button>
+      <div class="topnav-dropdown-menu hidden" id="topnav-menu-view">
+        <div class="topnav-item" data-action="reload">
+          <span>Reload Window</span>
+          <span class="topnav-shortcut">Ctrl+R</span>
+        </div>
+        <div class="topnav-item" data-action="toggle-sidebar">
+          <span>Toggle Left Sidebar</span>
+          <span class="topnav-shortcut">Ctrl+B</span>
+        </div>
+        <div class="topnav-item" data-action="toggle-theme">
+          <span>Toggle Light/Dark Theme</span>
+          <span class="topnav-shortcut">Ctrl+T</span>
+        </div>
+        <div class="topnav-divider"></div>
+        <div class="topnav-item" data-action="fullscreen">
+          <span>Toggle Fullscreen</span>
+          <span class="topnav-shortcut">F11</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- HELP MENU -->
+    <div style="position: relative;">
+      <button class="topnav-menu-btn" data-menu="topnav-menu-help">Help</button>
+      <div class="topnav-dropdown-menu hidden" id="topnav-menu-help">
+        <div class="topnav-item" data-action="docs">
+          <span>Documentation</span>
+        </div>
+        <div class="topnav-item" data-action="shortcuts">
+          <span>Keyboard Shortcuts</span>
+          <span class="topnav-shortcut">Ctrl+/</span>
+        </div>
+        <div class="topnav-divider"></div>
+        <div class="topnav-item" data-action="about">
+          <span>About Hekki</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="topnav-drag-space"></div>
+</div>
+
+<script src="/static/js/desktop_topnav.js" defer></script>
+
 <div id="loader"><div class="loader-ring"></div></div>
 
 <div id="shell">
@@ -108,9 +227,7 @@
       <button class="dock-item active" id="mode-home" title="Chat Dashboard">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-compose" style="width:20px;height:20px;display:inline-block;vertical-align:middle;"><path d="M10 3H7a4 4 0 0 0-4 4v9a4 4 0 0 0 4 4h10a4 4 0 0 0 4-4v-4"></path><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"></path></svg>
       </button>
-      <button class="dock-item" id="mode-playground" title="Debate Playground">
-        <i data-lucide="flask-conical" style="width:20px;height:20px;"></i>
-      </button>
+
       <button class="dock-item" id="mode-coder" data-tab="coder" title="Coder IDE" style="position:relative;">
         <i data-lucide="square-code" style="width:20px;height:20px;"></i>
       </button>
@@ -125,40 +242,39 @@
   <!-- SIDEBAR NAV (Second left sub-navigation sidebar panel) -->
   <div id="sidebar-nav">
     <div class="nav-header">
-      <div class="nav-header-title" style="font-weight: 600; font-size: 16px; color: var(--text-primary); flex: 1;">
-        Hekki
+      <button class="icon-btn" id="btn-sidebar-collapse" title="Collapse sidebar">
+        <i data-lucide="panel-left" style="width:16px; height:16px;"></i>
+      </button>
+
+      <div class="nav-header-arrows" style="display: flex; align-items: center; gap: 2px; margin-left: auto;">
+        <button class="icon-btn" id="btn-nav-back" title="Go Back">
+          <i data-lucide="arrow-left" style="width:16px; height:16px;"></i>
+        </button>
+        <button class="icon-btn" id="btn-nav-forward" title="Go Forward">
+          <i data-lucide="arrow-right" style="width:16px; height:16px;"></i>
+        </button>
       </div>
-      <button class="icon-btn" id="btn-return-chat-nav" title="Return to Chat" style="display: none; border: none; background: transparent; cursor: pointer; margin-right: 4px;">
-        <i data-lucide="chevron-left" style="width: 14px; height: 14px;"></i>
-      </button>
-      <button class="icon-btn" id="btn-search-nav" title="Search Chat History" style="margin-right: 2px;">
-        <i data-lucide="search" style="width:15px; height:15px;"></i>
-      </button>
-      <button id="btn-sidebar-collapse" title="Collapse sidebar">
-        <i data-lucide="panel-left" style="width:15px; height:15px;"></i>
-      </button>
     </div>
     
     <!-- CHAT VIEW SUBPANE -->
-    <div class="nav-inner" id="nav-inner-chat" style="display:flex; flex-direction:column; justify-content:space-between; height:calc(100% - 48px); padding: 2px 0 12px; position: relative;">
-      <div style="display:flex; flex-direction:column; gap:6px; overflow-y:auto; flex-grow:1; padding:0 8px;">
+    <div class="nav-inner" id="nav-inner-chat" style="display:flex; flex-direction:column; justify-content:space-between; height:calc(100% - 32px); padding: 0 0 12px; position: relative;">
+      <div style="display:flex; flex-direction:column; gap:0px; overflow-y:auto; flex-grow:1; padding:0 8px 0 8px;">
+
 
         <!-- Top Action Items -->
-        <div class="nav-section" style="margin-top: 4px;">
-          <div class="section-hdr">
-            <span>Actions</span>
-          </div>
+        <div class="nav-section" style="margin-top: 0px;">
           <div class="nav-section-actions" style="display: flex; flex-direction: column; gap: 2px; margin-top: 0;">
             <button class="sidebar-action-btn" id="btn-new-chat">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-compose" style="width:16px; height:16px; margin-right:8px; display:inline-block; vertical-align:middle; flex-shrink:0;"><path d="M10 3H7a4 4 0 0 0-4 4v9a4 4 0 0 0 4 4h10a4 4 0 0 0 4-4v-4"></path><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"></path></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="icon icon-compose" style="width:16px; height:16px; margin-right:8px; display:inline-block; vertical-align:middle; flex-shrink:0;"><path d="M10 3H7a4 4 0 0 0-4 4v9a4 4 0 0 0 4 4h10a4 4 0 0 0 4-4v-4"></path><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"></path></svg>
               <span>New Chat</span>
             </button>
-            <button class="sidebar-action-btn" id="btn-nav-playground">
-              <i data-lucide="flask-conical" style="width:16px; height:16px; margin-right:8px; display:inline-block; vertical-align:middle; flex-shrink:0;"></i>
-              <span>Playground</span>
+            <button class="sidebar-action-btn" id="btn-nav-chat-history">
+              <i data-lucide="history" style="width:16px; height:16px; margin-right:8px; display:inline-block; vertical-align:middle; flex-shrink:0;"></i>
+              <span>Chat History</span>
             </button>
+
             <button class="sidebar-action-btn" id="btn-nav-plugins">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-plugins" style="width:16px; height:16px; margin-right:8px; display:inline-block; vertical-align:middle; flex-shrink:0;"><path d="M9 2v6M15 2v6M12 17v5M5 8h14a1 1 0 0 1 1 1v4a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V9a1 1 0 0 1 1-1z"></path></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="icon icon-plugins" style="width:16px; height:16px; margin-right:8px; display:inline-block; vertical-align:middle; flex-shrink:0;"><path d="M9 2v6M15 2v6M12 17v5M5 8h14a1 1 0 0 1 1 1v4a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V9a1 1 0 0 1 1-1z"></path></svg>
               <span>Plugins</span>
             </button>
             <button class="sidebar-action-btn" id="nav-skills-btn">
@@ -185,10 +301,9 @@
 
         <!-- Playground & Debate Chats Group (Collapsible) -->
         <div class="nav-section" id="nav-section-playground" style="display:none; margin-top: 8px;">
-          <div class="section-hdr collapsible-hdr" id="hdr-section-playground" style="display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: var(--text-3); letter-spacing: 0.02em; font-weight: 600; margin-bottom: 4px; padding: 4px 6px; cursor: pointer; user-select: none; border-radius: 6px; transition: background 0.15s ease;">
+          <div class="section-hdr collapsible-hdr" id="hdr-section-playground" style="display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: var(--text-3); letter-spacing: 0.02em; font-weight: 400; margin-bottom: 4px; padding: 4px 6px; cursor: pointer; user-select: none; border-radius: 6px; transition: background 0.15s ease;">
             <div style="display: flex; align-items: center; gap: 6px;">
-              <i data-lucide="beaker" style="width:13px; height:13px; color: var(--accent, #2563eb); display:inline-block; vertical-align:middle; flex-shrink:0;"></i>
-              <span>Debates & Playgrounds</span>
+              <span>Playground</span>
               <span class="badge-count" id="playground-count" style="font-size: 10px; background: rgba(37, 99, 235, 0.1); color: var(--accent, #2563eb); padding: 1px 6px; border-radius: 10px; font-weight: 500;">0</span>
             </div>
             <i data-lucide="chevron-down" class="section-chevron" id="chevron-playground" style="width: 12px; height: 12px; transition: transform 0.2s ease;"></i>
@@ -287,6 +402,7 @@
           <!-- Premium smooth text fadeout overlay under top navigation bar bottom line -->
           <div class="chat-top-fadeout"></div>
 
+
           <!-- Scrollable message area -->
           <div id="chat-log">
             <div id="chat-col">
@@ -301,9 +417,40 @@
                 <!-- Input capsule (home position) -->
                 <div id="input-capsule" class="home-capsule" style="position: relative; display: flex; flex-direction: column; align-items: stretch; gap: 0; padding: 10px 16px;">
                   <div class="input-preview-area hidden" id="preview-area-home"></div>
-                  <div class="input-capsule-row" style="display: flex; flex-direction: row; align-items: center; gap: 10px;">
+
+                  <!-- Voice Waveform Recording Overlay -->
+                  <div class="voice-waveform-bar hidden" id="voice-bar-home">
+                    <button class="cap-icon-btn" id="btn-cancel-voice-home" title="Cancel Recording">
+                      <i data-lucide="x"></i>
+                    </button>
+                    <div class="voice-waveform-track">
+                      <div class="v-bars-wrapper" id="v-bars-home">
+                        <span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span>
+                        <span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span>
+                        <span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span>
+                        <span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span>
+                        <span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span>
+                        <span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span>
+                        <span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span>
+                      </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
+                      <button class="cap-icon-btn" id="btn-stop-voice-home" title="Stop Recording">
+                        <i data-lucide="square" style="fill:currentColor;"></i>
+                      </button>
+                      <button class="submit-btn" id="btn-send-voice-home" title="Send Message" style="background: var(--text, #0d0d0d) !important; color: var(--bg, #fff) !important;">
+                        <i data-lucide="arrow-up"></i>
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Textarea (top — grows upward) -->
+                  <textarea id="chat-input" rows="1" placeholder="How can I help you today?"></textarea>
+
+                  <!-- Buttons row (bottom — always pinned) -->
+                  <div class="input-capsule-row" id="input-row-home">
                     <!-- Attachment button (plus) -->
-                    <button class="cap-icon-btn" id="btn-attach-home" title="Attach" style="flex-shrink: 0;">
+                    <button class="cap-icon-btn" id="btn-attach-home" title="Attach">
                       <i data-lucide="plus"></i>
                     </button>
                     <!-- Faded Slash Command Tag Chip -->
@@ -312,44 +459,31 @@
                       <span class="slash-tag-close" style="cursor: pointer; opacity: 0.6; font-size: 13px; line-height: 1; padding: 0 1px;">&times;</span>
                     </div>
 
-                    <textarea id="chat-input" rows="1" placeholder="How can I help you today?" style="flex: 1; resize: none; outline: none; border: none; background: transparent; padding-top: 4px; min-height: 24px; height: 24px;"></textarea>
+                    <!-- Model Pill (center-left of button row) -->
+                    <button class="model-pill" id="single-model-pill">
+                      Hekki
+                      <i class="mi" data-lucide="chevron-down"></i>
+                    </button>
 
-                    <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
-                      <button class="model-pill">
-                        Hekki
-                        <i class="mi" data-lucide="chevron-down"></i>
+                    <div class="capsule-right" style="margin-left: auto;">
+                      <!-- Mic Placeholder / Voice Input Button -->
+                      <button class="cap-icon-btn" id="btn-voice" title="Voice Input">
+                        <i data-lucide="mic"></i>
                       </button>
                       <!-- Submit / Send Button -->
-                      <button class="submit-btn hidden" id="btn-submit-home" title="Send Message">
-                        <i data-lucide="arrow-right" style="width:15px; height:15px;"></i>
+                      <button class="submit-btn" id="btn-submit-home" title="Send Message">
+                        <i data-lucide="arrow-right"></i>
                       </button>
                       <button class="submit-btn hidden" id="btn-stop" title="Stop Recording" style="background: rgba(239, 68, 68, 0.08); color: #ef4444; border: none;">
-                        <i data-lucide="square" style="fill: currentColor; width: 10px; height: 10px;"></i>
+                        <i data-lucide="square" style="fill: currentColor;"></i>
                       </button>
                       <button class="submit-btn hidden" id="btn-stop-gen" title="Stop Generation" style="background: var(--text-primary, #09090b) !important; color: var(--bg, #ffffff) !important; border: none;">
-                        <i data-lucide="square" style="fill: currentColor; width: 10px; height: 10px;"></i>
+                        <i data-lucide="square" style="fill: currentColor;"></i>
                       </button>
                     </div>
                   </div>
                 </div>
-                <!-- Shortcuts -->
-                <div class="shortcuts">
-                  <button class="shortcut">
-                    <i data-lucide="search" style="width:14px; height:14px; margin-right:4px; display:inline-block; vertical-align:middle; flex-shrink:0;"></i> Research
-                  </button>
-                  <button class="shortcut">
-                    <i data-lucide="brain" style="width:14px; height:14px; margin-right:4px; display:inline-block; vertical-align:middle; flex-shrink:0;"></i> Strategize
-                  </button>
-                  <button class="shortcut">
-                    <i data-lucide="sparkles" style="width:14px; height:14px; margin-right:4px; display:inline-block; vertical-align:middle; flex-shrink:0;"></i> Create
-                  </button>
-                  <button class="shortcut">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-compose" style="width:14px; height:14px; margin-right:4px; display:inline-block; vertical-align:middle; flex-shrink:0;"><path d="M10 3H7a4 4 0 0 0-4 4v9a4 4 0 0 0 4 4h10a4 4 0 0 0 4-4v-4"></path><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"></path></svg> Write
-                  </button>
-                  <button class="shortcut">
-                    <i data-lucide="book-open" style="width:14px; height:14px; margin-right:4px; display:inline-block; vertical-align:middle; flex-shrink:0;"></i> Learn
-                  </button>
-                </div>
+
 
               </div>
               <!-- end #home-screen -->
@@ -365,10 +499,41 @@
             <div class="bottom-col">
               <div id="input-capsule-conv" style="display: flex; flex-direction: column; align-items: stretch; gap: 0; padding: 10px 16px;">
                 <div class="input-preview-area hidden" id="preview-area-conv"></div>
-                <div class="input-capsule-row" style="display: flex; flex-direction: row; align-items: center; gap: 10px;">
+
+                <!-- Voice Waveform Recording Overlay -->
+                <div class="voice-waveform-bar hidden" id="voice-bar-conv">
+                  <button class="cap-icon-btn" id="btn-cancel-voice-conv" title="Cancel Recording">
+                    <i data-lucide="x"></i>
+                  </button>
+                  <div class="voice-waveform-track">
+                    <div class="v-bars-wrapper" id="v-bars-conv">
+                      <span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span>
+                      <span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span>
+                      <span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span>
+                      <span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span>
+                      <span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span>
+                      <span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span>
+                      <span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span>
+                    </div>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
+                    <button class="cap-icon-btn" id="btn-stop-voice-conv" title="Stop Recording">
+                      <i data-lucide="square" style="fill:currentColor;"></i>
+                    </button>
+                    <button class="submit-btn" id="btn-send-voice-conv" title="Send Message" style="background: var(--text, #0d0d0d) !important; color: var(--bg, #fff) !important;">
+                      <i data-lucide="arrow-up"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Textarea (top — grows upward) -->
+                <textarea id="chat-input-conv" rows="1" placeholder="Write a message..."></textarea>
+
+                <!-- Buttons row (bottom — always pinned at bottom of capsule) -->
+                <div class="input-capsule-row" id="input-row-conv">
                   <!-- Attachment wrapper (left) -->
-                  <div class="capsule-left" style="display: flex; align-items: center; gap: 6px; flex-shrink: 0; position: relative;">
-                    <button class="cap-icon-btn" id="btn-attach-conv" title="Attach" style="flex-shrink: 0;">
+                  <div class="capsule-left">
+                    <button class="cap-icon-btn" id="btn-attach-conv" title="Attach">
                       <i data-lucide="plus"></i>
                     </button>
                     <!-- Faded Slash Command Tag Chip -->
@@ -378,26 +543,27 @@
                     </div>
                   </div>
 
-                  <!-- Textarea (middle) -->
-                  <textarea id="chat-input-conv" rows="1" placeholder="Write a message..." style="flex: 1; resize: none; outline: none; border: none; background: transparent; padding-top: 4px; min-height: 24px; height: 24px;"></textarea>
+                  <!-- Model Pill (center of button row) -->
+                  <button class="model-pill" id="conv-model-pill">
+                    Hekki
+                    <i class="mi" data-lucide="chevron-down"></i>
+                  </button>
 
-                  <!-- Actions and Model (right) -->
-                  <div class="capsule-right" style="display: flex; align-items: center; gap: 6px; flex-shrink: 0; position: relative;">
-                    <!-- Single Model Pill (default) -->
-                    <button class="model-pill" id="single-model-pill">
-                      Hekki
-                      <i class="mi" data-lucide="chevron-down"></i>
+                  <!-- Actions (right) -->
+                  <div class="capsule-right" style="margin-left: auto;">
+                    <!-- Mic Placeholder / Voice Input Button -->
+                    <button class="cap-icon-btn" id="btn-voice-conv" title="Voice Input">
+                      <i data-lucide="mic"></i>
                     </button>
-
                     <!-- Submit / Send Button -->
-                    <button class="submit-btn hidden" id="btn-submit-conv" title="Send Message">
-                      <i data-lucide="arrow-right" style="width:15px; height:15px;"></i>
+                    <button class="submit-btn" id="btn-submit-conv" title="Send Message">
+                      <i data-lucide="arrow-right"></i>
                     </button>
                     <button class="submit-btn hidden" id="btn-stop-conv" title="Stop Recording" style="background: rgba(239, 68, 68, 0.08); color: #ef4444; border: none;">
-                      <i data-lucide="square" style="fill: currentColor; width: 10px; height: 10px;"></i>
+                      <i data-lucide="square" style="fill: currentColor;"></i>
                     </button>
                     <button class="submit-btn hidden" id="btn-stop-gen-conv" title="Stop Generation" style="background: var(--text-primary, #09090b) !important; color: var(--bg, #ffffff) !important; border: none;">
-                      <i data-lucide="square" style="fill: currentColor; width: 10px; height: 10px;"></i>
+                      <i data-lucide="square" style="fill: currentColor;"></i>
                     </button>
                   </div>
                 </div>
@@ -429,8 +595,7 @@
       <!-- EVOLUTION LEDGER PANE (full page changelogs) -->
       <div id="changelog-pane"></div>
 
-      <!-- DEBATE PANE (Multi-Agent Debate Playground) — starts hidden, router shows it -->
-      <div id="debate-pane"></div>
+
 
       <!-- ═══ IMAGES GALLERY PANE ═══ -->
       <div id="images-pane"></div>
@@ -540,10 +705,17 @@
                   <span class="row-desc">Choose the typeface used across the entire interface.</span>
                 </div>
                 <select class="settings-select" id="settings-font-family">
-                  <option value="google-sans" selected>Google Sans (Google UI)</option>
-                  <option value="open-sans">Open Sans (Clean Modern)</option>
-                  <option value="system">ChatGPT Segoe UI (System Default)</option>
-                  <option value="anthropic">Claude Anthropic (anthropic-sans)</option>
+                  <option value="segoe-ui" selected>Segoe WPC / Segoe UI (Default)</option>
+                  <option value="google-sans">Google Sans</option>
+                  <option value="inter">Inter (Clean &amp; Crisp)</option>
+                  <option value="plus-jakarta">Plus Jakarta Sans (Modern UI)</option>
+                  <option value="outfit">Outfit (Geometric Display)</option>
+                  <option value="open-sans">Open Sans (Classic)</option>
+                  <option value="roboto">Roboto (Standard Sans)</option>
+                  <option value="system">System UI (Native OS)</option>
+                  <option value="jetbrains-mono">JetBrains Mono (Developer)</option>
+                  <option value="fira-code">Fira Code (Monospace)</option>
+                  <option value="anthropic">Editorial Serif</option>
                 </select>
               </div>
             </section>

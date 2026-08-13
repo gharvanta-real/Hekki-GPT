@@ -3,7 +3,7 @@
   display: none; /* User requested removal */
   width: 56px;
   background: var(--card);
-  border-right: 1px solid var(--border);
+  border-right: none !important;
 
   /* display: flex; */
   flex-direction: column;
@@ -67,10 +67,10 @@ body.dark .dock-item {
 .dock-item:hover {
   background: var(--hover);
   color: var(--text);
-  transform: scale(1.08);
+  transform: none;
 }
 .dock-item:active {
-  transform: scale(0.92);
+  transform: none;
 }
 .dock-item.active {
   background: var(--hover);

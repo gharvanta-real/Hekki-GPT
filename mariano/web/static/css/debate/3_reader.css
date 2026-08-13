@@ -24,7 +24,7 @@
 }
 
 .doc-viewer-btn {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
   color: var(--text-secondary);
   padding: 4px 12px;
@@ -188,7 +188,7 @@
 
 .doc-sec-sources {
   margin-top: 10px;
-  font-size: 10px;
+  font-size: 11px;
   color: var(--text-3);
 }
 
@@ -392,7 +392,7 @@
   border-radius: 20px; /* pill round shape */
   padding: 4px 14px;
   color: var(--text-secondary);
-  font-size: 11px;
+  font-size: 12px;
   font-family: var(--font);
   cursor: pointer;
   transition: background-color 0.12s, color 0.12s, border-color 0.12s;

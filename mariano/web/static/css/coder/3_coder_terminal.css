@@ -96,7 +96,7 @@
   margin: 5px 0;
   padding: 0;
   font-family: var(--font);
-  font-size: var(--fs-sm);
+  font-size: 13px;
 }
 .coder-tool-header {
   display: flex;
@@ -112,20 +112,20 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 13px;
+  font-size: 14px;
 }
 .coder-tool-detail {
   font-weight: 400;
   color: var(--text-3);
-  font-size: 13px;
+  font-size: 14px;
 }
 .coder-tool-status {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-3);
   font-weight: 400;
 }
 .coder-tool-chevron {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--text-3);
   margin-left: 2px;
 }
@@ -171,7 +171,7 @@
   background: rgba(255, 255, 255, 0.08);
   padding: 1px 5px;
   border-radius: 3px;
-  font-size: 11px;
+  font-size: 12px;
   font-family: var(--font-mono), monospace;
   color: var(--text-primary);
   font-weight: 400;
@@ -248,7 +248,7 @@
   margin: 5px 0;
   padding: 0;
   font-family: var(--font), system-ui, -apple-system, sans-serif;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .coder-thought-header {
@@ -266,17 +266,17 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .coder-thought-status {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-3);
   font-weight: 400;
 }
 
 .coder-thought-chevron {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--text-3);
   margin-left: 2px;
 }
@@ -288,7 +288,7 @@
 
 .coder-thought-text {
   font-family: var(--font), system-ui, -apple-system, sans-serif;
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.5;
   color: var(--text-primary);
   white-space: pre-wrap;
@@ -299,7 +299,7 @@
 }
 
 .coder-thought-preview {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--text-primary);
   opacity: 0.75;
   padding: 2px 0 0;
@@ -309,7 +309,7 @@
 
 /* ── Codex-style 3-layer execution feed styles ── */
 .action-label {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-3);
   font-family: var(--font);
   margin: 10px 0 4px 0;
@@ -318,7 +318,7 @@
   opacity: 0.85;
 }
 .finding-label {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-2);
   font-family: var(--font);
   margin: 2px 0 10px 0;

@@ -16,161 +16,82 @@
   display: block;
 }
 
-/* === ATTACH DROPDOWN MENU (Claude Style) === */
-.attach-dropdown,
+/* === SHARED POPUP DROPDOWN SYSTEM (doc-dropdown, slash-popup, local-model) ===
+   NOTE: attach-dropdown styles now live in 6a_attach_dropdown.css
+   ======================================================================== */
+.dropdown-menu,
+.doc-dropdown-menu,
 .hekki-slash-popup {
   position: absolute;
-  bottom: 44px; /* Rendered above the plus button */
+  bottom: 44px;
   left: 12px;
-  background: var(--card);
+  background: var(--card) !important;
+  opacity: 1 !important;
   border: 1px solid var(--border) !important;
-  border-radius: 12px;
+  border-radius: 12px !important;
+  padding: 6px !important;
   box-shadow: none !important;
-
-  padding: 6px;
   z-index: 10000;
   display: flex;
   flex-direction: column;
-  min-width: 230px;
-  animation: fadeIn 0.12s ease-out;
+  min-width: 240px;
+  box-sizing: border-box;
+  animation: none !important;
 }
 
-/* Slash popup: fixed positioning overrides (inline style handles the rest) */
-.hekki-slash-popup {
-  position: fixed;
-  bottom: auto;
-  left: auto;
-  z-index: 999999;
-  min-width: 250px;
-  max-width: 320px;
-}
-
-.attach-dropdown-item,
+/* Generic dropdown items (non-attach) */
 .doc-dropdown-menu .dropdown-item,
 .dropdown-menu .dropdown-item,
 .dropdown-item {
-  height: 34px !important;
-  border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
-  background: transparent !important;
-  color: var(--text-2) !important;
-  font-family: var(--font) !important;
-  font-size: 13px !important;
-  font-weight: 400 !important;
-  padding: 0 10px !important;
   display: flex !important;
   align-items: center !important;
   gap: 10px !important;
+  height: 36px !important;
+  padding: 8px 10px !important;
+  border-radius: 6px !important;
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
   cursor: pointer !important;
-  border-radius: 8px !important;
-  text-align: left !important;
+  color: var(--text) !important;
+  font-size: 13px !important;
+  font-weight: 400 !important;
+  font-family: var(--font) !important;
+  transition: background 0.12s ease !important;
   width: 100% !important;
-  transition: background 0.12s ease, color 0.12s ease !important;
-  position: relative;
   box-sizing: border-box !important;
+  text-align: left !important;
+  opacity: 1 !important;
 }
 
-/* Compact model select items */
-.model-dropdown .attach-dropdown-item {
-  font-size: 12px !important;
-  height: 30px !important;
-  padding: 0 8px !important;
-}
-
-/* Auto height for permission selection items */
-.permission-dropdown .attach-dropdown-item {
-  height: auto !important;
-  padding: 6px 10px !important;
-}
-
-.attach-dropdown-item:hover,
 .doc-dropdown-menu .dropdown-item:hover,
 .dropdown-menu .dropdown-item:hover,
-.dropdown-item:hover {
+.dropdown-item:hover,
+#local-model-dropdown button:hover {
   background: var(--hover) !important;
   color: var(--text) !important;
+  opacity: 1 !important;
 }
 
-.attach-dropdown-item .lucide,
 .doc-dropdown-menu .dropdown-item .lucide,
 .dropdown-item .lucide,
 .dropdown-item i,
 .dropdown-item svg {
   width: 15px !important;
   height: 15px !important;
-  color: var(--text-3) !important;
+  color: var(--text-2) !important;
+  flex-shrink: 0;
+  opacity: 1 !important;
   transition: color 0.12s ease !important;
 }
 
-.attach-dropdown-item:hover .lucide,
 .doc-dropdown-menu .dropdown-item:hover .lucide,
 .dropdown-item:hover .lucide,
 .dropdown-item:hover i,
 .dropdown-item:hover svg {
   color: var(--text) !important;
-}
-
-.attach-dropdown-item .shortcut-hint {
-  margin-left: auto;
-  font-size: var(--fs-xs);     /* 11px */
-  color: var(--text-3);
-  font-weight: normal;
-}
-
-.attach-dropdown-sep {
-  height: 1px;
-  background: var(--border);
-  margin: 5px 6px;
-}
-
-.attach-dropdown-item .submenu-arrow {
-  margin-left: auto;
-  color: var(--text-3);
-}
-
-/* Check icon status on items like web search & permission mode */
-.attach-dropdown-item .lucide-check-icon {
-  margin-left: auto;
-  color: var(--text-2) !important;
-  width: 14px;
-  height: 14px;
-}
-
-/* === SUB-DROPDOWN MENU FLYOUT (Matches Main Dropdown Typo & Spacing Exactly) === */
-.attach-sub-dropdown {
-  position: absolute;
-  bottom: -6px;
-  left: calc(100% + 8px);
-  background: var(--card);
-  border: 1px solid var(--border) !important;
-  border-radius: 12px;
-  box-shadow: none !important;
-
-  padding: 6px;
-  z-index: 10002;
-  display: flex;
-  flex-direction: column;
-  min-width: 260px !important;
-  width: max-content !important;
-  animation: fadeIn 0.12s ease-out;
-}
-
-.permission-sub-menu {
-  min-width: 260px !important;
-}
-
-.permission-sub-menu .attach-dropdown-item {
-  min-height: 36px !important;
-  height: auto !important;
-  padding: 6px 12px !important;
-  font-size: 12.5px !important;
-  font-weight: 400 !important;
-  white-space: nowrap !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 8px !important;
-  margin: 1px 0 !important;
+  opacity: 1 !important;
 }
 
 /* === SEARCH HISTORY MODAL === */

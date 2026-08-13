@@ -190,7 +190,7 @@ export class LiveCanvasEngine {
         ${modeBtnHtml}
         
         <div class="canvas-menu-wrapper" style="position:relative;">
-          <button class="canvas-btn" id="canvas-btn-more" title="More Options">
+          <button class="canvas-btn-icon" id="canvas-btn-more" title="More Options">
             <i data-lucide="more-vertical" style="width:14px;height:14px;"></i>
           </button>
           
@@ -212,7 +212,7 @@ export class LiveCanvasEngine {
           </div>
         </div>
 
-        <button class="canvas-btn canvas-btn-close" id="canvas-btn-close" title="Close Canvas">
+        <button class="canvas-btn-icon canvas-btn-close" id="canvas-btn-close" title="Close Canvas">
           <i data-lucide="x" style="width:14px;height:14px;"></i>
         </button>
       </div>

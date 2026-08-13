@@ -34,48 +34,41 @@ function _buildLayout() {
 
       <!-- Collapsible Sidebar (Left Side, Full Height) -->
       <div class="debate-sidebar" style="padding-top: 0;">
-        <!-- Nav Header (With Hekki Logo on Left, Search + Collapsible Toggle on Right when Open) -->
-        <div class="nav-header" style="display: flex; align-items: center; justify-content: space-between; height: 48px; padding: 0 12px; flex-shrink: 0;">
-          <div class="nav-header-brand" style="display: flex; align-items: center; gap: 8px; flex: 1;">
-            <div class="nav-header-title" style="font-weight: 600; font-size: 16px; color: var(--text-primary); margin: 0; padding: 0;">
-              Hekki
-            </div>
-          </div>
-          <div style="display: flex; align-items: center; gap: 4px;">
-            <button class="icon-btn" id="btn-debate-sidebar-back" title="Back to Chat" style="border: none; background: transparent; cursor: pointer;">
-              <i data-lucide="chevron-left" style="width: 15px; height: 15px;"></i>
+        <!-- Nav Header (Collapse icon left, Back/Forward right) -->
+        <div class="nav-header" style="display: flex; align-items: center; justify-content: space-between; height: 32px; padding: 0 10px; flex-shrink: 0;">
+          <button class="icon-btn" id="btn-debate-sidebar-toggle" title="Toggle Sidebar" style="border: none; background: transparent; cursor: pointer; margin: 0;">
+            <i data-lucide="panel-left" style="width: 16px; height: 16px;"></i>
+          </button>
+          <div style="display: flex; align-items: center; gap: 2px;">
+            <button class="icon-btn" id="btn-debate-sidebar-back" title="Go Back" style="border: none; background: transparent; cursor: pointer;">
+              <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i>
             </button>
-            <button class="icon-btn" id="btn-debate-search-nav" title="Search Chat History" style="border: none; background: transparent; cursor: pointer;">
-              <i data-lucide="search" style="width: 15px; height: 15px;"></i>
-            </button>
-            <button class="icon-btn" id="btn-debate-sidebar-toggle" title="Toggle Sidebar" style="border: none; background: transparent; cursor: pointer;">
-              <i data-lucide="panel-left" style="width: 15px; height: 15px;"></i>
+            <button class="icon-btn" id="btn-debate-nav-forward" title="Go Forward" style="border: none; background: transparent; cursor: pointer;">
+              <i data-lucide="arrow-right" style="width: 16px; height: 16px;"></i>
             </button>
           </div>
         </div>
 
         <!-- Scrollable Inner Content Area -->
-        <div class="debate-sidebar-inner" style="padding-top: 0;">
-          <!-- Section Header -->
-          <div class="debate-sidebar-section-label" style="margin-top: 0; padding-top: 0;">Actions</div>
+        <div class="debate-sidebar-inner" style="padding-top: 0; gap: 0;">
 
           <!-- Sidebar Controls List -->
-          <div class="debate-sidebar-controls-list">
+          <div class="debate-sidebar-controls-list" style="gap: 0; margin-top: 0;">
             <button class="debate-list-btn" id="btn-sidebar-new-debate" title="New Debate">
-              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-compose" style="width:15px; height:15px; margin-right:8px; display:inline-block; vertical-align:middle; flex-shrink:0;"><path d="M10 3H7a4 4 0 0 0-4 4v9a4 4 0 0 0 4 4h10a4 4 0 0 0 4-4v-4"></path><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"></path></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="icon icon-compose" style="width:16px; height:16px; margin-right:8px; display:inline-block; vertical-align:middle; flex-shrink:0;"><path d="M10 3H7a4 4 0 0 0-4 4v9a4 4 0 0 0 4 4h10a4 4 0 0 0 4-4v-4"></path><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"></path></svg>
               <span>New Debate</span>
             </button>
             <button class="debate-list-btn" id="btn-sidebar-research-directory" title="Research Directory">
-              <i data-lucide="book-open" style="width: 15px; height: 15px; margin-right: 8px;"></i>
+              <i data-lucide="book-open" style="width:16px; height:16px; margin-right:8px; display:inline-block; vertical-align:middle; flex-shrink:0;"></i>
               <span>Research Directory</span>
             </button>
             <button class="debate-list-btn" id="btn-sidebar-reset" title="Reset Debate Room">
-              <i data-lucide="rotate-ccw" style="width: 15px; height: 15px; margin-right: 8px;"></i>
+              <i data-lucide="rotate-ccw" style="width:16px; height:16px; margin-right:8px; display:inline-block; vertical-align:middle; flex-shrink:0;"></i>
               <span>Reset Room</span>
             </button>
           </div>
 
-          <div class="debate-sidebar-divider" style="margin: 0 0 2px 0;"></div>
+          <div class="debate-sidebar-divider" style="margin: 4px 0 2px 0;"></div>
 
           <!-- Participants Section -->
           <details class="debate-sidebar-details">

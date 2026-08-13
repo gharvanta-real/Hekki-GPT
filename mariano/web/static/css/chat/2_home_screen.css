@@ -43,76 +43,196 @@
   letter-spacing: normal !important;
 }
 
-/* ── HOME WELCOME INPUT CAPSULE (Centered on dashboard) ── */
-#input-capsule {
+/* ════════════════════════════════════════════════════════════════════════════
+   DYNAMIC DUAL-STATE INPUT CAPSULE (Single-Line Pill Bar <-> Multi-Line Card)
+   ════════════════════════════════════════════════════════════════════════════ */
+
+/* Frameless Flat Input Capsule (Border & Outline Completely Removed) */
+#input-capsule,
+#input-capsule-conv {
   position: relative;
   width: 100%;
+  background: var(--input-bg, #F4F4F6);
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  transition: border-radius 0.22s cubic-bezier(0.4, 0, 0.2, 1), padding 0.22s cubic-bezier(0.4, 0, 0.2, 1), min-height 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body.light #input-capsule,
+body.light #input-capsule-conv,
+:root[data-theme="light"] #input-capsule,
+:root[data-theme="light"] #input-capsule-conv,
+body.dark #input-capsule,
+body.dark #input-capsule-conv,
+:root[data-theme="dark"] #input-capsule,
+:root[data-theme="dark"] #input-capsule-conv {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+#input-capsule:hover,
+#input-capsule-conv:hover,
+#input-capsule:focus-within,
+#input-capsule-conv:focus-within {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+#input-capsule {
   max-width: 660px;
   margin-left: auto;
   margin-right: auto;
-  background: var(--input-bg, #F4F4F6);
-  border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
-  border-radius: 28px !important;
-  padding: 3px 10px 3px;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
   margin-bottom: 20px;
 }
 
-#chat-input, #agent-task-input {
-  width: 100%;
-  border: none !important;
-  background: transparent;
-  color: var(--text);
-  font-family: var(--font);
-  font-size: var(--fs-base);
-  resize: none;
-  outline: none !important;
-  line-height: 1.6;
-  min-height: 18px;
-  max-height: 200px;
-  overflow-y: hidden;
-}
-#chat-input::placeholder, #agent-task-input::placeholder {
-  color: var(--text-3);
-  font-size: var(--fs-base);
+/* ── 1. SINGLE-LINE PILL BAR MODE (Default Empty / Single-line state) ── */
+#input-capsule:not(.is-multiline),
+#input-capsule-conv:not(.is-multiline),
+.is-single-line#input-capsule,
+.is-single-line#input-capsule-conv {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  border-radius: 23px !important;
+  padding: 4px 8px 4px 10px !important;
+  min-height: 46px !important;
+  height: 46px !important;
+  gap: 6px !important;
 }
 
+/* In single-line mode, input-capsule-row becomes display:contents so children flex directly with parent */
+#input-capsule:not(.is-multiline) .input-capsule-row,
+#input-capsule-conv:not(.is-multiline) .input-capsule-row,
+.is-single-line .input-capsule-row {
+  display: contents !important;
+}
 
-/* ── BOTTOM CONVERSATION INPUT CAPSULE (Always pinned at bottom) ── */
-#input-capsule-conv {
-  width: 100%;
-  background: var(--input-bg, #F4F4F6);
+/* 1. Attach (+) button on FAR-LEFT */
+#input-capsule:not(.is-multiline) #btn-attach-home,
+#input-capsule-conv:not(.is-multiline) #btn-attach-conv,
+.is-single-line #btn-attach-home,
+.is-single-line #btn-attach-conv {
+  order: 1 !important;
+  flex-shrink: 0 !important;
+  margin-right: 2px !important;
+}
+
+/* 2. Textarea in CENTER */
+#input-capsule:not(.is-multiline) #chat-input,
+#input-capsule-conv:not(.is-multiline) #chat-input-conv,
+.is-single-line #chat-input,
+.is-single-line #chat-input-conv {
+  order: 2 !important;
+  flex: 1 !important;
+  width: auto !important;
+  height: 26px !important;
+  min-height: 26px !important;
+  max-height: 26px !important;
+  line-height: 26px !important;
+  padding: 0 6px !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  white-space: nowrap !important;
+  resize: none !important;
   border: none !important;
   outline: none !important;
-  box-shadow: none !important;
-  border-radius: 28px !important;
-  padding: 2px 10px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 6px;
+  background: transparent !important;
+  color: var(--text) !important;
+  font-family: var(--font) !important;
+  font-size: var(--fs-base) !important;
+  scrollbar-width: none !important; /* Firefox */
+  -ms-overflow-style: none !important; /* IE/Edge */
 }
- 
-#chat-input-conv {
-  flex: 1;
-  border: none;
-  background: transparent;
-  color: var(--text);
-  font-family: var(--font);
-  font-size: var(--fs-base);
-  resize: none;
-  outline: none;
-  line-height: 1.6;
-  min-height: 24px;
-  max-height: 200px;
-  overflow-y: hidden;
-  padding-top: 4px;
+
+#input-capsule:not(.is-multiline) #chat-input::-webkit-scrollbar,
+#input-capsule-conv:not(.is-multiline) #chat-input-conv::-webkit-scrollbar,
+.is-single-line #chat-input::-webkit-scrollbar,
+.is-single-line #chat-input-conv::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
-#chat-input-conv::placeholder {
+
+/* 3. Slash tag chip (if visible) */
+#input-capsule:not(.is-multiline) .slash-tag-chip,
+#input-capsule-conv:not(.is-multiline) .slash-tag-chip,
+.is-single-line .slash-tag-chip {
+  order: 3 !important;
+  flex-shrink: 0 !important;
+}
+
+/* 4. Model selector pill on RIGHT */
+#input-capsule:not(.is-multiline) .model-pill,
+#input-capsule-conv:not(.is-multiline) .model-pill,
+.is-single-line .model-pill {
+  order: 4 !important;
+  flex-shrink: 0 !important;
+}
+
+/* 5. Mic & Send buttons on FAR-RIGHT */
+#input-capsule:not(.is-multiline) .capsule-right,
+#input-capsule-conv:not(.is-multiline) .capsule-right,
+.is-single-line .capsule-right {
+  order: 5 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  flex-shrink: 0 !important;
+  margin-left: 0 !important;
+}
+
+/* ── 2. MULTI-LINE CARD MODE (Expanded Multi-line / Attachment state) ── */
+#input-capsule.is-multiline,
+#input-capsule-conv.is-multiline {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  justify-content: flex-start !important;
+  border-radius: 18px !important;
+  padding: 10px 14px 8px !important;
+  min-height: 84px !important;
+  height: auto !important;
+  gap: 6px !important;
+}
+
+#input-capsule.is-multiline #chat-input,
+#input-capsule-conv.is-multiline #chat-input-conv {
+  width: 100% !important;
+  flex: none !important;
+  min-height: 36px !important;
+  max-height: 200px !important;
+  line-height: 1.6 !important;
+  padding: 0 !important;
+  overflow-y: auto !important;
+  white-space: pre-wrap !important;
+  resize: none !important;
+  border: none !important;
+  outline: none !important;
+  background: transparent !important;
+  color: var(--text) !important;
+  font-family: var(--font) !important;
+  font-size: var(--fs-base) !important;
+  order: 1 !important;
+}
+
+#input-capsule.is-multiline .input-capsule-row,
+#input-capsule-conv.is-multiline .input-capsule-row {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+  margin-top: 4px !important;
+  order: 2 !important;
+}
+
+#chat-input::placeholder,
+#chat-input-conv::placeholder,
+#agent-task-input::placeholder {
   color: var(--text-3);
   font-size: var(--fs-base);
 }
@@ -139,27 +259,57 @@
 }
 
 
-/* Capsule buttons — standalone circular background fill */
-.cap-icon-btn {
+/* 1. Plus (+) Attach button — matches Send button background exactly */
+#btn-attach-home,
+#btn-attach-conv,
+#btn-attach {
   width: 32px !important;
   height: 32px !important;
   border: none !important;
   outline: none !important;
   box-shadow: none !important;
-  background: var(--hover, rgba(0, 0, 0, 0.06)) !important;
-  color: var(--text) !important;
+  background: var(--hover) !important;
+  color: var(--text-2) !important;
   cursor: pointer;
   border-radius: 50% !important;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
   flex-shrink: 0 !important;
-  transition: background 0.15s ease, color 0.15s ease, transform 0.12s ease !important;
+  transition: background 0.15s ease, color 0.15s ease !important;
 }
-.cap-icon-btn:hover {
-  background: var(--card, rgba(0, 0, 0, 0.12)) !important;
+#btn-attach-home:hover,
+#btn-attach-conv:hover,
+#btn-attach:hover {
+  background: var(--hover-2) !important;
   color: var(--text) !important;
-  transform: scale(1.05);
+}
+
+/* 2. Mic button — NO background fill by default */
+#btn-voice-home,
+#btn-voice-conv,
+#btn-voice {
+  width: 32px !important;
+  height: 32px !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  color: var(--text-2) !important;
+  cursor: pointer;
+  border-radius: 50% !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+  transition: background 0.15s ease, color 0.15s ease !important;
+}
+#btn-voice-home:hover,
+#btn-voice-conv:hover,
+#btn-voice:hover {
+  background: var(--hover) !important;
+  color: var(--text) !important;
 }
 .cap-icon-btn i,
 .cap-icon-btn svg,
@@ -210,11 +360,10 @@
   box-shadow: 0 1px 2px rgba(0,0,0,0.08);
 }
 
-/* Model Selector (Clean Normal Flat Dropdown Trigger with Subtle Hover/Click Highlight) */
-.model-pill,
-#input-capsule-conv .model-pill {
-  height: 26px !important;
-  padding: 0 10px !important;
+
+.model-pill {
+  height: 28px !important;
+  padding: 0 6px !important;
   border: none !important;
   outline: none !important;
   box-shadow: none !important;
@@ -223,29 +372,37 @@
   font-size: 13px !important;
   font-weight: 400 !important;
   color: var(--text-2) !important;
+  opacity: 1 !important;
   cursor: pointer;
-  border-radius: 20px !important;
+  border-radius: 6px !important;
   display: flex !important;
   align-items: center !important;
-  gap: 3px !important;
+  gap: 5px !important;
   transition: background 0.12s ease, color 0.12s ease !important;
+}
+.model-pill span {
+  font-size: 13px !important;
+  color: var(--text-2) !important;
+  opacity: 1 !important;
+  font-weight: 400 !important;
 }
 .model-pill:hover,
 .model-pill:active,
-.model-pill.active,
-#input-capsule-conv .model-pill:hover,
-#input-capsule-conv .model-pill:active {
+.model-pill.active {
   background: var(--hover) !important;
   color: var(--text) !important;
   opacity: 1 !important;
+}
+.model-pill:hover span {
+  color: var(--text) !important;
 }
 .model-pill .mi,
 .model-pill i,
 .model-pill svg,
 .model-pill .lucide {
-  font-size: 13px !important;
-  width: 14px !important;
-  height: 14px !important;
+  font-size: 15px !important;
+  width: 15px !important;
+  height: 15px !important;
   color: var(--text-3) !important;
   transition: color 0.12s ease !important;
 }
@@ -339,15 +496,9 @@
   animation: blink 1.2s step-end infinite;
 }
 
-/* === SHORTCUTS (Horizontal grid below capsule) === */
+/* === SHORTCUTS (Disabled/Hidden) === */
 .shortcuts {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 8px;
-  margin-top: 14px;
-  max-width: 660px;
-  width: 100%;
+  display: none !important;
 }
 .shortcut {
   height: 32px;
@@ -398,5 +549,63 @@ body.oled .shortcut:hover,
 :root[data-theme="oled"] .shortcut:hover {
   background: #333332 !important;
   color: var(--text) !important;
+}
+
+/* === VOICE WAVEFORM RECORDING OVERLAY === */
+.voice-waveform-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  height: 36px;
+  padding: 0 2px;
+}
+.voice-waveform-bar.hidden {
+  display: none !important;
+}
+
+.voice-waveform-track {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  height: 32px;
+  overflow: hidden;
+  position: relative;
+  mask-image: linear-gradient(to right, transparent 0px, black 24px, black 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0px, black 24px, black 100%);
+}
+
+.v-bars-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2px;
+  width: 100%;
+  height: 32px;
+  flex: 1;
+}
+
+.v-bar {
+  flex: 1;
+  min-width: 2px;
+  max-width: 3.5px;
+  min-height: 3px;
+  max-height: 26px;
+  height: 3px;
+  background: var(--text-3, #71717a);
+  border-radius: 2px;
+  transition: height 0.04s ease, background 0.1s ease;
+  opacity: 0.55;
+}
+
+.v-bar.active {
+  background: var(--text, #ffffff);
+  opacity: 1;
+}
+
+.v-bar.active {
+  background: var(--text, #ffffff);
 }
 

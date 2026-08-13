@@ -11,51 +11,58 @@
 }
 
 :root {
-  --bg:          #FCFCFC; /* soft off-white canvas #FCFCFC for main chat page */
-  --card:        #FCFCFC;
-  --input-bg:    #F4F4F6; /* soft light neutral tint so input capsule stands out cleanly from bg */
-  --sidebar-bg:  #FFFFFF; /* pure clean white #FFFFFF for left sidebars */
-  --border:      #E8E8E6; 
-  --hover:       #EEEEEC;
+  --bg:          #F7F7F9; /* soft off-white canvas for main chat page */
+  --card:        #F7F7F9;
+  --input-bg:    #FFFFFF; /* clean crisp white input capsule fill on off-white canvas */
+  --sidebar-bg:  #F0F2F5; /* soft light neutral slate grey for left sidebars */
+  --border:      #E4E7EB; 
+  --hover:       #E4E7EB;
 
-  --text:        #0D0D0D;
+  --text:        #141414;
   --text-primary: var(--text);
   --text-2:      #52525b;
   --text-secondary: var(--text-2);
   --text-3:      #8e8e93;
+  --link-hover:  #2563eb;
 
   --orange:      #d97706;
   --blue:        #18181b;
   --green:       #16a34a;
 
-  --font:        "Google Sans", "Google Sans Flex", "Open Sans", -apple-system-body, ui-sans-serif, -apple-system, "system-ui", "Segoe UI", Helvetica, Arial, sans-serif;
+  --font:        "Segoe WPC", "Segoe UI", -apple-system-body, ui-sans-serif, -apple-system, "system-ui", "Google Sans", sans-serif;
   --font-google-sans: "Google Sans", "Google Sans Flex", sans-serif;
+  --font-segoe-ui:    "Segoe WPC", "Segoe UI", sans-serif;
+  --font-inter:       "Inter", sans-serif;
+  --font-plus-jakarta: "Plus Jakarta Sans", sans-serif;
+  --font-outfit:      "Outfit", sans-serif;
   --font-open-sans:   "Open Sans", sans-serif;
+  --font-roboto:      "Roboto", sans-serif;
+  --font-jetbrains-mono: "JetBrains Mono", monospace;
+  --font-fira-code:   "Fira Code", monospace;
   --font-apple-system-body: var(--font);
   --font-openai-sans:       var(--font);
   --font-sans:   var(--font);
   --font-serif:  var(--font);
   --font-mono:   ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
-  --font-ai:     var(--font);
+  --font-ai:     "Segoe WPC", "Segoe UI", sans-serif;
 
   /* ── CHATGPT PEEK TYPOGRAPHY RAW TOKENS ── */
-  --text-9:   9px;
-  --text-12:  12px;
-  --text-14:  14px;
-  --text-16:  16px;
-  --text-18:  18px;
-  --text-24:  24px;
+  --text-12: 12px;
+  --text-14: 14px;
+  --text-16: 16px;
+  --text-18: 18px;
+  --text-24: 24px;
   --tracking-neg-0-27: -0.27px;
 
-  /* ── CHATGPT TYPOGRAPHY SCALE ── */
-  --fs-xs:   12px;   /* timestamps, meta                  */
-  --fs-sm:   13px;   /* code, monospace (Consolas - 400)  */
-  --fs-base: 14.5px; /* sidebar items (Segoe UI - 400)    */
-  --fs-md:   14.5px; /* inputs, buttons (Segoe UI - 500)  */
-  --fs-lg:   16px;   /* AI response body (Segoe UI - 400) */
-  --fs-xl:   18px;   /* section headers (Segoe UI - 600)  */
-  --fs-2xl:  20px;   /* sub-headings, h2                  */
-  --fs-3xl:  24px;   /* main page titles                  */
+  /* ── PEEK TYPOGRAPHY SCALE TOKENS ── */
+  --fs-xs:   12px;   /* captions, timestamps, meta        */
+  --fs-sm:   15px;   /* code, monospace (15px)            */
+  --fs-base: 14px;   /* sidebar items (14px)              */
+  --fs-md:   15px;   /* inputs, buttons                   */
+  --fs-lg:   18px;   /* large body, section headers       */
+  --fs-xl:   18px;   /* section titles                    */
+  --fs-2xl:  24px;   /* h1 headings                       */
+  --fs-3xl:  24px;   /* main page hero titles             */
 
   --radius-sm:   6px;
   --radius-md:   8px;
@@ -71,102 +78,113 @@
   --shadow-lg:   none;
 }
 
-/* === CHATGPT PEEK SEMANTIC TYPOGRAPHY CLASSES (Full 22 Token Suite) === */
+/* Global Soft Bold Rule — All strong/b elements render as clean medium (500) rather than heavy 700 */
+strong, b {
+  font-weight: 500 !important;
+}
+
+/* === PEEK FULL 23 SEMANTIC TYPOGRAPHY STYLES (Dynamic font family: var(--font)) === */
 .type-heading {
-  font-family: var(--font-apple-system-body);
+  font-family: var(--font);
   font-size: var(--text-24);
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1.50;
 }
+
 .type-h2 {
-  font-family: var(--font-apple-system-body);
+  font-family: var(--font);
   font-size: var(--text-24);
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1.33;
 }
+
 .type-h1 {
-  font-family: var(--font-apple-system-body);
+  font-family: var(--font);
   font-size: var(--text-24);
   font-weight: 400;
   line-height: 1.17;
 }
-.type-h3 {
-  font-family: var(--font-apple-system-body);
-  font-size: var(--text-18);
-  font-weight: 600;
-  line-height: 1.56;
-}
+
 .type-large-body {
-  font-family: var(--font-openai-sans);
+  font-family: var(--font);
   font-size: var(--text-18);
-  font-weight: 600;
-  line-height: 1.56;
+  font-weight: 500;
+  line-height: 1.44;
   letter-spacing: var(--tracking-neg-0-27);
 }
-.type-button {
-  font-family: var(--font-apple-system-body);
-  font-size: var(--text-18);
-  font-weight: 400;
-  line-height: 1.56;
-}
+
 .type-body, .type-body-16, .type-body-16-400 {
-  font-family: var(--font-apple-system-body);
+  font-family: var(--font);
   font-size: var(--text-16);
   font-weight: 400;
   line-height: 1.50;
 }
+
+.type-button {
+  font-family: var(--font);
+  font-size: var(--text-16);
+  font-weight: 400;
+  line-height: 1.50;
+}
+
 .type-button-16 {
-  font-family: var(--font-apple-system-body);
+  font-family: var(--font);
   font-size: var(--text-16);
   font-weight: 400;
-  line-height: 1.50;
+  line-height: 1.63;
 }
+
 .type-h2-14 {
-  font-family: var(--font-apple-system-body);
+  font-family: var(--font);
   font-size: var(--text-14);
   font-weight: 500;
   line-height: 1.43;
 }
+
 .type-small-body, .type-button-14 {
-  font-family: var(--font-apple-system-body);
+  font-family: var(--font);
   font-size: var(--text-14);
   font-weight: 500;
   line-height: 1.43;
 }
+
 .type-small-body-14, .type-small-body-14-400, .type-button-14-400, .type-link {
-  font-family: var(--font-apple-system-body);
+  font-family: var(--font);
   font-size: var(--text-14);
   font-weight: 400;
   line-height: 1.43;
 }
+
 .type-caption {
-  font-family: var(--font-apple-system-body);
+  font-family: var(--font);
   font-size: var(--text-12);
   font-weight: 500;
   line-height: 1.33;
 }
+
 .type-caption-12, .type-caption-12-400 {
-  font-family: var(--font-apple-system-body);
+  font-family: var(--font);
   font-size: var(--text-12);
   font-weight: 400;
-  line-height: 1.33;
+  line-height: 1.43;
 }
 
 /* === EXPLICIT LIGHT THEME OVERRIDES (Unified #FCFCFC Main Canvas & Sidebar) === */
 body.light,
 :root[data-theme="light"] {
-  --bg:          #FCFCFC !important;
-  --card:        #FCFCFC !important;
-  --input-bg:    #F4F4F6 !important;
-  --sidebar-bg:  #FCFCFC !important;
-  --border:      #E8E8E6 !important;
-  --hover:       #EEEEEC !important;
+  --bg:          #F7F7F9 !important;
+  --card:        #F7F7F9 !important;
+  --input-bg:    #FFFFFF !important;
+  --sidebar-bg:  #F0F2F5 !important;
+  --border:      #E4E7EB !important;
+  --hover:       #E4E7EB !important;
 
-  --text:        #0D0D0D !important;
+  --text:        #141414 !important;
   --text-primary: var(--text) !important;
   --text-2:      #52525b !important;
   --text-secondary: var(--text-2) !important;
   --text-3:      #8e8e93 !important;
+  --link-hover:  #2563eb !important;
 }
 
 /* System Dark Mode Auto-Detection (Only when user hasn't selected Light mode) */
@@ -175,7 +193,7 @@ body.light,
     --bg:          #1F1F1E;
     --card:        #2C2C2B;
     --input-bg:    #212121;
-    --sidebar-bg:  #1F1F1E;
+    --sidebar-bg:  #181817;
     --border:      #333332;
     --hover:       #2A2A29;
 
@@ -184,41 +202,44 @@ body.light,
     --text-2:      #a1a1aa;
     --text-secondary: var(--text-2);
     --text-3:      #71717a;
+    --link-hover:  #93c5fd;
   }
 }
 
-/* Dark mode overrides (Charcoal Dark) */
+/* Dark mode overrides (Cursor Dark Charcoal Theme) */
 body.dark,
 :root[data-theme="dark"] {
-  --bg:          #1F1F1E !important;
-  --card:        #2C2C2B !important;
-  --input-bg:    #212121 !important;
-  --sidebar-bg:  #1F1F1E !important;
-  --border:      #333332 !important;
-  --hover:       #2A2A29 !important;
+  --bg:          #141414 !important;
+  --card:        #1E1E1E !important;
+  --input-bg:    #222225 !important;
+  --sidebar-bg:  #181818 !important;
+  --border:      #2B2B30 !important;
+  --hover:       #28282D !important;
 
-  --text:        #FFFFFF !important;
+  --text:        #F4F4F5 !important;
   --text-primary: var(--text) !important;
-  --text-2:      #a1a1aa !important;
+  --text-2:      #A1A1AA !important;
   --text-secondary: var(--text-2) !important;
-  --text-3:      #71717a !important;
+  --text-3:      #71717A !important;
+  --link-hover:  #93c5fd !important;
 }
 
-/* OLED true black overrides */
+/* OLED true black overrides (Mapped to Cursor Dark Charcoal Theme) */
 body.oled,
 :root[data-theme="oled"] {
-  --bg:          #000000 !important;
-  --card:        #0E0E0E !important;
-  --input-bg:    #212121 !important;
-  --sidebar-bg:  #000000 !important;
-  --border:      #1F1F1F !important;
-  --hover:       #2B2B2B !important;
+  --bg:          #141414 !important;
+  --card:        #1E1E1E !important;
+  --input-bg:    #222225 !important;
+  --sidebar-bg:  #181818 !important;
+  --border:      #2B2B30 !important;
+  --hover:       #28282D !important;
 
-  --text:        #e8e6e3 !important;
+  --text:        #F4F4F5 !important;
   --text-primary: var(--text) !important;
-  --text-2:      #9d9b96 !important;
+  --text-2:      #A1A1AA !important;
   --text-secondary: var(--text-2) !important;
-  --text-3:      #757470 !important;
+  --text-3:      #71717A !important;
+  --link-hover:  #93c5fd !important;
 }
 
 /* === ACCESSIBILITY & FOCUS VISIBLE (WCAG 2.2 SC 2.4.7 / SC 2.5.8) === */
@@ -231,9 +252,13 @@ button, a, input, select, textarea {
   transition: background-color 0.15s ease, color 0.15s ease, opacity 0.15s ease;
 }
 
-button:hover, .btn:hover, .icon-btn:hover, .dock-item:hover, .sidebar-action-btn:hover {
+/* Generic hover for standard buttons — no opacity, just background tint */
+button:not(.canvas-btn):not(.canvas-btn-icon):not(.cap-icon-btn):not(.submit-btn):not(.action-btn):not(.code-action-btn):hover,
+.btn:hover,
+.icon-btn:hover,
+.dock-item:hover,
+.sidebar-action-btn:hover {
   background-color: var(--hover);
-  opacity: 0.95;
 }
 
 /* Minimum Touch Target Bounds for Interactive Buttons */
@@ -453,7 +478,7 @@ select,
   border: none !important;
   outline: none !important;
   box-shadow: none !important;
-  border-radius: var(--radius-pill, 20px) !important;
+  border-radius: 12px !important;
 }
 
 /* Ensure textareas inside input capsules are transparent and never clip text */
@@ -461,9 +486,7 @@ select,
 #chat-input-conv,
 #agent-task-input,
 #debate-input,
-.chat-textarea,
-.home-capsule textarea,
-.input-capsule-row textarea {
+.chat-textarea {
   background: transparent !important;
   color: var(--text) !important;
   font-family: var(--font) !important;
@@ -579,7 +602,7 @@ body.dark button.btn-canvas-launch:hover,
 }
 
 .ghost-avatar-container:hover .ghost-float-anim {
-  transform: scale(1.15) translateY(-3px);
+  transform: none;
   filter: drop-shadow(0 6px 14px rgba(99, 102, 241, 0.4));
 }
 

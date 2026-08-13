@@ -1,14 +1,22 @@
-/* === FULL OPACITY & UNBOLD HIGHLIGHT FOR ACTION LINKS ONLY === */
+/* === SECONDARY COLOR UNHOVERED/UNCLICKED -> PRIMARY DARK ON HOVER/CLICK === */
 .debate-sidebar .debate-list-btn,
 .debate-sidebar .debate-list-btn span,
 .debate-sidebar-action-btn,
 .debate-nav-item,
 .debate-sidebar-item,
 .debate-hist-item {
-  color: var(--text) !important;
+  color: var(--text-2) !important;
   opacity: 1 !important;
   font-weight: 400 !important;
   font-size: var(--fs-base) !important;
+  transition: color 0.12s ease;
+}
+
+.debate-sidebar .debate-list-btn:hover,
+.debate-sidebar .debate-list-btn.active,
+.debate-sidebar .debate-list-btn:hover *,
+.debate-sidebar .debate-list-btn.active * {
+  color: var(--text-primary, #0d0d0d) !important;
 }
 
 .debate-sidebar .icon-btn i,
@@ -20,9 +28,22 @@
 #btn-debate-sidebar-back,
 #btn-debate-search-nav,
 #btn-debate-sidebar-toggle {
-  color: var(--text) !important;
+  color: var(--text-2) !important;
   opacity: 1 !important;
-  stroke-width: 1.8px !important;
+  stroke-width: 1.6px !important;
+  transition: color 0.12s ease;
+}
+
+.debate-sidebar .debate-list-btn:hover i,
+.debate-sidebar .debate-list-btn:hover svg,
+.debate-sidebar .debate-list-btn:hover .lucide,
+.debate-sidebar .debate-list-btn.active i,
+.debate-sidebar .debate-list-btn.active svg,
+.debate-sidebar .debate-list-btn.active .lucide,
+.debate-sidebar .icon-btn:hover i,
+.debate-sidebar .icon-btn:hover svg,
+.debate-sidebar .icon-btn:hover .lucide {
+  color: var(--text-primary, #0d0d0d) !important;
 }
 
 /* === BADGE & CATEGORY COLOR FOR ACTIONS, PARTICIPANTS, FLOW, DOCUMENTS === */
@@ -38,7 +59,7 @@
   font-family: var(--font) !important;
   font-size: var(--fs-xs) !important;
   line-height: 16px !important;
-  font-weight: 500 !important;
+  font-weight: 400 !important;
   letter-spacing: 0.02em;
 }
 

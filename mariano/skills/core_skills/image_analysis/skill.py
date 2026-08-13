@@ -29,7 +29,7 @@ class ImageAnalysisSkill(BaseSkill):
                 return SkillResult(success=False, data=None, error=f"Image not found: {image_path}")
 
             settings = get_settings()
-            client = genai.Client(api_key=settings.gemini_api_key)
+            client = genai.Client(api_key=settings.active_gemini_api_key)
 
             ext = path.suffix.lower().lstrip(".")
             mime_map = {"jpg": "image/jpeg", "jpeg": "image/jpeg", "png": "image/png", "gif": "image/gif", "webp": "image/webp"}

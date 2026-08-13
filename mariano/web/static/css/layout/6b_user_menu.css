@@ -126,10 +126,10 @@
 }
 .lightbox-btn:hover {
   background: rgba(255, 255, 255, 0.25);
-  transform: scale(1.08);
+  transform: none;
 }
 .lightbox-btn:active {
-  transform: scale(0.95);
+  transform: none;
 }
 .lightbox-btn.close {
   background: rgba(255, 255, 255, 0.12);
@@ -165,24 +165,31 @@
 
 /* 1. Sidebar Panel Containers */
 #sidebar-dock,
-#sidebar-nav,
+#sidebar-nav {
+  background: var(--sidebar-bg, #F0F2F5) !important;
+  border-right: none !important;
+  box-shadow: none !important;
+  font-family: var(--font) !important;
+}
+
+/* Debate sidebar lives INSIDE #workspace card — must match card bg */
 .debate-sidebar {
-  background: var(--sidebar-bg, #ffffff) !important;
-  border-right: 1px solid var(--border) !important;
+  background: var(--bg, #F7F7F9) !important;
+  border-right: none !important;
   box-shadow: none !important;
   font-family: var(--font) !important;
 }
 
 .debate-sidebar-inner {
-  background: var(--sidebar-bg, #ffffff) !important;
+  background: transparent !important;
   border-right: none !important;
 }
 
 /* 2. Nav Header Row & Titles */
 #sidebar-nav .nav-header,
 .debate-sidebar .nav-header {
-  height: 48px !important;
-  padding: 0 12px 0 16px !important;
+  height: 32px !important;
+  padding: 0 10px 0 10px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
@@ -197,7 +204,7 @@
   letter-spacing: -0.01em !important;
 }
 
-/* 3. Action Links, Buttons & Items */
+/* 3. Action Links, Buttons & Items — Secondary color by default, Primary dark on Hover/Active */
 #sidebar-dock .dock-item,
 #sidebar-nav .sidebar-action-btn,
 #sidebar-nav .sidebar-action-btn span,
@@ -217,15 +224,39 @@
 .debate-nav-item,
 .debate-sidebar-item,
 .debate-hist-item {
-  color: var(--text) !important;
+  color: var(--text-2) !important;
   opacity: 1 !important;
   font-family: var(--font) !important;
   font-weight: 400 !important;
   font-size: var(--fs-base) !important;
   line-height: 20px !important;
+  transition: color 0.12s ease;
 }
 
-/* 4. Icons in Main Chat & Debate Sidebars */
+#sidebar-dock .dock-item:hover,
+#sidebar-dock .dock-item.active,
+#sidebar-dock .dock-item:hover *,
+#sidebar-dock .dock-item.active *,
+#sidebar-nav .sidebar-action-btn:hover,
+#sidebar-nav .sidebar-action-btn.active,
+#sidebar-nav .sidebar-action-btn:hover *,
+#sidebar-nav .sidebar-action-btn.active *,
+#sidebar-nav .section-item:hover,
+#sidebar-nav .section-item.active,
+#sidebar-nav .section-item:hover *,
+#sidebar-nav .section-item.active *,
+#sidebar-nav .recent-item:hover,
+#sidebar-nav .recent-item.active,
+#sidebar-nav .recent-item:hover *,
+#sidebar-nav .recent-item.active *,
+.debate-sidebar .debate-list-btn:hover,
+.debate-sidebar .debate-list-btn.active,
+.debate-sidebar .debate-list-btn:hover *,
+.debate-sidebar .debate-list-btn.active * {
+  color: var(--text-primary, #0d0d0d) !important;
+}
+
+/* 4. Icons in Main Chat & Debate Sidebars — Secondary color default, Primary dark on Hover/Active */
 #sidebar-dock .dock-item .lucide,
 #sidebar-dock .dock-item i,
 #sidebar-dock .dock-item svg,
@@ -248,11 +279,58 @@
 #btn-debate-sidebar-back,
 #btn-debate-search-nav,
 #btn-debate-sidebar-toggle {
-  color: var(--text) !important;
+  color: var(--text-2) !important;
   opacity: 1 !important;
+  stroke-width: 1.6px !important;
+  transition: color 0.12s ease;
 }
 
-/* 5. Category Headers & Section Labels (Compact 11px / Segoe UI 500) */
+#sidebar-dock .dock-item:hover .lucide,
+#sidebar-dock .dock-item:hover i,
+#sidebar-dock .dock-item:hover svg,
+#sidebar-dock .dock-item.active .lucide,
+#sidebar-dock .dock-item.active i,
+#sidebar-dock .dock-item.active svg,
+#sidebar-nav .sidebar-action-btn:hover .lucide,
+#sidebar-nav .sidebar-action-btn:hover i,
+#sidebar-nav .sidebar-action-btn:hover svg,
+#sidebar-nav .sidebar-action-btn.active .lucide,
+#sidebar-nav .sidebar-action-btn.active i,
+#sidebar-nav .sidebar-action-btn.active svg,
+#sidebar-nav .section-item:hover .lucide,
+#sidebar-nav .section-item:hover i,
+#sidebar-nav .section-item:hover svg,
+#sidebar-nav .recent-item:hover .lucide,
+#sidebar-nav .recent-item:hover i,
+#sidebar-nav .recent-item:hover svg,
+#sidebar-nav .recent-item.active .lucide,
+#sidebar-nav .recent-item.active i,
+#sidebar-nav .recent-item.active svg,
+.debate-sidebar .icon-btn:hover i,
+.debate-sidebar .icon-btn:hover svg,
+.debate-sidebar .icon-btn:hover .lucide,
+.debate-sidebar .debate-list-btn:hover i,
+.debate-sidebar .debate-list-btn:hover svg,
+.debate-sidebar .debate-list-btn:hover .lucide,
+.debate-sidebar .debate-list-btn.active i,
+.debate-sidebar .debate-list-btn.active svg,
+.debate-sidebar .debate-list-btn.active .lucide,
+#btn-sidebar-collapse:hover i,
+#btn-sidebar-collapse:hover svg,
+#btn-sidebar-collapse:hover .lucide,
+#btn-debate-sidebar-toggle:hover i,
+#btn-debate-sidebar-toggle:hover svg,
+#btn-debate-sidebar-toggle:hover .lucide,
+#btn-nav-back:hover i,
+#btn-nav-back:hover svg,
+#btn-nav-back:hover .lucide,
+#btn-nav-forward:hover i,
+#btn-nav-forward:hover svg,
+#btn-nav-forward:hover .lucide {
+  color: var(--text-primary, #0d0d0d) !important;
+}
+
+/* 5. Category Headers & Section Labels (Compact 11px / Segoe UI 400 Unbold) */
 #sidebar-nav .section-hdr,
 #sidebar-nav .section-hdr span,
 .debate-sidebar .debate-sidebar-section-label,
@@ -264,7 +342,7 @@
   font-family: var(--font) !important;
   font-size: var(--fs-xs) !important;
   line-height: 16px !important;
-  font-weight: 500 !important;
+  font-weight: 400 !important;
   letter-spacing: 0.02em;
 }
 

@@ -148,7 +148,7 @@
   border: none !important;
   outline: none !important;
   box-shadow: none !important;
-  border-radius: 20px !important;
+  border-radius: 12px !important;
   padding: 10px 16px;
   display: flex;
   flex-direction: column;
@@ -165,7 +165,7 @@
   background: var(--card) !important;
   border: none !important;
   outline: none !important;
-  border-radius: 28px !important;
+  border-radius: 12px !important;
   box-shadow: none !important;
 }
 .debate-input-wrapper:focus-within {
@@ -277,11 +277,11 @@ body.dark .debate-input-wrapper:focus-within {
   transition: transform 0.1s ease, background-color 0.15s ease;
 }
 .submit-btn:hover {
-  transform: scale(1.05);
+  transform: none;
   opacity: 0.9;
 }
 .submit-btn:active {
-  transform: scale(0.95);
+  transform: none;
 }
 .submit-btn:disabled {
   opacity: 0.4;

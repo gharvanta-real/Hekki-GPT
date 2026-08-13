@@ -78,23 +78,23 @@ export class ImagesPage {
       <!-- Lightbox -->
       <div class="img-lightbox-overlay hidden" id="img-lightbox">
         <div class="img-lightbox-backdrop" id="img-lightbox-backdrop"></div>
-        <div class="img-lightbox-modal" style="position: relative; max-width: min(92vw, 920px); max-height: 88vh; border-radius: 20px; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #09090b; box-shadow: 0 25px 65px rgba(0,0,0,0.75);">
+        <div class="img-lightbox-modal" style="position: relative; max-width: min(92vw, 920px); max-height: 88vh; border-radius: 20px; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #09090b; border: none !important; box-shadow: none !important;">
           
-          <!-- Floating Translucent Toolbar Overlaying Top-Right INSIDE Image Frame -->
-          <div class="img-lightbox-actions" style="position: absolute; top: 14px; right: 14px; z-index: 100; display: flex; align-items: center; gap: 6px; background: rgba(24, 24, 27, 0.75); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); padding: 5px 10px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 4px 20px rgba(0,0,0,0.4);">
-            <button class="img-lightbox-btn" id="img-lb-download" title="Download Image" style="width:30px; height:30px; border-radius:50%; background:rgba(255,255,255,0.12); border:none; color:#ffffff; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.15s ease;">
-              <i data-lucide="download" style="width:15px;height:15px;color:#ffffff;"></i>
+          <!-- Floating Translucent Toolbar Overlaying Bottom-Center INSIDE Image Frame -->
+          <div class="img-lightbox-actions" style="position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); z-index: 100; display: flex; align-items: center; gap: 6px; background: rgba(24, 24, 27, 0.85) !important; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); padding: 5px 10px; border-radius: 30px; border: none !important; box-shadow: none !important;">
+            <button class="img-lightbox-btn" id="img-lb-download" title="Download Image" style="width:30px; height:30px; border-radius:50%; background:rgba(255,255,255,0.14) !important; border:none !important; box-shadow:none !important; color:#ffffff !important; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.15s ease;">
+              <i data-lucide="download" style="width:15px;height:15px;color:#ffffff !important;stroke:#ffffff !important;"></i>
             </button>
-            <button class="img-lightbox-btn img-card-btn img-del-btn" id="img-lb-delete" title="Delete Image" style="width:30px; height:30px; border-radius:50%; background:rgba(255,255,255,0.12); border:none; color:#ffffff; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.15s ease;">
-              <i data-lucide="trash-2" style="width:15px;height:15px;color:#ffffff;"></i>
+            <button class="img-lightbox-btn img-card-btn img-del-btn" id="img-lb-delete" title="Delete Image" style="width:30px; height:30px; border-radius:50%; background:rgba(255,255,255,0.14) !important; border:none !important; box-shadow:none !important; color:#ffffff !important; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.15s ease;">
+              <i data-lucide="trash-2" style="width:15px;height:15px;color:#ffffff !important;stroke:#ffffff !important;"></i>
             </button>
-            <button class="img-lightbox-btn" id="img-lb-close" title="Close" style="width:30px; height:30px; border-radius:50%; background:rgba(255,255,255,0.12); border:none; color:#ffffff; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.15s ease;">
-              <i data-lucide="x" style="width:15px;height:15px;color:#ffffff;"></i>
+            <button class="img-lightbox-btn" id="img-lb-close" title="Close" style="width:30px; height:30px; border-radius:50%; background:rgba(255,255,255,0.14) !important; border:none !important; box-shadow:none !important; color:#ffffff !important; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.15s ease;">
+              <i data-lucide="x" style="width:15px;height:15px;color:#ffffff !important;stroke:#ffffff !important;"></i>
             </button>
           </div>
 
           <!-- Image Display Frame -->
-          <div class="img-lightbox-body" style="position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #09090b; overflow: hidden; border-radius: 20px;">
+          <div class="img-lightbox-body" style="position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #09090b; overflow: hidden; border-radius: 20px; border: none !important; box-shadow: none !important;">
             <img class="img-lightbox-img" id="img-lightbox-img" src="" alt="" style="max-width: 100%; max-height: 88vh; object-fit: contain; display: block; border-radius: 20px; user-select: none;" />
           </div>
 

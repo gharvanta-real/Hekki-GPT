@@ -40,6 +40,10 @@ export const ChatSessionManager = {
         if (c.id && String(c.id).startsWith('playground_')) {
           c.isPlayground = true;
         }
+        // Any debate chat must be treated as Playground regardless of ID prefix
+        if (c.isDebate) {
+          c.isPlayground = true;
+        }
         return c;
       });
     } catch { return []; }
@@ -61,7 +65,9 @@ export const ChatSessionManager = {
 
   createChat(initialText) {
     const chats = this.getChats();
-    const truncatedText = initialText.length > 30 ? initialText.substring(0, 30) + '...' : initialText;
+    const rawClean = (initialText || '').replace(/^🔀\s*/, '').replace(/^\/(?:debate|detective|web|code|pdf|image)\s*/i, '').trim();
+    const textToUse = rawClean || (initialText || '').trim();
+    const truncatedText = textToUse.length > 30 ? textToUse.substring(0, 30) + '...' : textToUse;
     const activeProj = localStorage.getItem('hekki_active_project');
     const newChat = {
       id: 'chat_' + Date.now(), title: truncatedText, messages: [],
@@ -194,12 +200,17 @@ export const ChatSessionManager = {
   },
 
   ensureNormalChatActive() {
+    // Never redirect away from a live streaming debate
+    if (window._debateRunning) return;
+
     const chats = this.getChats();
     const activeId = localStorage.getItem('hekki_active_chat_id');
     const activeChat = chats.find(c => c.id === activeId);
-    if (activeId && activeChat && activeChat.isPlayground) {
-      // Clear the stale playground ID from localStorage immediately
-      // so it never leaks into the normal chat view on subsequent boots.
+
+    // Only redirect if active is an EMPTY playground chat (stale/abandoned).
+    // A playground chat WITH messages is a completed debate — leave it alone.
+    if (activeId && activeChat && activeChat.isPlayground &&
+        (!activeChat.messages || activeChat.messages.length === 0)) {
       localStorage.removeItem('hekki_active_chat_id');
       localStorage.removeItem('mariano_active_chat_id');
 
@@ -263,11 +274,48 @@ export const ChatSessionManager = {
   },
 
   loadChat(id) {
+    // GUARD 1: Never interrupt a live streaming debate — it renders directly into DOM
+    // and hasn't been saved to chat.messages yet during streaming.
+    if (window._debateRunning) return;
+
     const chats = this.getChats();
     const chat = chats.find(c => c.id === id);
     if (!chat) return;
 
+    // GUARD 2: If clicking the already-active playground chat and it has 0 messages,
+    // the DOM still holds whatever debate_mode.js rendered — don't wipe it.
+    // This happens if the user clicks the sidebar item before session data is saved.
+    if (chat.isPlayground && chat.messages.length === 0 && id === _activeChatId) {
+      if (window.router && window.router.currentPage !== 'chat') {
+        window.router.navigateTo('chat');
+      }
+      this.renderChatsList();
+      return;
+    }
+
     this.setActiveChatId(id);
+
+    // Merge consecutive assistant messages in playground/debate chats to eliminate multiple action bars
+    if (chat.isPlayground && chat.messages && chat.messages.length > 1) {
+      const merged = [];
+      let assistantParts = [];
+      chat.messages.forEach(m => {
+        if (m.role === 'assistant') {
+          if (m.text) assistantParts.push(m.text);
+        } else {
+          if (assistantParts.length > 0) {
+            merged.push({ role: 'assistant', text: assistantParts.join('\n\n'), timestamp: new Date().toISOString() });
+            assistantParts = [];
+          }
+          merged.push(m);
+        }
+      });
+      if (assistantParts.length > 0) {
+        merged.push({ role: 'assistant', text: assistantParts.join('\n\n'), timestamp: new Date().toISOString() });
+      }
+      chat.messages = merged;
+      this.saveChats(chats);
+    }
 
     if (window.socket && window.socket.readyState === WebSocket.OPEN) {
       try {
@@ -276,15 +324,8 @@ export const ChatSessionManager = {
       } catch (err) { console.error("Failed to sync session history:", err); }
     }
 
-    if (chat.isPlayground) {
-      import('/static/js/router.js').then(module => {
-        module.router.navigateTo('debate');
-        if (window.loadDebateHistory) window.loadDebateHistory(chat);
-      }).catch(err => console.error('Failed to load router:', err));
-      this.renderChatsList();
-      return;
-    }
-
+    // All chats (including playground/debate ones) load into the main chat pane.
+    // Legacy redirect to debate-pane removed — playground chats now live in main chat.
     clearChatLogs();
     const col = document.getElementById('chat-col');
     // [H-1] Use DocumentFragment for batch DOM insertion (prevents N reflows)
@@ -331,6 +372,12 @@ export const ChatSessionManager = {
       document.getElementById('bottom-input-bar')?.classList.remove('hidden');
     }
 
+    // Always switch to the main chat view after loading any chat —
+    // but skip if a live debate is running (would wipe the debate UI).
+    if (window.router && window.router.currentPage !== 'chat' && !window._debateRunning) {
+      window.router.navigateTo('chat');
+    }
+
     scrollChat();
     this.renderChatsList();
   },
@@ -363,7 +410,11 @@ export const ChatSessionManager = {
       return 0;
     };
 
-    const isPlaygroundChat = (c) => Boolean(c && (c.isPlayground || (c.id && String(c.id).startsWith('playground_'))));
+    const isPlaygroundChat = (c) => Boolean(c && (
+      c.isPlayground ||
+      c.isDebate ||
+      (c.id && (String(c.id).startsWith('playground_') || String(c.id).startsWith('debate_')))
+    ));
 
     if (chatList) {
       const chats = this.getChats().filter(c => !c.project && !c.archived && !isPlaygroundChat(c));
@@ -381,7 +432,7 @@ export const ChatSessionManager = {
           item.className = 'section-item';
           if (c.id === _activeChatId) item.classList.add('active');
 
-          const cleanTitle = (c.title || '').replace(/^🔀\s*/, '');
+          const cleanTitle = (c.title || '').replace(/^🔀\s*/, '').replace(/^\/(?:debate|detective|web|code|pdf|image)\s*/i, '').trim() || c.title;
           item.title = cleanTitle;
 
           let badgeContent = '';
@@ -444,17 +495,15 @@ export const ChatSessionManager = {
         if (pgChevron) pgChevron.style.transform = isCollapsed ? 'rotate(-90deg)' : 'rotate(0deg)';
 
         pChats.forEach(c => {
+          const cleanPgTitle = (c.title || '').replace(/^🔀\s*/, '').replace(/^\/(?:debate|detective|web|code|pdf|image)\s*/i, '').trim() || c.title;
           const item = document.createElement('div');
           item.className = 'section-item';
           if (c.id === _activeChatId) item.classList.add('active');
-          item.title = c.title;
+          item.title = cleanPgTitle;
           item.innerHTML = `
-            <span class="lbl" style="display:flex; align-items:center; gap:6px;">
-              <i data-lucide="swords" style="width:13px; height:13px; color:var(--accent, #2563eb); flex-shrink:0;"></i>
-              <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(c.title)}</span>
-            </span>
-            <span class="opt" style="cursor:pointer; display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px">
-              <i data-lucide="more-horizontal" style="width:14px; height:14px; pointer-events:none"></i>
+            <span class="lbl">${escapeHtml(cleanPgTitle)}</span>
+            <span class="opt" style="cursor:pointer; display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px;">
+              <i data-lucide="more-horizontal" style="width:14px; height:14px; pointer-events:none;"></i>
             </span>
           `;
 
@@ -502,7 +551,7 @@ export const ChatSessionManager = {
       <button class="chat-dropdown-item pin-opt">${isPinned ? '<i data-lucide="pin-off" style="width:14px;height:14px;margin-right:8px;display:inline-block;vertical-align:middle;flex-shrink:0;"></i> Unpin' : '<i data-lucide="pin" style="width:14px;height:14px;margin-right:8px;display:inline-block;vertical-align:middle;flex-shrink:0;"></i> Pin'}</button>
       <button class="chat-dropdown-item rename-opt"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-compose" style="width:14px;height:14px;margin-right:8px;display:inline-block;vertical-align:middle;flex-shrink:0;"><path d="M10 3H7a4 4 0 0 0-4 4v9a4 4 0 0 0 4 4h10a4 4 0 0 0 4-4v-4"></path><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"></path></svg> Rename</button>
       <button class="chat-dropdown-item archive-opt"><i data-lucide="archive" style="width:14px;height:14px;margin-right:8px;display:inline-block;vertical-align:middle;flex-shrink:0;"></i> Archive</button>
-      <button class="chat-dropdown-item delete-opt delete"><i data-lucide="trash-2" style="width:14px;height:14px;margin-right:8px;display:inline-block;vertical-align:middle;flex-shrink:0;"></i> Delete</button>
+      <button class="chat-dropdown-item delete-opt delete" style="color:#ef4444 !important;"><i data-lucide="trash-2" style="width:14px;height:14px;margin-right:8px;display:inline-block;vertical-align:middle;flex-shrink:0;color:#ef4444 !important;"></i> <span style="color:#ef4444 !important;">Delete</span></button>
     `;
     if (window.lucide) lucide.createIcons({ parent: dropdown });
     dropdown.querySelector('.open-opt').addEventListener('click', () => { this.loadChat(chatId); this.closeAllDropdowns(); });
@@ -514,10 +563,10 @@ export const ChatSessionManager = {
       if (newTitle && newTitle.trim()) this.renameChat(chatId, newTitle.trim());
     });
     dropdown.querySelector('.archive-opt').addEventListener('click', () => { this.archiveChat(chatId); this.closeAllDropdowns(); });
-    dropdown.querySelector('.delete-opt').addEventListener('click', async () => {
+    dropdown.querySelector('.delete-opt').addEventListener('click', (e) => {
+      e.stopPropagation();
       this.closeAllDropdowns();
-      const yes = await showCustomConfirm('Delete Chat', 'Are you sure you want to delete this conversation?');
-      if (yes) this.deleteChat(chatId);
+      this.deleteChat(chatId);
     });
     optBtn.parentNode.appendChild(dropdown);
     if (window.lucide) lucide.createIcons({ parent: dropdown });

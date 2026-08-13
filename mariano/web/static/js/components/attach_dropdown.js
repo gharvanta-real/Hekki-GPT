@@ -11,13 +11,40 @@ const ARENA_MODELS = [
 
 let _attachDropdownsBound = false;
 
+/* ─────────────────────────────────────────────────────────────────────────
+   positionDropdown(el, anchorBtn)
+   Positions a fixed-position dropdown above the anchor button.
+   Dropdown is attached to document.body so no parent opacity bleeds in.
+───────────────────────────────────────────────────────────────────────── */
+function positionDropdown(el, anchorBtn) {
+  const r = anchorBtn.getBoundingClientRect();
+  el.style.position  = 'fixed';
+  el.style.bottom    = `${window.innerHeight - r.top + 8}px`;
+  el.style.left      = `${r.left}px`;
+  el.style.top       = 'auto';
+}
+
+/* Position a sub-dropdown to the right of its parent item */
+function positionSubDropdown(sub, parentItem) {
+  const r = parentItem.getBoundingClientRect();
+  sub.style.position = 'fixed';
+  sub.style.left     = `${r.right + 8}px`;
+  sub.style.top      = `${r.top - 6}px`;
+  sub.style.bottom   = 'auto';
+}
+
+/* Remove all open attach dropdowns from body */
+function closeAll() {
+  document.querySelectorAll('.attach-dropdown, .attach-sub-dropdown').forEach(d => d.remove());
+}
+
 export function initAttachDropdowns(inConversationState) {
   if (_attachDropdownsBound) return;
   _attachDropdownsBound = true;
 
   const $ = (id) => document.getElementById(id);
   const fileInput = $('attach-file-input');
-  
+
   fileInput?.addEventListener('change', async (e) => {
     const files = Array.from(e.target.files);
     if (files.length > 0) {
@@ -30,13 +57,13 @@ export function initAttachDropdowns(inConversationState) {
   const bindBtn = (btnId) => {
     const btn = $(btnId);
     if (!btn) return;
-    
+
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
-      
-      // Remove existing dropdowns
-      document.querySelectorAll('.attach-dropdown, .attach-sub-dropdown').forEach(d => d.remove());
-      
+
+      // Close any existing dropdowns
+      closeAll();
+
       const dropdown = document.createElement('div');
       dropdown.className = 'attach-dropdown';
 
@@ -72,17 +99,23 @@ export function initAttachDropdowns(inConversationState) {
           <span>Web search</span>
         </button>
       `;
-      
+
+      // ── Append to body (NOT inside button) to escape opacity inheritance ──
+      document.body.appendChild(dropdown);
+      positionDropdown(dropdown, btn);
+
+      if (window.lucide) lucide.createIcons({ parent: dropdown });
+
       // Add files
       dropdown.querySelector('.btn-add-files')?.addEventListener('click', () => {
         fileInput?.click();
-        document.querySelectorAll('.attach-dropdown, .attach-sub-dropdown').forEach(d => d.remove());
+        closeAll();
       });
-      
-      const removeSubmenus = () => dropdown.querySelectorAll('.attach-sub-dropdown').forEach(s => s.remove());
 
-      // ── Sub-menu: Playground Mode > ─────────────────────────────
-      // ── Sub-menu: Playground Mode > ─────────────────────────────
+      const removeSubmenus = () =>
+        document.querySelectorAll('.attach-sub-dropdown').forEach(s => s.remove());
+
+      // ── Sub-menu: Playground Mode > ──────────────────────────────────────
       const playgroundBtn = dropdown.querySelector('.btn-playground-menu');
       playgroundBtn?.addEventListener('click', async (ev) => {
         ev.stopPropagation();
@@ -90,63 +123,72 @@ export function initAttachDropdowns(inConversationState) {
 
         const sub = document.createElement('div');
         sub.className = 'attach-sub-dropdown';
-        sub.style.minWidth = '220px';
-        sub.style.padding = '6px';
-        sub.style.display = 'flex';
-        sub.style.flexDirection = 'column';
-        sub.style.gap = '4px';
 
         if (ARENA_MODELS.length <= 1) {
-          // Single model configured for both agents (Clean, simple, flat, non-colorful)
           const singleModel = ARENA_MODELS[0] || { id: 'gemini-3.1-flash-lite', name: 'Gemini 3.1 Flash Lite' };
 
+          const isDebateOn = window._debateModeActive || false;
           sub.innerHTML = `
-            <div class="sub-dropdown-header" style="font-size:10px; color:var(--text-3); font-weight:600; padding:4px 8px 2px;">Playground Mode</div>
-            <div class="attach-dropdown-item" style="opacity:0.75; cursor:default; justify-content:space-between; padding:6px 8px;">
+            <div class="sub-dropdown-header">Playground Mode</div>
+            <div class="attach-dropdown-item" style="opacity:0.85; cursor:default; justify-content:space-between;">
               <div style="display:flex; align-items:center; gap:8px;">
-                <i data-lucide="check" style="width:13px; height:13px; color:var(--text-3);"></i>
+                <i data-lucide="check" style="width:13px; height:13px; color:#2563eb;"></i>
                 <span style="font-size:12px; color:var(--text); font-weight:500;">${singleModel.name}</span>
               </div>
-              <span style="font-size:10px; color:var(--text-3); background:var(--sidebar-bg); padding:2px 6px; border-radius:4px; font-weight:500;">Both Agents</span>
+              <span style="font-size:10px; color:var(--text-2); background:var(--hover); padding:2px 6px; border-radius:4px; font-weight:500;">Both Agents</span>
             </div>
-            <div class="attach-dropdown-sep" style="margin:2px 0;"></div>
-            <button id="btn-activate-arena-plus" class="attach-dropdown-item" style="font-weight:500; color:var(--text); justify-content:center; padding:6px 8px; cursor:pointer; width:100%; border:none; background:transparent; border-radius:6px;">
-              <span>Activate Playground Mode</span>
-            </button>
+            <div class="attach-dropdown-sep"></div>
+            <div id="btn-toggle-arena-switch" class="toggle-switch-wrap">
+              <span style="font-size:12.5px; font-weight:500; color:var(--text-primary);">Playground Mode</span>
+              <div class="toggle-switch debate-toggle-switch ${isDebateOn ? 'on' : ''}">
+                <div class="toggle-switch-handle"></div>
+              </div>
+            </div>
           `;
 
-          playgroundBtn.appendChild(sub);
+          document.body.appendChild(sub);
+          positionSubDropdown(sub, playgroundBtn);
           if (window.lucide) lucide.createIcons({ parent: sub });
 
-          const actBtn = sub.querySelector('#btn-activate-arena-plus');
-          actBtn?.addEventListener('click', async (e) => {
+          sub.querySelector('#btn-toggle-arena-switch')?.addEventListener('click', (e) => {
             e.stopPropagation();
-            const updatePayload = {
-              reasoning_mode: 'playground',
-              debate_model_alpha: singleModel.id,
-              debate_model_beta: singleModel.id
-            };
+            const sw = sub.querySelector('.debate-toggle-switch');
+            const nowOn = !sw.classList.contains('on');
+            if (nowOn) sw.classList.add('on');
+            else sw.classList.remove('on');
 
-            const upRes = await fetch('/api/settings', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(updatePayload)
-            });
-
-            if (upRes.ok) {
-              await updateModelPills();
-              showToast('Playground Mode Active', `${singleModel.name} (Both Agents)`, 3000);
+            if (window._debateModeActive !== undefined) {
+              window._debateModeActive = nowOn;
+              // update UI pills and placeholders
+              document.querySelectorAll('.capsule-debate-pill').forEach(pill => {
+                if (nowOn) {
+                  pill.classList.add('active');
+                  pill.querySelector('.pill-text').textContent = 'Debate ON';
+                } else {
+                  pill.classList.remove('active');
+                  pill.querySelector('.pill-text').textContent = 'Debate';
+                }
+              });
+              const homeInput = document.getElementById('chat-input');
+              const convInput = document.getElementById('chat-input-conv');
+              if (nowOn) {
+                if (homeInput) homeInput.placeholder = "Enter a topic for Debate Playground… e.g. 'Is AI replacing human creativity?'";
+                if (convInput) convInput.placeholder = "Enter a topic for Debate Playground…";
+              } else {
+                if (homeInput) homeInput.placeholder = "How can I help you today?";
+                if (convInput) convInput.placeholder = "Write a message...";
+              }
+              showToast(nowOn ? 'Playground Mode Active' : 'Standard Chat Active', nowOn ? 'Inline debate enabled' : 'Single model mode', 2500);
             }
-            document.querySelectorAll('.attach-dropdown, .attach-sub-dropdown').forEach(d => d.remove());
+            closeAll();
           });
         } else {
-          // Multiple models available: simple clean list with max 2 ticks
           let selectedModels = [ARENA_MODELS[0].id, ARENA_MODELS[1].id];
 
           const itemsHtml = ARENA_MODELS.map(m => {
             const isChecked = selectedModels.includes(m.id);
             return `
-              <button class="attach-dropdown-item arena-model-item" data-id="${m.id}" style="justify-content:space-between; padding:6px 8px;">
+              <button class="attach-dropdown-item arena-model-item" data-id="${m.id}" style="justify-content:space-between;">
                 <div style="display:flex; align-items:center; gap:8px;">
                   <i data-lucide="${isChecked ? 'check' : 'minus'}" style="width:13px; height:13px; opacity:${isChecked ? '1' : '0.3'};"></i>
                   <span style="font-size:12px;">${m.name}</span>
@@ -156,15 +198,16 @@ export function initAttachDropdowns(inConversationState) {
           }).join('');
 
           sub.innerHTML = `
-            <div class="sub-dropdown-header" style="font-size:10px; color:var(--text-3); font-weight:600; padding:4px 8px 2px;">Playground Models</div>
+            <div class="sub-dropdown-header">Playground Models</div>
             ${itemsHtml}
-            <div class="attach-dropdown-sep" style="margin:2px 0;"></div>
-            <button id="btn-activate-arena-plus" class="attach-dropdown-item" style="font-weight:500; color:var(--text); justify-content:center; padding:6px 8px; cursor:pointer; width:100%; border:none; background:transparent; border-radius:6px;">
+            <div class="attach-dropdown-sep"></div>
+            <button id="btn-activate-arena-plus" class="attach-dropdown-item" style="justify-content:center;">
               <span>Activate Playground Mode</span>
             </button>
           `;
 
-          playgroundBtn.appendChild(sub);
+          document.body.appendChild(sub);
+          positionSubDropdown(sub, playgroundBtn);
           if (window.lucide) lucide.createIcons({ parent: sub });
 
           sub.querySelectorAll('.arena-model-item').forEach(btn => {
@@ -172,16 +215,11 @@ export function initAttachDropdowns(inConversationState) {
               e.stopPropagation();
               const id = btn.dataset.id;
               if (selectedModels.includes(id)) {
-                if (selectedModels.length > 1) {
-                  selectedModels = selectedModels.filter(x => x !== id);
-                }
+                if (selectedModels.length > 1) selectedModels = selectedModels.filter(x => x !== id);
               } else {
-                if (selectedModels.length >= 2) {
-                  selectedModels.shift();
-                }
+                if (selectedModels.length >= 2) selectedModels.shift();
                 selectedModels.push(id);
               }
-              // re-render ticks
               sub.querySelectorAll('.arena-model-item').forEach(b => {
                 const bId = b.dataset.id;
                 const active = selectedModels.includes(bId);
@@ -195,34 +233,25 @@ export function initAttachDropdowns(inConversationState) {
             });
           });
 
-          const actBtn = sub.querySelector('#btn-activate-arena-plus');
-          actBtn?.addEventListener('click', async (e) => {
+          sub.querySelector('#btn-activate-arena-plus')?.addEventListener('click', async (e) => {
             e.stopPropagation();
             const alphaId = selectedModels[0] || ARENA_MODELS[0].id;
-            const betaId = selectedModels[1] || selectedModels[0] || ARENA_MODELS[0].id;
-
-            const updatePayload = {
-              reasoning_mode: 'playground',
-              debate_model_alpha: alphaId,
-              debate_model_beta: betaId
-            };
-
+            const betaId  = selectedModels[1] || selectedModels[0] || ARENA_MODELS[0].id;
             const upRes = await fetch('/api/settings', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(updatePayload)
+              body: JSON.stringify({ reasoning_mode: 'playground', debate_model_alpha: alphaId, debate_model_beta: betaId })
             });
-
             if (upRes.ok) {
               await updateModelPills();
-              showToast('Playground Mode Active', `Playground mode enabled`, 3000);
+              showToast('Playground Mode Active', 'Playground mode enabled', 3000);
             }
-            document.querySelectorAll('.attach-dropdown, .attach-sub-dropdown').forEach(d => d.remove());
+            closeAll();
           });
         }
       });
 
-      // ── Sub-menu 1: Skills > ──────────────────────────────────────────
+      // ── Sub-menu: Skills > ───────────────────────────────────────────────
       const skillsBtn = dropdown.querySelector('.btn-skills-menu');
       skillsBtn?.addEventListener('click', (ev) => {
         ev.stopPropagation();
@@ -231,19 +260,20 @@ export function initAttachDropdowns(inConversationState) {
         const sub = document.createElement('div');
         sub.className = 'attach-sub-dropdown';
         sub.innerHTML = `
-          <div class="sub-dropdown-header" style="font-size:10px; color:var(--text-3); padding:4px 10px 4px; font-weight:600; letter-spacing:0.04em;">REGISTERED SKILLS</div>
-          <div class="attach-dropdown-item"><i data-lucide="trash-2"></i><span>Safe Recycler & Delete</span></div>
-          <div class="attach-dropdown-item"><i data-lucide="globe"></i><span>Web Search</span></div>
-          <div class="attach-dropdown-item"><i data-lucide="file-text"></i><span>File Manager</span></div>
-          <div class="attach-dropdown-item"><i data-lucide="terminal"></i><span>Terminal CMD</span></div>
-          <div class="attach-dropdown-item"><i data-lucide="bar-chart-3"></i><span>Data Analyzer</span></div>
-          <div class="attach-dropdown-item"><i data-lucide="cloud"></i><span>Weather & News</span></div>
+          <div class="sub-dropdown-header">Registered Skills</div>
+          <button class="attach-dropdown-item"><i data-lucide="trash-2"></i><span>Safe Recycler &amp; Delete</span></button>
+          <button class="attach-dropdown-item"><i data-lucide="globe"></i><span>Web Search</span></button>
+          <button class="attach-dropdown-item"><i data-lucide="file-text"></i><span>File Manager</span></button>
+          <button class="attach-dropdown-item"><i data-lucide="terminal"></i><span>Terminal CMD</span></button>
+          <button class="attach-dropdown-item"><i data-lucide="bar-chart-3"></i><span>Data Analyzer</span></button>
+          <button class="attach-dropdown-item"><i data-lucide="cloud"></i><span>Weather &amp; News</span></button>
         `;
-        skillsBtn.appendChild(sub);
+        document.body.appendChild(sub);
+        positionSubDropdown(sub, skillsBtn);
         if (window.lucide) lucide.createIcons({ parent: sub });
       });
 
-      // ── Sub-menu 2: Permission mode > ─────────────────────────────────
+      // ── Sub-menu: Permission mode > ──────────────────────────────────────
       const permBtn = dropdown.querySelector('.btn-permission-menu');
       permBtn?.addEventListener('click', (ev) => {
         ev.stopPropagation();
@@ -253,71 +283,72 @@ export function initAttachDropdowns(inConversationState) {
         const sub = document.createElement('div');
         sub.className = 'attach-sub-dropdown permission-sub-menu';
         sub.innerHTML = `
-          <div class="sub-dropdown-header" style="font-size:10px; color:var(--text-3); padding:4px 10px 4px; font-weight:600; letter-spacing:0.04em;">PERMISSION POLICY</div>
+          <div class="sub-dropdown-header">Permission Policy</div>
           <button class="attach-dropdown-item btn-opt-ask ${policy === 'ask' ? 'active' : ''}">
             <i data-lucide="shield-check"></i>
             <span>Ask First (Safe)</span>
-            ${policy === 'ask' ? '<i data-lucide="check" class="lucide-check-icon"></i>' : ''}
+            ${policy === 'ask' ? '<i data-lucide="check" class="lucide-check-icon" style="margin-left:auto;width:13px;height:13px;"></i>' : ''}
           </button>
           <button class="attach-dropdown-item btn-opt-auto ${policy === 'auto' ? 'active' : ''}">
             <i data-lucide="zap"></i>
             <span>Auto-Approve (Fast)</span>
-            ${policy === 'auto' ? '<i data-lucide="check" class="lucide-check-icon"></i>' : ''}
+            ${policy === 'auto' ? '<i data-lucide="check" class="lucide-check-icon" style="margin-left:auto;width:13px;height:13px;"></i>' : ''}
           </button>
           <button class="attach-dropdown-item btn-opt-super ${policy === 'super' ? 'active' : ''}">
             <i data-lucide="sparkles"></i>
-            <span>Super Permission (100% + Recycle Bin)</span>
-            ${policy === 'super' ? '<i data-lucide="check" class="lucide-check-icon"></i>' : ''}
+            <span>Super Permission (Full Access)</span>
+            ${policy === 'super' ? '<i data-lucide="check" class="lucide-check-icon" style="margin-left:auto;width:13px;height:13px;"></i>' : ''}
           </button>
         `;
 
-        permBtn.appendChild(sub);
+        document.body.appendChild(sub);
+        positionSubDropdown(sub, permBtn);
         if (window.lucide) lucide.createIcons({ parent: sub });
 
         sub.querySelector('.btn-opt-ask')?.addEventListener('click', (e) => {
           e.stopPropagation();
           localStorage.setItem('mariano_permission_policy', 'ask');
           showToast('Policy Updated', 'Set to Ask First (Safe mode).', 2000);
-          document.querySelectorAll('.attach-dropdown, .attach-sub-dropdown').forEach(d => d.remove());
+          closeAll();
         });
-
         sub.querySelector('.btn-opt-auto')?.addEventListener('click', (e) => {
           e.stopPropagation();
           localStorage.setItem('mariano_permission_policy', 'auto');
           showToast('Policy Updated', 'Set to Auto-Approve (Unrestricted mode).', 2000);
-          document.querySelectorAll('.attach-dropdown, .attach-sub-dropdown').forEach(d => d.remove());
+          closeAll();
         });
-
         sub.querySelector('.btn-opt-super')?.addEventListener('click', (e) => {
           e.stopPropagation();
           localStorage.setItem('mariano_permission_policy', 'super');
           showToast('Super Permission Active', '100% Full Access Enabled (Deletes sent to Recycle Bin)', 3000);
-          document.querySelectorAll('.attach-dropdown, .attach-sub-dropdown').forEach(d => d.remove());
+          closeAll();
         });
       });
 
-      // Toggle Web Search
+      // ── Toggle Web Search ─────────────────────────────────────────────────
       const searchBtn = dropdown.querySelector('.btn-web-search');
       if (searchBtn) {
         searchBtn.style.opacity = webSearchEnabled ? '1' : '0.6';
         searchBtn.addEventListener('click', () => {
           webSearchEnabled = !webSearchEnabled;
           showToast('Web Search', webSearchEnabled ? 'Web Search Enabled' : 'Web Search Disabled', 2000);
-          document.querySelectorAll('.attach-dropdown, .attach-sub-dropdown').forEach(d => d.remove());
+          closeAll();
         });
       }
-
-      btn.appendChild(dropdown);
-      if (window.lucide) lucide.createIcons({ parent: dropdown });
     });
   };
 
   bindBtn('btn-attach-home');
   bindBtn('btn-attach-conv');
 
+  // Close on outside click
   document.addEventListener('click', (e) => {
-    if (!e.target.closest('.attach-dropdown') && !e.target.closest('.cap-icon-btn')) {
-      document.querySelectorAll('.attach-dropdown, .attach-sub-dropdown').forEach(d => d.remove());
+    if (
+      !e.target.closest('.attach-dropdown') &&
+      !e.target.closest('.attach-sub-dropdown') &&
+      !e.target.closest('.cap-icon-btn')
+    ) {
+      closeAll();
     }
   });
 }

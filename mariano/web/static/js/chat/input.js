@@ -1,6 +1,7 @@
 /* === chat/input.js — Input binding, scroll, clear helpers, shared state === */
 import { attachmentManager } from '../components/attachment_manager.js';
 import { updateInputStatsIndicator } from './input_stats.js';
+import { isDebateModeActive, handleInlineDebateSubmit, initInlineDebateMode } from './debate_mode.js';
 
 // Shared mutable state (exported for session.js to access)
 export let activeChatId = localStorage.getItem('hekki_active_chat_id') || null;
@@ -31,13 +32,45 @@ export function scrollChat() {
 export function clearInputs() {
   ['chat-input', 'chat-input-conv'].forEach(id => {
     const el = document.getElementById(id);
-    if (el) { el.value = ''; el.style.height = 'auto'; }
+    if (el) { 
+      el.value = ''; 
+      el.style.height = 'auto'; 
+      updateCapsuleLayoutState(el);
+    }
   });
   document.getElementById('chat-input-stats-badge')?.remove();
   document.getElementById('chat-input-conv-stats-badge')?.remove();
   if (window.setGeneratingState) {
     window.setGeneratingState(window.isGenerating);
   }
+}
+
+export function updateCapsuleLayoutState(textarea) {
+  if (!textarea) return;
+  const capsule = textarea.closest('#input-capsule, #input-capsule-conv, .home-capsule, #coder-input-capsule, #debate-input-capsule');
+  if (!capsule) return;
+
+  const val = textarea.value || '';
+  const previewArea = capsule.querySelector('.input-preview-area');
+  const hasAttachments = previewArea && !previewArea.classList.contains('hidden') && previewArea.children.length > 0;
+  
+  // Switch to multi-line card layout if text contains newline (\n), exceeds 80 characters, or has attachments
+  const isMulti = val.includes('\n') || (val.length > 80) || hasAttachments;
+
+  requestAnimationFrame(() => {
+    if (isMulti) {
+      if (!capsule.classList.contains('is-multiline')) {
+        capsule.classList.add('is-multiline');
+        capsule.classList.remove('is-single-line');
+      }
+    } else {
+      if (!capsule.classList.contains('is-single-line')) {
+        capsule.classList.remove('is-multiline');
+        capsule.classList.add('is-single-line');
+      }
+      textarea.scrollTop = 0;
+    }
+  });
 }
 
 export function clearChatLogs() {
@@ -50,6 +83,10 @@ export function clearChatLogs() {
       }
     });
   }
+  // Reset any inline style that debate_mode.js may have set on home-screen
+  // so that classList-based show/hide works correctly after a debate.
+  const homeScreen = document.getElementById('home-screen');
+  if (homeScreen) homeScreen.style.display = '';
 }
 
 /** Formats ISO timestamp to human readable shorthand */
@@ -100,11 +137,7 @@ export function bindInputs(sendCallback, ChatSessionManager) {
       }
     } else {
       stopBtn?.classList.add('hidden');
-      if (hasText) {
-        submitBtn?.classList.remove('hidden');
-      } else {
-        submitBtn?.classList.add('hidden');
-      }
+      submitBtn?.classList.remove('hidden');
     }
   };
 
@@ -118,6 +151,22 @@ export function bindInputs(sendCallback, ChatSessionManager) {
     return text.trim();
   };
 
+  const triggerSend = (text) => {
+    const lower = (text || '').toLowerCase().trim();
+    const isDebateCmd = lower.startsWith('/debate') || isDebateModeActive();
+    if (isDebateCmd) {
+      const topic = text.replace(/^\/debate\s*/i, '').trim();
+      if (topic) {
+        handleInlineDebateSubmit(topic);
+      }
+      clearInputs();
+      return;
+    }
+    sendCallback(text);
+  };
+
+  initInlineDebateMode();
+
   $('chat-input')?.addEventListener('keydown', e => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -130,7 +179,7 @@ export function bindInputs(sendCallback, ChatSessionManager) {
       }
       if (!text && attachmentManager.hasFiles()) text = "Analyze attached file(s)";
       if (window.sounds && window.sounds.playSend) window.sounds.playSend();
-      sendCallback(text);
+      triggerSend(text);
     }
   });
 
@@ -146,18 +195,30 @@ export function bindInputs(sendCallback, ChatSessionManager) {
       }
       if (!text && attachmentManager.hasFiles()) text = "Analyze attached file(s)";
       if (window.sounds && window.sounds.playSend) window.sounds.playSend();
-      sendCallback(text);
+      triggerSend(text);
     }
   });
 
   $('chat-input')?.addEventListener('input', () => {
     handleInputToggle($('chat-input'), 'btn-submit-home', 'btn-stop-gen');
     updateInputStatsIndicator('chat-input', 'chat-input-stats-badge');
+    updateCapsuleLayoutState($('chat-input'));
   });
 
   $('chat-input-conv')?.addEventListener('input', () => {
     handleInputToggle($('chat-input-conv'), 'btn-submit-conv', 'btn-stop-gen-conv');
     updateInputStatsIndicator('chat-input-conv', 'chat-input-conv-stats-badge');
+    updateCapsuleLayoutState($('chat-input-conv'));
+  });
+
+  ['chat-input', 'chat-input-conv'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      updateCapsuleLayoutState(el);
+      ['keyup', 'change', 'paste'].forEach(evt => {
+        el.addEventListener(evt, () => setTimeout(() => updateCapsuleLayoutState(el), 10));
+      });
+    }
   });
 
 
@@ -166,7 +227,7 @@ export function bindInputs(sendCallback, ChatSessionManager) {
     if (!text && !attachmentManager.hasFiles()) return;
     if (!text && attachmentManager.hasFiles()) text = "Analyze attached file(s)";
     if (window.sounds && window.sounds.playSend) window.sounds.playSend();
-    sendCallback(text);
+    triggerSend(text);
   });
 
   $('btn-submit-conv')?.addEventListener('click', () => {
@@ -174,7 +235,7 @@ export function bindInputs(sendCallback, ChatSessionManager) {
     if (!text && !attachmentManager.hasFiles()) return;
     if (!text && attachmentManager.hasFiles()) text = "Analyze attached file(s)";
     if (window.sounds && window.sounds.playSend) window.sounds.playSend();
-    sendCallback(text);
+    triggerSend(text);
   });
 
   // Bind Expert Debate mode pill toggle
@@ -218,11 +279,22 @@ export function bindInputs(sendCallback, ChatSessionManager) {
     })
     .then(data => {
       if (data && Array.isArray(data.chats)) {
-        localStorage.setItem('hekki_chats', JSON.stringify(data.chats));
+        // MERGE server chats with local — don't overwrite.
+        // Local-only chats (e.g. playground sessions not yet synced) must be preserved.
+        const localChats = JSON.parse(localStorage.getItem('hekki_chats') || '[]');
+        const serverMap = new Map(data.chats.map(c => [c.id, c]));
+        // Keep local chats that server doesn't know about, use server version for shared ones
+        const localOnly = localChats.filter(c => !serverMap.has(c.id));
+        const merged = [...localOnly, ...data.chats];
+        localStorage.setItem('hekki_chats', JSON.stringify(merged));
         ChatSessionManager.renderChatsList();
-        const activeId = localStorage.getItem('hekki_active_chat_id');
-        if (activeId) {
-          ChatSessionManager.loadChat(activeId);
+        // Skip restoring the active chat if a debate is currently streaming —
+        // loadChat() calls clearChatLogs() which would wipe the live debate UI.
+        if (!window._debateRunning) {
+          const activeId = localStorage.getItem('hekki_active_chat_id');
+          if (activeId) {
+            ChatSessionManager.loadChat(activeId);
+          }
         }
       }
     })

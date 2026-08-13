@@ -117,7 +117,7 @@ body.oled .code-action-btn:hover,
   background: transparent !important;
   padding: 14px 16px !important;
   overflow-x: auto !important;
-  font-size: var(--fs-sm);
+  font-size: 15px !important;
   line-height: 1.6;
   font-weight: 400 !important;
   font-family: var(--font-mono);
@@ -134,7 +134,7 @@ body.oled .code-action-btn:hover,
   padding: 0 !important;
   border-radius: 0 !important;
   border: none !important;
-  font-size: var(--fs-sm) !important;
+  font-size: 15px !important;
   font-weight: 400 !important;
   line-height: 1.6 !important;
   font-family: var(--font-mono) !important;
@@ -147,5 +147,44 @@ body.oled .code-action-btn:hover,
 .code-block-wrapper pre.wrap-lines code {
   white-space: pre-wrap !important;
   word-break: break-all !important;
+}
+
+/* Tool execution output box (Adaptive Light/Dark Theme contrast) */
+.tool-output-block,
+.tool-terminal-block {
+  margin: 6px 0 2px 0;
+  padding: 10px 12px;
+  background: var(--input-bg, #F0F2F5) !important;
+  color: var(--text-primary) !important;
+  border-radius: 8px !important;
+  border: 1px solid var(--border) !important;
+  font-size: 11px !important;
+  font-family: var(--font-mono) !important;
+  line-height: 1.55 !important;
+  overflow-x: auto;
+  box-shadow: none !important;
+  max-height: 220px;
+  width: 100%;
+  box-sizing: border-box;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+body.light .tool-output-block,
+body.light .tool-terminal-block,
+:root[data-theme="light"] .tool-output-block,
+:root[data-theme="light"] .tool-terminal-block {
+  background: #F0F2F5 !important;
+  border: 1px solid #E2E8F0 !important;
+  color: #18181B !important;
+}
+
+body.dark .tool-output-block,
+body.dark .tool-terminal-block,
+:root[data-theme="dark"] .tool-output-block,
+:root[data-theme="dark"] .tool-terminal-block {
+  background: #181818 !important;
+  border: 1px solid #2B2B30 !important;
+  color: #F4F4F5 !important;
 }
 

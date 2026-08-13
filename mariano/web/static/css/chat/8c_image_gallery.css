@@ -88,7 +88,7 @@
   border: none;
   outline: none;
   color: var(--text-primary);
-  font-size: 11px;
+  font-size: 12px;
   font-family: var(--font);
   width: 85px;
   transition: width 0.2s cubic-bezier(0.16, 1, 0.3, 1);
@@ -105,7 +105,7 @@
   padding: 0 6px;
   height: 25px;
   color: var(--text-secondary);
-  font-size: 11px;
+  font-size: 12px;
   font-family: var(--font);
   outline: none;
   cursor: pointer;
@@ -128,7 +128,7 @@
   border: none;
   border-radius: 12px;
   color: var(--text-secondary);
-  font-size: 11px;
+  font-size: 12px;
   cursor: pointer;
   transition: background 0.15s, color 0.15s, transform 0.3s;
 }
@@ -344,7 +344,7 @@
   background: #191919 !important;
   border: none !important;
   color: #ffffff !important;
-  transform: scale(1.05);
+  transform: none;
 }
 
 .img-card-checkbox.checked i,
@@ -384,7 +384,7 @@
   background: #eeeeec;
   border: none;
   color: #191919;
-  transform: scale(1.1);
+  transform: none;
 }
 
 .img-card-btn.img-del-btn:hover {
@@ -423,7 +423,7 @@
 }
 
 .img-gallery-card-info {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--text-3);
   font-family: var(--font);
   white-space: nowrap;

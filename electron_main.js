@@ -232,8 +232,8 @@ function createWindow() {
     applyNativeTheme(savedTheme);
 
     const isDark = savedTheme !== 'light';
-    const bgColor   = isDark ? '#0d0d0d' : '#f5f5f5';
-    const overlayBg = isDark ? '#161616' : '#f0f0f0';
+    const bgColor   = isDark ? '#0d0d0d' : '#FCFCFC';
+    const overlayBg = isDark ? '#181817' : '#F6F7F9';
     const overlayFg = isDark ? '#e0e0e0' : '#111111';
 
     mainWindow = new BrowserWindow({
@@ -279,7 +279,7 @@ function createWindow() {
         const dark = theme !== 'light';
         if (mainWindow && !mainWindow.isDestroyed()) {
             mainWindow.setTitleBarOverlay({
-                color:       dark ? '#161616' : '#f0f0f0',
+                color:       dark ? '#181817' : '#F6F7F9',
                 symbolColor: dark ? '#e0e0e0' : '#111111',
                 height: 32
             });

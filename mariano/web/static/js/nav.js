@@ -65,8 +65,15 @@ export function bindNavigation(tabs, showToast, inConversationStateRef) {
     localStorage.removeItem('hekki_active_project');
     localStorage.removeItem('hekki_active_project_path');
 
-    // Reset state
-    $('home-screen')?.classList.remove('hidden');
+    // Reset debate running state
+    window._debateRunning = false;
+
+    // Reset state — must also clear inline style set by debate_mode.js
+    const homeScreen = $('home-screen');
+    if (homeScreen) {
+      homeScreen.style.display = '';   // clear inline style from debate_mode.js
+      homeScreen.classList.remove('hidden');
+    }
     $('bottom-input-bar')?.classList.add('hidden');
     inConversationStateRef.val = false;
     resetActiveChat();
@@ -89,9 +96,15 @@ export function bindNavigation(tabs, showToast, inConversationStateRef) {
     router.navigateTo('chat');
   });
 
-  $('mode-playground')?.addEventListener('click', () => {
-    router.navigateTo('debate');
+  $('btn-nav-back')?.addEventListener('click', () => {
+    window.history.back();
   });
+
+  $('btn-nav-forward')?.addEventListener('click', () => {
+    window.history.forward();
+  });
+
+
 
 
 
@@ -100,10 +113,7 @@ export function bindNavigation(tabs, showToast, inConversationStateRef) {
     router.navigateTo('skills');
   });
 
-  //  Debate Playground 
-  $('btn-nav-playground')?.addEventListener('click', () => {
-    router.navigateTo('debate');
-  });
+
 
 
   //  Plugins & MCP Connectors Hub
@@ -114,6 +124,11 @@ export function bindNavigation(tabs, showToast, inConversationStateRef) {
   //  Images Gallery 
   $('btn-nav-images')?.addEventListener('click', () => {
     router.navigateTo('images');
+  });
+
+  //  Chat History — navigate to center Chat History page
+  $('btn-nav-chat-history')?.addEventListener('click', () => {
+    router.navigateTo('history');
   });
 
   //  Main Topnav Back Button 

@@ -1,8 +1,8 @@
 /* === SIDEBAR NAV (Second left sub-navigation sidebar panel) === */
 #sidebar-nav {
   width: 260px;
-  background: var(--bg);
-  border-right: 1px solid var(--border);
+  background: var(--sidebar-bg);
+  border-right: none !important;
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
@@ -54,8 +54,9 @@
   align-items: center !important;
   justify-content: center !important;
   height: auto !important;
-  padding: 10px 0 6px !important;
-  gap: 8px !important;
+  padding: 6px 0 4px !important;
+  gap: 6px !important;
+  margin-bottom: 2px !important;
 }
 #sidebar-nav.collapsed .nav-header > *:not(.nav-header-logo-wrapper):not(#btn-sidebar-collapse) {
   display: none !important;
@@ -126,21 +127,22 @@
   flex-shrink: 0;
 }
 
-#btn-sidebar-collapse {
+#btn-sidebar-collapse,
+#btn-debate-sidebar-toggle {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
-  min-width: 36px;
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
   border: none;
   background: transparent;
   color: var(--text-3);
-  border-radius: 8px;
+  border-radius: 6px;
   cursor: pointer;
   transition: background 0.12s, color 0.12s;
   flex-shrink: 0;
-  margin: 0 auto;
+  margin: 0 !important;
 }
 #btn-sidebar-collapse:hover {
   background: var(--hover);
@@ -154,15 +156,17 @@
 }
 
 .nav-header {
-  height: 48px;
+  height: 30px;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  padding: 0 16px;
+  justify-content: space-between;
+  padding: 0 10px 0 10px;
   gap: 8px;
   flex-shrink: 0;
   border-bottom: none;
+  margin-bottom: 2px;
 }
+
 .nav-title {
   font-size: var(--fs-xl);     /* 16px */
   font-weight: 600;
@@ -172,6 +176,7 @@
 .nav-inner {
   flex: 1;
   padding: 0 8px 16px 8px;
+  padding-top: 0 !important;
   display: flex;
   flex-direction: column;
   overflow-y: auto;
@@ -218,13 +223,15 @@ body.dark .btn-new-chat-dock:hover {
 
 /* Nav Sections */
 .nav-section {
-  margin-top: 16px;
+  margin-top: 6px;
 }
 .nav-section:first-of-type {
-  margin-top: 8px;
+  margin-top: 0 !important;
+  padding-top: 0 !important;
 }
+
 .section-hdr {
-  margin-bottom: 6px;
+  margin-bottom: 2px;
   padding: 0 8px;
   display: flex;
   justify-content: space-between;
@@ -235,7 +242,7 @@ body.dark .btn-new-chat-dock:hover {
   align-items: center;
   width: fit-content;
   font-size: var(--fs-xs) !important;
-  font-weight: 500 !important;
+  font-weight: 400 !important;
   line-height: 16px !important;
   color: var(--text-3, #8e8e93) !important;
   background-color: transparent;
@@ -245,57 +252,59 @@ body.dark .btn-new-chat-dock:hover {
   margin: 0;
   letter-spacing: 0.02em;
 }
-.section-list {
+.section-list,
+.nav-section-actions {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 2px !important;
 }
-.section-item {
-  height: 32px;
-  border-radius: 8px;
-  padding: 0 8px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.section-item,
+.sidebar-action-btn,
+.btn-new-chat-dock {
+  height: 28px !important;
+  min-height: 28px !important;
+  max-height: 28px !important;
+  margin: 1px 0 !important;
+  border-radius: 6px !important;
+  padding: 0 8px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
   cursor: pointer;
-  transition: all 0.12s ease;
+  transition: background 0.12s ease, color 0.12s ease !important;
   position: relative;
-  box-shadow: none;
+  box-shadow: none !important;
+  border: none !important;
 }
-.section-item:hover {
-  background: var(--hover);
-  color: var(--text);
+.section-item:hover,
+.sidebar-action-btn:hover,
+.btn-new-chat-dock:hover {
+  background: var(--hover) !important;
+  color: var(--text) !important;
 }
-.section-item.active {
-  background: var(--hover);
-  color: var(--text);
-}
+.section-item.active,
 body.light .section-item.active,
 :root[data-theme="light"] .section-item.active {
   background: var(--hover) !important;
   color: var(--text) !important;
+  box-shadow: none !important;
 }
-.section-item .lbl,
-#sidebar-nav .recent-item span {
-  font-size: var(--fs-base);
+#sidebar-nav .section-item .lbl,
+#sidebar-nav .recent-item span,
+#sidebar-nav .sidebar-action-btn,
+#sidebar-nav .sidebar-action-btn span,
+#sidebar-nav .btn-new-chat-dock,
+#sidebar-nav .btn-new-chat-dock span,
+#sidebar-nav .sidebar-user-name,
+#recent-list .section-item .lbl,
+#playground-list .section-item .lbl {
+  font-size: 14px !important;
   font-weight: 400;
   line-height: 20px;
   color: var(--text-2);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  flex: 1;
-}
-/* Recent chat history links */
-#recent-list .section-item .lbl {
-  font-size: var(--fs-base) !important;
-  font-weight: 400;
-  line-height: 20px;
-  color: var(--text-2);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  flex: 1;
 }
 .section-item:hover .lbl, .section-item.active .lbl {
   color: var(--text);
@@ -362,22 +371,56 @@ body.light .section-item.active,
   color: var(--text);
 }
 
-/* === LEFT SIDEBAR BALANCED ICON WEIGHT (1.8px stroke) === */
+/* === LEFT SIDEBAR REFINED ICON WEIGHT & SIZE (1.6px stroke matching target UI) === */
 #sidebar-nav i,
 #sidebar-nav svg,
 #sidebar-nav .lucide,
 #sidebar-dock i,
 #sidebar-dock svg,
 #sidebar-dock .lucide,
+#sidebar-dock svg,
+#sidebar-dock i,
 .debate-sidebar i,
 .debate-sidebar svg,
 .debate-sidebar .lucide,
 .sidebar-action-btn i,
 .sidebar-action-btn svg,
 .sidebar-action-btn .lucide,
+.debate-list-btn i,
+.debate-list-btn svg,
+.debate-list-btn .lucide,
 .section-item i,
 .section-item svg,
 .section-item .lucide {
-  stroke-width: 1.8px !important;
+  stroke-width: 1.6px !important;
 }
+
+.sidebar-action-btn svg,
+.sidebar-action-btn i,
+.sidebar-action-btn .lucide,
+.debate-list-btn svg,
+.debate-list-btn i,
+.debate-list-btn .lucide,
+#sidebar-nav .section-item svg,
+#sidebar-nav .section-item i,
+#sidebar-nav .section-item .lucide,
+.debate-sidebar .icon-btn svg,
+.debate-sidebar .icon-btn i,
+.debate-sidebar .icon-btn .lucide {
+  width: 16px !important;
+  height: 16px !important;
+  display: inline-block !important;
+  vertical-align: middle !important;
+  flex-shrink: 0 !important;
+}
+
+.sidebar-action-btn > svg,
+.sidebar-action-btn > i,
+.sidebar-action-btn > .lucide,
+.debate-list-btn > svg,
+.debate-list-btn > i,
+.debate-list-btn > .lucide {
+  margin-right: 8px !important;
+}
+
 

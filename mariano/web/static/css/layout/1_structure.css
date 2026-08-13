@@ -5,6 +5,7 @@
   flex-direction: row;
   height: 100vh;
   width: 100vw;
+  background: var(--sidebar-bg);
 }
 
 /* === TITLEBAR === */
@@ -87,10 +88,13 @@
   color: #fff; 
 }
 
-/* Submit/Send button styling — pill-like grey background, no outline */
+/* Submit/Send button & Plus (+) Attach button styling — matching exact background fill */
 .submit-btn,
 #btn-submit-home,
-#btn-submit-conv {
+#btn-submit-conv,
+#btn-attach-home,
+#btn-attach-conv,
+#btn-attach {
   width: 32px !important;
   height: 32px !important;
   min-width: 32px !important;
@@ -98,25 +102,72 @@
   max-width: 32px !important;
   max-height: 32px !important;
   border-radius: 50% !important;
-  background: var(--hover);
+  background: var(--hover) !important;
   border: none !important;
-  color: var(--text-2);
-  display: inline-flex;
+  color: var(--text-2) !important;
+  display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
   cursor: pointer;
   transition: background 0.12s, color 0.12s;
   padding: 0 !important;
   flex-shrink: 0 !important;
+  box-shadow: none !important;
 }
-.submit-btn:hover {
-  background: var(--hover-2);
-  color: var(--text);
+.submit-btn:hover,
+#btn-submit-home:hover,
+#btn-submit-conv:hover,
+#btn-attach-home:hover,
+#btn-attach-conv:hover,
+#btn-attach:hover {
+  background: var(--hover-2) !important;
+  color: var(--text) !important;
 }
 .submit-btn i, .submit-btn svg {
-  width: 14px;
-  height: 14px;
-  stroke-width: 3px !important;
+  width: 15px;
+  height: 15px;
+  stroke-width: 2.8px !important;
+}
+
+/* === HIGH-PRIORITY ACTION ICON WEIGHTS === */
+/* Send buttons — arrow-right / arrow-up icons */
+#btn-submit-home i, #btn-submit-home svg,
+#btn-submit-conv i, #btn-submit-conv svg,
+#btn-send-voice-home i, #btn-send-voice-home svg,
+#btn-send-voice-conv i, #btn-send-voice-conv svg {
+  width: 16px !important;
+  height: 16px !important;
+  stroke-width: 2.8px !important;
+}
+
+/* Stop buttons — square icon (filled, so stroke less important but size matters) */
+#btn-stop i, #btn-stop svg,
+#btn-stop-gen i, #btn-stop-gen svg,
+#btn-stop-conv i, #btn-stop-conv svg,
+#btn-stop-gen-conv i, #btn-stop-gen-conv svg,
+#btn-stop-voice-home i, #btn-stop-voice-home svg,
+#btn-stop-voice-conv i, #btn-stop-voice-conv svg {
+  width: 12px !important;
+  height: 12px !important;
+  stroke-width: 2.5px !important;
+}
+
+/* Voice / Mic buttons */
+#btn-voice i, #btn-voice svg,
+#btn-voice-conv i, #btn-voice-conv svg,
+#btn-cancel-voice-home i, #btn-cancel-voice-home svg,
+#btn-cancel-voice-conv i, #btn-cancel-voice-conv svg {
+  width: 16px !important;
+  height: 16px !important;
+  stroke-width: 2.5px !important;
+}
+
+/* Attach / Plus buttons */
+#btn-attach-home i, #btn-attach-home svg,
+#btn-attach-conv i, #btn-attach-conv svg {
+  width: 16px !important;
+  height: 16px !important;
+  stroke-width: 2.5px !important;
 }
 .submit-btn.hidden {
   display: none !important;
@@ -129,5 +180,8 @@
   flex-direction: column;
   overflow: hidden;
   background: var(--bg);
+  border-radius: 12px;
+  margin: 6px 6px 6px 0;
+  border: 1px solid var(--border);
 }
 

@@ -8,7 +8,7 @@
 }
 
 .yt-preview-card:hover .yt-preview-thumb {
-  transform: scale(1.04);
+  transform: none;
 }
 
 .yt-preview-play-btn {
@@ -39,7 +39,7 @@
   right: 8px;
   background: rgba(0, 0, 0, 0.75);
   color: #ffffff;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 600;
   padding: 2px 6px;
   border-radius: 4px;
@@ -65,7 +65,7 @@
 }
 
 .yt-preview-domain {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--text-tertiary, #a1a1aa);
 }
 
@@ -106,7 +106,7 @@
 }
 
 .lp-domain {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--text-tertiary, #a1a1aa);
   font-weight: 500;
 }
@@ -173,7 +173,7 @@
 }
 
 .aider-toggle-card-desc {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--text-3);
   line-height: 1.4;
 }
@@ -240,16 +240,14 @@
   color: var(--text-primary);
 }
 
-#input-capsule-conv .model-pill,
-#input-capsule-conv .permission-pill {
+.permission-pill {
   border: none !important;
   font-weight: 400 !important;
   padding: 0 4px !important;
   background: transparent !important;
 }
 
-#input-capsule-conv .model-pill:hover,
-#input-capsule-conv .permission-pill:hover {
+.permission-pill:hover {
   background: transparent !important;
   opacity: 0.8;
 }

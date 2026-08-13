@@ -48,10 +48,55 @@ if ('serviceWorker' in navigator) {
 // ── Boot-time Font Restore (runs instantly, zero flash) ───────────────────
 (function _restoreFont() {
   const FONT_MAP = {
+    'google-sans': {
+      font:  '"Google Sans", "Google Sans Flex", "Open Sans", sans-serif',
+      serif: '"Google Sans", "Google Sans Flex", sans-serif',
+      ai:    '"Google Sans", "Google Sans Flex", sans-serif'
+    },
+    'segoe-ui': {
+      font:  '"Segoe WPC", "Segoe UI", -apple-system-body, ui-sans-serif, "system-ui", sans-serif',
+      serif: '"Segoe WPC", "Segoe UI", sans-serif',
+      ai:    '"Segoe WPC", "Segoe UI", sans-serif'
+    },
+    'inter': {
+      font:  '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+      serif: '"Inter", sans-serif',
+      ai:    '"Inter", sans-serif'
+    },
+    'plus-jakarta': {
+      font:  '"Plus Jakarta Sans", "Inter", sans-serif',
+      serif: '"Plus Jakarta Sans", sans-serif',
+      ai:    '"Plus Jakarta Sans", sans-serif'
+    },
+    'outfit': {
+      font:  '"Outfit", "Plus Jakarta Sans", sans-serif',
+      serif: '"Outfit", sans-serif',
+      ai:    '"Outfit", sans-serif'
+    },
+    'open-sans': {
+      font:  '"Open Sans", "Google Sans", sans-serif',
+      serif: '"Open Sans", "Google Sans", sans-serif',
+      ai:    '"Open Sans", "Google Sans", sans-serif'
+    },
+    'roboto': {
+      font:  '"Roboto", "Open Sans", sans-serif',
+      serif: '"Roboto", sans-serif',
+      ai:    '"Roboto", sans-serif'
+    },
     'system': {
       font:  '-apple-system-body, ui-sans-serif, -apple-system, "system-ui", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, "sans-serif", "Segoe UI Emoji", "Segoe UI Symbol"',
       serif: '-apple-system-body, ui-sans-serif, -apple-system, "system-ui", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, "sans-serif", "Segoe UI Emoji", "Segoe UI Symbol"',
       ai:    '-apple-system-body, ui-sans-serif, -apple-system, "system-ui", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, "sans-serif", "Segoe UI Emoji", "Segoe UI Symbol"'
+    },
+    'jetbrains-mono': {
+      font:  '"JetBrains Mono", "Fira Code", ui-monospace, monospace',
+      serif: '"JetBrains Mono", monospace',
+      ai:    '"JetBrains Mono", monospace'
+    },
+    'fira-code': {
+      font:  '"Fira Code", "JetBrains Mono", ui-monospace, monospace',
+      serif: '"Fira Code", monospace',
+      ai:    '"Fira Code", monospace'
     },
     'anthropic': {
       font:  '"anthropic-sans", system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
@@ -59,8 +104,8 @@ if ('serviceWorker' in navigator) {
       ai:    '"anthropic-serif", "Anthropic Serif Fallback Georgia", Georgia, "Times New Roman", serif'
     }
   };
-  const key = localStorage.getItem('hekki_font') || 'system';
-  const cfg = FONT_MAP[key] || FONT_MAP['system'];
+  const key = localStorage.getItem('hekki_font') || 'segoe-ui';
+  const cfg = FONT_MAP[key] || FONT_MAP['segoe-ui'];
   document.documentElement.style.setProperty('--font', cfg.font);
   document.documentElement.style.setProperty('--font-sans', cfg.font);
   document.documentElement.style.setProperty('--font-serif', cfg.serif);
@@ -90,13 +135,57 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Double-enforce font persistence — CSS custom props from stylesheet
-  // load synchronously before this, so inline style always wins here.
+  // Double-enforce font persistence
   const FONT_MAP_BOOT = {
+    'google-sans': {
+      font:  '"Google Sans", "Google Sans Flex", "Open Sans", sans-serif',
+      serif: '"Google Sans", "Google Sans Flex", sans-serif',
+      ai:    '"Google Sans", "Google Sans Flex", sans-serif'
+    },
+    'segoe-ui': {
+      font:  '"Segoe WPC", "Segoe UI", -apple-system-body, ui-sans-serif, "system-ui", sans-serif',
+      serif: '"Segoe WPC", "Segoe UI", sans-serif',
+      ai:    '"Segoe WPC", "Segoe UI", sans-serif'
+    },
+    'inter': {
+      font:  '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+      serif: '"Inter", sans-serif',
+      ai:    '"Inter", sans-serif'
+    },
+    'plus-jakarta': {
+      font:  '"Plus Jakarta Sans", "Inter", sans-serif',
+      serif: '"Plus Jakarta Sans", sans-serif',
+      ai:    '"Plus Jakarta Sans", sans-serif'
+    },
+    'outfit': {
+      font:  '"Outfit", "Plus Jakarta Sans", sans-serif',
+      serif: '"Outfit", sans-serif',
+      ai:    '"Outfit", sans-serif'
+    },
+    'open-sans': {
+      font:  '"Open Sans", "Google Sans", sans-serif',
+      serif: '"Open Sans", "Google Sans", sans-serif',
+      ai:    '"Open Sans", "Google Sans", sans-serif'
+    },
+    'roboto': {
+      font:  '"Roboto", "Open Sans", sans-serif',
+      serif: '"Roboto", sans-serif',
+      ai:    '"Roboto", sans-serif'
+    },
     'system': {
       font:  '-apple-system-body, ui-sans-serif, -apple-system, "system-ui", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, "sans-serif", "Segoe UI Emoji", "Segoe UI Symbol"',
       serif: '-apple-system-body, ui-sans-serif, -apple-system, "system-ui", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, "sans-serif", "Segoe UI Emoji", "Segoe UI Symbol"',
       ai:    '-apple-system-body, ui-sans-serif, -apple-system, "system-ui", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, "sans-serif", "Segoe UI Emoji", "Segoe UI Symbol"'
+    },
+    'jetbrains-mono': {
+      font:  '"JetBrains Mono", "Fira Code", ui-monospace, monospace',
+      serif: '"JetBrains Mono", monospace',
+      ai:    '"JetBrains Mono", monospace'
+    },
+    'fira-code': {
+      font:  '"Fira Code", "JetBrains Mono", ui-monospace, monospace',
+      serif: '"Fira Code", monospace',
+      ai:    '"Fira Code", monospace'
     },
     'anthropic': {
       font:  '"anthropic-sans", system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
@@ -104,8 +193,8 @@ document.addEventListener('DOMContentLoaded', () => {
       ai:    '"anthropic-serif", "Anthropic Serif Fallback Georgia", Georgia, "Times New Roman", serif'
     }
   };
-  const _fk   = localStorage.getItem('hekki_font') || 'system';
-  const _cfg  = FONT_MAP_BOOT[_fk] || FONT_MAP_BOOT['system'];
+  const _fk   = localStorage.getItem('hekki_font') || 'segoe-ui';
+  const _cfg  = FONT_MAP_BOOT[_fk] || FONT_MAP_BOOT['segoe-ui'];
   document.documentElement.style.setProperty('--font', _cfg.font);
   document.documentElement.style.setProperty('--font-sans', _cfg.font);
   document.documentElement.style.setProperty('--font-serif', _cfg.serif);
@@ -391,15 +480,12 @@ function boot() {
   new SearchModal(ChatSessionManager);
   window.slashMenu = new SlashMenuManager((text) => send(text, enterConversation, log));
 
-  // Initialize Chat and Debate Minimaps
+  // Initialize Chat Minimap
   window.chatMinimap = new ChatMinimapManager({ containerSelector: '#chat-log', paneSelector: '#chat-pane', isDebate: false });
-  window.debateMinimap = new ChatMinimapManager({ containerSelector: '#debate-stream-container', paneSelector: '#debate-pane', isDebate: true });
 
   router.onRefresh((page) => {
     if (page === 'chat' && window.chatMinimap) {
       window.chatMinimap.refresh();
-    } else if ((page === 'debate' || page === 'playground') && window.debateMinimap) {
-      window.debateMinimap.refresh();
     }
   });
 
@@ -458,18 +544,26 @@ function boot() {
   });
 
   router.onNavigate('chat', () => {
-    ChatSessionManager.ensureNormalChatActive();
+    // NOTE: ensureNormalChatActive() intentionally NOT called here.
+    // It was causing blank screens by redirecting away from valid playground/debate
+    // sessions every time the user switched back to the chat page.
+    // Boot-time restore handles the initial state; runtime navigation must be non-destructive.
 
     document.querySelectorAll('.agent-welcome-wrapper').forEach(el => el.remove());
 
-    if (inConversationState.val) {
+    // During an active debate, input bar must stay visible and home screen hidden
+    // regardless of inConversationState — debate_mode manages these directly.
+    if (window._debateRunning) {
+      $('home-screen')?.classList.add('hidden');
+      $('bottom-input-bar')?.classList.remove('hidden');
+    } else if (inConversationState.val) {
       $('home-screen')?.classList.add('hidden');
       $('bottom-input-bar')?.classList.remove('hidden');
     } else {
       $('home-screen')?.classList.remove('hidden');
       $('bottom-input-bar')?.classList.add('hidden');
     }
-    // Only refresh the dynamic chat session list  never rebuild sidebar HTML,
+    // Only refresh the dynamic chat session list — never rebuild sidebar HTML,
     // which would destroy all event listeners (theme, toggle, settings, etc.)
     ChatSessionManager.renderChatsList();
   });
@@ -499,9 +593,9 @@ function boot() {
     const chats = ChatSessionManager.getChats();
     const activeChat = chats.find(c => c.id === storedId);
     if (activeChat) {
-      if (activeChat.isPlayground) {
-        // Playground chat: clear the stored active id so sidebar renders cleanly,
-        // reset to home screen. The debate session will be accessible from sidebar.
+      if (activeChat.isPlayground && activeChat.messages && activeChat.messages.length === 0) {
+        // Empty playground chat (stale/incomplete debate): reset to home screen.
+        // The debate session is still accessible from the Playground sidebar section.
         ChatSessionManager.setActiveChatId(null);
         localStorage.removeItem('hekki_active_chat_id');
         localStorage.removeItem('mariano_active_chat_id');
@@ -510,9 +604,9 @@ function boot() {
         inConversationState.val = false;
         ChatSessionManager.renderChatsList();
       } else {
-        // Normal chat: restore it
+        // Normal chat OR playground chat with messages (completed debate): restore it.
         ChatSessionManager.loadChat(storedId);
-        enterConversation();
+        if (!activeChat.isPlayground) enterConversation();
       }
     }
   }
@@ -696,17 +790,8 @@ window.setGeneratingState = function(isGenerating) {
   } else {
     btnHomeStop?.classList.add('hidden');
     btnConvStop?.classList.add('hidden');
-
-    if (hasTextHome) {
-      btnHomeSubmit?.classList.remove('hidden');
-    } else {
-      btnHomeSubmit?.classList.add('hidden');
-    }
-    if (hasTextConv) {
-      btnConvSubmit?.classList.remove('hidden');
-    } else {
-      btnConvSubmit?.classList.add('hidden');
-    }
+    btnHomeSubmit?.classList.remove('hidden');
+    btnConvSubmit?.classList.remove('hidden');
   }
 };
 

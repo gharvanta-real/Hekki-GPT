@@ -91,7 +91,7 @@ function _notifyElectronTheme(isDark) {
 }
 
 function _applyTheme(theme, btn) {
-  if (!theme) theme = 'light';
+  if (!theme || theme === 'oled') theme = 'dark';
   document.body.classList.remove('dark', 'light', 'oled');
   document.documentElement.removeAttribute('data-theme');
 
@@ -131,18 +131,18 @@ export function bindThemeToggle() {
   const $ = (id) => document.getElementById(id);
   const btn = $('btn-user-theme');
 
-  // Restore persisted theme on page load (defaults to OLED Black)
-  let savedTheme = localStorage.getItem('hekki_theme') || 'oled';
-  if (savedTheme === 'dark') savedTheme = 'oled';
+  // Restore persisted theme on page load (defaults to Cursor Dark)
+  let savedTheme = localStorage.getItem('hekki_theme') || 'dark';
+  if (savedTheme === 'oled') savedTheme = 'dark';
   localStorage.setItem('hekki_theme', savedTheme);
   _applyTheme(savedTheme, btn);
 
   if (btn) {
-    // ── Toggle on button click (2-way toggle: oled <-> light) ─────
+    // ── Toggle on button click (Clean 2-State: dark <-> light) ─────
     btn.addEventListener('click', () => {
-      let currentTheme = localStorage.getItem('hekki_theme') || 'oled';
-      if (currentTheme === 'dark') currentTheme = 'oled';
-      const newTheme = (currentTheme === 'light') ? 'oled' : 'light';
+      let currentTheme = localStorage.getItem('hekki_theme') || 'dark';
+      if (currentTheme === 'oled') currentTheme = 'dark';
+      const newTheme = (currentTheme === 'light') ? 'dark' : 'light';
       localStorage.setItem('hekki_theme', newTheme);
       _applyTheme(newTheme, btn);
 

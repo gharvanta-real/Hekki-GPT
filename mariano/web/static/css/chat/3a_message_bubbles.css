@@ -3,11 +3,10 @@
   width: 100%;
   max-width: 100%;
   align-self: center;
-  margin-bottom: 20px;
   font-family: var(--font);
-  font-size: 16px;
+  font-size: 16px !important;
   font-weight: 400;
-  line-height: 26px;
+  line-height: 1.50 !important;
   animation: fadeIn 0.2s ease;
 }
 .msg hr {
@@ -19,16 +18,15 @@
 .msg.user {
   background: var(--hover);
   padding: 10px 16px;
-  border-radius: 16px;
-  border-bottom-right-radius: 4px;
+  border-radius: 18px !important;
   max-width: 85%;
   width: fit-content;
   align-self: flex-end;
   color: var(--text);
   font-family: var(--font);
-  font-size: 16px;
+  font-size: 16px !important;
   font-weight: 400;
-  line-height: 26px;
+  line-height: 1.50 !important;
   word-break: break-word;
   white-space: pre-wrap;
   position: relative;
@@ -104,7 +102,7 @@
 .msg-expand-btn:hover {
   background: var(--hover);
   color: var(--text);
-  transform: scale(1.05);
+  transform: none;
 }
 
 /* User & AI Message Group Containers (Bubble + Actions Bar below it) */
@@ -112,33 +110,33 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  margin-bottom: 18px;
+  margin-bottom: 16px;
 }
 .msg-group.user {
   align-items: flex-end;
-  margin-top: 18px;
+  margin-top: 16px;
 }
 .msg-group.user:first-child {
-  margin-top: 6px;
+  margin-top: 8px;
 }
 .msg-group.user .msg.user {
   margin-bottom: 4px;
 }
 .msg-group.ai {
   align-items: flex-start;
-  margin-top: 6px;
+  margin-top: 4px;
 }
 .msg-group.ai .msg.ai {
-  margin-bottom: 4px;
+  margin-bottom: 0;
 }
 
 /* Actions bar under message bubbles */
 .msg-actions {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 2px;
   margin-right: 4px;
-  color: var(--text-3);
+  color: var(--text-2);
   font-size: var(--fs-xs);     /* 11px */
   user-select: none;
   transition: opacity 0.15s ease-in-out, max-height 0.15s ease-in-out, margin-top 0.15s ease-in-out;
@@ -177,6 +175,7 @@
 .action-time {
   margin-right: 6px;
   font-size: var(--fs-xs);     /* 11px */
+  color: var(--text-2);
 }
 .action-btn {
   width: 26px !important;
@@ -187,7 +186,7 @@
   max-height: 26px !important;
   background: transparent;
   border: none !important;
-  color: var(--text-3);
+  color: var(--text-2);
   cursor: pointer;
   padding: 0 !important;
   border-radius: 6px !important;
@@ -211,9 +210,9 @@
   stroke-width: 2.2px;
 }
 
-/* executed tools list - always visible by default (no hover-hiding) */
+/* Executed tools list / "Worked for Xs" timeline header */
 .tool-group-card {
-  margin: 6px 0 !important;
+  margin: 4px 0 6px 0 !important;
   display: flex;
   flex-direction: column;
   opacity: 1;
@@ -221,12 +220,50 @@
   overflow: visible;
 }
 
-/* ALL text in tool logs stream — STRICTLY UNBOLD (font-weight: 400) */
-.tool-group-card,
-.tool-group-card *,
-.tool-group-header,
-.tool-group-title,
-.tool-group-status,
+.tool-group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2px 0;
+  cursor: pointer;
+  user-select: none;
+}
+
+.tool-group-title {
+  font-size: 15px !important;      /* +1px increase for readability */
+  font-weight: 400 !important;     /* Unbold regular */
+  color: var(--text-2) !important;  /* Crisp readable contrast */
+  font-family: var(--font) !important;
+}
+
+.tool-group-status {
+  font-size: 13px !important;      /* +1px increase */
+  font-weight: 400 !important;
+}
+
+.tool-group-header .chevron-icon,
+.tool-group-header svg,
+.tool-group-header .lucide {
+  width: 15px !important;
+  height: 15px !important;
+  color: var(--text-2);
+}
+
+/* Tool log body items inside expanded view — font-size +1px increase & unbold */
+.tool-log-card {
+  font-size: 13px !important;
+}
+.ai-reasoning-card {
+  font-size: 12.5px !important;
+}
+.tool-group-body summary,
+details summary,
+summary {
+  font-size: 12px !important;
+}
+.tool-group-body pre {
+  font-size: 12px !important;
+}
 .tool-log-card,
 .tool-log-card *,
 .tool-block-temp,
@@ -300,25 +337,29 @@ summary {
   max-width: 100%;
   box-sizing: border-box;
   color: var(--text);
-  font-family: var(--font-ai, var(--font)) !important;
+  font-family: var(--font) !important;
   font-size: 16px !important;
   font-weight: 400 !important;
-  line-height: 26px !important;
+  line-height: 1.50 !important;
   text-align: left;
 }
 .msg.ai h1, .msg.ai h2, .msg.ai h3, .msg.ai h4, .msg.ai h5, .msg.ai h6 {
-  font-family: var(--font-ai, var(--font)) !important;
+  font-family: var(--font) !important;
   color: var(--text) !important;
-  font-weight: 600 !important;
+  font-weight: 500 !important;
   letter-spacing: normal !important;
   text-align: left;
 }
-.msg.ai h1 { font-size: 24px !important; line-height: 32px !important; margin-top: 20px; margin-bottom: 8px; }
-.msg.ai h2 { font-size: 20px !important; line-height: 28px !important; margin-top: 18px; margin-bottom: 6px; }
-.msg.ai h3 { font-size: 18px !important; line-height: 28px !important; margin-top: 16px; margin-bottom: 6px; }
-.msg.ai h4 { font-size: 16px !important; line-height: 24px !important; margin-top: 14px; margin-bottom: 4px; }
-.msg.ai h5 { font-size: 16px !important; line-height: 26px !important; margin-top: 12px; margin-bottom: 4px; }
-.msg.ai h6 { font-size: 16px !important; line-height: 26px !important; margin-top: 12px; margin-bottom: 4px; }
+.msg.ai strong, .msg.ai b, .msg strong, .msg b {
+  font-weight: 500 !important;
+}
+/* === AI RESPONSE MARKDOWN TYPOGRAPHY — Soft Weight Peak Scale === */
+.msg.ai h1 { font-size: 24px !important; line-height: 1.50 !important; margin-top: 20px; margin-bottom: 8px; font-weight: 500 !important; }
+.msg.ai h2 { font-size: 18px !important; line-height: 1.44 !important; margin-top: 18px; margin-bottom: 8px; font-weight: 500 !important; letter-spacing: var(--tracking-neg-0-27); }
+.msg.ai h3 { font-size: 18px !important; line-height: 1.44 !important; margin-top: 16px; margin-bottom: 6px; font-weight: 500 !important; }
+.msg.ai h4 { font-size: 14px !important; line-height: 1.43 !important; margin-top: 14px; margin-bottom: 6px; font-weight: 500 !important; }
+.msg.ai h5 { font-size: 14px !important; line-height: 1.43 !important; margin-top: 14px; margin-bottom: 6px; font-weight: 500 !important; }
+.msg.ai h6 { font-size: 14px !important; line-height: 1.43 !important; margin-top: 14px; margin-bottom: 6px; font-weight: 500 !important; }
 
 .msg.ai h1:first-child, .msg.ai h2:first-child, .msg.ai h3:first-child, .msg.ai h4:first-child {
   margin-top: 4px;
@@ -327,31 +368,37 @@ summary {
 .msg.ai p {
   margin-top: 0;
   margin-bottom: 12px;
-  font-family: var(--font-ai, var(--font)) !important;
+  font-family: var(--font) !important;
   font-size: 16px !important;
-  line-height: 26px !important;
+  line-height: 1.50 !important;
   font-weight: 400 !important;
   text-align: left;
+}
+.msg.ai p:last-child,
+.msg.ai ul:last-child,
+.msg.ai ol:last-child,
+.msg.ai blockquote:last-child {
+  margin-bottom: 0 !important;
 }
 .msg.ai ul, .msg.ai ol {
   margin-top: 4px;
   margin-bottom: 12px;
   padding-left: 24px;
-  font-size: 16px !important;
-  line-height: 26px !important;
+  font-size: 15px !important;
+  line-height: 25px !important;
 }
 .msg.ai li {
   margin-top: 0;
-  margin-bottom: 6px;
-  font-size: 16px !important;
-  line-height: 26px !important;
+  margin-bottom: 4px;
+  font-size: 15px !important;
+  line-height: 25px !important;
   font-weight: 400 !important;
 }
 .msg.ai li p {
   margin-top: 0 !important;
   margin-bottom: 0 !important;
-  font-size: 16px !important;
-  line-height: 26px !important;
+  font-size: 15px !important;
+  line-height: 25px !important;
 }
 .msg.ai li ul,
 .msg.ai li ol {
@@ -374,4 +421,16 @@ summary {
   border: none !important;
   outline: none !important;
   white-space: nowrap;
+}
+
+.user-cmd-highlight {
+  display: inline-flex;
+  align-items: center;
+  background: transparent !important;
+  color: #3b82f6 !important;
+  padding: 0 !important;
+  font-weight: 400 !important;
+  margin-right: 6px;
+  font-size: 15px !important;
+  letter-spacing: 0.2px;
 }

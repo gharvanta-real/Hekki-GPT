@@ -23,7 +23,7 @@ export function initSettings(setGreetingCallback) {
   window._loadSettingsOnPage = () => {
     loadAllSettings();
     loadActiveSkills();
-    const _fk = localStorage.getItem('hekki_font') || 'google-sans';
+    const _fk = localStorage.getItem('hekki_font') || 'segoe-ui';
     const _fontSel = document.getElementById('settings-font-family');
     if (_fontSel) _fontSel.value = _fk;
   };
@@ -68,8 +68,9 @@ export function initSettings(setGreetingCallback) {
   }
 
   // ── Theme (localStorage & backend) ────────────────────────────────────
-  let savedTheme = localStorage.getItem('hekki_theme') || 'oled';
-  if (savedTheme === 'dark') savedTheme = 'oled';
+  let savedTheme = localStorage.getItem('hekki_theme') || 'dark';
+  if (savedTheme === 'oled') savedTheme = 'dark';
+  localStorage.setItem('hekki_theme', savedTheme);
   if (window._applyThemeGlobal) {
     window._applyThemeGlobal(savedTheme, document.getElementById('btn-user-theme'));
   }
@@ -118,15 +119,50 @@ export function initSettings(setGreetingCallback) {
       serif: '"Google Sans", "Google Sans Flex", sans-serif',
       ai:    '"Google Sans", "Google Sans Flex", sans-serif'
     },
+    'segoe-ui': {
+      font:  '"Segoe WPC", "Segoe UI", -apple-system-body, ui-sans-serif, "system-ui", sans-serif',
+      serif: '"Segoe WPC", "Segoe UI", sans-serif',
+      ai:    '"Segoe WPC", "Segoe UI", sans-serif'
+    },
+    'inter': {
+      font:  '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+      serif: '"Inter", sans-serif',
+      ai:    '"Inter", sans-serif'
+    },
+    'plus-jakarta': {
+      font:  '"Plus Jakarta Sans", "Inter", sans-serif',
+      serif: '"Plus Jakarta Sans", sans-serif',
+      ai:    '"Plus Jakarta Sans", sans-serif'
+    },
+    'outfit': {
+      font:  '"Outfit", "Plus Jakarta Sans", sans-serif',
+      serif: '"Outfit", sans-serif',
+      ai:    '"Outfit", sans-serif'
+    },
     'open-sans': {
       font:  '"Open Sans", "Google Sans", sans-serif',
       serif: '"Open Sans", "Google Sans", sans-serif',
       ai:    '"Open Sans", "Google Sans", sans-serif'
     },
+    'roboto': {
+      font:  '"Roboto", "Open Sans", sans-serif',
+      serif: '"Roboto", sans-serif',
+      ai:    '"Roboto", sans-serif'
+    },
     'system': {
       font:  '-apple-system-body, ui-sans-serif, -apple-system, "system-ui", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, "sans-serif", "Segoe UI Emoji", "Segoe UI Symbol"',
       serif: '-apple-system-body, ui-sans-serif, -apple-system, "system-ui", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, "sans-serif", "Segoe UI Emoji", "Segoe UI Symbol"',
       ai:    '-apple-system-body, ui-sans-serif, -apple-system, "system-ui", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, "sans-serif", "Segoe UI Emoji", "Segoe UI Symbol"'
+    },
+    'jetbrains-mono': {
+      font:  '"JetBrains Mono", "Fira Code", ui-monospace, monospace',
+      serif: '"JetBrains Mono", monospace',
+      ai:    '"JetBrains Mono", monospace'
+    },
+    'fira-code': {
+      font:  '"Fira Code", "JetBrains Mono", ui-monospace, monospace',
+      serif: '"Fira Code", monospace',
+      ai:    '"Fira Code", monospace'
     },
     'anthropic': {
       font:  '"anthropic-sans", system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
@@ -136,7 +172,7 @@ export function initSettings(setGreetingCallback) {
   };
 
   function applyFont(key) {
-    const cfg = FONT_MAP[key] || FONT_MAP['google-sans'] || FONT_MAP['system'];
+    const cfg = FONT_MAP[key] || FONT_MAP['segoe-ui'] || FONT_MAP['system'];
     document.documentElement.style.setProperty('--font', cfg.font);
     document.documentElement.style.setProperty('--font-sans', cfg.font);
     document.documentElement.style.setProperty('--font-serif', cfg.serif);
@@ -145,7 +181,7 @@ export function initSettings(setGreetingCallback) {
 
   const fontSel = $('settings-font-family');
   if (fontSel) {
-    const savedFont = localStorage.getItem('hekki_font') || 'google-sans';
+    const savedFont = localStorage.getItem('hekki_font') || 'segoe-ui';
     fontSel.value = savedFont;
     applyFont(savedFont);
 

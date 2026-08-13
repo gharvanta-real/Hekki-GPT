@@ -100,7 +100,7 @@
 
 /* ── Conversation list (sidebar subpanel) ────────────────── */
 .coder-conv-group-label {
-  font-size: 10px;
+  font-size: 11px;
   color: var(--text-3);
   font-weight: 600;
   text-transform: none;
@@ -145,7 +145,7 @@
 }
 
 .coder-conv-proj {
-  font-size: 10px;
+  font-size: 11px;
   color: var(--text-3);
   flex-shrink: 0;
   background: var(--hover);

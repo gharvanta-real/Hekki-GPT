@@ -6,11 +6,17 @@
  */
 import { router } from '../router.js';
 
-const googleIcon = `<svg class="brand-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" style="margin-right:4px; display:inline-block; vertical-align:middle;"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22c-.62-.57-1.04-1.34-1.19-2.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>`;
+const googleIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px; display:inline-block; vertical-align:middle;"><path d="M12 3c0 4.97-4.03 9-9 9 4.97 0 9 4.03 9 9 0-4.97 4.03-9 9-9-4.97 0-9-4.03-9-9z"/></svg>`;
 
 const localIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px; display:inline-block; vertical-align:middle;"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>`;
 
-const chevronIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left:4px; opacity:0.5;"><polyline points="6 9 12 15 18 9"/></svg>`;
+const cloudIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px; display:inline-block; vertical-align:middle;"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9z"/></svg>`;
+
+const chevronIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left:4px; opacity:0.6;"><polyline points="6 9 12 15 18 9"/></svg>`;
+
+const CLOUD_MODELS = [
+  { id: 'gemini-3.1-flash-lite', name: 'Gemini 3.1 Flash Lite' }
+];
 
 /**
  * Shortens a model name for display in the pill:
@@ -19,22 +25,21 @@ const chevronIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="10" height="
  */
 function formatModelTitle(name) {
   if (!name) return '';
-  return name.replace(/-/g, ' ').replace(/\b[a-z]/g, letter => letter.toUpperCase());
+  if (name.toLowerCase().includes('gemini-3.1-flash-lite') || name.toLowerCase() === 'gemini-3.1-flash-lite') {
+    return 'Gemini 3.1 Flash Lite';
+  }
+  return name.replace(/[-_]/g, ' ').replace(/\b[a-z]/g, letter => letter.toUpperCase());
 }
 
 function truncateModelName(name) {
   if (!name) return name;
-  // Strip author namespace prefix (e.g. "huihui_ai/")
   const slashIdx = name.indexOf('/');
   let short = slashIdx !== -1 ? name.slice(slashIdx + 1) : name;
-  // Strip long descriptors like "-abliterate", "-instruct", "-uncensored" etc. before the tag
   const tagIdx = short.lastIndexOf(':');
   const tag = tagIdx !== -1 ? short.slice(tagIdx) : '';
   let base = tagIdx !== -1 ? short.slice(0, tagIdx) : short;
-  // Remove common long suffixes
   base = base.replace(/-(abliterate|uncensored|instruct|chat|v\d+\.\d+)$/i, '');
   short = base + tag;
-  // Cap at 22 chars
   if (short.length > 22) short = short.slice(0, 20) + '…';
   return formatModelTitle(short);
 }
@@ -55,7 +60,7 @@ async function fetchSettings() {
     _isLocal = !!(data.use_local_gateway || data.use_ollama);
     _activeModel = _isLocal
       ? (data.local_model || data.ollama_model || 'Local Model')
-      : (data.hekki_model || 'Gemini 3.1 Flash Lite');
+      : (data.hekki_model || 'gemini-3.1-flash-lite');
   } catch (_) {}
 }
 
@@ -70,13 +75,28 @@ async function fetchLocalModels() {
   }
 }
 
+async function switchCloudModel(modelId) {
+  try {
+    await fetch('/api/settings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ use_local_gateway: false, use_ollama: false, hekki_model: modelId })
+    });
+    _isLocal = false;
+    _activeModel = modelId;
+    await updateModelPills();
+    closeDropdown();
+  } catch (_) {}
+}
+
 async function switchLocalModel(modelName) {
   try {
     await fetch('/api/settings', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ local_model: modelName, ollama_model: modelName })
+      body: JSON.stringify({ use_local_gateway: true, use_ollama: true, local_model: modelName, ollama_model: modelName })
     });
+    _isLocal = true;
     _activeModel = modelName;
     await updateModelPills();
     closeDropdown();
@@ -107,35 +127,92 @@ function openLocalModelDropdown(anchorBtn) {
   dropdown.style.cssText = [
     'position: fixed',
     'z-index: 999999',
-    'background: var(--card, #fff)',
+    'background: var(--card, #1c1c1e)',
+    'border: 1px solid var(--border, #333)',
     'border-radius: 10px',
     'padding: 6px',
     'min-width: 220px',
-    'max-height: 260px',
+    'max-width: 280px',
+    'max-height: 340px',
     'overflow-y: auto',
     'display: flex',
     'flex-direction: column',
     'gap: 2px',
+    'box-shadow: 0 10px 25px rgba(0,0,0,0.25)',
   ].join(';');
 
   const rect = anchorBtn.getBoundingClientRect();
-  dropdown.style.bottom = `${window.innerHeight - rect.top + 6}px`;
+  dropdown.style.bottom = `${window.innerHeight - rect.top + 8}px`;
+  dropdown.style.top = 'auto';
   dropdown.style.left = `${Math.max(12, rect.left)}px`;
 
-  const header = document.createElement('div');
-  header.style.cssText = 'font-size:10px; font-weight:600; color:var(--text-3,#888); padding:4px 8px 6px; letter-spacing:0.04em; text-transform:uppercase;';
-  header.textContent = 'Local Models';
-  dropdown.appendChild(header);
+  if (_isLocal) {
+    // === LOCAL GATEWAY MODE: Show ONLY Local Models ===
 
-  if (_localModels.length === 0) {
-    const empty = document.createElement('div');
-    empty.style.cssText = 'font-size:12px; color:var(--text-3,#888); padding:8px 10px;';
-    empty.textContent = 'No models found. Is Ollama running?';
-    dropdown.appendChild(empty);
+    if (_localModels.length === 0) {
+      const empty = document.createElement('div');
+      empty.style.cssText = 'font-size:12.5px; color:var(--text-3,#888); padding:6px 10px; font-style:italic;';
+      empty.textContent = 'No local models found (Ollama offline)';
+      dropdown.appendChild(empty);
+    } else {
+      _localModels.forEach(modelName => {
+        const btn = document.createElement('button');
+        const isActive = modelName === _activeModel;
+        btn.style.cssText = [
+          'display: flex',
+          'align-items: center',
+          'gap: 8px',
+          'width: 100%',
+          'padding: 7px 10px',
+          'border: none',
+          'border-radius: 7px',
+          'background: ' + (isActive ? 'var(--hover, rgba(255,255,255,0.08))' : 'transparent'),
+          'color: var(--text, inherit)',
+          'font-size: 13px',
+          'font-weight: 400',
+          'font-family: var(--font, inherit)',
+          'cursor: pointer',
+          'text-align: left',
+        ].join(';');
+        btn.innerHTML = `${localIcon}<span style="flex:1;white-space:normal;word-break:break-word;overflow-wrap:anywhere;line-height:1.3;">${modelName}</span>`;
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          switchLocalModel(modelName);
+        });
+        btn.addEventListener('mouseover', () => {
+          if (!isActive) {
+            btn.style.background = 'var(--hover, rgba(255,255,255,0.08))';
+            btn.style.color = 'var(--text, inherit)';
+          }
+        });
+        btn.addEventListener('mouseout', () => {
+          if (!isActive) {
+            btn.style.background = 'transparent';
+            btn.style.color = 'var(--text, inherit)';
+          }
+        });
+        dropdown.appendChild(btn);
+      });
+    }
+
+    // Switch to Cloud Gateway Option
+    const switchBtn = document.createElement('button');
+    switchBtn.style.cssText = 'display:flex; align-items:center; gap:8px; width:100%; padding:7px 10px; border:none; border-top:1px solid var(--border,rgba(255,255,255,0.08)); border-radius:0 0 7px 7px; background:transparent; color:var(--text-3,#888); font-size:12px; font-weight:400; cursor:pointer; margin-top:4px; text-align:left;';
+    switchBtn.innerHTML = `${cloudIcon}<span style="flex:1;">Switch to Cloud Gemini</span>`;
+    switchBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      switchCloudModel('gemini-3.1-flash-lite');
+    });
+    switchBtn.addEventListener('mouseover', () => { switchBtn.style.color = 'var(--text, inherit)'; });
+    switchBtn.addEventListener('mouseout', () => { switchBtn.style.color = 'var(--text-3,#888)'; });
+    dropdown.appendChild(switchBtn);
+
   } else {
-    _localModels.forEach(modelName => {
+    // === CLOUD GEMINI MODE: Show ONLY Real Official Gemini Cloud Models ===
+
+    CLOUD_MODELS.forEach(m => {
       const btn = document.createElement('button');
-      const isActive = modelName === _activeModel;
+      const isActive = _activeModel === m.id || _activeModel === m.name;
       btn.style.cssText = [
         'display: flex',
         'align-items: center',
@@ -144,23 +221,47 @@ function openLocalModelDropdown(anchorBtn) {
         'padding: 7px 10px',
         'border: none',
         'border-radius: 7px',
-        'background: ' + (isActive ? 'var(--hover, #f1f5f9)' : 'transparent'),
-        'color: var(--text, #111)',
-        'font-size: 12px',
-        'font-weight: ' + (isActive ? '600' : '400'),
+        'background: ' + (isActive ? 'var(--hover, rgba(255,255,255,0.08))' : 'transparent'),
+        'color: var(--text, inherit)',
+        'font-size: 13px',
+        'font-weight: 400',
         'font-family: var(--font, inherit)',
         'cursor: pointer',
         'text-align: left',
       ].join(';');
-      btn.innerHTML = `${localIcon}<span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${modelName}</span>${isActive ? '<span style="font-size:10px;color:var(--text-3,#888);">Active</span>' : ''}`;
+      btn.innerHTML = `${googleIcon}<span style="flex:1;white-space:normal;word-break:break-word;overflow-wrap:anywhere;line-height:1.3;">${m.name}</span>`;
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
-        switchLocalModel(modelName);
+        switchCloudModel(m.id);
       });
-      btn.addEventListener('mouseover', () => { if (!isActive) btn.style.background = 'var(--hover, #f1f5f9)'; });
-      btn.addEventListener('mouseout', () => { if (!isActive) btn.style.background = 'transparent'; });
+      btn.addEventListener('mouseover', () => {
+        if (!isActive) {
+          btn.style.background = 'var(--hover, rgba(255,255,255,0.08))';
+          btn.style.color = 'var(--text, inherit)';
+        }
+      });
+      btn.addEventListener('mouseout', () => {
+        if (!isActive) {
+          btn.style.background = 'transparent';
+          btn.style.color = 'var(--text, inherit)';
+        }
+      });
       dropdown.appendChild(btn);
     });
+
+    // Switch to Local Gateway Option
+    const switchBtn = document.createElement('button');
+    switchBtn.style.cssText = 'display:flex; align-items:center; gap:8px; width:100%; padding:7px 10px; border:none; border-top:1px solid var(--border,rgba(255,255,255,0.08)); border-radius:0 0 7px 7px; background:transparent; color:var(--text-3,#888); font-size:12px; cursor:pointer; margin-top:4px; text-align:left;';
+    switchBtn.innerHTML = `${localIcon}<span style="flex:1;">Switch to Local Gateway</span>`;
+    switchBtn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      await fetchLocalModels();
+      const firstLocal = _localModels.length > 0 ? _localModels[0] : 'llama3.2';
+      switchLocalModel(firstLocal);
+    });
+    switchBtn.addEventListener('mouseover', () => { switchBtn.style.color = 'var(--text, inherit)'; });
+    switchBtn.addEventListener('mouseout', () => { switchBtn.style.color = 'var(--text-3,#888)'; });
+    dropdown.appendChild(switchBtn);
   }
 
   document.body.appendChild(dropdown);
@@ -180,31 +281,25 @@ function openLocalModelDropdown(anchorBtn) {
 
 export async function updateModelPills() {
   await fetchSettings();
-  if (_isLocal) {
-    await fetchLocalModels();
-  }
+  await fetchLocalModels();
 
   const icon = _isLocal ? localIcon : googleIcon;
   const rawLabel = _isLocal ? truncateModelName(_activeModel) : _activeModel;
   const label = formatModelTitle(rawLabel);
-  const showChevron = _isLocal && _localModels.length > 0;
 
   document.querySelectorAll('.model-pill').forEach(btn => {
-    btn.innerHTML = `${icon}<span>${label}</span>${showChevron ? chevronIcon : ''}`;
-    btn.style.cursor = _isLocal ? 'pointer' : 'default';
-    btn.title = _isLocal ? 'Click to switch local model' : label;
+    btn.innerHTML = `<span>${label}</span>${chevronIcon}`;
+    btn.style.cursor = 'pointer';
+    btn.title = `Click to switch model (Active: ${label})`;
   });
 }
 
 export function bindModelPills() {
   document.querySelectorAll('.model-pill').forEach(btn => {
-    // Remove existing listeners by replacing the node
     const fresh = btn.cloneNode(true);
     btn.parentNode.replaceChild(fresh, btn);
     fresh.addEventListener('click', async (e) => {
       e.stopPropagation();
-      if (!_isLocal) return;
-      // Refresh model list before opening
       await fetchLocalModels();
       openLocalModelDropdown(fresh);
     });
