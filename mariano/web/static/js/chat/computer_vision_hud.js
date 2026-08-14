@@ -304,11 +304,7 @@ class VisionHUDController {
 
   openVoiceMode() {
     this.isVoiceActive = true;
-    this.header?.classList.add('hidden');
-    this.hero?.classList.add('hidden');
-    this.chatBody?.classList.add('hidden');
-    this.bottomGroup?.classList.add('hidden');
-    this.voiceView?.classList.remove('hidden');
+    this.container?.classList.add('voice-mode');
 
     if (this.voiceMainStatus) this.voiceMainStatus.textContent = "Listening to your voice command...";
     if (this.voiceSubStatus) this.voiceSubStatus.textContent = "Speak your desktop goal";
@@ -323,14 +319,7 @@ class VisionHUDController {
     try { this.recognition?.stop(); } catch (err) {}
     try { window.speechSynthesis?.cancel(); } catch (err) {}
 
-    this.voiceView?.classList.add('hidden');
-    this.header?.classList.remove('hidden');
-    this.bottomGroup?.classList.remove('hidden');
-    if (!this.chatBody?.children.length) {
-      this.hero?.classList.remove('hidden');
-    } else {
-      this.chatBody?.classList.remove('hidden');
-    }
+    this.container?.classList.remove('voice-mode');
   }
 
   async submitVoiceCommand(promptText) {

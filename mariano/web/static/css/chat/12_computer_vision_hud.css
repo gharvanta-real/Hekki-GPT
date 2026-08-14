@@ -1,7 +1,7 @@
 /* ==========================================================================
    12_COMPUTER_VISION_HUD.CSS
    Adaptive Application Theme Variables & Dynamic System Font Inherited HUD
-   Image-Matched Dedicated Voice Screen (Giant Orb + Subtitles + Bottom Controls)
+   Image-Matched Dedicated Voice Screen (Strict View Separation via .voice-mode)
    Crisp Subtle Outline ONLY (Zero Shadows): border: 1px solid var(--border)
    Unbold Rule: Heading & Greeting ONLY have weight; Everything else is 400
    Strictly < 500 Lines Limit (~360 lines)
@@ -500,26 +500,34 @@ body[data-theme="oled"] .vision-hud-input-capsule {
   transform: scale(1.05) !important;
 }
 
-/* ─── 7. Image-Matched Dedicated Voice Screen (Giant Orb + Subtitles) ─────── */
+/* ─── 7. Dedicated Voice Screen UI (Strict View Separation via .voice-mode) ─ */
 .vision-hud-voice-view {
-  display: flex !important;
+  display: none !important;
   flex-direction: column !important;
   align-items: center !important;
   justify-content: center !important;
-  padding: 24px 20px 20px 20px !important;
+  padding: 30px 20px 24px 20px !important;
   text-align: center !important;
   animation: dFadeIn 0.22s ease !important;
 }
 
-.vision-hud-voice-view.hidden {
+/* When .voice-mode is active on container: HIDE default UI & SHOW voice view */
+#vision-hud-container.voice-mode .vision-hud-header,
+#vision-hud-container.voice-mode .vision-hud-hero,
+#vision-hud-container.voice-mode .vision-hud-chat-body,
+#vision-hud-container.voice-mode .vision-hud-bottom-group {
   display: none !important;
 }
 
+#vision-hud-container.voice-mode .vision-hud-voice-view {
+  display: flex !important;
+}
+
 .vision-hud-voice-large-orb {
-  width: 175px !important;
-  height: 175px !important;
-  min-width: 175px !important;
-  min-height: 175px !important;
+  width: 180px !important;
+  height: 180px !important;
+  min-width: 180px !important;
+  min-height: 180px !important;
   aspect-ratio: 1 / 1 !important;
   box-sizing: border-box !important;
   border-radius: 50% !important;
@@ -567,7 +575,7 @@ body.dark .vision-hud-voice-sub-status {
   align-items: center !important;
   justify-content: space-between !important;
   width: 100% !important;
-  max-width: 300px !important;
+  max-width: 280px !important;
   padding: 0 10px !important;
 }
 
