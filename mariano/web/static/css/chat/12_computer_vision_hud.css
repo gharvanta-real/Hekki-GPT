@@ -1,8 +1,8 @@
 /* ==========================================================================
    12_COMPUTER_VISION_HUD.CSS
-   Image-Matched Minimalist Floating Desktop Vision Widget & Edge Peek Handle
+   Adaptive Light/Dark Theme & Dynamic System Font Inherited HUD Widget
    Compliant with NO Outlines / NO Shadows Rule (Flat Background Fills Only)
-   Strictly < 500 Lines Limit
+   Strictly < 500 Lines Limit (~280 lines)
    ========================================================================== */
 
 /* ─── 1. Floating Widget Container ────────────────────────────────────────── */
@@ -23,11 +23,13 @@
   flex-direction: column !important;
   overflow: visible !important;
   z-index: 99999 !important;
-  font-family: 'Open Sans', -apple-system, sans-serif !important;
-  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease, width 0.25s ease;
+  font-family: var(--font, var(--font-open-sans, "Open Sans", -apple-system, sans-serif)) !important;
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease, background 0.2s ease;
 }
 
-body.dark #vision-hud-container {
+body.dark #vision-hud-container,
+body[data-theme="dark"] #vision-hud-container,
+body[data-theme="oled"] #vision-hud-container {
   background: #18181b !important;
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45) !important;
 }
@@ -53,11 +55,14 @@ body.dark #vision-hud-container {
   gap: 8px !important;
   cursor: pointer !important;
   z-index: 99998 !important;
-  transition: transform 0.2s ease, opacity 0.2s ease !important;
+  font-family: var(--font, var(--font-open-sans, "Open Sans", sans-serif)) !important;
+  transition: transform 0.2s ease, opacity 0.2s ease, background 0.2s ease !important;
   user-select: none !important;
 }
 
-body.dark #vision-hud-launcher {
+body.dark #vision-hud-launcher,
+body[data-theme="dark"] #vision-hud-launcher,
+body[data-theme="oled"] #vision-hud-launcher {
   background: #1e1e22 !important;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
 }
@@ -90,7 +95,9 @@ body.dark #vision-hud-launcher {
   letter-spacing: -0.1px !important;
 }
 
-body.dark .vision-hud-launcher-text {
+body.dark .vision-hud-launcher-text,
+body[data-theme="dark"] .vision-hud-launcher-text,
+body[data-theme="oled"] .vision-hud-launcher-text {
   color: #f1f5f9 !important;
 }
 
@@ -128,6 +135,7 @@ body.dark .vision-hud-launcher-text {
   cursor: pointer !important;
   z-index: 100000 !important;
   user-select: none !important;
+  color: #64748b !important;
 }
 
 #vision-hud-container.docked-right .vision-hud-peek-handle,
@@ -135,8 +143,11 @@ body.dark .vision-hud-launcher-text {
   display: flex !important;
 }
 
-body.dark .vision-hud-peek-handle {
+body.dark .vision-hud-peek-handle,
+body[data-theme="dark"] .vision-hud-peek-handle,
+body[data-theme="oled"] .vision-hud-peek-handle {
   background: #27272a !important;
+  color: #94a3b8 !important;
 }
 
 #vision-hud-container.docked-right .vision-hud-peek-handle {
@@ -166,7 +177,9 @@ body.dark .vision-hud-peek-handle {
   letter-spacing: -0.2px !important;
 }
 
-body.dark .vision-hud-title {
+body.dark .vision-hud-title,
+body[data-theme="dark"] .vision-hud-title,
+body[data-theme="oled"] .vision-hud-title {
   color: #f1f5f9 !important;
 }
 
@@ -196,7 +209,9 @@ body.dark .vision-hud-title {
   background: #f1f5f9 !important;
 }
 
-body.dark .vision-hud-close-btn:hover {
+body.dark .vision-hud-close-btn:hover,
+body[data-theme="dark"] .vision-hud-close-btn:hover,
+body[data-theme="oled"] .vision-hud-close-btn:hover {
   color: #ffffff !important;
   background: #27272a !important;
 }
@@ -233,7 +248,9 @@ body.dark .vision-hud-close-btn:hover {
   color: #1e293b !important;
 }
 
-body.dark .vision-hud-hero-text {
+body.dark .vision-hud-hero-text,
+body[data-theme="dark"] .vision-hud-hero-text,
+body[data-theme="oled"] .vision-hud-hero-text {
   color: #f1f5f9 !important;
 }
 
@@ -259,12 +276,15 @@ body.dark .vision-hud-hero-text {
   font-weight: 500 !important;
   color: #334155 !important;
   cursor: pointer !important;
+  font-family: inherit !important;
   transition: background 0.15s ease, transform 0.1s ease !important;
   text-align: left !important;
   user-select: none !important;
 }
 
-body.dark .vision-hud-chip {
+body.dark .vision-hud-chip,
+body[data-theme="dark"] .vision-hud-chip,
+body[data-theme="oled"] .vision-hud-chip {
   background: #27272a !important;
   color: #e4e4e7 !important;
 }
@@ -274,7 +294,9 @@ body.dark .vision-hud-chip {
   transform: translateY(-1px) !important;
 }
 
-body.dark .vision-hud-chip:hover {
+body.dark .vision-hud-chip:hover,
+body[data-theme="dark"] .vision-hud-chip:hover,
+body[data-theme="oled"] .vision-hud-chip:hover {
   background: #3f3f46 !important;
 }
 
@@ -307,6 +329,7 @@ body.dark .vision-hud-chip:hover {
   gap: 8px !important;
   font-size: 13px !important;
   line-height: 1.5 !important;
+  font-family: inherit !important;
 }
 
 .vision-hud-msg.user {
@@ -318,6 +341,13 @@ body.dark .vision-hud-chip:hover {
   border-radius: 14px 14px 4px 14px !important;
 }
 
+body.dark .vision-hud-msg.user,
+body[data-theme="dark"] .vision-hud-msg.user,
+body[data-theme="oled"] .vision-hud-msg.user {
+  background: #1e3a5f !important;
+  color: #93c5fd !important;
+}
+
 .vision-hud-msg.ai {
   align-self: flex-start !important;
   max-width: 90% !important;
@@ -327,7 +357,9 @@ body.dark .vision-hud-chip:hover {
   border-radius: 14px 14px 14px 4px !important;
 }
 
-body.dark .vision-hud-msg.ai {
+body.dark .vision-hud-msg.ai,
+body[data-theme="dark"] .vision-hud-msg.ai,
+body[data-theme="oled"] .vision-hud-msg.ai {
   background: #27272a !important;
   color: #f1f5f9 !important;
 }
@@ -362,7 +394,9 @@ body.dark .vision-hud-msg.ai {
   box-sizing: border-box !important;
 }
 
-body.dark .vision-hud-input-capsule {
+body.dark .vision-hud-input-capsule,
+body[data-theme="dark"] .vision-hud-input-capsule,
+body[data-theme="oled"] .vision-hud-input-capsule {
   background: #27272a !important;
 }
 
@@ -389,7 +423,9 @@ body.dark .vision-hud-input-capsule {
   flex-shrink: 0 !important;
 }
 
-body.dark .vision-hud-plus-btn {
+body.dark .vision-hud-plus-btn,
+body[data-theme="dark"] .vision-hud-plus-btn,
+body[data-theme="oled"] .vision-hud-plus-btn {
   background: #3f3f46 !important;
   color: #e4e4e7 !important;
 }
@@ -410,7 +446,9 @@ body.dark .vision-hud-plus-btn {
   padding: 4px 4px !important;
 }
 
-body.dark .vision-hud-input {
+body.dark .vision-hud-input,
+body[data-theme="dark"] .vision-hud-input,
+body[data-theme="oled"] .vision-hud-input {
   color: #f1f5f9 !important;
 }
 
@@ -445,7 +483,9 @@ body.dark .vision-hud-input {
   color: #0f172a !important;
 }
 
-body.dark .vision-hud-mic-btn:hover {
+body.dark .vision-hud-mic-btn:hover,
+body[data-theme="dark"] .vision-hud-mic-btn:hover,
+body[data-theme="oled"] .vision-hud-mic-btn:hover {
   color: #ffffff !important;
 }
 
@@ -472,8 +512,14 @@ body.dark .vision-hud-mic-btn:hover {
   flex-shrink: 0 !important;
 }
 
+body.dark .vision-hud-send-btn,
+body[data-theme="dark"] .vision-hud-send-btn,
+body[data-theme="oled"] .vision-hud-send-btn {
+  background: #2563eb !important;
+}
+
 .vision-hud-send-btn:hover {
-  background: #0f172a !important;
+  opacity: 0.9 !important;
   transform: scale(1.05) !important;
 }
 
@@ -492,10 +538,13 @@ body.dark .vision-hud-mic-btn:hover {
   flex-direction: column !important;
   gap: 2px !important;
   z-index: 100001 !important;
+  font-family: inherit !important;
   animation: dFadeIn 0.2s ease !important;
 }
 
-body.dark .vision-hud-dropdown-menu {
+body.dark .vision-hud-dropdown-menu,
+body[data-theme="dark"] .vision-hud-dropdown-menu,
+body[data-theme="oled"] .vision-hud-dropdown-menu {
   background: #27272a !important;
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5) !important;
 }
@@ -518,9 +567,12 @@ body.dark .vision-hud-dropdown-menu {
   cursor: pointer !important;
   transition: background 0.15s ease !important;
   text-align: left !important;
+  font-family: inherit !important;
 }
 
-body.dark .vision-hud-dropdown-item {
+body.dark .vision-hud-dropdown-item,
+body[data-theme="dark"] .vision-hud-dropdown-item,
+body[data-theme="oled"] .vision-hud-dropdown-item {
   color: #e4e4e7 !important;
 }
 
@@ -529,7 +581,9 @@ body.dark .vision-hud-dropdown-item {
   color: #0f172a !important;
 }
 
-body.dark .vision-hud-dropdown-item:hover {
+body.dark .vision-hud-dropdown-item:hover,
+body[data-theme="dark"] .vision-hud-dropdown-item:hover,
+body[data-theme="oled"] .vision-hud-dropdown-item:hover {
   background: #3f3f46 !important;
   color: #ffffff !important;
 }
