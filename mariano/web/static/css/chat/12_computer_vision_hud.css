@@ -7,10 +7,12 @@
 
 /* ─── 1. Floating Widget Container ────────────────────────────────────────── */
 #vision-hud-container {
-  position: fixed !important;
-  bottom: 30px !important;
-  right: 30px !important;
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
   width: 440px !important;
+  height: auto !important;
+  max-height: 85vh !important;
   max-width: calc(100vw - 40px) !important;
   background: #ffffff !important;
   border: none !important;
@@ -22,7 +24,7 @@
   overflow: visible !important;
   z-index: 99999 !important;
   font-family: 'Open Sans', -apple-system, sans-serif !important;
-  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease, width 0.25s ease !important;
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease, width 0.25s ease;
 }
 
 body.dark #vision-hud-container {
@@ -95,6 +97,7 @@ body.dark .vision-hud-launcher-text {
 /* ─── 2. Edge-Docked Peek State (Magnetic Collapse) ───────────────────────── */
 #vision-hud-container.docked-right {
   right: 0 !important;
+  left: auto !important;
   transform: translateX(calc(100% - 24px)) !important;
 }
 
