@@ -324,6 +324,39 @@ body.light .debate-expand-pill:hover {
 .debate-canvas-body::-webkit-scrollbar { width: 4px !important; }
 .debate-canvas-body::-webkit-scrollbar-thumb { background: var(--border) !important; border-radius: 4px !important; }
 
+/* ─── Synthesis Canvas Shimmer Skeleton ──────────────────────────────────── */
+.debate-shimmer-wrap {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+  width: 100% !important;
+  padding: 4px 0 !important;
+}
+
+.debate-shimmer-line {
+  height: 14px !important;
+  border-radius: 6px !important;
+  background: linear-gradient(90deg, rgba(128, 128, 128, 0.08) 25%, rgba(128, 128, 128, 0.18) 50%, rgba(128, 128, 128, 0.08) 75%) !important;
+  background-size: 200% 100% !important;
+  animation: debateShimmerAnim 1.6s infinite ease-in-out !important;
+}
+
+body:not(.light) .debate-shimmer-line,
+body.dark .debate-shimmer-line {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.04) 25%, rgba(255, 255, 255, 0.12) 50%, rgba(255, 255, 255, 0.04) 75%) !important;
+  background-size: 200% 100% !important;
+}
+
+body.light .debate-shimmer-line {
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.04) 25%, rgba(0, 0, 0, 0.10) 50%, rgba(0, 0, 0, 0.04) 75%) !important;
+  background-size: 200% 100% !important;
+}
+
+@keyframes debateShimmerAnim {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
 @keyframes debateSpinnerSpin {
   to { transform: rotate(360deg); }
 }

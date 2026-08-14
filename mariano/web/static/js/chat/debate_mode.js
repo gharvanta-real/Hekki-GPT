@@ -221,9 +221,10 @@ function _getOrCreateCanvas() {
   wrap.className = 'debate-canvas-wrap';
   const hdr = document.createElement('div');
   hdr.className = 'debate-canvas-hdr';
-  hdr.innerHTML = `<div style="display:flex;align-items:center;gap:8px;"><i data-lucide="file-text" style="width:16px;height:16px;color:var(--text-2);flex-shrink:0;"></i><span style="font-size:15px;font-weight:400;color:var(--text-primary);">Joint Synthesis Report</span></div><button id="btn-debate-copy-canvas" title="Copy" style="background:none;border:none;cursor:pointer;color:var(--text-2);padding:4px 6px;border-radius:6px;"><i data-lucide="copy" style="width:14px;height:14px;"></i></button>`;
+  hdr.innerHTML = `<div style="display:flex;align-items:center;gap:8px;"><i data-lucide="file-text" style="width:16px;height:16px;color:var(--text-2);flex-shrink:0;"></i><span style="font-size:16px;font-weight:400;color:var(--text-primary);">Joint Synthesis Report</span></div><button id="btn-debate-copy-canvas" title="Copy" style="background:none;border:none;cursor:pointer;color:var(--text-2);padding:4px 6px;border-radius:6px;"><i data-lucide="copy" style="width:14px;height:14px;"></i></button>`;
   const body = document.createElement('div');
   body.className = 'debate-canvas-body markdown-body';
+  body.innerHTML = `<div class="debate-shimmer-wrap"><div class="debate-shimmer-line" style="width:55%;"></div><div class="debate-shimmer-line" style="width:92%;"></div><div class="debate-shimmer-line" style="width:78%;"></div><div class="debate-shimmer-line" style="width:85%;"></div></div>`;
   wrap.appendChild(hdr);
   wrap.appendChild(body);
   bubble.appendChild(wrap);
