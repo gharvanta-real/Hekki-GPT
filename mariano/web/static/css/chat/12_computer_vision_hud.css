@@ -22,7 +22,7 @@
   max-height: 85vh !important;
   max-width: calc(100vw - 32px) !important;
   background: var(--bg, #F7F7F9) !important;
-  border: none !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
   outline: none !important;
   box-shadow: none !important;
   border-radius: 16px !important;
@@ -38,7 +38,7 @@ body.dark #vision-hud-container,
 body[data-theme="dark"] #vision-hud-container,
 body[data-theme="oled"] #vision-hud-container {
   background: var(--card, #18181b) !important;
-  border: none !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
   box-shadow: none !important;
 }
 
