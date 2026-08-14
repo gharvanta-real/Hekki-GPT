@@ -34,6 +34,60 @@ body.dark #vision-hud-container {
   display: none !important;
 }
 
+/* ─── 1b. Floating Trigger Button (FAB Launcher) ──────────────────────────── */
+#vision-hud-launcher {
+  position: fixed !important;
+  bottom: 24px !important;
+  right: 24px !important;
+  height: 40px !important;
+  padding: 0 14px 0 10px !important;
+  background: #ffffff !important;
+  border-radius: 9999px !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08) !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  cursor: pointer !important;
+  z-index: 99998 !important;
+  transition: transform 0.2s ease, opacity 0.2s ease !important;
+  user-select: none !important;
+}
+
+body.dark #vision-hud-launcher {
+  background: #1e1e22 !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+}
+
+#vision-hud-launcher:hover {
+  transform: scale(1.05) !important;
+}
+
+#vision-hud-launcher.hidden {
+  display: none !important;
+}
+
+.vision-hud-launcher-orb {
+  width: 20px !important;
+  height: 20px !important;
+  border-radius: 50% !important;
+  background: radial-gradient(circle at 35% 35%, #93c5fd 0%, #c084fc 60%, #f472b6 100%) !important;
+  box-shadow: 0 0 10px rgba(192, 132, 252, 0.5) !important;
+  animation: visionOrbPulse 3s infinite ease-in-out !important;
+}
+
+.vision-hud-launcher-text {
+  font-size: 12.5px !important;
+  font-weight: 500 !important;
+  color: #1e293b !important;
+  letter-spacing: -0.1px !important;
+}
+
+body.dark .vision-hud-launcher-text {
+  color: #f1f5f9 !important;
+}
+
 /* ─── 2. Edge-Docked Peek State (Magnetic Collapse) ───────────────────────── */
 #vision-hud-container.docked-right {
   right: 0 !important;

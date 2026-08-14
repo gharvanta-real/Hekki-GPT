@@ -111,12 +111,37 @@ class VisionHUDController {
     this.chatBody = wrap.querySelector('#vision-hud-chat-body');
     this.input = wrap.querySelector('#vision-hud-input');
     this.dropdown = wrap.querySelector('#vision-hud-dropdown');
+
+    // Create Persistent Floating Launcher Pill
+    const launcher = document.createElement('div');
+    launcher.id = 'vision-hud-launcher';
+    launcher.className = 'hidden';
+    launcher.title = 'Open Computer Vision (Alt+V)';
+    launcher.innerHTML = `
+      <div class="vision-hud-launcher-orb"></div>
+      <span class="vision-hud-launcher-text">Ask Super AI</span>
+    `;
+    document.body.appendChild(launcher);
+    this.launcher = launcher;
   }
 
   bindEvents() {
-    // Close button
+    // Close button: hide container and show launcher pill
     this.container.querySelector('#vision-hud-close')?.addEventListener('click', () => {
-      this.container.classList.add('hidden');
+      this.hide();
+    });
+
+    // Launcher pill click: open container
+    this.launcher?.addEventListener('click', () => {
+      this.show();
+    });
+
+    // Global Keyboard Shortcut (Alt + V / Option + V)
+    document.addEventListener('keydown', (e) => {
+      if ((e.altKey && (e.key === 'v' || e.key === 'V')) || (e.ctrlKey && e.shiftKey && (e.key === 'v' || e.key === 'V'))) {
+        e.preventDefault();
+        this.toggle();
+      }
     });
 
     // Plus button dropdown toggle
@@ -279,8 +304,23 @@ class VisionHUDController {
     return div.innerHTML;
   }
 
+  show() {
+    this.container?.classList.remove('hidden');
+    this.launcher?.classList.add('hidden');
+    this.input?.focus();
+  }
+
+  hide() {
+    this.container?.classList.add('hidden');
+    this.launcher?.classList.remove('hidden');
+  }
+
   toggle() {
-    this.container?.classList.toggle('hidden');
+    if (this.container?.classList.contains('hidden')) {
+      this.show();
+    } else {
+      this.hide();
+    }
   }
 }
 
