@@ -1,10 +1,10 @@
 /* ==========================================================================
    12_COMPUTER_VISION_HUD.CSS
    Adaptive Application Theme Variables & Dynamic System Font Inherited HUD
-   Mic Icon in Header + Real-Time Live Voice Audio Mode (No Typing)
+   Image-Matched Dedicated Voice Screen (Giant Orb + Subtitles + Bottom Controls)
    Crisp Subtle Outline ONLY (Zero Shadows): border: 1px solid var(--border)
    Unbold Rule: Heading & Greeting ONLY have weight; Everything else is 400
-   Strictly < 500 Lines Limit (~330 lines)
+   Strictly < 500 Lines Limit (~360 lines)
    ========================================================================== */
 
 /* ─── 1. Floating Widget Container ────────────────────────────────────────── */
@@ -117,7 +117,7 @@ body[data-theme="oled"] #vision-hud-launcher {
   transform: translateX(0) !important;
 }
 
-/* Peek Grab Handle — Only visible when docked */
+/* Peek Grab Handle */
 .vision-hud-peek-handle {
   position: absolute !important;
   top: 50% !important;
@@ -158,7 +158,7 @@ body[data-theme="oled"] .vision-hud-peek-handle {
   border-radius: 0 12px 12px 0 !important;
 }
 
-/* ─── 3. Top Header Bar (Heading BOLD / Actions Right) ────────────────────── */
+/* ─── 3. Top Header Bar ──────────────────────────────────────────────────── */
 .vision-hud-header {
   display: flex !important;
   align-items: center !important;
@@ -212,12 +212,6 @@ body[data-theme="oled"] .vision-hud-peek-handle {
   background: var(--hover, #f1f5f9) !important;
 }
 
-.vision-hud-mic-btn.active {
-  color: #ef4444 !important;
-  background: rgba(239, 68, 68, 0.12) !important;
-  animation: pulse 1.2s infinite ease-in-out !important;
-}
-
 .vision-hud-close-btn {
   width: 28px !important;
   height: 28px !important;
@@ -245,7 +239,7 @@ body[data-theme="oled"] .vision-hud-peek-handle {
   background: var(--hover, #f1f5f9) !important;
 }
 
-/* ─── 4. Center Orb & Hero Area (Greeting Weight Preserved) ───────────────── */
+/* ─── 4. Center Orb & Hero Area (Default View) ────────────────────────────── */
 .vision-hud-hero {
   display: flex !important;
   flex-direction: column !important;
@@ -278,7 +272,7 @@ body[data-theme="oled"] .vision-hud-peek-handle {
   color: var(--text, #1e293b) !important;
 }
 
-/* ─── 5. Chat Scroll View (STRICTLY UNBOLD 400) ───────────────────────────── */
+/* ─── 5. Chat Scroll View (Default View) ──────────────────────────────────── */
 .vision-hud-chat-body {
   max-height: 240px !important;
   overflow-y: auto !important;
@@ -342,7 +336,7 @@ body[data-theme="oled"] .vision-hud-msg.user {
   margin-top: 2px !important;
 }
 
-/* ─── 6. Bottom Input & Categories Group ─────────────────────────────────── */
+/* ─── 6. Bottom Input & Categories Group (Default View) ─────────────────── */
 .vision-hud-bottom-group {
   display: flex !important;
   flex-direction: column !important;
@@ -351,7 +345,6 @@ body[data-theme="oled"] .vision-hud-msg.user {
   padding-bottom: 16px !important;
 }
 
-/* ─── Suggestion Action Chips (Grouped Directly on Input) ─────────────────── */
 .vision-hud-chips-grid {
   display: grid !important;
   grid-template-columns: 1fr 1fr !important;
@@ -403,7 +396,6 @@ body[data-theme="oled"] .vision-hud-chip {
   flex-shrink: 0 !important;
 }
 
-/* ─── 7. Bottom Capsule Input Bar & Dropdown ─────────────────────────────── */
 .vision-hud-input-wrap {
   position: relative !important;
   padding: 0 20px !important;
@@ -430,102 +422,6 @@ body[data-theme="dark"] .vision-hud-input-capsule,
 body[data-theme="oled"] .vision-hud-input-capsule {
   background: var(--hover, #27272a) !important;
   border: 1px solid rgba(255, 255, 255, 0.09) !important;
-}
-
-.vision-hud-input-capsule.hidden {
-  display: none !important;
-}
-
-/* ─── 7b. Real-Time Live Voice Audio Mode Panel (Replaces Input Bar) ──────── */
-.vision-hud-voice-panel {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  background: var(--input-bg, #ffffff) !important;
-  border-radius: 9999px !important;
-  padding: 4px 8px 4px 14px !important;
-  gap: 10px !important;
-  border: 1px solid rgba(37, 99, 235, 0.35) !important;
-  outline: none !important;
-  box-shadow: none !important;
-  height: 42px !important;
-  box-sizing: border-box !important;
-  animation: dFadeIn 0.2s ease !important;
-}
-
-body.dark .vision-hud-voice-panel,
-body[data-theme="dark"] .vision-hud-voice-panel,
-body[data-theme="oled"] .vision-hud-voice-panel {
-  background: var(--hover, #27272a) !important;
-  border: 1px solid rgba(96, 165, 250, 0.45) !important;
-}
-
-.vision-hud-voice-panel.hidden {
-  display: none !important;
-}
-
-.vision-hud-voice-bars {
-  display: flex !important;
-  align-items: center !important;
-  gap: 3px !important;
-  height: 18px !important;
-  flex-shrink: 0 !important;
-}
-
-.vision-hud-voice-bar {
-  width: 3px !important;
-  height: 8px !important;
-  background: #2563eb !important;
-  border-radius: 2px !important;
-  animation: voiceWave 0.8s ease-in-out infinite alternate !important;
-}
-
-body.dark .vision-hud-voice-bar,
-body[data-theme="dark"] .vision-hud-voice-bar,
-body[data-theme="oled"] .vision-hud-voice-bar {
-  background: #60a5fa !important;
-}
-
-.vision-hud-voice-bar:nth-child(1) { animation-delay: 0s; height: 10px !important; }
-.vision-hud-voice-bar:nth-child(2) { animation-delay: 0.2s; height: 16px !important; }
-.vision-hud-voice-bar:nth-child(3) { animation-delay: 0.4s; height: 12px !important; }
-.vision-hud-voice-bar:nth-child(4) { animation-delay: 0.1s; height: 14px !important; }
-
-.vision-hud-voice-transcript {
-  flex: 1 !important;
-  font-size: 12.5px !important;
-  font-weight: 400 !important;
-  color: var(--text, #1e293b) !important;
-  white-space: nowrap !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  font-style: italic !important;
-}
-
-.vision-hud-voice-stop-btn {
-  width: 28px !important;
-  height: 28px !important;
-  min-width: 28px !important;
-  min-height: 28px !important;
-  aspect-ratio: 1 / 1 !important;
-  box-sizing: border-box !important;
-  border-radius: 50% !important;
-  background: rgba(239, 68, 68, 0.12) !important;
-  border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
-  color: #ef4444 !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  cursor: pointer !important;
-  transition: all 0.15s ease !important;
-  flex-shrink: 0 !important;
-}
-
-.vision-hud-voice-stop-btn:hover {
-  background: #ef4444 !important;
-  color: #ffffff !important;
 }
 
 .vision-hud-plus-btn {
@@ -604,7 +500,113 @@ body[data-theme="oled"] .vision-hud-voice-bar {
   transform: scale(1.05) !important;
 }
 
-/* ─── 8. Smart Plus Dropdown Menu (STRICTLY UNBOLD 400) ───────────────────── */
+/* ─── 7. Image-Matched Dedicated Voice Screen (Giant Orb + Subtitles) ─────── */
+.vision-hud-voice-view {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 24px 20px 20px 20px !important;
+  text-align: center !important;
+  animation: dFadeIn 0.22s ease !important;
+}
+
+.vision-hud-voice-view.hidden {
+  display: none !important;
+}
+
+.vision-hud-voice-large-orb {
+  width: 175px !important;
+  height: 175px !important;
+  min-width: 175px !important;
+  min-height: 175px !important;
+  aspect-ratio: 1 / 1 !important;
+  box-sizing: border-box !important;
+  border-radius: 50% !important;
+  background: radial-gradient(circle at 35% 30%, #e0e7ff 0%, #d8b4fe 40%, #bbf7d0 75%, #fbcfe8 100%) !important;
+  filter: blur(1.5px) !important;
+  animation: voiceGiantOrbBreathing 4s infinite ease-in-out !important;
+  margin-bottom: 24px !important;
+  flex-shrink: 0 !important;
+}
+
+body.dark .vision-hud-voice-large-orb,
+body[data-theme="dark"] .vision-hud-voice-large-orb,
+body[data-theme="oled"] .vision-hud-voice-large-orb {
+  background: radial-gradient(circle at 35% 30%, #818cf8 0%, #c084fc 45%, #4ade80 80%, #f472b6 100%) !important;
+}
+
+.vision-hud-voice-status-box {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 6px !important;
+  margin-bottom: 28px !important;
+  max-width: 320px !important;
+}
+
+.vision-hud-voice-main-status {
+  font-size: 13.5px !important;
+  font-weight: 400 !important;
+  color: var(--text, #1e293b) !important;
+  line-height: 1.5 !important;
+}
+
+.vision-hud-voice-sub-status {
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  color: #a78bfa !important;
+}
+
+body.dark .vision-hud-voice-sub-status {
+  color: #c4b5fd !important;
+}
+
+.vision-hud-voice-controls-bar {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+  max-width: 300px !important;
+  padding: 0 10px !important;
+}
+
+.vision-hud-voice-circle-btn {
+  width: 44px !important;
+  height: 44px !important;
+  min-width: 44px !important;
+  min-height: 44px !important;
+  aspect-ratio: 1 / 1 !important;
+  box-sizing: border-box !important;
+  border-radius: 50% !important;
+  background: var(--hover, #f1f5f9) !important;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+  outline: none !important;
+  box-shadow: none !important;
+  color: var(--text, #1e293b) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  flex-shrink: 0 !important;
+}
+
+body.dark .vision-hud-voice-circle-btn {
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+.vision-hud-voice-circle-btn:hover {
+  background: var(--input-bg, #ffffff) !important;
+  transform: scale(1.06) !important;
+}
+
+.vision-hud-voice-circle-btn.mic-active {
+  background: rgba(37, 99, 235, 0.15) !important;
+  color: #2563eb !important;
+}
+
+/* ─── 8. Smart Plus Dropdown Menu ────────────────────────────────────────── */
 .vision-hud-dropdown-menu {
   position: absolute !important;
   bottom: calc(100% + 8px) !important;
@@ -676,9 +678,10 @@ body[data-theme="oled"] .vision-hud-dropdown-menu {
   100% { transform: scale(1); filter: blur(0.5px); }
 }
 
-@keyframes voiceWave {
-  0%   { transform: scaleY(0.4); }
-  100% { transform: scaleY(1.3); }
+@keyframes voiceGiantOrbBreathing {
+  0%   { transform: scale(1); filter: blur(1.5px); }
+  50%  { transform: scale(1.08); filter: blur(2.5px); }
+  100% { transform: scale(1); filter: blur(1.5px); }
 }
 
 @keyframes dFadeIn {

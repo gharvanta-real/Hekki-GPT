@@ -1,8 +1,8 @@
 /**
  * computer_vision_hud.js
- * Minimalist Floating Desktop Vision HUD & Real-time Voice Audio Controller.
+ * Dedicated Image-Matched Voice Screen & Desktop Vision Controller.
  * Zero Emojis — Clean Vector Icons Only.
- * Strictly < 500 lines (~380 lines).
+ * Strictly < 500 lines (~370 lines).
  */
 
 const ICONS = {
@@ -12,8 +12,8 @@ const ICONS = {
   pointer: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 3 7.07 16.97 2.51-7.39 7.39-2.51L3 3z"/><path d="m13 13 6 6"/></svg>`,
   type: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>`,
   window: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="2" y1="9" x2="22" y2="9"/></svg>`,
-  stop: `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/></svg>`,
-  mic: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>`,
+  stop: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/></svg>`,
+  mic: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>`,
   send: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>`,
   plus: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>`,
   chevronRight: `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>`
@@ -23,11 +23,14 @@ class VisionHUDController {
   constructor() {
     this.container = null;
     this.launcher = null;
+    this.header = null;
+    this.hero = null;
     this.chatBody = null;
+    this.bottomGroup = null;
+    this.voiceView = null;
+    this.voiceMainStatus = null;
+    this.voiceSubStatus = null;
     this.input = null;
-    this.inputCapsule = null;
-    this.voicePanel = null;
-    this.voiceText = null;
     this.micBtn = null;
     this.dropdown = null;
     this.isDocked = false;
@@ -59,10 +62,11 @@ class VisionHUDController {
         ${ICONS.chevronRight}
       </div>
 
-      <div class="vision-hud-header">
+      <!-- DEFAULT MODE HEADER -->
+      <div class="vision-hud-header" id="vision-hud-header">
         <span class="vision-hud-title">Ask Super AI</span>
         <div class="vision-hud-header-actions">
-          <button type="button" class="vision-hud-mic-btn" id="vision-hud-mic" title="Real-time Voice Mode">
+          <button type="button" class="vision-hud-mic-btn" id="vision-hud-mic" title="Open Voice Screen">
             ${ICONS.mic}
           </button>
           <button type="button" class="vision-hud-close-btn" id="vision-hud-close" title="Close">
@@ -71,13 +75,16 @@ class VisionHUDController {
         </div>
       </div>
 
+      <!-- DEFAULT MODE HERO -->
       <div class="vision-hud-hero" id="vision-hud-hero">
         <div class="vision-hud-orb"></div>
         <span class="vision-hud-hero-text">Ask Super AI anything</span>
       </div>
 
+      <!-- CHAT MESSAGE LOG -->
       <div class="vision-hud-chat-body" id="vision-hud-chat-body" style="display: none;"></div>
 
+      <!-- DEFAULT MODE BOTTOM GROUP -->
       <div class="vision-hud-bottom-group" id="vision-hud-bottom-group">
         <div class="vision-hud-chips-grid" id="vision-hud-chips">
           <button type="button" class="vision-hud-chip" data-prompt="Analyze my active desktop screen">
@@ -109,7 +116,6 @@ class VisionHUDController {
             </button>
           </div>
 
-          <!-- Normal Text Input Capsule -->
           <div class="vision-hud-input-capsule" id="vision-hud-input-capsule">
             <button type="button" class="vision-hud-plus-btn" id="vision-hud-plus" title="Vision Actions">
               ${ICONS.plus}
@@ -119,35 +125,41 @@ class VisionHUDController {
               ${ICONS.send}
             </button>
           </div>
+        </div>
+      </div>
 
-          <!-- Real-Time Voice Mode Panel (Replaces Input Capsule) -->
-          <div class="vision-hud-voice-panel hidden" id="vision-hud-voice-panel">
-            <div class="vision-hud-voice-bars">
-              <span class="vision-hud-voice-bar"></span>
-              <span class="vision-hud-voice-bar"></span>
-              <span class="vision-hud-voice-bar"></span>
-              <span class="vision-hud-voice-bar"></span>
-            </div>
-            <span class="vision-hud-voice-transcript" id="vision-hud-voice-text">Listening... Speak command</span>
-            <button type="button" class="vision-hud-voice-stop-btn" id="vision-hud-voice-stop" title="Exit Voice Mode">
-              ${ICONS.stop}
-            </button>
-          </div>
+      <!-- IMAGE-MATCHED DEDICATED VOICE SCREEN UI -->
+      <div class="vision-hud-voice-view hidden" id="vision-hud-voice-view">
+        <div class="vision-hud-voice-large-orb"></div>
+        <div class="vision-hud-voice-status-box">
+          <span class="vision-hud-voice-main-status" id="vision-hud-voice-main">Listening to your voice command...</span>
+          <span class="vision-hud-voice-sub-status" id="vision-hud-voice-sub">Speak your desktop goal</span>
+        </div>
+        <div class="vision-hud-voice-controls-bar">
+          <button type="button" class="vision-hud-voice-circle-btn" id="vision-hud-voice-exit" title="Back to default">
+            ${ICONS.close}
+          </button>
+          <button type="button" class="vision-hud-voice-circle-btn mic-active" id="vision-hud-voice-mic-toggle" title="Mic Active">
+            ${ICONS.mic}
+          </button>
         </div>
       </div>
     `;
 
     document.body.appendChild(wrap);
     this.container = wrap;
+    this.header = wrap.querySelector('#vision-hud-header');
+    this.hero = wrap.querySelector('#vision-hud-hero');
     this.chatBody = wrap.querySelector('#vision-hud-chat-body');
+    this.bottomGroup = wrap.querySelector('#vision-hud-bottom-group');
+    this.voiceView = wrap.querySelector('#vision-hud-voice-view');
+    this.voiceMainStatus = wrap.querySelector('#vision-hud-voice-main');
+    this.voiceSubStatus = wrap.querySelector('#vision-hud-voice-sub');
     this.input = wrap.querySelector('#vision-hud-input');
-    this.inputCapsule = wrap.querySelector('#vision-hud-input-capsule');
-    this.voicePanel = wrap.querySelector('#vision-hud-voice-panel');
-    this.voiceText = wrap.querySelector('#vision-hud-voice-text');
     this.micBtn = wrap.querySelector('#vision-hud-mic');
     this.dropdown = wrap.querySelector('#vision-hud-dropdown');
 
-    // Create Persistent Floating Launcher Pill
+    // Persistent Floating Launcher Pill
     const launcher = document.createElement('div');
     launcher.id = 'vision-hud-launcher';
     launcher.className = 'hidden';
@@ -161,28 +173,35 @@ class VisionHUDController {
   }
 
   bindEvents() {
-    // Close button: hide container and show launcher pill
+    // Close button
     this.container.querySelector('#vision-hud-close')?.addEventListener('click', () => {
-      this.stopVoiceMode();
+      this.closeVoiceMode();
       this.hide();
     });
 
-    // Launcher pill click: open container
+    // Launcher pill click
     this.launcher?.addEventListener('click', () => {
       this.show();
     });
 
-    // Top Header Mic Click: Toggle Real-Time Voice Mode
+    // Top Header Mic: Enter Dedicated Voice Screen
     this.micBtn?.addEventListener('click', () => {
-      this.toggleVoiceMode();
+      this.openVoiceMode();
     });
 
-    // Voice Stop button
-    this.container.querySelector('#vision-hud-voice-stop')?.addEventListener('click', () => {
-      this.stopVoiceMode();
+    // Voice Screen '✕' Exit Button: Return to default mode
+    this.container.querySelector('#vision-hud-voice-exit')?.addEventListener('click', () => {
+      this.closeVoiceMode();
     });
 
-    // Global Keyboard Shortcut (Alt + V / Option + V)
+    // Voice Screen Mic Button: Re-trigger listening
+    this.container.querySelector('#vision-hud-voice-mic-toggle')?.addEventListener('click', () => {
+      if (this.isVoiceActive) {
+        try { this.recognition?.start(); } catch (err) {}
+      }
+    });
+
+    // Global Keyboard Shortcut (Alt + V)
     document.addEventListener('keydown', (e) => {
       if ((e.altKey && (e.key === 'v' || e.key === 'V')) || (e.ctrlKey && e.shiftKey && (e.key === 'v' || e.key === 'V'))) {
         e.preventDefault();
@@ -232,7 +251,7 @@ class VisionHUDController {
       }
     });
 
-    // Peek Handle Click (Expand if docked)
+    // Peek Handle Click
     this.container.querySelector('#vision-hud-peek')?.addEventListener('click', () => {
       this.container.classList.toggle('expanded');
     });
@@ -241,7 +260,7 @@ class VisionHUDController {
     this.setupMagneticSnapping();
   }
 
-  /* ─── Real-Time Voice Mode (Web Speech STT + TTS) ───────────────────────── */
+  /* ─── Dedicated Voice Mode Controller ───────────────────────────────────── */
   initSpeechRecognition() {
     const SpeechClass = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechClass) return;
@@ -249,7 +268,7 @@ class VisionHUDController {
     this.recognition = new SpeechClass();
     this.recognition.continuous = false;
     this.recognition.interimResults = true;
-    this.recognition.lang = 'hi-IN'; // Fallbacks gracefully to English & Hindi
+    this.recognition.lang = 'hi-IN';
 
     this.recognition.onresult = (e) => {
       let interim = '';
@@ -262,8 +281,8 @@ class VisionHUDController {
         }
       }
       const spokenText = (final || interim).trim();
-      if (spokenText && this.voiceText) {
-        this.voiceText.textContent = `"${spokenText}"`;
+      if (spokenText && this.voiceMainStatus) {
+        this.voiceMainStatus.textContent = `"${spokenText}"`;
       }
       if (final.trim()) {
         this.submitVoiceCommand(final.trim());
@@ -271,8 +290,8 @@ class VisionHUDController {
     };
 
     this.recognition.onerror = () => {
-      if (this.isVoiceActive) {
-        this.voiceText.textContent = "Listening... Speak desktop command";
+      if (this.isVoiceActive && this.voiceMainStatus) {
+        this.voiceMainStatus.textContent = "Listening to your voice command...";
       }
     };
 
@@ -283,37 +302,40 @@ class VisionHUDController {
     };
   }
 
-  toggleVoiceMode() {
-    if (this.isVoiceActive) {
-      this.stopVoiceMode();
-    } else {
-      this.startVoiceMode();
-    }
-  }
-
-  startVoiceMode() {
+  openVoiceMode() {
     this.isVoiceActive = true;
-    this.micBtn?.classList.add('active');
-    this.inputCapsule?.classList.add('hidden');
-    this.voicePanel?.classList.remove('hidden');
-    if (this.voiceText) this.voiceText.textContent = "Listening... Speak desktop command";
+    this.header?.classList.add('hidden');
+    this.hero?.classList.add('hidden');
+    this.chatBody?.classList.add('hidden');
+    this.bottomGroup?.classList.add('hidden');
+    this.voiceView?.classList.remove('hidden');
+
+    if (this.voiceMainStatus) this.voiceMainStatus.textContent = "Listening to your voice command...";
+    if (this.voiceSubStatus) this.voiceSubStatus.textContent = "Speak your desktop goal";
 
     try {
       this.recognition?.start();
     } catch (err) {}
   }
 
-  stopVoiceMode() {
+  closeVoiceMode() {
     this.isVoiceActive = false;
-    this.micBtn?.classList.remove('active');
-    this.inputCapsule?.classList.remove('hidden');
-    this.voicePanel?.classList.add('hidden');
     try { this.recognition?.stop(); } catch (err) {}
     try { window.speechSynthesis?.cancel(); } catch (err) {}
+
+    this.voiceView?.classList.add('hidden');
+    this.header?.classList.remove('hidden');
+    this.bottomGroup?.classList.remove('hidden');
+    if (!this.chatBody?.children.length) {
+      this.hero?.classList.remove('hidden');
+    } else {
+      this.chatBody?.classList.remove('hidden');
+    }
   }
 
   async submitVoiceCommand(promptText) {
-    if (this.voiceText) this.voiceText.textContent = `Executing: "${promptText}"...`;
+    if (this.voiceMainStatus) this.voiceMainStatus.textContent = `"${promptText}"`;
+    if (this.voiceSubStatus) this.voiceSubStatus.textContent = "Executing desktop action...";
 
     try {
       const response = await fetch('/api/skills/execute', {
@@ -325,13 +347,14 @@ class VisionHUDController {
         })
       });
       const data = await response.json();
-      const answer = data?.data || data?.message || "Desktop action executed.";
+      const answer = data?.data || data?.message || "Desktop action completed.";
 
-      if (this.voiceText) this.voiceText.textContent = answer;
+      if (this.voiceMainStatus) this.voiceMainStatus.textContent = answer;
+      if (this.voiceSubStatus) this.voiceSubStatus.textContent = "Action executed via Gemini 3.1";
       this.speakVoiceResponse(answer);
     } catch (err) {
       const fallback = `Action completed: ${promptText}`;
-      if (this.voiceText) this.voiceText.textContent = fallback;
+      if (this.voiceMainStatus) this.voiceMainStatus.textContent = fallback;
       this.speakVoiceResponse(fallback);
     }
   }
@@ -343,8 +366,9 @@ class VisionHUDController {
     utterance.rate = 1.05;
     utterance.pitch = 1.0;
     utterance.onend = () => {
-      if (this.isVoiceActive && this.voiceText) {
-        this.voiceText.textContent = "Listening... Speak desktop command";
+      if (this.isVoiceActive && this.voiceMainStatus) {
+        this.voiceMainStatus.textContent = "Listening to your voice command...";
+        if (this.voiceSubStatus) this.voiceSubStatus.textContent = "Speak your desktop goal";
         try { this.recognition?.start(); } catch (err) {}
       }
     };
@@ -397,10 +421,7 @@ class VisionHUDController {
   }
 
   appendMessage(role, text) {
-    const hero = this.container.querySelector('#vision-hud-hero');
-    const chips = this.container.querySelector('#vision-hud-chips');
-    if (hero) hero.style.display = 'none';
-    if (chips) chips.style.display = 'none';
+    if (this.hero) this.hero.style.display = 'none';
     if (this.chatBody) this.chatBody.style.display = 'flex';
 
     const row = document.createElement('div');
@@ -484,7 +505,7 @@ class VisionHUDController {
   disable() {
     this.isEnabled = false;
     localStorage.setItem('hekki_vision_hud_enabled', 'false');
-    this.stopVoiceMode();
+    this.closeVoiceMode();
     this.container?.classList.add('hidden');
     this.launcher?.classList.add('hidden');
   }
