@@ -125,18 +125,12 @@ class AttachmentManager {
     ['btn-submit-home', 'btn-submit-conv', 'coder-btn-send', 'btn-debate-start', 'btn-debate-intervene'].forEach(btnId => {
       const btn = document.getElementById(btnId);
       if (btn) {
-        if (hasAtt) {
-          btn.classList.remove('hidden');
-          if (window.isGenerating) {
-            const stopId = btnId === 'btn-submit-home' ? 'btn-stop-gen' : (btnId === 'btn-submit-conv' ? 'btn-stop-gen-conv' : null);
-            if (stopId) document.getElementById(stopId)?.classList.add('hidden');
-          }
+        if (window.isGenerating && (btnId === 'btn-submit-home' || btnId === 'btn-submit-conv')) {
+          btn.classList.add('hidden');
+          const stopId = btnId === 'btn-submit-home' ? 'btn-stop-gen' : 'btn-stop-gen-conv';
+          document.getElementById(stopId)?.classList.remove('hidden');
         } else {
-          if (btnId === 'btn-submit-home' || btnId === 'btn-submit-conv') {
-            if (!window.isGenerating) {
-              btn.classList.remove('hidden');
-            }
-          }
+          btn.classList.remove('hidden');
         }
       }
     });

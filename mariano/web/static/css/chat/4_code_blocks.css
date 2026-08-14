@@ -1,7 +1,7 @@
 /* === CODE BLOCK WRAPPER & ACTIONS (Modern Soft Rounded Theme-Adaptive Style) === */
 .code-block-wrapper {
   background: var(--card, #ffffff);
-  border: 1px solid var(--border, #e5e7eb) !important;
+  border: none !important;
   border-radius: 16px !important;
   margin: 12px 0;
   overflow: hidden;
@@ -14,7 +14,7 @@ body.dark .code-block-wrapper,
 body.oled .code-block-wrapper,
 [data-theme="dark"] .code-block-wrapper {
   background: #121212 !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border: none !important;
   box-shadow: none !important;
 }
 
@@ -157,7 +157,7 @@ body.oled .code-action-btn:hover,
   background: var(--input-bg, #F0F2F5) !important;
   color: var(--text-primary) !important;
   border-radius: 8px !important;
-  border: 1px solid var(--border) !important;
+  border: none !important;
   font-size: 11px !important;
   font-family: var(--font-mono) !important;
   line-height: 1.55 !important;
@@ -175,7 +175,7 @@ body.light .tool-terminal-block,
 :root[data-theme="light"] .tool-output-block,
 :root[data-theme="light"] .tool-terminal-block {
   background: #F0F2F5 !important;
-  border: 1px solid #E2E8F0 !important;
+  border: none !important;
   color: #18181B !important;
 }
 
@@ -184,7 +184,7 @@ body.dark .tool-terminal-block,
 :root[data-theme="dark"] .tool-output-block,
 :root[data-theme="dark"] .tool-terminal-block {
   background: #181818 !important;
-  border: 1px solid #2B2B30 !important;
+  border: none !important;
   color: #F4F4F5 !important;
 }
 

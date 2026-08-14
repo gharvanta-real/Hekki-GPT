@@ -52,7 +52,7 @@
   width: 8px;
   height: 8px;
   background-color: #18181b; /* monochrome dot */
-  border: 2px solid var(--bg);
+  border: none !important;
   border-radius: 50%;
 }
 
@@ -106,8 +106,8 @@
   -webkit-backdrop-filter: blur(16px);
   padding: 5px 10px;
   border-radius: 30px;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 .lightbox-btn {
   width: 30px;
@@ -154,7 +154,7 @@
   max-height: 85%;
   object-fit: contain;
   transition: transform 0.1s cubic-bezier(0.1, 0.8, 0.2, 1);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+  box-shadow: none !important;
   border-radius: 24px !important;
   transform-origin: center center;
 }

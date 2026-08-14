@@ -15,7 +15,7 @@
   --card:        #F7F7F9;
   --input-bg:    #FFFFFF; /* clean crisp white input capsule fill on off-white canvas */
   --sidebar-bg:  #F0F2F5; /* soft light neutral slate grey for left sidebars */
-  --border:      #E4E7EB; 
+  --border:      transparent;
   --hover:       #E4E7EB;
 
   --text:        #141414;
@@ -490,11 +490,21 @@ select,
   background: transparent !important;
   color: var(--text) !important;
   font-family: var(--font) !important;
+  font-size: 15px !important;
   border: none !important;
   outline: none !important;
   box-shadow: none !important;
   border-radius: 0 !important;
   padding: 0 !important;
+}
+
+#chat-input::placeholder,
+#chat-input-conv::placeholder,
+#agent-task-input::placeholder,
+#debate-input::placeholder,
+.chat-textarea::placeholder {
+  color: var(--text-3) !important;
+  font-size: 15px !important;
 }
 
 /* === OPEN CANVAS LAUNCH BUTTON (High-contrast bright blue pill) === */

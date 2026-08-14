@@ -12,31 +12,114 @@
 }
 
 #settings-pane.visible {
-  display: flex !important;
-  flex-direction: row;
+  display: block !important;
 }
 
-.settings-page-box {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: row;
-  background: var(--bg);
-  overflow: hidden;
+/* Hide collapse panel button & back/forward arrows in Settings mode */
+body[data-page="settings"] #sidebar-nav .nav-header {
+  display: none !important;
 }
 
 /* === LEFT NAVIGATION PANEL === */
 .modal-nav {
-  width: 230px;
+  width: 240px;
   flex-shrink: 0;
   background: var(--sidebar-bg) !important;
   border-right: 1px solid var(--border, rgba(0, 0, 0, 0.08));
   display: flex;
   flex-direction: column;
-  padding: 0 16px 20px 16px;
+  padding: 10px 14px 20px 14px;
   overflow-y: auto;
   gap: 4px;
+  height: 100%;
+  box-sizing: border-box;
 }
+
+/* Settings Back Button (Cursor IDE Style Top Navigation) */
+.settings-back-btn {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  height: 34px !important;
+  width: 100% !important;
+  padding: 0 10px !important;
+  margin-bottom: 6px !important;
+  border-radius: 8px !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  color: var(--text-2, #94a3b8) !important;
+  font-family: var(--font, sans-serif) !important;
+  font-size: 13.5px !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  transition: all 0.12s ease !important;
+}
+
+.settings-back-btn:hover {
+  background: var(--hover, rgba(255, 255, 255, 0.08)) !important;
+  color: var(--text, #ffffff) !important;
+}
+
+/* Settings Search Bar */
+.settings-search-wrap {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  padding: 6px 10px !important;
+  margin-bottom: 10px !important;
+  background: var(--card, #1e1e1e) !important;
+  border: none !important;
+  border-radius: 8px !important;
+}
+
+.settings-search-icon {
+  width: 14px !important;
+  height: 14px !important;
+  color: var(--text-3, #64748b) !important;
+  flex-shrink: 0 !important;
+}
+
+.settings-search-wrap input {
+  width: 100% !important;
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  color: var(--text, #ffffff) !important;
+  font-family: var(--font) !important;
+  font-size: 13px !important;
+}
+
+/* Container Cards (Cursor IDE Card Boxes) */
+.settings-card-box {
+  background: var(--card, #1e1e1e) !important;
+  border: none !important;
+  border-radius: 12px !important;
+  margin-bottom: 20px !important;
+  overflow: hidden !important;
+}
+
+.settings-card-box .settings-row {
+  padding: 14px 18px !important;
+  border-bottom: 1px solid var(--border, rgba(255, 255, 255, 0.08)) !important;
+}
+
+.settings-card-box .settings-row:last-child {
+  border-bottom: none !important;
+}
+
+.settings-card-title {
+  font-size: 12.5px !important;
+  font-weight: 400 !important;
+  color: var(--text-3, #71717a) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.04em !important;
+  margin-top: 18px !important;
+  margin-bottom: 8px !important;
+  padding-left: 2px !important;
+}
+
 
 .modal-nav-header {
   height: 48px;
@@ -118,7 +201,7 @@ body.light .modal-nav-item.active,
   color: var(--text, #0f172a) !important;
   font-weight: 600;
   border: none !important;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+  box-shadow: none !important;
   box-shadow: none !important;
 }
 
@@ -127,11 +210,17 @@ body.light .modal-nav-item.active,
   flex: 1;
   height: 100%;
   overflow-y: auto;
-  padding: 0 48px 60px 48px;
+  padding: 32px 48px 60px 48px;
   position: relative;
   background: var(--bg) !important;
-  max-width: 840px;
+  width: 100%;
   box-sizing: border-box;
+}
+
+.settings-section {
+  max-width: 860px;
+  width: 100%;
+  margin: 0 auto;
 }
 
 .modal-close {
@@ -175,7 +264,7 @@ body.oled .modal-close:hover {
 .section-title {
   font-family: var(--font, sans-serif);
   font-size: var(--fs-xl);
-  font-weight: 600;
+  font-weight: 500;
   color: var(--text-primary, #09090b);
   height: 48px;
   display: flex;
@@ -199,7 +288,7 @@ body.oled .modal-close:hover {
   padding: 14px 18px;
   border-radius: 12px;
   background: var(--input-bg, #f6f7f9);
-  border: 1px solid var(--border, rgba(0, 0, 0, 0.06));
+  border: none !important;
   margin-bottom: 24px;
   gap: 16px;
 }
@@ -230,7 +319,7 @@ body.oled .settings-promo-card {
 
 .settings-promo-title {
   font-size: 13.5px;
-  font-weight: 600;
+  font-weight: 400;
   color: var(--text-primary);
 }
 
@@ -264,7 +353,7 @@ body.oled .settings-promo-card {
 
 .row-label {
   font-size: var(--fs-base);
-  font-weight: 500;
+  font-weight: 400;
   color: var(--text-primary, #09090b);
 }
 
@@ -276,7 +365,7 @@ body.oled .settings-promo-card {
 
 /* CONTROLS (Right-aligned ChatGPT Frameless Style) */
 .settings-select {
-  border: 1px solid var(--border, rgba(0, 0, 0, 0.12)) !important;
+  border: none !important;
   outline: none !important;
   background: var(--bg, #ffffff);
   color: var(--text-primary);
@@ -307,7 +396,7 @@ body.oled .settings-select {
 }
 
 .settings-input {
-  border: 1px solid var(--border, rgba(0, 0, 0, 0.12)) !important;
+  border: none !important;
   outline: none !important;
   box-shadow: none !important;
   background: var(--bg, #FCFCFC);
@@ -335,7 +424,7 @@ body.oled .settings-input {
 .settings-textarea {
   width: 100%;
   height: 90px;
-  border: 1px solid var(--border, rgba(0, 0, 0, 0.12)) !important;
+  border: none !important;
   outline: none !important;
   background: var(--bg, #ffffff);
   color: var(--text-primary);

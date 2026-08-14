@@ -99,7 +99,7 @@
   height: 28px;
   padding: 0 10px;
   background: var(--bg);
-  border: 1px solid var(--border);
+  border: none !important;
   border-radius: 20px;
   color: var(--text-2);
   font-size: var(--fs-sm);     /* 12px */
@@ -108,7 +108,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  box-shadow: var(--shadow);
+  box-shadow: none !important;
   transition: all 0.12s ease;
   user-select: none;
   white-space: nowrap;

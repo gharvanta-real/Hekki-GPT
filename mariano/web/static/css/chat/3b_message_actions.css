@@ -3,7 +3,7 @@
   width: 100%;
   border-collapse: collapse;
   margin: 16px 0;
-  font-size: 13.5px;
+  font-size: 15px;
   line-height: 1.6;
   border: none !important;
   box-shadow: none !important;
@@ -19,7 +19,7 @@
   border-left: none !important;
   border-right: none !important;
   border-bottom: 1px solid var(--border);
-  font-size: 13.5px;
+  font-size: 15px;
 }
 .msg hr {
   margin: 16px 0;
@@ -317,7 +317,7 @@ body.oled .table-wrapper :not(pre) > code,
 
 .msg pre {
   background: var(--card);
-  border: 1px solid var(--border);
+  border: none !important;
   border-radius: var(--radius-md);
   padding: 12px 16px;
   overflow-x: auto;

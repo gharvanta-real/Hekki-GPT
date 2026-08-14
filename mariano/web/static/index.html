@@ -25,8 +25,8 @@
   <link rel="apple-touch-icon" href="/static/hekki.png">
   <link class="cache-bust" rel="stylesheet" href="/static/theme.css?v=200">
   <link class="cache-bust" rel="stylesheet" href="/static/css/layout/0_desktop_topnav.css?v=200">
-  <link class="cache-bust" rel="stylesheet" href="/static/css/chat.css?v=201">
-
+  <link class="cache-bust" rel="stylesheet" href="/static/css/chat.css?v=215">
+  <link class="cache-bust" rel="stylesheet" href="/static/css/chat/11_debate_mode.css?v=215">
   <link class="cache-bust" rel="stylesheet" href="/static/css/coder.css?v=200">
 
 
@@ -315,6 +315,41 @@
 
       </div>
       <div class="sidebar-bottom-fadeout"></div>
+    </div>
+
+    <!-- SETTINGS VIEW SUBPANE (Renders inside main app sidebar #sidebar-nav) -->
+    <div class="nav-inner" id="nav-inner-settings" style="display:none; flex-direction:column; gap:4px; padding:10px 10px 20px 10px; height:calc(100% - 32px); box-sizing:border-box; overflow-y:auto;">
+      <button id="btn-back-settings" class="settings-back-btn" title="Back to Chat">
+        <i data-lucide="arrow-left" style="width:16px;height:16px;"></i>
+        <span>Back</span>
+      </button>
+
+      <div class="settings-nav-list" style="display:flex; flex-direction:column; gap:4px;">
+        <button class="modal-nav-item active" data-section="general">
+          <i data-lucide="settings" style="width:16px;height:16px;"></i> <span>General</span>
+        </button>
+        <button class="modal-nav-item" data-section="identity">
+          <i data-lucide="user-round" style="width:16px;height:16px;"></i> <span>Identity</span>
+        </button>
+        <button class="modal-nav-item" data-section="appearance">
+          <i data-lucide="palette" style="width:16px;height:16px;"></i> <span>Appearance</span>
+        </button>
+        <button class="modal-nav-item" data-section="gemini">
+          <i data-lucide="sparkles" style="width:16px;height:16px;"></i> <span>Gemini API</span>
+        </button>
+        <button class="modal-nav-item" data-section="gateway">
+          <i data-lucide="server" style="width:16px;height:16px;"></i> <span>Local Gateway</span>
+        </button>
+        <button class="modal-nav-item" data-section="reasoning">
+          <i data-lucide="brain" style="width:16px;height:16px;"></i> <span>Reasoning Mode</span>
+        </button>
+        <button class="modal-nav-item" data-section="skills">
+          <i data-lucide="blocks" style="width:16px;height:16px;"></i> <span>Skills &amp; Plugins</span>
+        </button>
+        <button class="modal-nav-item" data-section="about">
+          <i data-lucide="info" style="width:16px;height:16px;"></i> <span>About Hekki</span>
+        </button>
+      </div>
     </div>
 
 
@@ -606,69 +641,83 @@
       <!-- ═══ HISTORY PANE (ChatGPT-style full page Search Chats) ═══ -->
       <div id="history-pane"></div>
 
-      <!-- ═══ SETTINGS PANE (Full page clean Settings) ═══ -->
+      <!-- ═══ SETTINGS PANE (Right content area inside #workspace) ═══ -->
       <div id="settings-pane">
-        <div class="settings-page-box">
-          <!-- Left nav (Always secondary background tint) -->
-          <div class="modal-nav">
-            <div class="modal-nav-header">
-              <span>Settings</span>
-            </div>
-
-            <button class="modal-nav-item active" data-section="general">
-              <i data-lucide="user-round" style="width:16px;height:16px;margin-right:6px;display:inline-block;vertical-align:middle;"></i> Identity
-            </button>
-            <button class="modal-nav-item" data-section="appearance">
-              <i data-lucide="palette" style="width:16px;height:16px;margin-right:6px;display:inline-block;vertical-align:middle;"></i> Appearance
-            </button>
-
-            <button class="modal-nav-item" data-section="gemini">
-              <i data-lucide="sparkles" style="width:16px;height:16px;margin-right:6px;display:inline-block;vertical-align:middle;"></i> Gemini API
-            </button>
-            <button class="modal-nav-item" data-section="gateway">
-              <i data-lucide="server" style="width:16px;height:16px;margin-right:6px;display:inline-block;vertical-align:middle;"></i> Local Gateway
-            </button>
-            <button class="modal-nav-item" data-section="reasoning">
-              <i data-lucide="brain" style="width:16px;height:16px;margin-right:6px;display:inline-block;vertical-align:middle;"></i> Reasoning Mode
-            </button>
-
-
-            <button class="modal-nav-item" data-section="skills">
-              <i data-lucide="blocks" style="width:16px;height:16px;margin-right:6px;display:inline-block;vertical-align:middle;"></i> Skills &amp; Plugins
-            </button>
-            <button class="modal-nav-item" data-section="about">
-              <i data-lucide="info" style="width:16px;height:16px;margin-right:6px;display:inline-block;vertical-align:middle;"></i> About Hekki
-            </button>
-          </div>
-
-          <!-- Right content (Always main page background color) -->
-          <div class="modal-content">
+        <div class="modal-content">
             <!-- Save indicator -->
             <div id="settings-save-indicator" style="position:absolute;top:24px;right:48px;font-size:12px;color:#16a34a;opacity:0;transition:opacity 0.5s;display:flex;align-items:center;gap:6px;">
               <i data-lucide="check-circle" style="width:14px;height:14px;"></i> Saved
             </div>
 
-            <!-- IDENTITY (General) -->
+            <!-- GENERAL (Main settings overview) -->
             <section class="settings-section active" id="section-general">
-              <h2 class="section-title">Identity</h2>
-              <p class="section-sub">How Hekki addresses you and understands your context.</p>
+              <h2 class="section-title">General</h2>
+              <p class="section-sub">Overview of your account, core preferences, and quick defaults.</p>
 
-              <div class="settings-row">
-                <div class="row-info">
-                  <span class="row-label">Your Name</span>
-                  <span class="row-desc">The name Hekki uses to address you in conversation.</span>
+              <div class="settings-card-box">
+                <div class="settings-row">
+                  <div class="row-info">
+                    <span class="row-label">User Account Name</span>
+                    <span class="row-desc">The name Hekki uses to address you in conversation.</span>
+                  </div>
+                  <input class="settings-input" type="text" id="settings-user-name" placeholder="e.g. Anshu" style="width:180px; text-align:left;">
                 </div>
-                <input class="settings-input" type="text" id="settings-user-name" placeholder="e.g. Anshu" style="width:180px; text-align:left;">
+                <div class="settings-row">
+                  <div class="row-info">
+                    <span class="row-label">Active Gemini Model</span>
+                    <span class="row-desc">Primary AI model used for generating chat responses.</span>
+                  </div>
+                  <select class="settings-select" id="settings-hekki-model">
+                    <option value="gemini-3.1-flash-lite">Gemini 3.1 Flash Lite (Fast)</option>
+                    <option value="gemini-3.1-flash">Gemini 3.1 Flash (Pro)</option>
+                    <option value="gemini-3.1-pro">Gemini 3.1 Pro (Deep)</option>
+                    <option value="openrouter_nemotron">Nemotron 3 Ultra (OpenRouter)</option>
+                  </select>
+                </div>
               </div>
 
-              <div style="margin-top:20px; padding-top:14px; border-top:1px solid var(--border);">
-                <div class="row-info" style="margin-bottom:10px;">
-                  <span class="row-label">Custom Instructions</span>
-                  <span class="row-desc">Rules Hekki will strictly follow in every conversation — tone, style, language, constraints.</span>
+              <div class="settings-card-title">Startup &amp; Overlay</div>
+              <div class="settings-card-box">
+                <div class="settings-row">
+                  <div class="row-info">
+                    <span class="row-label">Quick Voice Overlay</span>
+                    <span class="row-desc">Press Ctrl+Shift+Space anywhere on desktop for voice mini-hud.</span>
+                  </div>
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="settings-quick-voice" checked>
+                    <span class="toggle-track"></span>
+                  </label>
                 </div>
-                <textarea class="settings-textarea" id="settings-user-instructions" placeholder="e.g. Always reply in Hinglish. Be concise. Never use bullet points unless asked."></textarea>
-                <div style="display:flex;justify-content:flex-end;margin-top:14px;">
-                  <button id="btn-save-identity" class="btn-pill-save">Save Identity</button>
+                <div class="settings-row">
+                  <div class="row-info">
+                    <span class="row-label">Reasoning Depth</span>
+                    <span class="row-desc">Controls planning depth and chain-of-thought analysis.</span>
+                  </div>
+                  <select class="settings-select" id="settings-reasoning-mode">
+                    <option value="fast">Fast — Quick, direct answers</option>
+                    <option value="normal">Normal — Balanced</option>
+                    <option value="pro">Pro — Deep research &amp; analysis</option>
+                    <option value="thinking">Thinking — Full chain-of-thought</option>
+                  </select>
+                </div>
+              </div>
+            </section>
+
+            <!-- IDENTITY -->
+            <section class="settings-section" id="section-identity">
+              <h2 class="section-title">Identity &amp; Instructions</h2>
+              <p class="section-sub">Configure how Hekki understands your context and follows strict behavior rules.</p>
+
+              <div class="settings-card-box">
+                <div class="settings-row" style="flex-direction:column; align-items:flex-start; gap:12px; padding:18px;">
+                  <div class="row-info" style="width:100%;">
+                    <span class="row-label">Custom System Instructions</span>
+                    <span class="row-desc">Rules Hekki will strictly follow in every conversation — tone, style, language, constraints.</span>
+                  </div>
+                  <textarea class="settings-textarea" id="settings-user-instructions" placeholder="e.g. Always reply in Hinglish. Be concise. Never use bullet points unless asked." style="width:100%; min-height:100px;"></textarea>
+                  <div style="display:flex; justify-content:flex-end; width:100%; margin-top:4px;">
+                    <button id="btn-save-identity" class="btn-pill-save">Save Instructions</button>
+                  </div>
                 </div>
               </div>
             </section>
@@ -678,120 +727,102 @@
               <h2 class="section-title">Appearance</h2>
               <p class="section-sub">Visual theme and overlay preferences for the Hekki interface.</p>
 
-              <div class="settings-row">
-                <div class="row-info">
-                  <span class="row-label">Interface Theme</span>
-                  <span class="row-desc">Select between OLED Pure Black or Light Mode aesthetic.</span>
+              <div class="settings-card-box">
+                <div class="settings-row">
+                  <div class="row-info">
+                    <span class="row-label">Interface Theme</span>
+                    <span class="row-desc">Select between Cursor Dark Charcoal or Light Mode aesthetic.</span>
+                  </div>
+                  <div class="theme-toggle-group">
+                    <button class="theme-opt" data-theme="oled" title="Cursor Dark"><i data-lucide="moon"></i></button>
+                    <button class="theme-opt" data-theme="light" title="Light Mode"><i data-lucide="sun"></i></button>
+                  </div>
                 </div>
-                <div class="theme-toggle-group">
-                  <button class="theme-opt" data-theme="oled" title="OLED Black"><i data-lucide="moon"></i></button>
-                  <button class="theme-opt" data-theme="light" title="Light Mode"><i data-lucide="sun"></i></button>
+                <div class="settings-row">
+                  <div class="row-info">
+                    <span class="row-label">Interface Font</span>
+                    <span class="row-desc">Choose the typeface used across the entire interface.</span>
+                  </div>
+                  <select class="settings-select" id="settings-font-family">
+                    <option value="segoe-ui" selected>Segoe WPC / Segoe UI (Default)</option>
+                    <option value="google-sans">Google Sans</option>
+                    <option value="inter">Inter (Clean &amp; Crisp)</option>
+                    <option value="plus-jakarta">Plus Jakarta Sans (Modern UI)</option>
+                    <option value="outfit">Outfit (Geometric Display)</option>
+                    <option value="open-sans">Open Sans (Classic)</option>
+                    <option value="roboto">Roboto (Standard Sans)</option>
+                    <option value="system">System UI (Native OS)</option>
+                    <option value="jetbrains-mono">JetBrains Mono (Developer)</option>
+                    <option value="fira-code">Fira Code (Monospace)</option>
+                    <option value="anthropic">Editorial Serif</option>
+                  </select>
                 </div>
-              </div>
-
-              <div class="settings-row">
-                <div class="row-info">
-                  <span class="row-label">Quick Voice Overlay</span>
-                  <span class="row-desc">Press Ctrl+Shift+Space anywhere on your desktop to invoke Hekki voice mini-hud.</span>
-                </div>
-                <label class="toggle-switch">
-                  <input type="checkbox" id="settings-quick-voice" checked>
-                  <span class="toggle-track"></span>
-                </label>
-              </div>
-              <div class="settings-row">
-                <div class="row-info">
-                  <span class="row-label">Interface Font</span>
-                  <span class="row-desc">Choose the typeface used across the entire interface.</span>
-                </div>
-                <select class="settings-select" id="settings-font-family">
-                  <option value="segoe-ui" selected>Segoe WPC / Segoe UI (Default)</option>
-                  <option value="google-sans">Google Sans</option>
-                  <option value="inter">Inter (Clean &amp; Crisp)</option>
-                  <option value="plus-jakarta">Plus Jakarta Sans (Modern UI)</option>
-                  <option value="outfit">Outfit (Geometric Display)</option>
-                  <option value="open-sans">Open Sans (Classic)</option>
-                  <option value="roboto">Roboto (Standard Sans)</option>
-                  <option value="system">System UI (Native OS)</option>
-                  <option value="jetbrains-mono">JetBrains Mono (Developer)</option>
-                  <option value="fira-code">Fira Code (Monospace)</option>
-                  <option value="anthropic">Editorial Serif</option>
-                </select>
               </div>
             </section>
 
             <!-- GEMINI API -->
             <section class="settings-section" id="section-gemini">
-              <h2 class="section-title">Gemini API &amp; Model Selection</h2>
-              <p class="section-sub">Configure your Google Gemini API Key and active reasoning model.</p>
+              <h2 class="section-title">Gemini API &amp; Cloud Models</h2>
+              <p class="section-sub">Configure your Google Gemini API Key and active cloud models.</p>
 
-              <div class="settings-row" style="flex-direction:column; align-items:flex-start; gap:8px; padding-bottom:18px;">
-                <div class="row-info" style="width:100%;">
-                  <span class="row-label">Google Gemini API Key</span>
-                  <span class="row-desc">Get your free key from <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:var(--text-primary);text-decoration:underline;">Google AI Studio &rarr;</a></span>
+              <div class="settings-card-box">
+                <div class="settings-row" style="flex-direction:column; align-items:flex-start; gap:10px; padding:18px;">
+                  <div class="row-info" style="width:100%;">
+                    <span class="row-label">Google Gemini API Key</span>
+                    <span class="row-desc">Get your free key from <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:var(--text-primary);text-decoration:underline;">Google AI Studio &rarr;</a></span>
+                  </div>
+                  <form action="javascript:void(0);" onsubmit="return false;" style="display:flex; gap:8px; align-items:center; width:100%; margin-top:4px;">
+                    <input class="settings-input" id="settings-gemini-key" type="password" autocomplete="off" placeholder="AIzaSy..." style="flex:1; font-family:monospace; text-align:left;">
+                    <button type="button" id="btn-toggle-key-visibility" style="padding:7px 12px; border:1px solid var(--border); border-radius:8px; background:var(--hover); color:var(--text-2); cursor:pointer; font-size:12px;">
+                      <i data-lucide="eye" style="width:14px;height:14px;pointer-events:none;"></i>
+                    </button>
+                  </form>
+                  <div id="api-key-status" style="font-size:11.5px; color:var(--text-3);"></div>
                 </div>
-                <form action="javascript:void(0);" onsubmit="return false;" style="display:flex; gap:8px; align-items:center; width:100%; margin-top:4px;">
-                  <input class="settings-input" id="settings-gemini-key" type="password" autocomplete="off" placeholder="AIzaSy..." style="flex:1; font-family:monospace; text-align:left;">
-                  <button type="button" id="btn-toggle-key-visibility" style="padding:7px 12px; border:1px solid var(--border); border-radius:8px; background:var(--hover); color:var(--text-2); cursor:pointer; font-size:12px;">
-                    <i data-lucide="eye" style="width:14px;height:14px;pointer-events:none;"></i>
-                  </button>
-                </form>
-                <div id="api-key-status" style="font-size:11.5px; color:var(--text-3);"></div>
-              </div>
-
-              <div class="settings-row">
-                <div class="row-info">
-                  <span class="row-label">Active Gemini Model</span>
-                  <span class="row-desc">Primary AI model used for generating chat responses.</span>
-                </div>
-                <select class="settings-select" id="settings-hekki-model">
-                  <option value="gemini-3.1-flash-lite">Gemini 3.1 Flash Lite (Fast)</option>
-                  <option value="gemini-3.1-flash">Gemini 3.1 Flash (Pro)</option>
-                  <option value="gemini-3.1-pro">Gemini 3.1 Pro (Deep)</option>
-                  <option value="openrouter_nemotron">Nemotron 3 Ultra (OpenRouter)</option>
-                </select>
               </div>
             </section>
 
             <!-- LOCAL GATEWAY -->
             <section class="settings-section" id="section-gateway">
               <h2 class="section-title">Local Universal Model Gateway</h2>
-              <p class="section-sub">Connect Hekki to local models (Ollama, LM Studio, vLLM, Jan.ai) via OpenAI-compatible endpoints.</p>
+              <p class="section-sub">Connect Hekki to local hardware models (Ollama, LM Studio, vLLM, Jan.ai) via OpenAI endpoints.</p>
 
-              <div class="settings-row">
-                <div class="row-info">
-                  <span class="row-label">Enable Local Model Gateway</span>
-                  <span class="row-desc">Route prompts to local hardware server instead of cloud API.</span>
+              <div class="settings-card-box">
+                <div class="settings-row">
+                  <div class="row-info">
+                    <span class="row-label">Enable Local Model Gateway</span>
+                    <span class="row-desc">Route prompts to local hardware server instead of cloud API.</span>
+                  </div>
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="settings-use-ollama">
+                    <span class="toggle-track"></span>
+                  </label>
                 </div>
-                <label class="toggle-switch">
-                  <input type="checkbox" id="settings-use-ollama">
-                  <span class="toggle-track"></span>
-                </label>
-              </div>
 
-              <div class="settings-row">
-                <div class="row-info">
-                  <span class="row-label">Local Server Base URL</span>
-                  <span class="row-desc">Endpoint address of your Ollama or OpenAI-compatible server.</span>
+                <div class="settings-row">
+                  <div class="row-info">
+                    <span class="row-label">Local Server Base URL</span>
+                    <span class="row-desc">Endpoint address of your Ollama or OpenAI-compatible server.</span>
+                  </div>
+                  <div style="display:flex; gap:8px; align-items:center;">
+                    <input class="settings-input" id="settings-ollama-url" type="text" placeholder="http://localhost:11434" style="width:180px; text-align:left;">
+                    <button id="btn-fetch-local-models" type="button" style="padding:6px 12px; border-radius:8px; border:none; background:var(--hover); color:var(--text-primary); cursor:pointer; font-size:12px; font-weight:600; display:flex; align-items:center; gap:6px;">
+                      <i data-lucide="refresh-cw" style="width:13px;height:13px;"></i> Fetch
+                    </button>
+                  </div>
                 </div>
-                <div style="display:flex; gap:8px; align-items:center;">
-                  <input class="settings-input" id="settings-ollama-url" type="text" placeholder="http://localhost:11434" style="width:180px; text-align:left;">
-                  <button id="btn-fetch-local-models" type="button" style="padding:6px 12px; border-radius:8px; border:none; background:var(--hover); color:var(--text-primary); cursor:pointer; font-size:12px; font-weight:600; display:flex; align-items:center; gap:6px;">
-                    <i data-lucide="refresh-cw" style="width:13px;height:13px;"></i> Fetch
-                  </button>
-                </div>
-              </div>
 
-              <div class="settings-row">
-                <div class="row-info">
-                  <span class="row-label">Active Local Model</span>
-                  <span class="row-desc">Target LLM model running on your local machine.</span>
-                </div>
-                <div style="display:flex; gap:8px; align-items:center;">
-                  <select class="settings-select" id="settings-local-model-dropdown" style="max-width:240px;">
-                    <option value="">Click Fetch or type Base URL...</option>
-                  </select>
-                  <input id="settings-ollama-model" type="hidden">
+                <div class="settings-row">
+                  <div class="row-info">
+                    <span class="row-label">Active Local Model</span>
+                    <span class="row-desc">Target LLM model running on your local machine.</span>
+                  </div>
+                  <div style="display:flex; gap:8px; align-items:center;">
+                    <select class="settings-select" id="settings-local-model-dropdown" style="max-width:240px;">
+                      <option value="">Click Fetch or type Base URL...</option>
+                    </select>
+                    <input id="settings-ollama-model" type="hidden">
+                  </div>
                 </div>
               </div>
             </section>
@@ -801,21 +832,21 @@
               <h2 class="section-title">Reasoning &amp; Thinking Depth</h2>
               <p class="section-sub">Configure how deeply Hekki analyzes and formulates responses.</p>
 
-              <div class="settings-row">
-                <div class="row-info">
-                  <span class="row-label">Thinking Depth</span>
-                  <span class="row-desc">Higher depth increases planning quality and reasoning steps.</span>
+              <div class="settings-card-box">
+                <div class="settings-row">
+                  <div class="row-info">
+                    <span class="row-label">Thinking Depth</span>
+                    <span class="row-desc">Higher depth increases planning quality and reasoning steps.</span>
+                  </div>
+                  <select class="settings-select" id="settings-reasoning-mode-sec">
+                    <option value="fast">Fast — Quick, direct answers</option>
+                    <option value="normal">Normal — Balanced</option>
+                    <option value="pro">Pro — Deep research &amp; analysis</option>
+                    <option value="thinking">Thinking — Full chain-of-thought</option>
+                  </select>
                 </div>
-                <select class="settings-select" id="settings-reasoning-mode">
-                  <option value="fast">Fast — Quick, direct answers</option>
-                  <option value="normal">Normal — Balanced</option>
-                  <option value="pro">Pro — Deep research &amp; analysis</option>
-                  <option value="thinking">Thinking — Full chain-of-thought</option>
-                </select>
               </div>
             </section>
-
-
 
             <!-- SKILLS -->
             <section class="settings-section" id="section-skills">
@@ -829,49 +860,48 @@
               <h2 class="section-title">About Hekki</h2>
               <p class="section-sub">System specifications &amp; architecture ledger.</p>
 
-              <div class="settings-row">
-                <div class="row-info">
-                  <span class="row-label">Version</span>
-                  <span class="row-desc">Active build release identifier</span>
+              <div class="settings-card-box">
+                <div class="settings-row">
+                  <div class="row-info">
+                    <span class="row-label">Version</span>
+                    <span class="row-desc">Active build release identifier</span>
+                  </div>
+                  <span style="font-weight:600; color:var(--text-primary); font-family:monospace; font-size:12.5px;">v3.8.0-cursor-settings</span>
                 </div>
-                <span style="font-weight:600; color:var(--text-primary); font-family:monospace; font-size:12.5px;">v3.8.0-fullpage-settings</span>
-              </div>
 
-              <div class="settings-row">
-                <div class="row-info">
-                  <span class="row-label">Processor (CPU)</span>
-                  <span class="row-desc">Local host processing unit</span>
+                <div class="settings-row">
+                  <div class="row-info">
+                    <span class="row-label">Processor (CPU)</span>
+                    <span class="row-desc">Local host processing unit</span>
+                  </div>
+                  <span style="font-size:12.5px; color:var(--text-2);">Intel 11th Gen Core i5-1135G7</span>
                 </div>
-                <span style="font-size:12.5px; color:var(--text-2);">Intel 11th Gen Core i5-1135G7</span>
-              </div>
 
-              <div class="settings-row">
-                <div class="row-info">
-                  <span class="row-label">System Memory</span>
-                  <span class="row-desc">Available RAM capacity</span>
+                <div class="settings-row">
+                  <div class="row-info">
+                    <span class="row-label">System Memory</span>
+                    <span class="row-desc">Available RAM capacity</span>
+                  </div>
+                  <span style="font-size:12.5px; color:var(--text-2);">8.0 GB DDR4</span>
                 </div>
-                <span style="font-size:12.5px; color:var(--text-2);">8.0 GB DDR4</span>
-              </div>
 
-              <div class="settings-row">
-                <div class="row-info">
-                  <span class="row-label">GPU Acceleration</span>
-                  <span class="row-desc">Hardware acceleration backend</span>
+                <div class="settings-row">
+                  <div class="row-info">
+                    <span class="row-label">GPU Acceleration</span>
+                    <span class="row-desc">Hardware acceleration backend</span>
+                  </div>
+                  <span style="font-size:12.5px; color:var(--text-2);">Intel Iris Xe</span>
                 </div>
-                <span style="font-size:12.5px; color:var(--text-2);">Intel Iris Xe</span>
-              </div>
 
-              <div class="settings-row">
-                <div class="row-info">
-                  <span class="row-label">Architecture Rules</span>
-                  <span class="row-desc">Enforced codebase constraints</span>
+                <div class="settings-row">
+                  <div class="row-info">
+                    <span class="row-label">Architecture Rules</span>
+                    <span class="row-desc">Enforced codebase constraints</span>
+                  </div>
+                  <span style="font-size:12px; color:var(--text-3);">Rule #1 (Ledger), Rule #2 (&lt;500 Lines), Rule #3 (Flat), Rule #5 (Title Case)</span>
                 </div>
-                <span style="font-size:12px; color:var(--text-3);">Rule #1 (Ledger), Rule #2 (&lt;500 Lines), Rule #3 (Flat), Rule #5 (Title Case)</span>
               </div>
-            </section>
-
           </div><!-- end modal-content -->
-        </div><!-- end settings-page-box -->
       </div><!-- end settings-pane -->
 
 
@@ -1205,7 +1235,7 @@
     </div>
   </div>
 
-  <script src="/static/main.js?v=211" type="module"></script>
+  <script src="/static/main.js?v=215" type="module"></script>
 
 
 

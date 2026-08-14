@@ -1,0 +1,87 @@
+/* ==========================================================================
+   4_components.css — Flat UI Cards, Status Badges, Buttons, Inputs
+   ========================================================================== */
+
+/* Flat Cards with Soft Tint Separation */
+.card, .panel, .modal-content {
+  background-color: var(--bg-primary);
+  border-radius: var(--border-radius-md);
+  border: none !important;
+  box-shadow: none !important;
+  padding: var(--space-4);
+}
+
+.card-secondary {
+  background-color: var(--bg-secondary);
+  border-radius: var(--border-radius-md);
+  border: none !important;
+  box-shadow: none !important;
+  padding: var(--space-3);
+}
+
+/* Status Badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: var(--border-radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  background-color: var(--bg-tertiary);
+  color: var(--text-secondary);
+  border: none !important;
+  box-shadow: none !important;
+  text-transform: none;
+}
+
+.badge-active {
+  background-color: var(--accent-light);
+  color: var(--accent-primary);
+}
+
+/* Action Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px;
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  background-color: var(--accent-primary);
+  color: var(--text-inverse);
+  transition: background-color 0.2s ease;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Floating Dropdown Lists & Selects — Outline Border Only */
+.dropdown-menu,
+.doc-dropdown-menu,
+.hekki-slash-popup,
+.attach-dropdown,
+.attach-sub-dropdown,
+.permission-dropdown-menu,
+.minimap-dropdown-popup,
+.user-menu-dropdown,
+.desktop-dropdown-menu,
+.topnav-dropdown-menu,
+.settings-select,
+select {
+  border: 1px solid var(--border, #E4E7EB) !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.btn:hover {
+  background-color: var(--accent-hover);
+}
+
+.btn-secondary {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.btn-secondary:hover {
+  background-color: var(--bg-hover);
+}

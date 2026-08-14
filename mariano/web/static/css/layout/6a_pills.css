@@ -44,7 +44,7 @@ body.dark .modal-nav-pill.active {
   justify-content: center;
   padding: 4px 16px;
   background: transparent !important;
-  border: 1px solid var(--border) !important;
+  border: none !important;
   border-radius: 20px !important;
   color: var(--text-secondary) !important;
   font-size: 11px;
@@ -192,7 +192,7 @@ body.dark .sidebar-user-avatar {
   left: 268px; /* sidebar 260px + 8px gap — opens in main content area, not inside leftbar */
   width: 240px;
   background: var(--card) !important;
-  border: 1px solid var(--border) !important;
+  border: 1px solid var(--border, #E4E7EB) !important;
   border-radius: 12px;
   padding: 6px !important;
   box-shadow: none !important;

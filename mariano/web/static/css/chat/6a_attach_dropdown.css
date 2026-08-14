@@ -15,7 +15,6 @@
 /* ── Dropdown container ─────────────────────────────────────── */
 .attach-dropdown,
 .attach-sub-dropdown {
-  /* JS sets position via getBoundingClientRect() — do NOT set top/left/bottom here */
   position: fixed;
   min-width: 240px;
   background: var(--card) !important;
@@ -158,7 +157,44 @@
   height: auto !important;
   min-height: 36px !important;
   padding: 8px 10px !important;
-  font-size: 13px !important;
+  font-size: 14.5px !important;
   white-space: normal;
   align-items: flex-start !important;
 }
+
+/* ── Debate Rounds Selector Row ────────────────────────────── */
+.debate-rounds-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  height: 36px !important;
+  padding: 8px 10px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.sub-item-badge {
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  font-family: var(--font) !important;
+  color: var(--text-2) !important;
+  background: var(--hover) !important;
+  padding: 2px 8px !important;
+  border-radius: 4px !important;
+  white-space: nowrap;
+}
+
+.attach-rounds-select {
+  background: var(--hover, #f1f5f9) !important;
+  color: var(--text, #0f172a) !important;
+  border: none !important;
+  outline: none !important;
+  padding: 4px 8px !important;
+  border-radius: 6px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  font-family: var(--font) !important;
+  cursor: pointer !important;
+}
+
+

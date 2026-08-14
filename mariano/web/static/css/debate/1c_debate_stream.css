@@ -95,7 +95,7 @@
   font-weight: 600;
   padding: 2px 6px;
   border-radius: 3px;
-  border: 1px solid var(--border);
+  border: none !important;
   background: var(--sidebar-bg);
   color: var(--text-secondary);
   margin-bottom: 8px;
@@ -170,7 +170,7 @@
 }
 .debate-input-wrapper:focus-within {
   border-color: #b5b4b0;
-  box-shadow: var(--shadow), 0 0 0 3px rgba(0,0,0,0.02);
+  box-shadow: none !important;
 }
 body.dark .debate-input-wrapper:focus-within {
   border-color: #555;

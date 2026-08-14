@@ -40,20 +40,11 @@ export function createMessageElement(type, text, timestamp, index, ChatSessionMa
 
     // Extract images
     while ((match = imgRegex.exec(text)) !== null) {
-      const fileName = match[1].trim();
-      const rawPath = match[2].trim();
-      const renderUrl = (rawPath.startsWith('data:') || rawPath.startsWith('http'))
-        ? rawPath
-        : `/api/workspace/render?path=${encodeURIComponent(rawPath)}`;
-
-      attachmentCards.push(`
-        <div class="user-img-attachment-card" style="align-self: flex-end; margin-bottom: 0; border-radius: 12px; overflow: hidden; width: 120px; height: 120px; border: 1px solid var(--border); flex-shrink: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.12);">
-          <img src="${renderUrl}" alt="${escapeHtml(fileName)}" style="width: 120px; height: 120px; object-fit: cover; display: block;" />
-        </div>
-      `);
+      const fileName = match[1].trim(), rawPath = match[2].trim();
+      const renderUrl = (rawPath.startsWith('data:') || rawPath.startsWith('http')) ? rawPath : `/api/workspace/render?path=${encodeURIComponent(rawPath)}`;
+      attachmentCards.push(`<div class="user-img-attachment-card" style="align-self:flex-end;margin-bottom:0;border-radius:12px;overflow:hidden;width:120px;height:120px;border:1px solid var(--border);flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,0.12);"><img src="${renderUrl}" alt="${escapeHtml(fileName)}" style="width:120px;height:120px;object-fit:cover;display:block;" /></div>`);
     }
 
-    // Extract non-image files (PDFs, DOCX, TXT, CSV, etc.)
     while ((match = fileRegex.exec(text)) !== null) {
       const fileName = match[1].trim();
       const extMatch = fileName.match(/\.([a-z0-9]+)$/i);
@@ -61,14 +52,7 @@ export function createMessageElement(type, text, timestamp, index, ChatSessionMa
       let iconName = 'file-text';
       if (['ZIP', 'RAR', '7Z', 'TAR', 'GZ'].includes(ext)) iconName = 'archive';
       else if (['PY', 'JS', 'HTML', 'CSS', 'JSON', 'CPP', 'C', 'TS'].includes(ext)) iconName = 'file-code';
-
-      attachmentCards.push(`
-        <div class="user-file-attachment-card" style="align-self: flex-end; margin-bottom: 0; padding: 7px 12px; border-radius: 12px; background: var(--card, #ffffff); border: 1px solid var(--border) !important; display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--text-primary); font-weight: 500; max-width: 280px; box-shadow: 0 2px 6px rgba(0,0,0,0.06);">
-          <i data-lucide="${iconName}" style="width: 16px; height: 16px; color: var(--accent, #2563eb); flex-shrink: 0;"></i>
-          <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1;">${escapeHtml(fileName)}</span>
-          <span style="font-size: 9.5px; background: rgba(37, 99, 235, 0.12); color: var(--accent, #2563eb); padding: 1px 6px; border-radius: 6px; text-transform: uppercase; font-weight: 600; flex-shrink: 0;">${ext}</span>
-        </div>
-      `);
+      attachmentCards.push(`<div class="user-file-attachment-card" style="align-self:flex-end;margin-bottom:0;padding:7px 12px;border-radius:12px;background:var(--card,#fff);border:1px solid var(--border)!important;display:inline-flex;align-items:center;gap:8px;font-size:12.5px;color:var(--text-primary);font-weight:500;max-width:280px;box-shadow:0 2px 6px rgba(0,0,0,0.06);"><i data-lucide="${iconName}" style="width:16px;height:16px;color:var(--accent,#2563eb);flex-shrink:0;"></i><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;">${escapeHtml(fileName)}</span><span style="font-size:9.5px;background:rgba(37,99,235,0.12);color:var(--accent,#2563eb);padding:1px 6px;border-radius:6px;text-transform:uppercase;font-weight:600;flex-shrink:0;">${ext}</span></div>`);
     }
 
     if (attachmentCards.length > 0) {
@@ -230,7 +214,8 @@ export function createMessageElement(type, text, timestamp, index, ChatSessionMa
         `;
       }
 
-      el.innerHTML = thoughtHtml + (window.marked ? sanitizeHtml(marked.parse(finalText)) : escapeHtml(finalText));
+      const isDebateHtml = finalText.includes('debate-round-inner') || finalText.includes('debate-agent-section') || finalText.includes('debate-canvas-wrap');
+      el.innerHTML = thoughtHtml + (isDebateHtml ? sanitizeHtml(finalText) : (window.marked ? sanitizeHtml(marked.parse(finalText)) : escapeHtml(finalText)));
       enhanceMarkdownContent(el);
 
       const header = el.querySelector('.thought-header');
@@ -477,43 +462,37 @@ function makeUserMessageEditable(groupEl, originalText, index, ChatSessionManage
 
   editContainer.querySelector('.btn-save').addEventListener('click', () => {
     const newText = textarea.value.trim();
-    if (!newText) return;
-    submitEditedText(index, newText, ChatSessionManager, globalSendCallbackRef);
+    if (newText) submitEditedText(index, newText, ChatSessionManager, globalSendCallbackRef);
   });
 }
 
-/** Handles submitting edited prompt: truncates session history & triggers resend */
 function submitEditedText(index, newText, ChatSessionManager, globalSendCallbackRef) {
-  const activeChatId = ChatSessionManager.getActiveChatId();
-  if (!activeChatId) return;
+  const activeId = ChatSessionManager.getActiveChatId();
+  if (!activeId) return;
   const chats = ChatSessionManager.getChats();
-  const chat = chats.find(c => c.id === activeChatId);
+  const chat = chats.find(c => c.id === activeId);
   if (!chat) return;
-
   chat.messages[index].text = newText;
   chat.messages[index].timestamp = new Date().toISOString();
   chat.messages = chat.messages.slice(0, index + 1);
   ChatSessionManager.saveChats(chats);
-  ChatSessionManager.loadChat(activeChatId);
-
+  ChatSessionManager.loadChat(activeId);
   const cb = globalSendCallbackRef();
   if (cb) cb(newText);
 }
 
-/** Truncates conversation and retries the exact same prompt */
 function triggerRetry(index, ChatSessionManager, globalSendCallbackRef) {
-  const activeChatId = ChatSessionManager.getActiveChatId();
-  if (!activeChatId) return;
+  const activeId = ChatSessionManager.getActiveChatId();
+  if (!activeId) return;
   const chats = ChatSessionManager.getChats();
-  const chat = chats.find(c => c.id === activeChatId);
+  const chat = chats.find(c => c.id === activeId);
   if (!chat) return;
-
   const retryText = chat.messages[index].text;
   chat.messages[index].timestamp = new Date().toISOString();
   chat.messages = chat.messages.slice(0, index + 1);
   ChatSessionManager.saveChats(chats);
-  ChatSessionManager.loadChat(activeChatId);
-
+  ChatSessionManager.loadChat(activeId);
   const cb = globalSendCallbackRef();
   if (cb) cb(retryText);
 }
+

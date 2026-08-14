@@ -285,7 +285,7 @@ summary {
 }
 .msg-edit-textarea {
   width: 100%;
-  border: 1px solid var(--border);
+  border: none !important;
   border-radius: var(--radius-md);
   background: var(--bg);
   color: var(--text);
@@ -295,7 +295,7 @@ summary {
   resize: vertical;
   outline: none;
   line-height: 1.55;
-  box-shadow: var(--shadow);
+  box-shadow: none !important;
 }
 .msg-edit-textarea:focus {
   border-color: var(--text-3);
@@ -312,7 +312,7 @@ summary {
   font-size: var(--fs-sm);     /* 12px */
   font-weight: 500;
   cursor: pointer;
-  border: 1px solid var(--border);
+  border: none !important;
   background: var(--bg);
   color: var(--text-2);
   transition: all 0.12s;

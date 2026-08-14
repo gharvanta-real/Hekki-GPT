@@ -1,0 +1,52 @@
+/* ==========================================================================
+   2_base.css — CSS Resets, Open Sans Typography, Zero Border/Shadow Enforcement
+   ========================================================================== */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
+  color: var(--text-primary);
+  background-color: var(--bg-secondary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  text-transform: none; /* No pure uppercase */
+}
+
+h1 { font-size: var(--font-size-xl); }
+h2 { font-size: var(--font-size-lg); }
+h3 { font-size: var(--font-size-base); }
+h4 { font-size: var(--font-size-md); }
+
+p, span, div, td, th {
+  font-size: var(--font-size-md);
+  line-height: 1.5;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  background: transparent;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+button {
+  cursor: pointer;
+}

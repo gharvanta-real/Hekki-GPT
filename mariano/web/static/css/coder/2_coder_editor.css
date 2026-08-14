@@ -164,9 +164,9 @@
   position: absolute;
   z-index: 1000;
   background: var(--card);
-  border: 1px solid var(--border);
+  border: none !important;
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
+  box-shadow: none !important;
   padding: 4px 0;
   min-width: 150px;
   font-family: var(--font);

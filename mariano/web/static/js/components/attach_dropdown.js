@@ -128,18 +128,37 @@ export function initAttachDropdowns(inConversationState) {
           const singleModel = ARENA_MODELS[0] || { id: 'gemini-3.1-flash-lite', name: 'Gemini 3.1 Flash Lite' };
 
           const isDebateOn = window._debateModeActive || false;
+          const currentRounds = parseInt(localStorage.getItem('mariano_debate_rounds') || '3', 10);
+          window._debateRounds = currentRounds;
+
           sub.innerHTML = `
-            <div class="sub-dropdown-header">Playground Mode</div>
-            <div class="attach-dropdown-item" style="opacity:0.85; cursor:default; justify-content:space-between;">
-              <div style="display:flex; align-items:center; gap:8px;">
-                <i data-lucide="check" style="width:13px; height:13px; color:#2563eb;"></i>
-                <span style="font-size:12px; color:var(--text); font-weight:500;">${singleModel.name}</span>
+            <div class="attach-dropdown-item" style="cursor:default; justify-content:space-between;">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <i data-lucide="check" style="color:#2563eb;"></i>
+                <span>${singleModel.name}</span>
               </div>
-              <span style="font-size:10px; color:var(--text-2); background:var(--hover); padding:2px 6px; border-radius:4px; font-weight:500;">Both Agents</span>
+              <span class="sub-item-badge">Both Agents</span>
             </div>
             <div class="attach-dropdown-sep"></div>
-            <div id="btn-toggle-arena-switch" class="toggle-switch-wrap">
-              <span style="font-size:12.5px; font-weight:500; color:var(--text-primary);">Playground Mode</span>
+            <div class="attach-dropdown-item" style="cursor:default; justify-content:space-between;">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <i data-lucide="repeat"></i>
+                <span>Debate Rounds</span>
+              </div>
+              <select id="attach-debate-rounds-select" class="attach-rounds-select">
+                <option value="1" ${currentRounds === 1 ? 'selected' : ''}>1 Round</option>
+                <option value="2" ${currentRounds === 2 ? 'selected' : ''}>2 Rounds</option>
+                <option value="3" ${currentRounds === 3 ? 'selected' : ''}>3 Rounds</option>
+                <option value="4" ${currentRounds === 4 ? 'selected' : ''}>4 Rounds</option>
+                <option value="5" ${currentRounds === 5 ? 'selected' : ''}>5 Rounds</option>
+              </select>
+            </div>
+            <div class="attach-dropdown-sep"></div>
+            <div id="btn-toggle-arena-switch" class="attach-dropdown-item" style="justify-content:space-between; cursor:pointer;">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <i data-lucide="swords" style="color:#f59e0b;"></i>
+                <span>Playground Mode</span>
+              </div>
               <div class="toggle-switch debate-toggle-switch ${isDebateOn ? 'on' : ''}">
                 <div class="toggle-switch-handle"></div>
               </div>
@@ -149,6 +168,14 @@ export function initAttachDropdowns(inConversationState) {
           document.body.appendChild(sub);
           positionSubDropdown(sub, playgroundBtn);
           if (window.lucide) lucide.createIcons({ parent: sub });
+
+          sub.querySelector('#attach-debate-rounds-select')?.addEventListener('change', (e) => {
+            e.stopPropagation();
+            const val = parseInt(e.target.value, 10);
+            localStorage.setItem('mariano_debate_rounds', val);
+            window._debateRounds = val;
+            showToast('Debate Rounds Updated', `Set to ${val} round(s)`, 2000);
+          });
 
           sub.querySelector('#btn-toggle-arena-switch')?.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -184,22 +211,37 @@ export function initAttachDropdowns(inConversationState) {
           });
         } else {
           let selectedModels = [ARENA_MODELS[0].id, ARENA_MODELS[1].id];
+          const currentRounds = parseInt(localStorage.getItem('mariano_debate_rounds') || '3', 10);
+          window._debateRounds = currentRounds;
 
           const itemsHtml = ARENA_MODELS.map(m => {
             const isChecked = selectedModels.includes(m.id);
             return `
               <button class="attach-dropdown-item arena-model-item" data-id="${m.id}" style="justify-content:space-between;">
-                <div style="display:flex; align-items:center; gap:8px;">
-                  <i data-lucide="${isChecked ? 'check' : 'minus'}" style="width:13px; height:13px; opacity:${isChecked ? '1' : '0.3'};"></i>
-                  <span style="font-size:12px;">${m.name}</span>
+                <div style="display:flex; align-items:center; gap:10px;">
+                  <i data-lucide="${isChecked ? 'check' : 'minus'}" style="opacity:${isChecked ? '1' : '0.3'};"></i>
+                  <span>${m.name}</span>
                 </div>
               </button>
             `;
           }).join('');
 
           sub.innerHTML = `
-            <div class="sub-dropdown-header">Playground Models</div>
             ${itemsHtml}
+            <div class="attach-dropdown-sep"></div>
+            <div class="attach-dropdown-item" style="cursor:default; justify-content:space-between;">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <i data-lucide="repeat"></i>
+                <span>Debate Rounds</span>
+              </div>
+              <select id="attach-debate-rounds-select" class="attach-rounds-select">
+                <option value="1" ${currentRounds === 1 ? 'selected' : ''}>1 Round</option>
+                <option value="2" ${currentRounds === 2 ? 'selected' : ''}>2 Rounds</option>
+                <option value="3" ${currentRounds === 3 ? 'selected' : ''}>3 Rounds</option>
+                <option value="4" ${currentRounds === 4 ? 'selected' : ''}>4 Rounds</option>
+                <option value="5" ${currentRounds === 5 ? 'selected' : ''}>5 Rounds</option>
+              </select>
+            </div>
             <div class="attach-dropdown-sep"></div>
             <button id="btn-activate-arena-plus" class="attach-dropdown-item" style="justify-content:center;">
               <span>Activate Playground Mode</span>
@@ -209,6 +251,14 @@ export function initAttachDropdowns(inConversationState) {
           document.body.appendChild(sub);
           positionSubDropdown(sub, playgroundBtn);
           if (window.lucide) lucide.createIcons({ parent: sub });
+
+          sub.querySelector('#attach-debate-rounds-select')?.addEventListener('change', (e) => {
+            e.stopPropagation();
+            const val = parseInt(e.target.value, 10);
+            localStorage.setItem('mariano_debate_rounds', val);
+            window._debateRounds = val;
+            showToast('Debate Rounds Updated', `Set to ${val} round(s)`, 2000);
+          });
 
           sub.querySelectorAll('.arena-model-item').forEach(btn => {
             btn.addEventListener('click', (e) => {

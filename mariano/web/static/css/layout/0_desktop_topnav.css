@@ -82,9 +82,9 @@
   left: 0;
   min-width: 230px;
   background: var(--card, #FFFFFF);
-  border: 1px solid var(--border, rgba(0, 0, 0, 0.08));
+  border: none !important;
   border-radius: 12px;
-  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.18), 0 2px 8px rgba(0, 0, 0, 0.06);
+  box-shadow: none !important;
   padding: 6px;
   display: flex;
   flex-direction: column;

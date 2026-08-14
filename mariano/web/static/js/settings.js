@@ -30,13 +30,17 @@ export function initSettings(setGreetingCallback) {
 
   $('btn-open-settings')?.addEventListener('click', openSettingsPage);
   $('btn-user-settings')?.addEventListener('click', openSettingsPage);
+  $('btn-back-settings')?.addEventListener('click', () => {
+    if (window.router) {
+      window.router.navigate('chat');
+    }
+  });
 
   // ── Nav switching ─────────────────────────────────────────────────────
-  const container = pane || document;
-  container.querySelectorAll('.modal-nav-item').forEach(btn => {
+  document.querySelectorAll('.modal-nav-item').forEach(btn => {
     btn.addEventListener('click', () => {
-      container.querySelectorAll('.modal-nav-item').forEach(b => b.classList.remove('active'));
-      container.querySelectorAll('.settings-section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.modal-nav-item').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.settings-section').forEach(s => s.classList.remove('active'));
       btn.classList.add('active');
       const sec = $('section-' + btn.dataset.section);
       if (sec) sec.classList.add('active');
@@ -46,7 +50,7 @@ export function initSettings(setGreetingCallback) {
   // ── Settings Search Filter ─────────────────────────────────────────────
   $('settings-search')?.addEventListener('input', (e) => {
     const query = e.target.value.toLowerCase().trim();
-    container.querySelectorAll('.modal-nav-item').forEach(btn => {
+    document.querySelectorAll('.modal-nav-item').forEach(btn => {
       const text = btn.textContent.toLowerCase();
       const secId = btn.dataset.section;
       const sec = $('section-' + secId);
@@ -74,10 +78,10 @@ export function initSettings(setGreetingCallback) {
   if (window._applyThemeGlobal) {
     window._applyThemeGlobal(savedTheme, document.getElementById('btn-user-theme'));
   }
-  container.querySelectorAll('.theme-opt').forEach(b => {
+  document.querySelectorAll('.theme-opt').forEach(b => {
     b.classList.toggle('active', b.dataset.theme === savedTheme);
     b.addEventListener('click', () => {
-      container.querySelectorAll('.theme-opt').forEach(x => x.classList.remove('active'));
+      document.querySelectorAll('.theme-opt').forEach(x => x.classList.remove('active'));
       b.classList.add('active');
       localStorage.setItem('hekki_theme', b.dataset.theme);
       
@@ -244,11 +248,15 @@ export function initSettings(setGreetingCallback) {
       }
 
       // Reasoning mode
-      const reasonSel = $('settings-reasoning-mode');
-      if (reasonSel && cfg.reasoning_mode) {
-        for (let opt of reasonSel.options) {
-          if (opt.value === cfg.reasoning_mode) { opt.selected = true; break; }
-        }
+      if (cfg.reasoning_mode) {
+        ['settings-reasoning-mode', 'settings-reasoning-mode-sec'].forEach(id => {
+          const reasonSel = $(id);
+          if (reasonSel) {
+            for (let opt of reasonSel.options) {
+              if (opt.value === cfg.reasoning_mode) { opt.selected = true; break; }
+            }
+          }
+        });
       }
 
       // Ollama / Local Gateway
@@ -369,8 +377,15 @@ export function initSettings(setGreetingCallback) {
   });
 
   // ── Reasoning mode — on change ────────────────────────────────────────
-  $('settings-reasoning-mode')?.addEventListener('change', e => {
-    save({ reasoning_mode: e.target.value });
+  ['settings-reasoning-mode', 'settings-reasoning-mode-sec'].forEach(id => {
+    $(id)?.addEventListener('change', e => {
+      const val = e.target.value;
+      ['settings-reasoning-mode', 'settings-reasoning-mode-sec'].forEach(otherId => {
+        const sel = $(otherId);
+        if (sel) sel.value = val;
+      });
+      save({ reasoning_mode: val });
+    });
   });
 
   // ── Local Gateway / Ollama — on change ────────────────────────────────

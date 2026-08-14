@@ -173,7 +173,7 @@
   font-size: 13px;
   font-weight: 400;
   background: var(--bg);
-  border: 1.5px solid var(--border);
+  border: none !important;
   border-radius: 12px;
   color: var(--text);
   outline: none;
@@ -341,7 +341,7 @@
   align-items: center;
   gap: 6px;
   background: var(--hover);
-  border: 1px solid var(--border);
+  border: none !important;
   border-radius: 6px;
   padding: 2px 8px;
   font-family: var(--font-mono), monospace;

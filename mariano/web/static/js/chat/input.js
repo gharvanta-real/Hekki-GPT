@@ -1,7 +1,7 @@
 /* === chat/input.js — Input binding, scroll, clear helpers, shared state === */
 import { attachmentManager } from '../components/attachment_manager.js';
 import { updateInputStatsIndicator } from './input_stats.js';
-import { isDebateModeActive, handleInlineDebateSubmit, initInlineDebateMode } from './debate_mode.js';
+import { isDebateModeActive, handleInlineDebateSubmit, initInlineDebateMode } from './debate_mode.js?v=215';
 
 // Shared mutable state (exported for session.js to access)
 export let activeChatId = localStorage.getItem('hekki_active_chat_id') || null;
@@ -104,6 +104,37 @@ export function formatTime(timestamp) {
   return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
 }
 
+export function setGeneratingState(isGen) {
+  window.isGenerating = !!isGen;
+
+  ['chat-input', 'chat-input-conv'].forEach(inputId => {
+    const isConv = inputId === 'chat-input-conv';
+    const submitBtn = document.getElementById(isConv ? 'btn-submit-conv' : 'btn-submit-home');
+    const stopBtn = document.getElementById(isConv ? 'btn-stop-gen-conv' : 'btn-stop-gen');
+    const voiceBtn = document.getElementById(isConv ? 'btn-voice-conv' : 'btn-voice');
+    const textarea = document.getElementById(inputId);
+    const hasText = !!(textarea?.value?.trim());
+
+    if (window.isGenerating) {
+      // Always hide voice mic while generating
+      voiceBtn?.classList.add('hidden');
+      // Always show stop button while generating
+      stopBtn?.classList.remove('hidden');
+      // Only show send if user has typed something (allow sending new query mid-gen)
+      if (hasText) {
+        submitBtn?.classList.remove('hidden');
+      } else {
+        submitBtn?.classList.add('hidden');
+      }
+    } else {
+      stopBtn?.classList.add('hidden');
+      voiceBtn?.classList.remove('hidden');
+      submitBtn?.classList.remove('hidden');
+    }
+  });
+}
+window.setGeneratingState = setGeneratingState;
+
 let _inputsBound = false;
 
 export function bindInputs(sendCallback, ChatSessionManager) {
@@ -125,15 +156,16 @@ export function bindInputs(sendCallback, ChatSessionManager) {
     adjustHeight(textarea);
     const submitBtn = $(submitBtnId);
     const stopBtn = $(stopBtnId);
-    const hasText = textarea.value.trim() !== '' || attachmentManager.hasFiles();
+    const hasText = !!(textarea.value?.trim());
 
     if (window.isGenerating) {
+      // Stop always visible during generation
+      stopBtn?.classList.remove('hidden');
+      // Send: visible only if user has typed text (to allow new query mid-gen)
       if (hasText) {
         submitBtn?.classList.remove('hidden');
-        stopBtn?.classList.add('hidden');
       } else {
         submitBtn?.classList.add('hidden');
-        stopBtn?.classList.remove('hidden');
       }
     } else {
       stopBtn?.classList.add('hidden');

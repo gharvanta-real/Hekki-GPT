@@ -112,7 +112,7 @@
   background: var(--card);
   border: none !important;
   outline: none !important;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  box-shadow: none !important;
   border-radius: 12px;
   padding: 14px 20px 14px 14px;
   position: relative;
@@ -189,7 +189,7 @@ body.dark .des-card-avatar {
   z-index: 2;
   padding: 4px 14px;
   background: var(--sidebar-bg);
-  border: 1px solid var(--border);
+  border: none !important;
   border-radius: 20px; /* pill chip */
   color: var(--text-secondary);
   font-size: 11px;

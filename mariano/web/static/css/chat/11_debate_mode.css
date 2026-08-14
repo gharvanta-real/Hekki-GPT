@@ -1,0 +1,283 @@
+/* === 11_DEBATE_MODE.CSS — Dedicated Scoped Styles for Debate Mode (Protected against overrides) === */
+
+/* ─── Toggle Switch ─────────────────────────────────────────────────────── */
+.toggle-switch-wrap {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+  padding: 8px 12px !important;
+  cursor: pointer !important;
+  user-select: none !important;
+  box-sizing: border-box !important;
+  border-radius: 8px !important;
+  transition: background 0.15s !important;
+}
+.toggle-switch-wrap:hover { background: var(--hover) !important; }
+.toggle-switch {
+  position: relative !important;
+  width: 36px !important;
+  height: 20px !important;
+  background: var(--border, #e4e7eb) !important;
+  border-radius: 12px !important;
+  transition: background 0.2s ease !important;
+  flex-shrink: 0 !important;
+}
+.toggle-switch.on { background: #2563eb !important; }
+.toggle-switch-handle {
+  position: absolute !important;
+  top: 2px !important;
+  left: 2px !important;
+  width: 16px !important;
+  height: 16px !important;
+  background: #fff !important;
+  border-radius: 50% !important;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+.toggle-switch.on .toggle-switch-handle { transform: translateX(16px) !important; }
+
+/* ─── Per-Round Card Inner (Structured Debater Stack) ────────────────────── */
+.debate-round-inner {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0 !important;
+  width: 100% !important;
+  padding: 6px 0 !important;
+}
+
+.debate-round-label {
+  display: inline-flex !important;
+  align-items: center !important;
+  align-self: flex-start !important;
+  width: fit-content !important;
+  gap: 8px !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  color: var(--text-primary, #ffffff) !important;
+  text-transform: none !important;
+  letter-spacing: 0.2px !important;
+  padding: 2px 0 !important;
+  border: none !important;
+  background: transparent !important;
+  margin-bottom: 10px !important;
+}
+
+/* ─── Individual Debater Agent Row ───────────────────────────────────────── */
+.debate-agent-section {
+  display: block !important;
+  font-size: 16px !important;
+  line-height: 28px !important;
+  padding: 4px 0 !important;
+  margin: 0 !important;
+  animation: dFadeIn 0.22s ease !important;
+}
+
+.debate-agent-row {
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+  gap: 12px !important;
+}
+
+.debate-agent-content {
+  flex: 1 1 auto !important;
+  display: inline !important;
+}
+
+.debate-agent-name {
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  color: #3b82f6 !important;
+  margin-right: 6px !important;
+  display: inline !important;
+}
+
+.debate-agent-brief {
+  font-size: 16px !important;
+  line-height: 28px !important;
+  color: var(--text-2, #a1a1aa) !important;
+  padding-left: 0 !important;
+  word-break: break-word !important;
+  display: inline !important;
+  white-space: normal !important;
+}
+
+.debate-agent-brief.expanded {
+  white-space: pre-wrap !important;
+  display: inline !important;
+}
+
+/* ─── Break Line with Centered Expand/Collapse Pill ──────────────────────── */
+.debate-breakline-wrap {
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  margin: 12px 0 14px 0 !important;
+  min-height: 18px !important;
+}
+
+.debate-breakline-line {
+  position: absolute !important;
+  top: 50% !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 1px !important;
+  background: #333338 !important;
+  z-index: 1 !important;
+}
+
+.debate-expand-pill {
+  position: relative !important;
+  z-index: 2 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 3px !important;
+  padding: 2px 9px !important;
+  border-radius: 9999px !important;
+  background: #1e1e22 !important;
+  border: none !important;
+  outline: none !important;
+  color: #a1a1aa !important;
+  font-size: 11px !important;
+  line-height: 15px !important;
+  font-weight: 400 !important;
+  cursor: pointer !important;
+  transition: background 0.18s ease, color 0.18s ease !important;
+  user-select: none !important;
+  box-shadow: none !important;
+}
+
+.debate-expand-pill:hover {
+  background: #2a2a30 !important;
+  color: #ffffff !important;
+  border: none !important;
+  outline: none !important;
+}
+
+.debate-expand-pill svg {
+  width: 10px !important;
+  height: 10px !important;
+  stroke: currentColor !important;
+  transition: transform 0.2s ease !important;
+}
+
+.debate-expand-pill.expanded svg {
+  transform: rotate(180deg) !important;
+}
+
+/* ─── Status Indicator (Spinner while streaming, Green Done checkmark when done) ─ */
+.debate-status-indicator {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 20px !important;
+  height: 20px !important;
+  flex-shrink: 0 !important;
+  margin-left: 10px !important;
+  margin-top: 4px !important;
+}
+
+.debate-done-icon {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #22c55e !important;
+  animation: dFadeIn 0.25s ease !important;
+}
+
+.debate-done-icon svg {
+  width: 16px !important;
+  height: 16px !important;
+  stroke: #22c55e !important;
+}
+
+/* ─── Debater Streaming Spinner ─────────────────────────────────────────── */
+.debate-spinner {
+  width: 16px !important;
+  height: 16px !important;
+  border: 2px solid transparent !important;
+  border-top-color: #3b82f6 !important;
+  border-right-color: #3b82f6 !important;
+  border-radius: 50% !important;
+  animation: debateSpinnerSpin 0.75s linear infinite !important;
+  display: inline-block !important;
+  flex-shrink: 0 !important;
+}
+
+/* ─── Thinking Status Header ────────────────────────────────────────────── */
+#debate-thinking-txt,
+.debate-thinking-txt-unbold {
+  font-weight: 400 !important;
+  font-size: 16px !important;
+  background: none !important;
+  -webkit-text-fill-color: var(--text-2) !important;
+  color: var(--text-2) !important;
+}
+
+/* ─── Debate Message Groups ─────────────────────────────────────────────── */
+.msg-group.debate-round-card {
+  margin-top: 18px !important;
+  margin-bottom: 14px !important;
+}
+
+.msg-group.debate-round-card .msg.ai {
+  font-size: 16px !important;
+  line-height: 28px !important;
+  padding: 0 !important;
+  background: none !important;
+  max-width: 100% !important;
+}
+
+/* ─── Synthesis Canvas Bubble ───────────────────────────────────────────── */
+.debate-canvas-bubble {
+  padding: 0 !important;
+  background: none !important;
+  overflow: hidden !important;
+}
+
+.debate-canvas-wrap {
+  width: 100% !important;
+  background: var(--sidebar-bg, #18181b) !important;
+  border: none !important;
+  border-radius: 12px !important;
+  overflow: hidden !important;
+  animation: dFadeIn 0.3s ease !important;
+  margin-top: 18px !important;
+}
+
+.debate-canvas-hdr {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 14px 20px !important;
+  background: transparent !important;
+  border-bottom: 1px solid var(--border, rgba(255,255,255,0.08)) !important;
+  font-size: 16px !important;
+  font-weight: 400 !important;
+  color: var(--text-primary) !important;
+}
+
+.debate-canvas-body {
+  padding: 18px !important;
+  font-size: 16px !important;
+  line-height: 28px !important;
+  color: var(--text-primary) !important;
+  background: transparent !important;
+  max-height: 520px !important;
+  overflow-y: auto !important;
+}
+
+.debate-canvas-body::-webkit-scrollbar { width: 4px !important; }
+.debate-canvas-body::-webkit-scrollbar-thumb { background: var(--border) !important; border-radius: 4px !important; }
+
+@keyframes debateSpinnerSpin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes dFadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

@@ -105,6 +105,18 @@ class Router {
       innerCoder.style.pointerEvents = 'none';
     }
 
+    // Force-hide settings inner nav panel
+    const innerSettings = document.getElementById('nav-inner-settings');
+    if (innerSettings) {
+      innerSettings.style.display = 'none';
+    }
+
+    // Restore sidebar nav header (collapse button & nav arrows)
+    const navHeader = document.querySelector('#sidebar-nav .nav-header');
+    if (navHeader) {
+      navHeader.style.display = 'flex';
+    }
+
     const cadActions = document.getElementById('cad-titlebar-actions');
     if (cadActions) cadActions.style.display = 'none';
 
@@ -150,6 +162,7 @@ class Router {
     if (workspaceEl) {
       workspaceEl.setAttribute('data-page', page);
     }
+    document.body.setAttribute('data-page', page);
     
     const titlebarEl = document.getElementById('titlebar');
     if (titlebarEl) titlebarEl.style.display = 'none';
@@ -177,9 +190,13 @@ class Router {
         const cp = document.getElementById('chat-pane');
         if (cp) { cp.classList.remove('hidden'); cp.style.display = ''; }
         document.getElementById('sidebar-nav')?.classList.remove('collapsed');
+        const navHeaderChat = document.querySelector('#sidebar-nav .nav-header');
+        if (navHeaderChat) navHeaderChat.style.display = 'flex';
         const toggleBtn = document.getElementById('btn-sidebar-toggle-main');
         if (toggleBtn) toggleBtn.style.display = '';
         if (innerChat) innerChat.style.display = 'flex';
+        const innerSettings = document.getElementById('nav-inner-settings');
+        if (innerSettings) innerSettings.style.display = 'none';
         // Ensure coder subpanel is fully gone (triple-hide)
         if (innerCoder) {
           innerCoder.style.display = 'none';
@@ -307,21 +324,23 @@ class Router {
       case 'settings':
         this._showPane('settings-pane', 'flex');
         if (titlebarEl) titlebarEl.style.display = 'none';
-        document.getElementById('sidebar-nav')?.classList.remove('collapsed');
+        document.getElementById('sidebar-nav')?.classList.remove('hide-sidebar');
+        const navHeaderSet = document.querySelector('#sidebar-nav .nav-header');
+        if (navHeaderSet) navHeaderSet.style.display = 'none';
         const toggleBtnSet = document.getElementById('btn-sidebar-toggle-main');
-        if (toggleBtnSet) toggleBtnSet.style.display = '';
-        if (innerChat) innerChat.style.display = 'flex';
+        if (toggleBtnSet) toggleBtnSet.style.display = 'none';
+        if (innerChat) innerChat.style.display = 'none';
         if (innerCoder) {
           innerCoder.style.display = 'none';
           innerCoder.style.visibility = 'hidden';
           innerCoder.style.pointerEvents = 'none';
         }
+        const innerSettingsSet = document.getElementById('nav-inner-settings');
+        if (innerSettingsSet) innerSettingsSet.style.display = 'flex';
         if (window.updateTitleBreadcrumb) {
           window.updateTitleBreadcrumb('Settings', '');
         }
-        if (window._loadSettingsOnPage) {
-          window._loadSettingsOnPage();
-        }
+        if (window._loadSettingsOnPage) window._loadSettingsOnPage();
         break;
 
 

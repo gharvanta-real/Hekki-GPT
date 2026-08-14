@@ -51,6 +51,7 @@ let _streamToolBody      = null;
 let _streamToolCount     = 0;
 let _streamToolStartTime = 0;     // Timestamp when tool group started (for "Worked for Xs")
 let _currentMessageToolRuns = [];
+let _writtenFilesThisMsg = []; // Tracks files written by write_to_file during this message
 
 import { stripPlannerMetadata } from './stream/stream_utils.js';
 
@@ -201,6 +202,7 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
     if (!_currentMessageActive && e.kind !== 'done' && e.kind !== 'error') {
       _currentMessageActive = true;
       _currentMessageToolRuns = [];
+      _writtenFilesThisMsg = [];
       window._firstResponseChunkProcessed = false;
     }
 
@@ -961,6 +963,20 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
           }
         }
 
+        // ── Track written files for canvas preview links ──
+        if ((toolName === 'write_to_file' || toolName === 'replace_file_content' || toolName === 'multi_replace_file_content') && isSuccess && e.data) {
+          // Extract file path from result output, e.g. "Successfully wrote ... to C:\path\file.md"
+          const pathMatch = e.data.match(/(?:to|file:)\s+([A-Za-z]:[\\\/][^\n\r]+\.[a-zA-Z0-9]+)/i)
+                         || e.data.match(/written to\s+([A-Za-z]:[\\\/][^\n\r]+\.[a-zA-Z0-9]+)/i)
+                         || e.data.match(/([A-Za-z]:[\\\/][^\n\r"']+\.[a-zA-Z0-9]+)/i);
+          if (pathMatch && pathMatch[1]) {
+            const fp = pathMatch[1].trim();
+            if (!_writtenFilesThisMsg.includes(fp)) {
+              _writtenFilesThisMsg.push(fp);
+            }
+          }
+        }
+
         // ── Render Web Source Favicons & Domain Chips for search / web tools ──
         if (e.data && typeof e.data === 'string') {
           const toolTag = (_lastToolBlock.dataset.tool || toolName || '').toLowerCase();
@@ -1466,9 +1482,9 @@ function _ensureToolContainer(col, enterConversationCallback) {
     <div class="tool-group-header" style="display: flex; align-items: center; justify-content: space-between; padding: 4px 0; cursor: pointer; user-select: none;">
       <div style="display: flex; align-items: center; gap: 6px;">
         <i data-lucide="chevron-right" class="chevron-icon" style="width:13px; height:13px; opacity:0.7; transition: transform 0.15s; display:inline-block; vertical-align:middle; transform: rotate(90deg);"></i>
-        <span class="tool-group-title" style="font-weight: 500; color: var(--text-secondary);">Executing actions (0s)</span>
+        <span class="tool-group-title" style="font-weight: 400; color: var(--text-secondary);">Executing actions (0s)</span>
       </div>
-      <span class="tool-group-status" style="font-size: 11px; color:var(--blue); font-weight:600;">0s<span class="dots">...</span></span>
+      <span class="tool-group-status" style="font-size: 11px; color:var(--blue); font-weight:400;">0s<span class="dots">...</span></span>
     </div>
     <div class="tool-group-body" style="display: flex; flex-direction: column; padding-left: 14px; border-left: 1px dashed var(--border); margin-left: 4px; margin-top: 2px; gap: 3px;">
     </div>
@@ -1500,7 +1516,7 @@ function _ensureToolContainer(col, enterConversationCallback) {
     const statusEl = _streamToolContainer.querySelector('.tool-group-status');
     if (titleEl && statusEl) {
       titleEl.textContent = `Executing actions (${elapsedSec}s)...`;
-      statusEl.innerHTML = `<span style="color:var(--blue);font-weight:600;">${elapsedSec}s</span> <span class="dots">...</span>`;
+      statusEl.innerHTML = `<span style="color:var(--blue);font-weight:400;">${elapsedSec}s</span> <span class="dots">...</span>`;
     }
   }, 1000);
 }
@@ -1579,6 +1595,72 @@ function _finalizeStreamResponse() {
     const activeToolRuns = _consumeToolRuns();
     _attachAiActions(_streamResponseEl, _streamResponseText, activeToolRuns);
     ChatSessionManager.appendMessage('assistant', _streamResponseText, activeToolRuns);
+
+    // ── Inject Canvas Preview Pill Links for Written Files ──
+    if (_writtenFilesThisMsg.length > 0) {
+      const col = document.getElementById('chat-col') || document.getElementById('chat-log');
+      if (col) {
+        const previewRow = document.createElement('div');
+        previewRow.className = 'doc-preview-pills-row';
+        previewRow.style.cssText = 'display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 4px 0;padding:0;align-items:center;';
+
+        _writtenFilesThisMsg.forEach(filePath => {
+          const fileName = filePath.replace(/\\/g, '/').split('/').pop();
+          const ext = (fileName.split('.').pop() || '').toLowerCase();
+          const isPreviewable = ['html','htm','md','markdown','txt','json','csv','svg','pdf'].includes(ext);
+          const iconName = ['md','markdown','txt'].includes(ext) ? 'file-text'
+                         : ['html','htm','svg'].includes(ext) ? 'layout'
+                         : ['json','csv'].includes(ext) ? 'file-code'
+                         : 'file';
+
+          const pill = document.createElement('button');
+          pill.className = 'doc-canvas-pill';
+          pill.style.cssText = [
+            'display:inline-flex',
+            'align-items:center',
+            'gap:6px',
+            'padding:5px 12px',
+            'border-radius:20px',
+            'background:var(--hover)',
+            'border:none',
+            'color:var(--text-2)',
+            'font-size:12px',
+            'font-family:var(--font)',
+            'font-weight:500',
+            'cursor:pointer',
+            'transition:background 0.15s ease,color 0.15s ease',
+            'max-width:280px',
+          ].join(';');
+          pill.title = `Open in Live Canvas: ${filePath}`;
+          pill.innerHTML = `<i data-lucide="${iconName}" style="width:13px;height:13px;flex-shrink:0;"></i><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(fileName)}</span><i data-lucide="external-link" style="width:11px;height:11px;opacity:0.5;flex-shrink:0;"></i>`;
+          pill.addEventListener('mouseenter', () => { pill.style.background = 'var(--hover-2)'; pill.style.color = 'var(--text)'; });
+          pill.addEventListener('mouseleave', () => { pill.style.background = 'var(--hover)'; pill.style.color = 'var(--text-2)'; });
+          pill.addEventListener('click', () => {
+            if (window.liveCanvas && isPreviewable) {
+              const renderUrl = `/api/workspace/render?path=${encodeURIComponent(filePath.replace(/\\/g, '/'))}`;
+              if (['md','markdown','txt'].includes(ext)) {
+                fetch(renderUrl).then(r => r.text()).then(content => {
+                  window.liveCanvas.openArtifact({ code: content, language: ext === 'md' || ext === 'markdown' ? 'markdown' : 'text', title: fileName, filepath: filePath });
+                }).catch(() => {
+                  window.liveCanvas.openArtifact({ code: `# ${fileName}\n\nFile preview unavailable.`, language: 'markdown', title: fileName, filepath: filePath });
+                });
+              } else {
+                window.liveCanvas.openArtifact({ code: '', language: ext, title: fileName, filepath: filePath });
+              }
+            } else {
+              // Fallback: open raw in new tab
+              const renderUrl = `/api/workspace/render?path=${encodeURIComponent(filePath.replace(/\\/g, '/'))}`;
+              window.open(renderUrl, '_blank');
+            }
+          });
+          previewRow.appendChild(pill);
+        });
+
+        col.appendChild(previewRow);
+        if (window.lucide) lucide.createIcons({ parent: previewRow });
+      }
+      _writtenFilesThisMsg = [];
+    }
   }
   _streamResponseEl = null;
   _streamResponseText = "";

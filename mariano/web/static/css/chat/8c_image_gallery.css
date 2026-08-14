@@ -191,7 +191,7 @@
   justify-content: center;
   padding: 44px 20px;
   background: var(--hover, rgba(0, 0, 0, 0.03));
-  border: 1px solid var(--border) !important;
+  border: none !important;
   border-radius: var(--radius-lg, 12px);
   color: var(--text-secondary);
   text-align: center;
@@ -273,7 +273,7 @@
 
 .img-gallery-card.selected .img-gallery-thumb-wrap {
   border: none !important;
-  box-shadow: 0 0 0 2px var(--text-primary) !important;
+  box-shadow: none !important;
 }
 
 .img-gallery-thumb {

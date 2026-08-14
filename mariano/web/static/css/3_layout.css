@@ -1,0 +1,43 @@
+/* ==========================================================================
+   3_layout.css — Layout Framework, Sidebars, Top Nav & Grid Containers
+   ========================================================================== */
+
+#app-container {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background-color: var(--bg-secondary);
+}
+
+.sidebar-container {
+  width: 260px;
+  height: 100%;
+  background-color: var(--bg-secondary);
+  display: flex;
+  flex-direction: column;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.main-content-container {
+  flex: 1;
+  height: 100%;
+  background-color: var(--bg-primary);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.top-kpi-header {
+  height: 48px;
+  padding: 0 var(--space-4);
+  background-color: var(--bg-primary);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: none !important;
+  box-shadow: none !important;
+}

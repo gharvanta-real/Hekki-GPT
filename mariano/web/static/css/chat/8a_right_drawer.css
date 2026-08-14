@@ -31,9 +31,9 @@
   width: 32px;
   height: 32px;
   border-radius: 50%; /* circular styling */
-  border: 1px solid var(--border); /* subtle border to separate from drawer panel split line */
+  border: none !important;
   background: var(--sidebar-bg); /* secondary background */
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  box-shadow: none !important;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -165,7 +165,7 @@ body.oled .tool-terminal-block {
   height: 26px; /* sleek tab height */
   flex-shrink: 0; /* prevent squishing in scroll container */
   padding: 0 10px;
-  border: 1px solid transparent;
+  border: none !important;
   background: transparent;
   color: var(--text-2);
   font-family: var(--font);

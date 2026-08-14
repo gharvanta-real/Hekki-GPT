@@ -25,7 +25,7 @@
   justify-content: center;
   color: #ffffff;
   transition: transform 0.2s, background 0.2s;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+  box-shadow: none !important;
 }
 
 .yt-preview-card:hover .yt-preview-play-btn {
@@ -145,7 +145,7 @@
 /* ── AIDER EXECUTION TOGGLE CARD ──────────────────────────────── */
 .aider-toggle-card {
   width: 100%;
-  border: 1px solid var(--border);
+  border: none !important;
   border-radius: 8px;
   padding: 12px 16px;
   background: var(--bg);

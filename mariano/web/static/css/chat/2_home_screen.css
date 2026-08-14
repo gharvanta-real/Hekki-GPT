@@ -143,7 +143,7 @@ body.dark #input-capsule-conv,
   background: transparent !important;
   color: var(--text) !important;
   font-family: var(--font) !important;
-  font-size: var(--fs-base) !important;
+  font-size: 15px !important;
   scrollbar-width: none !important; /* Firefox */
   -ms-overflow-style: none !important; /* IE/Edge */
 }
@@ -215,7 +215,7 @@ body.dark #input-capsule-conv,
   background: transparent !important;
   color: var(--text) !important;
   font-family: var(--font) !important;
-  font-size: var(--fs-base) !important;
+  font-size: 15px !important;
   order: 1 !important;
 }
 
@@ -233,8 +233,8 @@ body.dark #input-capsule-conv,
 #chat-input::placeholder,
 #chat-input-conv::placeholder,
 #agent-task-input::placeholder {
-  color: var(--text-3);
-  font-size: var(--fs-base);
+  color: var(--text-3) !important;
+  font-size: 15px !important;
 }
 
 
@@ -330,8 +330,8 @@ body.dark #input-capsule-conv,
   animation: mic-pulse 1.5s infinite;
 }
 @keyframes mic-pulse {
-  0%,100% { box-shadow: 0 0 0 0 rgba(220,38,38,0.3); }
-  50% { box-shadow: 0 0 0 5px rgba(220,38,38,0); }
+  0%,100% { opacity: 0.6; }
+  50% { opacity: 1.0; }
 }
 
 /* Pill groups (e.g. Chat/Cowork tab pills) */
@@ -357,7 +357,7 @@ body.dark #input-capsule-conv,
 .pill-btn.active {
   background: var(--card);
   color: var(--text);
-  box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+  box-shadow: none !important;
 }
 
 
@@ -447,9 +447,9 @@ body.dark #input-capsule-conv,
   position: absolute;
   z-index: 10000;
   background: var(--card);
-  border: 1px solid var(--border);
+  border: none !important;
   border-radius: 12px;
-  box-shadow: var(--shadow-md);
+  box-shadow: none !important;
   padding: 6px;
   display: flex;
   flex-direction: column;
@@ -551,7 +551,7 @@ body.oled .shortcut:hover,
   color: var(--text) !important;
 }
 
-/* === VOICE WAVEFORM RECORDING OVERLAY === */
+/* === VOICE WAVEFORM RECORDING OVERLAY — THEME ADAPTIVE === */
 .voice-waveform-bar {
   display: flex;
   align-items: center;
@@ -565,6 +565,100 @@ body.oled .shortcut:hover,
   display: none !important;
 }
 
+/* Cancel & Stop Buttons Inside Voice Waveform Bar — Light & Dark Theme Support */
+#btn-cancel-voice-home,
+#btn-cancel-voice-conv,
+#btn-stop-voice-home,
+#btn-stop-voice-conv {
+  width: 30px !important;
+  height: 30px !important;
+  min-width: 30px !important;
+  min-height: 30px !important;
+  border-radius: 50% !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  cursor: pointer !important;
+  transition: background 0.15s ease, color 0.15s ease !important;
+}
+
+/* Light Theme Styling for Cancel & Stop Buttons */
+body.light #btn-cancel-voice-home,
+body.light #btn-cancel-voice-conv,
+body.light #btn-stop-voice-home,
+body.light #btn-stop-voice-conv,
+:root[data-theme="light"] #btn-cancel-voice-home,
+:root[data-theme="light"] #btn-cancel-voice-conv,
+:root[data-theme="light"] #btn-stop-voice-home,
+:root[data-theme="light"] #btn-stop-voice-conv {
+  background: #F1F5F9 !important;
+  color: #0F172A !important;
+}
+body.light #btn-cancel-voice-home:hover,
+body.light #btn-cancel-voice-conv:hover,
+body.light #btn-stop-voice-home:hover,
+body.light #btn-stop-voice-conv:hover,
+:root[data-theme="light"] #btn-cancel-voice-home:hover,
+:root[data-theme="light"] #btn-cancel-voice-conv:hover,
+:root[data-theme="light"] #btn-stop-voice-home:hover,
+:root[data-theme="light"] #btn-stop-voice-conv:hover {
+  background: #E2E8F0 !important;
+  color: #0F172A !important;
+}
+
+/* Dark Theme Styling for Cancel & Stop Buttons (No white circle blobs!) */
+body.dark #btn-cancel-voice-home,
+body.dark #btn-cancel-voice-conv,
+body.dark #btn-stop-voice-home,
+body.dark #btn-stop-voice-conv,
+body.oled #btn-cancel-voice-home,
+body.oled #btn-cancel-voice-conv,
+body.oled #btn-stop-voice-home,
+body.oled #btn-stop-voice-conv,
+:root[data-theme="dark"] #btn-cancel-voice-home,
+:root[data-theme="dark"] #btn-cancel-voice-conv,
+:root[data-theme="dark"] #btn-stop-voice-home,
+:root[data-theme="dark"] #btn-stop-voice-conv,
+:root[data-theme="oled"] #btn-cancel-voice-home,
+:root[data-theme="oled"] #btn-cancel-voice-conv,
+:root[data-theme="oled"] #btn-stop-voice-home,
+:root[data-theme="oled"] #btn-stop-voice-conv {
+  background: #2A2A2E !important;
+  color: #F4F4F5 !important;
+}
+body.dark #btn-cancel-voice-home:hover,
+body.dark #btn-cancel-voice-conv:hover,
+body.dark #btn-stop-voice-home:hover,
+body.dark #btn-stop-voice-conv:hover,
+body.oled #btn-cancel-voice-home:hover,
+body.oled #btn-cancel-voice-conv:hover,
+body.oled #btn-stop-voice-home:hover,
+body.oled #btn-stop-voice-conv:hover,
+:root[data-theme="dark"] #btn-cancel-voice-home:hover,
+:root[data-theme="dark"] #btn-cancel-voice-conv:hover,
+:root[data-theme="dark"] #btn-stop-voice-home:hover,
+:root[data-theme="dark"] #btn-stop-voice-conv:hover,
+:root[data-theme="oled"] #btn-cancel-voice-home:hover,
+:root[data-theme="oled"] #btn-cancel-voice-conv:hover,
+:root[data-theme="oled"] #btn-stop-voice-home:hover,
+:root[data-theme="oled"] #btn-stop-voice-conv:hover {
+  background: #3A3A40 !important;
+  color: #FFFFFF !important;
+}
+
+/* Stop recording square icon highlighted red */
+#btn-stop-voice-home i,
+#btn-stop-voice-conv i,
+#btn-stop-voice-home svg,
+#btn-stop-voice-conv svg {
+  color: #EF4444 !important;
+  fill: #EF4444 !important;
+}
+
+/* Waveform Track & Bars Theme Adaptation */
 .voice-waveform-track {
   flex: 1;
   display: flex;
@@ -597,15 +691,26 @@ body.oled .shortcut:hover,
   background: var(--text-3, #71717a);
   border-radius: 2px;
   transition: height 0.04s ease, background 0.1s ease;
-  opacity: 0.55;
+  opacity: 0.45;
+}
+
+body.dark .v-bar,
+body.oled .v-bar,
+:root[data-theme="dark"] .v-bar,
+:root[data-theme="oled"] .v-bar {
+  background: rgba(244, 244, 245, 0.40) !important;
 }
 
 .v-bar.active {
-  background: var(--text, #ffffff);
-  opacity: 1;
+  background: var(--text, #ffffff) !important;
+  opacity: 1 !important;
 }
 
-.v-bar.active {
-  background: var(--text, #ffffff);
+body.dark .v-bar.active,
+body.oled .v-bar.active,
+:root[data-theme="dark"] .v-bar.active,
+:root[data-theme="oled"] .v-bar.active {
+  background: #FFFFFF !important;
+  opacity: 1 !important;
 }
 

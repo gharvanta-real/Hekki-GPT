@@ -196,7 +196,7 @@
 
 /* End-of-response File Changes Summary Card */
 .coder-changes-summary {
-  border: 1px solid var(--border);
+  border: none !important;
   border-radius: 8px;
   background: var(--card, rgba(255,255,255,0.03));
   margin: 16px 0 4px;

@@ -158,7 +158,7 @@
 .markdown-body table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 13.5px;
+  font-size: 15px;
   line-height: 1.6;
   text-align: left;
   color: var(--text-primary);
@@ -169,7 +169,7 @@
 
 .markdown-body table th {
   background: transparent;
-  font-size: 13.5px;
+  font-size: 15px;
   font-weight: 600;
   padding: 10px 14px;
   border-top: none !important;
@@ -187,7 +187,7 @@
   border-right: none !important;
   border-bottom: 1px solid var(--border);
   background: transparent;
-  font-size: 13.5px;
+  font-size: 15px;
   color: var(--text-primary);
   line-height: 1.6;
 }
@@ -211,7 +211,7 @@ body.dark .markdown-body table tr:nth-child(even) {
 /* === IMAGE GENERATION CARD === */
 .image-generation-card {
   margin: 10px 0;
-  border: 1px solid var(--border);
+  border: none !important;
   border-radius: 12px;
   background: var(--card);
   overflow: hidden;
@@ -252,7 +252,7 @@ body.dark .markdown-body table tr:nth-child(even) {
 .image-generation-spinner {
   width: 32px;
   height: 32px;
-  border: 2px solid var(--border);
+  border: none !important;
   border-top-color: var(--text-primary);
   border-radius: 50%;
   animation: spin 1s linear infinite;
@@ -357,8 +357,8 @@ body.dark .voice-recording-active {
 }
 
 .cad-ai-header-title {
-  font-weight: 600;
-  font-size: 15px !important;
+  font-weight: 400 !important;
+  font-size: 14.5px !important;
   color: #1e293b;
   background: linear-gradient(90deg, #475569 0%, #0f172a 50%, #475569 100%);
   background-size: 200% auto;
