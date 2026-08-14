@@ -52,8 +52,8 @@
   width: fit-content !important;
   gap: 8px !important;
   font-size: 16px !important;
-  font-weight: 600 !important;
-  color: var(--text-primary, #ffffff) !important;
+  font-weight: 400 !important;
+  color: var(--text-primary) !important;
   text-transform: none !important;
   letter-spacing: 0.2px !important;
   padding: 2px 0 !important;

@@ -151,7 +151,7 @@ function _getOrCreateRoundCard(roundNum) {
   bubble.style.cssText = 'padding:0;background:none;max-width:100%;';
   const inner = document.createElement('div');
   inner.className = 'debate-round-inner';
-  inner.innerHTML = `<div class="debate-round-label">⚔️ Round ${roundNum}</div>`;
+  inner.innerHTML = `<div class="debate-round-label">Round ${roundNum}</div>`;
   bubble.appendChild(inner);
   group.appendChild(bubble);
 
@@ -256,7 +256,7 @@ function _syncDebateToSession() {
 
   let htmlParts = [];
   roundMap.forEach((items, rNum) => {
-    let roundHtml = `<div class="debate-round-inner"><div class="debate-round-label">⚔️ Round ${rNum}</div>`;
+    let roundHtml = `<div class="debate-round-inner"><div class="debate-round-label">Round ${rNum}</div>`;
     items.forEach(it => {
       const full = it.fullText || it.snippet || '';
       roundHtml += `<div class="debate-agent-section" id="debate-agent-${it.sender}-r${rNum}" data-full-text="${_esc(full)}" data-snippet="${_esc(it.snippet)}"><div class="debate-agent-row"><div class="debate-agent-content"><span class="debate-agent-name">${_esc(it.name)}:</span><span class="debate-agent-brief">${_esc(it.snippet)}</span></div><span class="debate-status-indicator"><span class="debate-done-icon">${DONE_SVG}</span></span></div></div><div class="debate-breakline-wrap"><div class="debate-breakline-line"></div><button type="button" class="debate-expand-pill"><span>Show more</span>${CHEVRON_SVG}</button></div>`;
@@ -332,7 +332,7 @@ export async function handleInlineDebateSubmit(topic) {
 
     if (kind === 'turn_start' && (sender === 'alpha' || sender === 'beta')) {
       const agentLabel = sender === 'alpha' ? _alphaName : _betaName;
-      _updateThinkingText(`⚔️ Round ${round} — ${agentLabel} is responding...`);
+      _updateThinkingText(`Round ${round} — ${agentLabel} is responding...`);
 
       const card = _getOrCreateRoundCard(round);
       if (card) {
