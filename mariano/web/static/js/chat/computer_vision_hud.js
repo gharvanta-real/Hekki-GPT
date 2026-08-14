@@ -116,10 +116,12 @@ class VisionHUDController {
 
       <!-- DEDICATED VOICE SCREEN UI -->
       <div class="vision-hud-voice-view" id="vision-hud-voice-view">
-        <div class="vision-hud-voice-large-orb"></div>
-        <div class="vision-hud-voice-status-box">
-          <span class="vision-hud-voice-main-status" id="vision-hud-voice-main">Listening to your voice command...</span>
-          <span class="vision-hud-voice-sub-status" id="vision-hud-voice-sub">Speak your desktop goal</span>
+        <div class="vision-hud-voice-center-content">
+          <div class="vision-hud-voice-large-orb"></div>
+          <div class="vision-hud-voice-status-box">
+            <span class="vision-hud-voice-main-status" id="vision-hud-voice-main">Listening to your voice command...</span>
+            <span class="vision-hud-voice-sub-status" id="vision-hud-voice-sub">Speak your desktop goal</span>
+          </div>
         </div>
 
         <div class="vision-hud-voice-controls-bar">
@@ -469,11 +471,7 @@ class VisionHUDController {
 
   hide() {
     this.container?.classList.add('hidden');
-    if (this.isEnabled) {
-      this.launcher?.classList.remove('hidden');
-    } else {
-      this.launcher?.classList.add('hidden');
-    }
+    this.launcher?.classList.toggle('hidden', !this.isEnabled);
   }
 
   enable() {
@@ -492,13 +490,8 @@ class VisionHUDController {
 
   toggle() {
     if (!this.isEnabled) return;
-    if (this.container?.classList.contains('hidden')) {
-      this.show();
-    } else {
-      this.hide();
-    }
+    this.container?.classList.contains('hidden') ? this.show() : this.hide();
   }
 }
 
-// Global initialization
 window.VisionHUD = new VisionHUDController();

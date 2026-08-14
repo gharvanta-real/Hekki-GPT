@@ -477,13 +477,13 @@ body[data-theme="oled"] .vision-hud-input-capsule {
   transform: scale(1.05) !important;
 }
 
-/* ─── 7. Dedicated Voice Screen UI ────────────────────────────────────────── */
+/* ─── 7. Dedicated Voice Screen UI (Dead-Center Orb & Unified Status Text) ── */
 .vision-hud-voice-view {
   display: none !important;
   flex-direction: column !important;
   align-items: center !important;
   justify-content: space-between !important;
-  padding: 28px 18px 20px 18px !important;
+  padding: 24px 18px 20px 18px !important;
   text-align: center !important;
   margin: 0 !important;
   flex: 1 !important;
@@ -508,6 +508,17 @@ body[data-theme="oled"] .vision-hud-input-capsule {
   display: flex !important;
 }
 
+/* UNIFIED MID-CENTER CONTENT (Orb + Status Text Grouped Dead-Center) */
+.vision-hud-voice-center-content {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: auto 0 !important;
+  gap: 14px !important;
+  max-width: 320px !important;
+}
+
 .vision-hud-voice-large-orb {
   width: 48px !important;
   height: 48px !important;
@@ -519,8 +530,7 @@ body[data-theme="oled"] .vision-hud-input-capsule {
   background: radial-gradient(circle at 35% 35%, #93c5fd 0%, #c084fc 50%, #f472b6 100%) !important;
   filter: blur(0.5px) !important;
   animation: visionOrbPulse 3.5s infinite ease-in-out !important;
-  margin-top: 10px !important;
-  margin-bottom: 14px !important;
+  margin: 0 !important;
   flex-shrink: 0 !important;
 }
 
@@ -529,11 +539,9 @@ body[data-theme="oled"] .vision-hud-input-capsule {
   flex-direction: column !important;
   align-items: center !important;
   justify-content: center !important;
-  gap: 8px !important;
-  margin-bottom: auto !important;
-  max-width: 320px !important;
-  flex: 1 !important;
-  padding: 10px 0 !important;
+  gap: 4px !important;
+  margin: 0 !important;
+  max-width: 300px !important;
 }
 
 .vision-hud-voice-main-status {
