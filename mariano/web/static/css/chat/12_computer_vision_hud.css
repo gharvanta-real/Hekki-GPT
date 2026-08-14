@@ -1,7 +1,8 @@
 /* ==========================================================================
    12_COMPUTER_VISION_HUD.CSS
    Adaptive Application Theme Variables & Dynamic System Font Inherited HUD
-   User Msg LEFT / AI Msg RIGHT + Hide Hero & Chips on Msg + Compact Input Bar
+   Dedicated Separate Chat Page View (Hero & Chips 100% Removed on Msg)
+   User Msg STRICT LEFT / AI Answer STRICT RIGHT
    Strict NO Outline & NO Shadow Rule: border: none !important; box-shadow: none !important;
    Unbold Rule: Heading & Greeting ONLY have weight; Everything else is 400
    Strictly < 500 Lines Limit (~370 lines)
@@ -242,7 +243,7 @@ body[data-theme="oled"] .vision-hud-peek-handle {
   background: var(--hover, #f1f5f9) !important;
 }
 
-/* ─── 4. Center Orb & Hero Area (Default View) ────────────────────────────── */
+/* ─── 4. Center Orb & Hero Area (Default Welcome View) ────────────────────── */
 .vision-hud-hero {
   display: flex !important;
   flex-direction: column !important;
@@ -276,15 +277,18 @@ body[data-theme="oled"] .vision-hud-peek-handle {
   color: var(--text, #1e293b) !important;
 }
 
-/* Hide Hero & Chips when user sends a message */
+/* HIDE HERO ORB & SUGGESTION CHIPS COMPLETELY ONCE CHAT HAS MESSAGES */
 #vision-hud-container.has-messages .vision-hud-hero,
-#vision-hud-container.has-messages .vision-hud-chips-grid {
+#vision-hud-container.has-messages #vision-hud-hero,
+#vision-hud-container.has-messages .vision-hud-chips-grid,
+#vision-hud-container.has-messages #vision-hud-chips {
   display: none !important;
 }
 
-/* ─── 5. Chat Scroll View (User LEFT, AI RIGHT) ──────────────────────────── */
+/* ─── 5. Chat Scroll View (User Prompt STRICT LEFT / AI Answer STRICT RIGHT) ─ */
 .vision-hud-chat-body {
-  max-height: 280px !important;
+  max-height: 320px !important;
+  min-height: 140px !important;
   overflow-y: auto !important;
   padding: 8px 18px !important;
   display: flex !important;
@@ -311,9 +315,11 @@ body[data-theme="oled"] .vision-hud-peek-handle {
   box-shadow: none !important;
 }
 
-/* USER MESSAGE: LEFT ALIGNED */
+/* USER PROMPT: STRICTLY LEFT ALIGNED */
 .vision-hud-msg.user {
   align-self: flex-start !important;
+  margin-right: auto !important;
+  margin-left: 0 !important;
   max-width: 85% !important;
   background: rgba(37, 99, 235, 0.12) !important;
   color: #2563eb !important;
@@ -328,10 +334,12 @@ body[data-theme="oled"] .vision-hud-msg.user {
   color: #93c5fd !important;
 }
 
-/* AI MESSAGE: RIGHT ALIGNED */
+/* AI ANSWER: STRICTLY RIGHT ALIGNED */
 .vision-hud-msg.ai {
   align-self: flex-end !important;
-  max-width: 90% !important;
+  margin-left: auto !important;
+  margin-right: 0 !important;
+  max-width: 88% !important;
   background: var(--hover, #f1f5f9) !important;
   color: var(--text, #1e293b) !important;
   padding: 9px 12px !important;
@@ -416,7 +424,6 @@ body[data-theme="oled"] .vision-hud-msg.user {
   box-shadow: none !important;
 }
 
-/* Compact Input Capsule with minimal button gap */
 .vision-hud-input-capsule {
   display: flex !important;
   align-items: center !important;

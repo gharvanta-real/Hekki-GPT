@@ -415,10 +415,10 @@ class VisionHUDController {
 
   appendMessage(role, text) {
     this.container?.classList.add('has-messages');
-    if (this.hero) this.hero.style.display = 'none';
+    if (this.hero) this.hero.style.setProperty('display', 'none', 'important');
     const chips = this.container?.querySelector('#vision-hud-chips');
-    if (chips) chips.style.display = 'none';
-    if (this.chatBody) this.chatBody.style.display = 'flex';
+    if (chips) chips.style.setProperty('display', 'none', 'important');
+    if (this.chatBody) this.chatBody.style.setProperty('display', 'flex', 'important');
 
     const row = document.createElement('div');
     row.className = `vision-hud-msg ${role}`;
