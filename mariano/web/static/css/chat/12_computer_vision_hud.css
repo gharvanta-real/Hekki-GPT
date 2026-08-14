@@ -1,6 +1,7 @@
 /* ==========================================================================
    12_COMPUTER_VISION_HUD.CSS
    Adaptive Application Theme Variables & Dynamic System Font Inherited HUD
+   Suggestion Chips Grouped Directly on Top of Input Field
    Crisp Subtle Outline ONLY (Zero Shadows): border: 1px solid var(--border)
    Unbold Rule: Heading & Greeting ONLY have weight; Everything else is 400
    Strictly < 500 Lines Limit (~270 lines)
@@ -162,7 +163,7 @@ body[data-theme="oled"] .vision-hud-peek-handle {
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
-  padding: 16px 20px 8px 20px !important;
+  padding: 16px 20px 6px 20px !important;
   background: transparent !important;
   user-select: none !important;
   border: none !important;
@@ -209,24 +210,24 @@ body[data-theme="oled"] .vision-hud-peek-handle {
   flex-direction: column !important;
   align-items: center !important;
   justify-content: center !important;
-  padding: 14px 20px 18px 20px !important;
+  padding: 12px 20px 14px 20px !important;
   text-align: center !important;
   border: none !important;
   box-shadow: none !important;
 }
 
 .vision-hud-orb {
-  width: 54px !important;
-  height: 54px !important;
-  min-width: 54px !important;
-  min-height: 54px !important;
+  width: 52px !important;
+  height: 52px !important;
+  min-width: 52px !important;
+  min-height: 52px !important;
   aspect-ratio: 1 / 1 !important;
   box-sizing: border-box !important;
   border-radius: 50% !important;
   background: radial-gradient(circle at 35% 35%, #93c5fd 0%, #c084fc 50%, #f472b6 100%) !important;
   filter: blur(0.5px) !important;
   animation: visionOrbPulse 3.5s infinite ease-in-out !important;
-  margin-bottom: 12px !important;
+  margin-bottom: 10px !important;
   flex-shrink: 0 !important;
 }
 
@@ -236,53 +237,7 @@ body[data-theme="oled"] .vision-hud-peek-handle {
   color: var(--text, #1e293b) !important;
 }
 
-/* ─── 5. Suggestion Action Chips (STRICTLY UNBOLD 400) ────────────────────── */
-.vision-hud-chips-grid {
-  display: grid !important;
-  grid-template-columns: 1fr 1fr !important;
-  gap: 10px !important;
-  padding: 0 20px 16px 20px !important;
-  border: none !important;
-  box-shadow: none !important;
-}
-
-.vision-hud-chip {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  gap: 8px !important;
-  background: var(--hover, #f1f5f9) !important;
-  border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
-  border-radius: 12px !important;
-  padding: 10px 14px !important;
-  font-size: 12.5px !important;
-  font-weight: 400 !important;
-  color: var(--text, #334155) !important;
-  cursor: pointer !important;
-  font-family: inherit !important;
-  transition: background 0.15s ease, transform 0.1s ease !important;
-  text-align: left !important;
-  user-select: none !important;
-}
-
-.vision-hud-chip:hover {
-  background: var(--input-bg, #ffffff) !important;
-  transform: translateY(-1px) !important;
-}
-
-.vision-hud-chip-icon {
-  width: 14px !important;
-  height: 14px !important;
-  min-width: 14px !important;
-  min-height: 14px !important;
-  aspect-ratio: 1 / 1 !important;
-  color: #2563eb !important;
-  flex-shrink: 0 !important;
-}
-
-/* ─── 6. Chat Scroll View (STRICTLY UNBOLD 400) ───────────────────────────── */
+/* ─── 5. Chat Scroll View (STRICTLY UNBOLD 400) ───────────────────────────── */
 .vision-hud-chat-body {
   max-height: 240px !important;
   overflow-y: auto !important;
@@ -346,10 +301,71 @@ body[data-theme="oled"] .vision-hud-msg.user {
   margin-top: 2px !important;
 }
 
-/* ─── 7. Bottom Capsule Input Bar & Dropdown (STRICTLY UNBOLD 400) ────────── */
+/* ─── 6. Bottom Input & Categories Group ─────────────────────────────────── */
+.vision-hud-bottom-group {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  margin-top: auto !important;
+  padding-bottom: 16px !important;
+}
+
+/* ─── Suggestion Action Chips (Grouped Directly on Input) ─────────────────── */
+.vision-hud-chips-grid {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 8px !important;
+  padding: 0 20px !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.vision-hud-chip {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 8px !important;
+  background: var(--hover, #f1f5f9) !important;
+  border: 1px solid rgba(0, 0, 0, 0.04) !important;
+  outline: none !important;
+  box-shadow: none !important;
+  border-radius: 12px !important;
+  padding: 9px 12px !important;
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  color: var(--text, #334155) !important;
+  cursor: pointer !important;
+  font-family: inherit !important;
+  transition: background 0.15s ease, transform 0.1s ease !important;
+  text-align: left !important;
+  user-select: none !important;
+}
+
+body.dark .vision-hud-chip,
+body[data-theme="dark"] .vision-hud-chip,
+body[data-theme="oled"] .vision-hud-chip {
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+.vision-hud-chip:hover {
+  background: var(--input-bg, #ffffff) !important;
+  transform: translateY(-1px) !important;
+}
+
+.vision-hud-chip-icon {
+  width: 14px !important;
+  height: 14px !important;
+  min-width: 14px !important;
+  min-height: 14px !important;
+  aspect-ratio: 1 / 1 !important;
+  color: #2563eb !important;
+  flex-shrink: 0 !important;
+}
+
+/* ─── 7. Bottom Capsule Input Bar & Dropdown ─────────────────────────────── */
 .vision-hud-input-wrap {
   position: relative !important;
-  padding: 8px 20px 18px 20px !important;
+  padding: 0 20px !important;
   border: none !important;
   box-shadow: none !important;
 }
@@ -361,10 +377,10 @@ body[data-theme="oled"] .vision-hud-msg.user {
   border-radius: 9999px !important;
   padding: 4px 6px 4px 6px !important;
   gap: 8px !important;
-  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  border: 1px solid rgba(0, 0, 0, 0.09) !important;
   outline: none !important;
   box-shadow: none !important;
-  height: 40px !important;
+  height: 42px !important;
   box-sizing: border-box !important;
 }
 
@@ -372,7 +388,7 @@ body.dark .vision-hud-input-capsule,
 body[data-theme="dark"] .vision-hud-input-capsule,
 body[data-theme="oled"] .vision-hud-input-capsule {
   background: var(--hover, #27272a) !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.09) !important;
 }
 
 .vision-hud-plus-btn {

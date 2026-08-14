@@ -64,49 +64,51 @@ class VisionHUDController {
         <span class="vision-hud-hero-text">Ask Super AI anything</span>
       </div>
 
-      <div class="vision-hud-chips-grid" id="vision-hud-chips">
-        <button type="button" class="vision-hud-chip" data-prompt="Analyze my active desktop screen">
-          <span>Analyze Screen</span>
-          <span class="vision-hud-chip-icon">${ICONS.sparkle}</span>
-        </button>
-        <button type="button" class="vision-hud-chip" data-prompt="Find and click the primary save button">
-          <span>Click Element</span>
-          <span class="vision-hud-chip-icon">${ICONS.pointer}</span>
-        </button>
-      </div>
-
       <div class="vision-hud-chat-body" id="vision-hud-chat-body" style="display: none;"></div>
 
-      <div class="vision-hud-input-wrap">
-        <div class="vision-hud-dropdown-menu" id="vision-hud-dropdown">
-          <button type="button" class="vision-hud-dropdown-item" data-action="capture_screen">
-            ${ICONS.camera} <span>Capture Screen</span>
+      <div class="vision-hud-bottom-group" id="vision-hud-bottom-group">
+        <div class="vision-hud-chips-grid" id="vision-hud-chips">
+          <button type="button" class="vision-hud-chip" data-prompt="Analyze my active desktop screen">
+            <span>Analyze Screen</span>
+            <span class="vision-hud-chip-icon">${ICONS.sparkle}</span>
           </button>
-          <button type="button" class="vision-hud-dropdown-item" data-action="click_element">
-            ${ICONS.pointer} <span>Click by Name</span>
-          </button>
-          <button type="button" class="vision-hud-dropdown-item" data-action="type_text">
-            ${ICONS.type} <span>Type into Active</span>
-          </button>
-          <button type="button" class="vision-hud-dropdown-item" data-action="focus_window">
-            ${ICONS.window} <span>Focus App Window</span>
-          </button>
-          <button type="button" class="vision-hud-dropdown-item danger" data-action="stop_failsafe">
-            ${ICONS.stop} <span>Emergency Stop</span>
+          <button type="button" class="vision-hud-chip" data-prompt="Find and click the primary save button">
+            <span>Click Element</span>
+            <span class="vision-hud-chip-icon">${ICONS.pointer}</span>
           </button>
         </div>
 
-        <div class="vision-hud-input-capsule">
-          <button type="button" class="vision-hud-plus-btn" id="vision-hud-plus" title="Vision Actions">
-            ${ICONS.plus}
-          </button>
-          <input type="text" class="vision-hud-input" id="vision-hud-input" placeholder="How else can I help..." autocomplete="off" />
-          <button type="button" class="vision-hud-mic-btn" id="vision-hud-mic" title="Voice Input">
-            ${ICONS.mic}
-          </button>
-          <button type="button" class="vision-hud-send-btn" id="vision-hud-send" title="Send">
-            ${ICONS.send}
-          </button>
+        <div class="vision-hud-input-wrap">
+          <div class="vision-hud-dropdown-menu" id="vision-hud-dropdown">
+            <button type="button" class="vision-hud-dropdown-item" data-action="capture_screen">
+              ${ICONS.camera} <span>Capture Screen</span>
+            </button>
+            <button type="button" class="vision-hud-dropdown-item" data-action="click_element">
+              ${ICONS.pointer} <span>Click by Name</span>
+            </button>
+            <button type="button" class="vision-hud-dropdown-item" data-action="type_text">
+              ${ICONS.type} <span>Type into Active</span>
+            </button>
+            <button type="button" class="vision-hud-dropdown-item" data-action="focus_window">
+              ${ICONS.window} <span>Focus App Window</span>
+            </button>
+            <button type="button" class="vision-hud-dropdown-item danger" data-action="stop_failsafe">
+              ${ICONS.stop} <span>Emergency Stop</span>
+            </button>
+          </div>
+
+          <div class="vision-hud-input-capsule">
+            <button type="button" class="vision-hud-plus-btn" id="vision-hud-plus" title="Vision Actions">
+              ${ICONS.plus}
+            </button>
+            <input type="text" class="vision-hud-input" id="vision-hud-input" placeholder="How else can I help..." autocomplete="off" />
+            <button type="button" class="vision-hud-mic-btn" id="vision-hud-mic" title="Voice Input">
+              ${ICONS.mic}
+            </button>
+            <button type="button" class="vision-hud-send-btn" id="vision-hud-send" title="Send">
+              ${ICONS.send}
+            </button>
+          </div>
         </div>
       </div>
     `;
