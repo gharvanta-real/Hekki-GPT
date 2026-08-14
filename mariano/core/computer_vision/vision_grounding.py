@@ -80,7 +80,7 @@ class VisionGroundingEngine:
 
     @staticmethod
     def build_vision_grounding_prompt(goal_instruction: str, screen_w: int, screen_h: int) -> str:
-        """Constructs high-precision multimodal grounding instructions for LLM."""
+        """Constructs high-precision multimodal grounding instructions for Gemini 3.1."""
         return (
             f"You are an expert GUI Computer Control Vision Agent.\n"
             f"Desktop Resolution: {screen_w}x{screen_h}\n"
@@ -96,3 +96,44 @@ class VisionGroundingEngine:
             f'  "keys": ["ctrl", "c"]\n'
             f"}}"
         )
+
+    @staticmethod
+    async def ground_with_gemini_3_1(
+        screenshot_path_or_bytes: Union[str, bytes],
+        goal_instruction: str,
+        screen_w: int,
+        screen_h: int,
+        model_name: str = "gemini-3.1-flash-lite"
+    ) -> Optional[GroundedElement]:
+        """Calls the primary Gemini 3.1 model with the screenshot to extract exact target coordinates."""
+        try:
+            from mariano.gemini.client import get_gemini_client
+            from google.genai import types
+
+            client = get_gemini_client()
+            prompt = VisionGroundingEngine.build_vision_grounding_prompt(goal_instruction, screen_w, screen_h)
+
+            if isinstance(screenshot_path_or_bytes, str):
+                with open(screenshot_path_or_bytes, "rb") as f:
+                    img_bytes = f.read()
+            else:
+                img_bytes = screenshot_path_or_bytes
+
+            image_part = types.Part.from_bytes(data=img_bytes, mime_type="image/jpeg")
+            contents = [image_part, prompt]
+
+            config = types.GenerateContentConfig(
+                temperature=0.1,
+                max_output_tokens=500
+            )
+
+            res = await client._call_with_retry(
+                contents=contents,
+                config=config,
+                label="gemini_3_1_vision_grounding"
+            )
+            response_text = res.get("text", "")
+            return VisionGroundingEngine.parse_vision_llm_response(response_text, screen_w, screen_h)
+        except Exception:
+            return None
+
