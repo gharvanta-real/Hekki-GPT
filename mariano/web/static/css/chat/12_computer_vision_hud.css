@@ -2,7 +2,7 @@
    12_COMPUTER_VISION_HUD.CSS
    Image-Matched Minimalist Floating Desktop Vision Widget & Edge Peek Handle
    Compliant with NO Outlines / NO Shadows Rule (Flat Background Fills Only)
-   Strictly < 500 Lines Limit (~280 lines)
+   Strictly < 500 Lines Limit
    ========================================================================== */
 
 /* ─── 1. Floating Widget Container ────────────────────────────────────────── */
@@ -71,10 +71,14 @@ body.dark #vision-hud-launcher {
 .vision-hud-launcher-orb {
   width: 20px !important;
   height: 20px !important;
+  min-width: 20px !important;
+  min-height: 20px !important;
+  aspect-ratio: 1 / 1 !important;
   border-radius: 50% !important;
   background: radial-gradient(circle at 35% 35%, #93c5fd 0%, #c084fc 60%, #f472b6 100%) !important;
   box-shadow: 0 0 10px rgba(192, 132, 252, 0.5) !important;
   animation: visionOrbPulse 3s infinite ease-in-out !important;
+  flex-shrink: 0 !important;
 }
 
 .vision-hud-launcher-text {
@@ -164,17 +168,24 @@ body.dark .vision-hud-title {
 }
 
 .vision-hud-close-btn {
+  width: 28px !important;
+  height: 28px !important;
+  min-width: 28px !important;
+  min-height: 28px !important;
+  aspect-ratio: 1 / 1 !important;
+  box-sizing: border-box !important;
   background: transparent !important;
   border: none !important;
   outline: none !important;
   cursor: pointer !important;
   color: #94a3b8 !important;
-  padding: 4px !important;
+  padding: 0 !important;
   border-radius: 50% !important;
-  display: inline-flex !important;
+  display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   transition: color 0.15s ease, background 0.15s ease !important;
+  flex-shrink: 0 !important;
 }
 
 .vision-hud-close-btn:hover {
@@ -200,12 +211,17 @@ body.dark .vision-hud-close-btn:hover {
 .vision-hud-orb {
   width: 54px !important;
   height: 54px !important;
+  min-width: 54px !important;
+  min-height: 54px !important;
+  aspect-ratio: 1 / 1 !important;
+  box-sizing: border-box !important;
   border-radius: 50% !important;
   background: radial-gradient(circle at 35% 35%, #93c5fd 0%, #c084fc 50%, #f472b6 100%) !important;
   filter: blur(0.5px) !important;
   box-shadow: 0 0 28px rgba(192, 132, 252, 0.45) !important;
   animation: visionOrbPulse 3.5s infinite ease-in-out !important;
   margin-bottom: 12px !important;
+  flex-shrink: 0 !important;
 }
 
 .vision-hud-hero-text {
@@ -262,6 +278,9 @@ body.dark .vision-hud-chip:hover {
 .vision-hud-chip-icon {
   width: 14px !important;
   height: 14px !important;
+  min-width: 14px !important;
+  min-height: 14px !important;
+  aspect-ratio: 1 / 1 !important;
   color: #2563eb !important;
   flex-shrink: 0 !important;
 }
@@ -313,6 +332,9 @@ body.dark .vision-hud-msg.ai {
 .vision-hud-msg-avatar {
   width: 18px !important;
   height: 18px !important;
+  min-width: 18px !important;
+  min-height: 18px !important;
+  aspect-ratio: 1 / 1 !important;
   border-radius: 50% !important;
   background: radial-gradient(circle at 35% 35%, #93c5fd 0%, #c084fc 60%, #f472b6 100%) !important;
   flex-shrink: 0 !important;
@@ -330,9 +352,11 @@ body.dark .vision-hud-msg.ai {
   align-items: center !important;
   background: #f1f5f9 !important;
   border-radius: 9999px !important;
-  padding: 4px 6px 4px 8px !important;
-  gap: 6px !important;
+  padding: 4px 6px 4px 6px !important;
+  gap: 8px !important;
   border: none !important;
+  height: 40px !important;
+  box-sizing: border-box !important;
 }
 
 body.dark .vision-hud-input-capsule {
@@ -340,14 +364,21 @@ body.dark .vision-hud-input-capsule {
 }
 
 .vision-hud-plus-btn {
-  width: 28px !important;
-  height: 28px !important;
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  min-height: 32px !important;
+  max-width: 32px !important;
+  max-height: 32px !important;
+  aspect-ratio: 1 / 1 !important;
+  box-sizing: border-box !important;
+  padding: 0 !important;
   border-radius: 50% !important;
   background: #e2e8f0 !important;
   border: none !important;
   outline: none !important;
   color: #475569 !important;
-  display: inline-flex !important;
+  display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   cursor: pointer !important;
@@ -385,17 +416,26 @@ body.dark .vision-hud-input {
 }
 
 .vision-hud-mic-btn {
+  width: 30px !important;
+  height: 30px !important;
+  min-width: 30px !important;
+  min-height: 30px !important;
+  max-width: 30px !important;
+  max-height: 30px !important;
+  aspect-ratio: 1 / 1 !important;
+  box-sizing: border-box !important;
+  padding: 0 !important;
   background: transparent !important;
   border: none !important;
   outline: none !important;
   color: #64748b !important;
-  padding: 4px !important;
   cursor: pointer !important;
-  display: inline-flex !important;
+  display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   border-radius: 50% !important;
   transition: color 0.15s ease !important;
+  flex-shrink: 0 !important;
 }
 
 .vision-hud-mic-btn:hover {
@@ -407,14 +447,21 @@ body.dark .vision-hud-mic-btn:hover {
 }
 
 .vision-hud-send-btn {
-  width: 30px !important;
-  height: 30px !important;
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  min-height: 32px !important;
+  max-width: 32px !important;
+  max-height: 32px !important;
+  aspect-ratio: 1 / 1 !important;
+  box-sizing: border-box !important;
+  padding: 0 !important;
   border-radius: 50% !important;
   background: #1e293b !important;
   border: none !important;
   outline: none !important;
   color: #ffffff !important;
-  display: inline-flex !important;
+  display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   cursor: pointer !important;
