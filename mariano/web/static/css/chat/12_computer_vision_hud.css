@@ -1,7 +1,7 @@
 /* ==========================================================================
    12_COMPUTER_VISION_HUD.CSS
    Adaptive Application Theme Variables & Dynamic System Font Inherited HUD
-   Compact Suggestion Chips (Height 28px) + Identical Voice Orb (48px)
+   Micro-Sleek Suggestion Chips (Height 24px) + Identical Voice Orb (48px)
    Strict NO Outline & NO Shadow Rule: border: none !important; box-shadow: none !important;
    Unbold Rule: Heading & Greeting ONLY have weight; Everything else is 400
    Strictly < 500 Lines Limit (~370 lines)
@@ -218,6 +218,8 @@ body[data-theme="oled"] .vision-hud-peek-handle {
   height: 28px !important;
   min-width: 28px !important;
   min-height: 28px !important;
+  max-width: 28px !important;
+  max-height: 28px !important;
   aspect-ratio: 1 / 1 !important;
   box-sizing: border-box !important;
   background: transparent !important;
@@ -363,14 +365,14 @@ body[data-theme="oled"] .vision-hud-msg.user {
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
-  gap: 6px !important;
+  gap: 5px !important;
   background: var(--hover, #f1f5f9) !important;
   border: none !important;
   outline: none !important;
   box-shadow: none !important;
-  border-radius: 8px !important;
-  padding: 5px 10px !important;
-  height: 28px !important;
+  border-radius: 6px !important;
+  padding: 2px 8px !important;
+  height: 24px !important;
   box-sizing: border-box !important;
   font-size: 11px !important;
   font-weight: 400 !important;
