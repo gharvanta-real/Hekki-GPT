@@ -50,16 +50,30 @@
   align-items: center !important;
   align-self: flex-start !important;
   width: fit-content !important;
-  gap: 8px !important;
-  font-size: 16px !important;
+  gap: 6px !important;
+  font-size: 14px !important;
+  line-height: 18px !important;
   font-weight: 400 !important;
-  color: var(--text-primary) !important;
-  text-transform: none !important;
-  letter-spacing: 0.2px !important;
-  padding: 2px 0 !important;
+  padding: 3px 12px !important;
+  border-radius: 9999px !important;
   border: none !important;
-  background: transparent !important;
-  margin-bottom: 10px !important;
+  outline: none !important;
+  box-shadow: none !important;
+  margin-bottom: 12px !important;
+  user-select: none !important;
+  background: #f0f2f5 !important;
+  color: #475569 !important;
+}
+
+body:not(.light) .debate-round-label,
+body.dark .debate-round-label {
+  background: #1e1e22 !important;
+  color: #a1a1aa !important;
+}
+
+body.light .debate-round-label {
+  background: #f0f2f5 !important;
+  color: #475569 !important;
 }
 
 /* ─── Individual Debater Agent Row ───────────────────────────────────────── */
