@@ -370,21 +370,16 @@ class VisionHUDController {
   setupWindowResizing() {
     const resizer = this.container?.querySelector('#vision-hud-resize');
     if (!resizer) return;
-
-    let isResizing = false;
-    let startW = 0, startH = 0, startX = 0, startY = 0;
+    let isResizing = false, startW = 0, startH = 0, startX = 0, startY = 0;
 
     resizer.addEventListener('mousedown', (e) => {
+      isResizing = true;
+      startX = e.clientX;
+      startY = e.clientY;
+      startW = this.container.offsetWidth;
+      startH = this.container.offsetHeight;
       e.stopPropagation();
       e.preventDefault();
-    const handle = this.container.querySelector('#vision-hud-resize');
-    if (!handle) return;
-    let isResizing = false, startX = 0, startY = 0, startW = 0, startH = 0;
-
-    handle.addEventListener('mousedown', (e) => {
-      isResizing = true; startX = e.clientX; startY = e.clientY;
-      startW = this.container.offsetWidth; startH = this.container.offsetHeight;
-      e.stopPropagation(); e.preventDefault();
     });
 
     document.addEventListener('mousemove', (e) => {
