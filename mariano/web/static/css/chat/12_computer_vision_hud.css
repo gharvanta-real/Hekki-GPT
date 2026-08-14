@@ -1,7 +1,7 @@
 /* ==========================================================================
    12_COMPUTER_VISION_HUD.CSS
    Adaptive Application Theme Variables & Dynamic System Font Inherited HUD
-   Image-Matched Dedicated Voice Screen (Strict View Separation via .voice-mode)
+   Default Compact Window (380px) + Sleek Scaled Voice Orb (120px)
    Crisp Subtle Outline ONLY (Zero Shadows): border: 1px solid var(--border)
    Unbold Rule: Heading & Greeting ONLY have weight; Everything else is 400
    Strictly < 500 Lines Limit (~360 lines)
@@ -12,10 +12,10 @@
   position: fixed;
   bottom: 30px;
   right: 30px;
-  width: 440px !important;
+  width: 380px !important;
   height: auto !important;
   max-height: 85vh !important;
-  max-width: calc(100vw - 40px) !important;
+  max-width: calc(100vw - 32px) !important;
   background: var(--bg, #F7F7F9) !important;
   border: 1px solid rgba(0, 0, 0, 0.09) !important;
   outline: none !important;
@@ -163,7 +163,7 @@ body[data-theme="oled"] .vision-hud-peek-handle {
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
-  padding: 16px 20px 6px 20px !important;
+  padding: 14px 18px 6px 18px !important;
   background: transparent !important;
   user-select: none !important;
   border: none !important;
@@ -171,7 +171,7 @@ body[data-theme="oled"] .vision-hud-peek-handle {
 }
 
 .vision-hud-title {
-  font-size: 15px !important;
+  font-size: 14.5px !important;
   font-weight: 600 !important;
   color: var(--text, #1e293b) !important;
   letter-spacing: -0.2px !important;
@@ -245,29 +245,29 @@ body[data-theme="oled"] .vision-hud-peek-handle {
   flex-direction: column !important;
   align-items: center !important;
   justify-content: center !important;
-  padding: 12px 20px 14px 20px !important;
+  padding: 10px 18px 12px 18px !important;
   text-align: center !important;
   border: none !important;
   box-shadow: none !important;
 }
 
 .vision-hud-orb {
-  width: 52px !important;
-  height: 52px !important;
-  min-width: 52px !important;
-  min-height: 52px !important;
+  width: 48px !important;
+  height: 48px !important;
+  min-width: 48px !important;
+  min-height: 48px !important;
   aspect-ratio: 1 / 1 !important;
   box-sizing: border-box !important;
   border-radius: 50% !important;
   background: radial-gradient(circle at 35% 35%, #93c5fd 0%, #c084fc 50%, #f472b6 100%) !important;
   filter: blur(0.5px) !important;
   animation: visionOrbPulse 3.5s infinite ease-in-out !important;
-  margin-bottom: 10px !important;
+  margin-bottom: 8px !important;
   flex-shrink: 0 !important;
 }
 
 .vision-hud-hero-text {
-  font-size: 15px !important;
+  font-size: 14px !important;
   font-weight: 500 !important;
   color: var(--text, #1e293b) !important;
 }
@@ -276,7 +276,7 @@ body[data-theme="oled"] .vision-hud-peek-handle {
 .vision-hud-chat-body {
   max-height: 240px !important;
   overflow-y: auto !important;
-  padding: 8px 20px !important;
+  padding: 8px 18px !important;
   display: flex !important;
   flex-direction: column !important;
   gap: 10px !important;
@@ -291,7 +291,7 @@ body[data-theme="oled"] .vision-hud-peek-handle {
   display: flex !important;
   align-items: flex-start !important;
   gap: 8px !important;
-  font-size: 13px !important;
+  font-size: 12.5px !important;
   font-weight: 400 !important;
   line-height: 1.5 !important;
   font-family: inherit !important;
@@ -304,7 +304,7 @@ body[data-theme="oled"] .vision-hud-peek-handle {
   max-width: 85% !important;
   background: rgba(37, 99, 235, 0.12) !important;
   color: #2563eb !important;
-  padding: 8px 14px !important;
+  padding: 8px 12px !important;
   border-radius: 14px 14px 4px 14px !important;
 }
 
@@ -320,7 +320,7 @@ body[data-theme="oled"] .vision-hud-msg.user {
   max-width: 90% !important;
   background: var(--hover, #f1f5f9) !important;
   color: var(--text, #1e293b) !important;
-  padding: 10px 14px !important;
+  padding: 9px 12px !important;
   border-radius: 14px 14px 14px 4px !important;
 }
 
@@ -342,14 +342,14 @@ body[data-theme="oled"] .vision-hud-msg.user {
   flex-direction: column !important;
   gap: 8px !important;
   margin-top: auto !important;
-  padding-bottom: 16px !important;
+  padding-bottom: 14px !important;
 }
 
 .vision-hud-chips-grid {
   display: grid !important;
   grid-template-columns: 1fr 1fr !important;
   gap: 8px !important;
-  padding: 0 20px !important;
+  padding: 0 18px !important;
   border: none !important;
   box-shadow: none !important;
 }
@@ -358,14 +358,14 @@ body[data-theme="oled"] .vision-hud-msg.user {
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
-  gap: 8px !important;
+  gap: 6px !important;
   background: var(--hover, #f1f5f9) !important;
   border: 1px solid rgba(0, 0, 0, 0.04) !important;
   outline: none !important;
   box-shadow: none !important;
   border-radius: 12px !important;
-  padding: 9px 12px !important;
-  font-size: 12px !important;
+  padding: 8px 10px !important;
+  font-size: 11.5px !important;
   font-weight: 400 !important;
   color: var(--text, #334155) !important;
   cursor: pointer !important;
@@ -387,10 +387,10 @@ body[data-theme="oled"] .vision-hud-chip {
 }
 
 .vision-hud-chip-icon {
-  width: 14px !important;
-  height: 14px !important;
-  min-width: 14px !important;
-  min-height: 14px !important;
+  width: 13px !important;
+  height: 13px !important;
+  min-width: 13px !important;
+  min-height: 13px !important;
   aspect-ratio: 1 / 1 !important;
   color: #2563eb !important;
   flex-shrink: 0 !important;
@@ -398,7 +398,7 @@ body[data-theme="oled"] .vision-hud-chip {
 
 .vision-hud-input-wrap {
   position: relative !important;
-  padding: 0 20px !important;
+  padding: 0 18px !important;
   border: none !important;
   box-shadow: none !important;
 }
@@ -408,12 +408,12 @@ body[data-theme="oled"] .vision-hud-chip {
   align-items: center !important;
   background: var(--input-bg, #ffffff) !important;
   border-radius: 9999px !important;
-  padding: 4px 6px 4px 6px !important;
-  gap: 8px !important;
+  padding: 4px 5px 4px 5px !important;
+  gap: 6px !important;
   border: 1px solid rgba(0, 0, 0, 0.09) !important;
   outline: none !important;
   box-shadow: none !important;
-  height: 42px !important;
+  height: 40px !important;
   box-sizing: border-box !important;
 }
 
@@ -425,12 +425,12 @@ body[data-theme="oled"] .vision-hud-input-capsule {
 }
 
 .vision-hud-plus-btn {
-  width: 32px !important;
-  height: 32px !important;
-  min-width: 32px !important;
-  min-height: 32px !important;
-  max-width: 32px !important;
-  max-height: 32px !important;
+  width: 30px !important;
+  height: 30px !important;
+  min-width: 30px !important;
+  min-height: 30px !important;
+  max-width: 30px !important;
+  max-height: 30px !important;
   aspect-ratio: 1 / 1 !important;
   box-sizing: border-box !important;
   padding: 0 !important;
@@ -459,11 +459,11 @@ body[data-theme="oled"] .vision-hud-input-capsule {
   border: none !important;
   outline: none !important;
   box-shadow: none !important;
-  font-size: 13px !important;
+  font-size: 12.5px !important;
   font-weight: 400 !important;
   font-family: inherit !important;
   color: var(--text, #1e293b) !important;
-  padding: 4px 4px !important;
+  padding: 3px 4px !important;
 }
 
 .vision-hud-input::placeholder {
@@ -472,12 +472,12 @@ body[data-theme="oled"] .vision-hud-input-capsule {
 }
 
 .vision-hud-send-btn {
-  width: 32px !important;
-  height: 32px !important;
-  min-width: 32px !important;
-  min-height: 32px !important;
-  max-width: 32px !important;
-  max-height: 32px !important;
+  width: 30px !important;
+  height: 30px !important;
+  min-width: 30px !important;
+  min-height: 30px !important;
+  max-width: 30px !important;
+  max-height: 30px !important;
   aspect-ratio: 1 / 1 !important;
   box-sizing: border-box !important;
   padding: 0 !important;
@@ -500,13 +500,13 @@ body[data-theme="oled"] .vision-hud-input-capsule {
   transform: scale(1.05) !important;
 }
 
-/* ─── 7. Dedicated Voice Screen UI (Strict View Separation via .voice-mode) ─ */
+/* ─── 7. Dedicated Voice Screen UI (Compact 380px Card + 120px Orb) ───────── */
 .vision-hud-voice-view {
   display: none !important;
   flex-direction: column !important;
   align-items: center !important;
   justify-content: center !important;
-  padding: 30px 20px 24px 20px !important;
+  padding: 22px 16px 18px 16px !important;
   text-align: center !important;
   animation: dFadeIn 0.22s ease !important;
 }
@@ -524,17 +524,17 @@ body[data-theme="oled"] .vision-hud-input-capsule {
 }
 
 .vision-hud-voice-large-orb {
-  width: 180px !important;
-  height: 180px !important;
-  min-width: 180px !important;
-  min-height: 180px !important;
+  width: 120px !important;
+  height: 120px !important;
+  min-width: 120px !important;
+  min-height: 120px !important;
   aspect-ratio: 1 / 1 !important;
   box-sizing: border-box !important;
   border-radius: 50% !important;
   background: radial-gradient(circle at 35% 30%, #e0e7ff 0%, #d8b4fe 40%, #bbf7d0 75%, #fbcfe8 100%) !important;
-  filter: blur(1.5px) !important;
+  filter: blur(1.2px) !important;
   animation: voiceGiantOrbBreathing 4s infinite ease-in-out !important;
-  margin-bottom: 24px !important;
+  margin-bottom: 18px !important;
   flex-shrink: 0 !important;
 }
 
@@ -548,20 +548,20 @@ body[data-theme="oled"] .vision-hud-voice-large-orb {
   display: flex !important;
   flex-direction: column !important;
   align-items: center !important;
-  gap: 6px !important;
-  margin-bottom: 28px !important;
-  max-width: 320px !important;
+  gap: 4px !important;
+  margin-bottom: 22px !important;
+  max-width: 290px !important;
 }
 
 .vision-hud-voice-main-status {
-  font-size: 13.5px !important;
+  font-size: 13px !important;
   font-weight: 400 !important;
   color: var(--text, #1e293b) !important;
-  line-height: 1.5 !important;
+  line-height: 1.45 !important;
 }
 
 .vision-hud-voice-sub-status {
-  font-size: 12px !important;
+  font-size: 11.5px !important;
   font-weight: 400 !important;
   color: #a78bfa !important;
 }
@@ -575,15 +575,15 @@ body.dark .vision-hud-voice-sub-status {
   align-items: center !important;
   justify-content: space-between !important;
   width: 100% !important;
-  max-width: 280px !important;
-  padding: 0 10px !important;
+  max-width: 240px !important;
+  padding: 0 6px !important;
 }
 
 .vision-hud-voice-circle-btn {
-  width: 44px !important;
-  height: 44px !important;
-  min-width: 44px !important;
-  min-height: 44px !important;
+  width: 38px !important;
+  height: 38px !important;
+  min-width: 38px !important;
+  min-height: 38px !important;
   aspect-ratio: 1 / 1 !important;
   box-sizing: border-box !important;
   border-radius: 50% !important;
@@ -618,8 +618,8 @@ body.dark .vision-hud-voice-circle-btn {
 .vision-hud-dropdown-menu {
   position: absolute !important;
   bottom: calc(100% + 8px) !important;
-  left: 20px !important;
-  width: 230px !important;
+  left: 18px !important;
+  width: 220px !important;
   background: var(--bg, #ffffff) !important;
   border-radius: 14px !important;
   border: 1px solid rgba(0, 0, 0, 0.08) !important;
@@ -656,7 +656,7 @@ body[data-theme="oled"] .vision-hud-dropdown-menu {
   outline: none !important;
   box-shadow: none !important;
   background: transparent !important;
-  font-size: 12.5px !important;
+  font-size: 12px !important;
   font-weight: 400 !important;
   color: var(--text, #334155) !important;
   cursor: pointer !important;
@@ -687,9 +687,9 @@ body[data-theme="oled"] .vision-hud-dropdown-menu {
 }
 
 @keyframes voiceGiantOrbBreathing {
-  0%   { transform: scale(1); filter: blur(1.5px); }
-  50%  { transform: scale(1.08); filter: blur(2.5px); }
-  100% { transform: scale(1); filter: blur(1.5px); }
+  0%   { transform: scale(1); filter: blur(1.2px); }
+  50%  { transform: scale(1.06); filter: blur(2px); }
+  100% { transform: scale(1); filter: blur(1.2px); }
 }
 
 @keyframes dFadeIn {
