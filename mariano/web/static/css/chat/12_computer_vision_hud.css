@@ -1,6 +1,7 @@
 /* ==========================================================================
    12_COMPUTER_VISION_HUD.CSS
    Adaptive Light/Dark Theme & Dynamic System Font Inherited HUD Widget
+   Unbold Rule: Heading & Greeting ONLY have weight; Everything else is 400
    Compliant with NO Outlines / NO Shadows Rule (Flat Background Fills Only)
    Strictly < 500 Lines Limit (~280 lines)
    ========================================================================== */
@@ -90,7 +91,7 @@ body[data-theme="oled"] #vision-hud-launcher {
 
 .vision-hud-launcher-text {
   font-size: 12.5px !important;
-  font-weight: 500 !important;
+  font-weight: 400 !important;
   color: #1e293b !important;
   letter-spacing: -0.1px !important;
 }
@@ -160,7 +161,7 @@ body[data-theme="oled"] .vision-hud-peek-handle {
   border-radius: 0 12px 12px 0 !important;
 }
 
-/* ─── 3. Top Header Bar ──────────────────────────────────────────────────── */
+/* ─── 3. Top Header Bar (Heading BOLD / Weight Preserved) ─────────────────── */
 .vision-hud-header {
   display: flex !important;
   align-items: center !important;
@@ -216,7 +217,7 @@ body[data-theme="oled"] .vision-hud-close-btn:hover {
   background: #27272a !important;
 }
 
-/* ─── 4. Center Orb & Hero Area ──────────────────────────────────────────── */
+/* ─── 4. Center Orb & Hero Area (Greeting Weight Preserved) ───────────────── */
 .vision-hud-hero {
   display: flex !important;
   flex-direction: column !important;
@@ -254,7 +255,7 @@ body[data-theme="oled"] .vision-hud-hero-text {
   color: #f1f5f9 !important;
 }
 
-/* ─── 5. Suggestion Action Chips ─────────────────────────────────────────── */
+/* ─── 5. Suggestion Action Chips (STRICTLY UNBOLD 400) ────────────────────── */
 .vision-hud-chips-grid {
   display: grid !important;
   grid-template-columns: 1fr 1fr !important;
@@ -272,8 +273,8 @@ body[data-theme="oled"] .vision-hud-hero-text {
   outline: none !important;
   border-radius: 12px !important;
   padding: 10px 14px !important;
-  font-size: 12px !important;
-  font-weight: 500 !important;
+  font-size: 12.5px !important;
+  font-weight: 400 !important;
   color: #334155 !important;
   cursor: pointer !important;
   font-family: inherit !important;
@@ -310,7 +311,7 @@ body[data-theme="oled"] .vision-hud-chip:hover {
   flex-shrink: 0 !important;
 }
 
-/* ─── 6. Chat Scroll View ────────────────────────────────────────────────── */
+/* ─── 6. Chat Scroll View (STRICTLY UNBOLD 400) ───────────────────────────── */
 .vision-hud-chat-body {
   max-height: 240px !important;
   overflow-y: auto !important;
@@ -328,6 +329,7 @@ body[data-theme="oled"] .vision-hud-chip:hover {
   align-items: flex-start !important;
   gap: 8px !important;
   font-size: 13px !important;
+  font-weight: 400 !important;
   line-height: 1.5 !important;
   font-family: inherit !important;
 }
@@ -376,7 +378,7 @@ body[data-theme="oled"] .vision-hud-msg.ai {
   margin-top: 2px !important;
 }
 
-/* ─── 7. Bottom Capsule Input Bar & Dropdown ─────────────────────────────── */
+/* ─── 7. Bottom Capsule Input Bar & Dropdown (STRICTLY UNBOLD 400) ────────── */
 .vision-hud-input-wrap {
   position: relative !important;
   padding: 8px 20px 18px 20px !important;
@@ -441,6 +443,7 @@ body[data-theme="oled"] .vision-hud-plus-btn {
   border: none !important;
   outline: none !important;
   font-size: 13px !important;
+  font-weight: 400 !important;
   font-family: inherit !important;
   color: #1e293b !important;
   padding: 4px 4px !important;
@@ -454,6 +457,7 @@ body[data-theme="oled"] .vision-hud-input {
 
 .vision-hud-input::placeholder {
   color: #94a3b8 !important;
+  font-weight: 400 !important;
 }
 
 .vision-hud-mic-btn {
@@ -523,7 +527,7 @@ body[data-theme="oled"] .vision-hud-send-btn {
   transform: scale(1.05) !important;
 }
 
-/* ─── 8. Smart Plus Dropdown Menu ────────────────────────────────────────── */
+/* ─── 8. Smart Plus Dropdown Menu (STRICTLY UNBOLD 400) ───────────────────── */
 .vision-hud-dropdown-menu {
   position: absolute !important;
   bottom: calc(100% + 8px) !important;
@@ -562,7 +566,7 @@ body[data-theme="oled"] .vision-hud-dropdown-menu {
   border: none !important;
   background: transparent !important;
   font-size: 12.5px !important;
-  font-weight: 500 !important;
+  font-weight: 400 !important;
   color: #334155 !important;
   cursor: pointer !important;
   transition: background 0.15s ease !important;
