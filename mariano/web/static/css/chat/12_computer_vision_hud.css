@@ -345,7 +345,16 @@ body[data-theme="oled"] .vision-hud-msg.user {
   color: var(--text, #1e293b) !important;
   padding: 9px 12px !important;
   border-radius: 14px 14px 4px 14px !important;
-  flex-direction: row-reverse !important;
+  flex-direction: row !important;
+  align-items: flex-start !important;
+  gap: 8px !important;
+}
+
+body.dark .vision-hud-msg.ai,
+body[data-theme="dark"] .vision-hud-msg.ai,
+body[data-theme="oled"] .vision-hud-msg.ai {
+  background: #27272a !important;
+  color: #f1f5f9 !important;
 }
 
 .vision-hud-msg-avatar {
@@ -357,7 +366,7 @@ body[data-theme="oled"] .vision-hud-msg.user {
   border-radius: 50% !important;
   object-fit: contain !important;
   flex-shrink: 0 !important;
-  margin-top: 2px !important;
+  margin-top: 1px !important;
 }
 
 /* ─── 6. Bottom Input Capsule Area ───────────────────────────────────────── */
