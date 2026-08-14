@@ -1,9 +1,9 @@
 /* ==========================================================================
    12_COMPUTER_VISION_HUD.CSS
-   Adaptive Light/Dark Theme & Dynamic System Font Inherited HUD Widget
+   Adaptive Application Theme Variables & Dynamic System Font Inherited HUD
+   Pure Application Theme Colors: var(--bg), var(--card), var(--input-bg), var(--hover), var(--text)
    Unbold Rule: Heading & Greeting ONLY have weight; Everything else is 400
-   Compliant with NO Outlines / NO Shadows Rule (Flat Background Fills Only)
-   Strictly < 500 Lines Limit (~280 lines)
+   Strictly < 500 Lines Limit (~270 lines)
    ========================================================================== */
 
 /* ─── 1. Floating Widget Container ────────────────────────────────────────── */
@@ -15,10 +15,10 @@
   height: auto !important;
   max-height: 85vh !important;
   max-width: calc(100vw - 40px) !important;
-  background: #ffffff !important;
+  background: var(--bg, #F7F7F9) !important;
   border: none !important;
   outline: none !important;
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.04) !important;
   border-radius: 16px !important;
   display: flex !important;
   flex-direction: column !important;
@@ -31,8 +31,8 @@
 body.dark #vision-hud-container,
 body[data-theme="dark"] #vision-hud-container,
 body[data-theme="oled"] #vision-hud-container {
-  background: #18181b !important;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45) !important;
+  background: var(--card, #18181b) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5) !important;
 }
 
 #vision-hud-container.hidden {
@@ -46,11 +46,11 @@ body[data-theme="oled"] #vision-hud-container {
   right: 24px !important;
   height: 40px !important;
   padding: 0 14px 0 10px !important;
-  background: #ffffff !important;
+  background: var(--bg, #F7F7F9) !important;
   border-radius: 9999px !important;
   border: none !important;
   outline: none !important;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1) !important;
   display: flex !important;
   align-items: center !important;
   gap: 8px !important;
@@ -64,7 +64,7 @@ body[data-theme="oled"] #vision-hud-container {
 body.dark #vision-hud-launcher,
 body[data-theme="dark"] #vision-hud-launcher,
 body[data-theme="oled"] #vision-hud-launcher {
-  background: #1e1e22 !important;
+  background: var(--card, #1e1e22) !important;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
 }
 
@@ -92,14 +92,8 @@ body[data-theme="oled"] #vision-hud-launcher {
 .vision-hud-launcher-text {
   font-size: 12.5px !important;
   font-weight: 400 !important;
-  color: #1e293b !important;
+  color: var(--text, #1e293b) !important;
   letter-spacing: -0.1px !important;
-}
-
-body.dark .vision-hud-launcher-text,
-body[data-theme="dark"] .vision-hud-launcher-text,
-body[data-theme="oled"] .vision-hud-launcher-text {
-  color: #f1f5f9 !important;
 }
 
 /* ─── 2. Edge-Docked Peek State (Magnetic Collapse) ───────────────────────── */
@@ -128,7 +122,7 @@ body[data-theme="oled"] .vision-hud-launcher-text {
   transform: translateY(-50%) !important;
   width: 24px !important;
   height: 64px !important;
-  background: #f1f5f9 !important;
+  background: var(--hover, #f1f5f9) !important;
   border-radius: 12px !important;
   display: none !important;
   align-items: center !important;
@@ -136,19 +130,12 @@ body[data-theme="oled"] .vision-hud-launcher-text {
   cursor: pointer !important;
   z-index: 100000 !important;
   user-select: none !important;
-  color: #64748b !important;
+  color: var(--text-2, #64748b) !important;
 }
 
 #vision-hud-container.docked-right .vision-hud-peek-handle,
 #vision-hud-container.docked-left .vision-hud-peek-handle {
   display: flex !important;
-}
-
-body.dark .vision-hud-peek-handle,
-body[data-theme="dark"] .vision-hud-peek-handle,
-body[data-theme="oled"] .vision-hud-peek-handle {
-  background: #27272a !important;
-  color: #94a3b8 !important;
 }
 
 #vision-hud-container.docked-right .vision-hud-peek-handle {
@@ -174,14 +161,8 @@ body[data-theme="oled"] .vision-hud-peek-handle {
 .vision-hud-title {
   font-size: 15px !important;
   font-weight: 600 !important;
-  color: #1e293b !important;
+  color: var(--text, #1e293b) !important;
   letter-spacing: -0.2px !important;
-}
-
-body.dark .vision-hud-title,
-body[data-theme="dark"] .vision-hud-title,
-body[data-theme="oled"] .vision-hud-title {
-  color: #f1f5f9 !important;
 }
 
 .vision-hud-close-btn {
@@ -195,7 +176,7 @@ body[data-theme="oled"] .vision-hud-title {
   border: none !important;
   outline: none !important;
   cursor: pointer !important;
-  color: #94a3b8 !important;
+  color: var(--text-3, #94a3b8) !important;
   padding: 0 !important;
   border-radius: 50% !important;
   display: flex !important;
@@ -206,15 +187,8 @@ body[data-theme="oled"] .vision-hud-title {
 }
 
 .vision-hud-close-btn:hover {
-  color: #0f172a !important;
-  background: #f1f5f9 !important;
-}
-
-body.dark .vision-hud-close-btn:hover,
-body[data-theme="dark"] .vision-hud-close-btn:hover,
-body[data-theme="oled"] .vision-hud-close-btn:hover {
-  color: #ffffff !important;
-  background: #27272a !important;
+  color: var(--text, #0f172a) !important;
+  background: var(--hover, #f1f5f9) !important;
 }
 
 /* ─── 4. Center Orb & Hero Area (Greeting Weight Preserved) ───────────────── */
@@ -246,13 +220,7 @@ body[data-theme="oled"] .vision-hud-close-btn:hover {
 .vision-hud-hero-text {
   font-size: 15px !important;
   font-weight: 500 !important;
-  color: #1e293b !important;
-}
-
-body.dark .vision-hud-hero-text,
-body[data-theme="dark"] .vision-hud-hero-text,
-body[data-theme="oled"] .vision-hud-hero-text {
-  color: #f1f5f9 !important;
+  color: var(--text, #1e293b) !important;
 }
 
 /* ─── 5. Suggestion Action Chips (STRICTLY UNBOLD 400) ────────────────────── */
@@ -268,14 +236,14 @@ body[data-theme="oled"] .vision-hud-hero-text {
   align-items: center !important;
   justify-content: space-between !important;
   gap: 8px !important;
-  background: #f8fafc !important;
+  background: var(--hover, #f1f5f9) !important;
   border: none !important;
   outline: none !important;
   border-radius: 12px !important;
   padding: 10px 14px !important;
   font-size: 12.5px !important;
   font-weight: 400 !important;
-  color: #334155 !important;
+  color: var(--text, #334155) !important;
   cursor: pointer !important;
   font-family: inherit !important;
   transition: background 0.15s ease, transform 0.1s ease !important;
@@ -283,22 +251,9 @@ body[data-theme="oled"] .vision-hud-hero-text {
   user-select: none !important;
 }
 
-body.dark .vision-hud-chip,
-body[data-theme="dark"] .vision-hud-chip,
-body[data-theme="oled"] .vision-hud-chip {
-  background: #27272a !important;
-  color: #e4e4e7 !important;
-}
-
 .vision-hud-chip:hover {
-  background: #edf2f7 !important;
+  background: var(--input-bg, #ffffff) !important;
   transform: translateY(-1px) !important;
-}
-
-body.dark .vision-hud-chip:hover,
-body[data-theme="dark"] .vision-hud-chip:hover,
-body[data-theme="oled"] .vision-hud-chip:hover {
-  background: #3f3f46 !important;
 }
 
 .vision-hud-chip-icon {
@@ -322,7 +277,7 @@ body[data-theme="oled"] .vision-hud-chip:hover {
 }
 
 .vision-hud-chat-body::-webkit-scrollbar { width: 3px !important; }
-.vision-hud-chat-body::-webkit-scrollbar-thumb { background: #cbd5e1 !important; border-radius: 3px !important; }
+.vision-hud-chat-body::-webkit-scrollbar-thumb { background: var(--hover, #cbd5e1) !important; border-radius: 3px !important; }
 
 .vision-hud-msg {
   display: flex !important;
@@ -337,8 +292,8 @@ body[data-theme="oled"] .vision-hud-chip:hover {
 .vision-hud-msg.user {
   align-self: flex-end !important;
   max-width: 85% !important;
-  background: #eff6ff !important;
-  color: #1d4ed8 !important;
+  background: rgba(37, 99, 235, 0.12) !important;
+  color: #2563eb !important;
   padding: 8px 14px !important;
   border-radius: 14px 14px 4px 14px !important;
 }
@@ -346,24 +301,17 @@ body[data-theme="oled"] .vision-hud-chip:hover {
 body.dark .vision-hud-msg.user,
 body[data-theme="dark"] .vision-hud-msg.user,
 body[data-theme="oled"] .vision-hud-msg.user {
-  background: #1e3a5f !important;
+  background: rgba(37, 99, 235, 0.22) !important;
   color: #93c5fd !important;
 }
 
 .vision-hud-msg.ai {
   align-self: flex-start !important;
   max-width: 90% !important;
-  background: #f1f5f9 !important;
-  color: #1e293b !important;
+  background: var(--hover, #f1f5f9) !important;
+  color: var(--text, #1e293b) !important;
   padding: 10px 14px !important;
   border-radius: 14px 14px 14px 4px !important;
-}
-
-body.dark .vision-hud-msg.ai,
-body[data-theme="dark"] .vision-hud-msg.ai,
-body[data-theme="oled"] .vision-hud-msg.ai {
-  background: #27272a !important;
-  color: #f1f5f9 !important;
 }
 
 .vision-hud-msg-avatar {
@@ -387,7 +335,7 @@ body[data-theme="oled"] .vision-hud-msg.ai {
 .vision-hud-input-capsule {
   display: flex !important;
   align-items: center !important;
-  background: #f1f5f9 !important;
+  background: var(--input-bg, #ffffff) !important;
   border-radius: 9999px !important;
   padding: 4px 6px 4px 6px !important;
   gap: 8px !important;
@@ -399,7 +347,7 @@ body[data-theme="oled"] .vision-hud-msg.ai {
 body.dark .vision-hud-input-capsule,
 body[data-theme="dark"] .vision-hud-input-capsule,
 body[data-theme="oled"] .vision-hud-input-capsule {
-  background: #27272a !important;
+  background: var(--hover, #27272a) !important;
 }
 
 .vision-hud-plus-btn {
@@ -413,10 +361,10 @@ body[data-theme="oled"] .vision-hud-input-capsule {
   box-sizing: border-box !important;
   padding: 0 !important;
   border-radius: 50% !important;
-  background: #e2e8f0 !important;
+  background: var(--hover, #e2e8f0) !important;
   border: none !important;
   outline: none !important;
-  color: #475569 !important;
+  color: var(--text-2, #475569) !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -425,16 +373,9 @@ body[data-theme="oled"] .vision-hud-input-capsule {
   flex-shrink: 0 !important;
 }
 
-body.dark .vision-hud-plus-btn,
-body[data-theme="dark"] .vision-hud-plus-btn,
-body[data-theme="oled"] .vision-hud-plus-btn {
-  background: #3f3f46 !important;
-  color: #e4e4e7 !important;
-}
-
 .vision-hud-plus-btn:hover {
-  background: #cbd5e1 !important;
-  color: #0f172a !important;
+  background: var(--border, #cbd5e1) !important;
+  color: var(--text, #0f172a) !important;
 }
 
 .vision-hud-input {
@@ -445,18 +386,12 @@ body[data-theme="oled"] .vision-hud-plus-btn {
   font-size: 13px !important;
   font-weight: 400 !important;
   font-family: inherit !important;
-  color: #1e293b !important;
+  color: var(--text, #1e293b) !important;
   padding: 4px 4px !important;
 }
 
-body.dark .vision-hud-input,
-body[data-theme="dark"] .vision-hud-input,
-body[data-theme="oled"] .vision-hud-input {
-  color: #f1f5f9 !important;
-}
-
 .vision-hud-input::placeholder {
-  color: #94a3b8 !important;
+  color: var(--text-3, #94a3b8) !important;
   font-weight: 400 !important;
 }
 
@@ -473,7 +408,7 @@ body[data-theme="oled"] .vision-hud-input {
   background: transparent !important;
   border: none !important;
   outline: none !important;
-  color: #64748b !important;
+  color: var(--text-3, #64748b) !important;
   cursor: pointer !important;
   display: flex !important;
   align-items: center !important;
@@ -484,13 +419,7 @@ body[data-theme="oled"] .vision-hud-input {
 }
 
 .vision-hud-mic-btn:hover {
-  color: #0f172a !important;
-}
-
-body.dark .vision-hud-mic-btn:hover,
-body[data-theme="dark"] .vision-hud-mic-btn:hover,
-body[data-theme="oled"] .vision-hud-mic-btn:hover {
-  color: #ffffff !important;
+  color: var(--text, #0f172a) !important;
 }
 
 .vision-hud-send-btn {
@@ -504,7 +433,7 @@ body[data-theme="oled"] .vision-hud-mic-btn:hover {
   box-sizing: border-box !important;
   padding: 0 !important;
   border-radius: 50% !important;
-  background: #1e293b !important;
+  background: #2563eb !important;
   border: none !important;
   outline: none !important;
   color: #ffffff !important;
@@ -514,12 +443,6 @@ body[data-theme="oled"] .vision-hud-mic-btn:hover {
   cursor: pointer !important;
   transition: transform 0.15s ease, background 0.15s ease !important;
   flex-shrink: 0 !important;
-}
-
-body.dark .vision-hud-send-btn,
-body[data-theme="dark"] .vision-hud-send-btn,
-body[data-theme="oled"] .vision-hud-send-btn {
-  background: #2563eb !important;
 }
 
 .vision-hud-send-btn:hover {
@@ -533,10 +456,10 @@ body[data-theme="oled"] .vision-hud-send-btn {
   bottom: calc(100% + 8px) !important;
   left: 20px !important;
   width: 230px !important;
-  background: #ffffff !important;
+  background: var(--bg, #ffffff) !important;
   border-radius: 14px !important;
   border: none !important;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15), 0 2px 8px rgba(0, 0, 0, 0.04) !important;
   padding: 6px !important;
   display: none !important;
   flex-direction: column !important;
@@ -549,8 +472,7 @@ body[data-theme="oled"] .vision-hud-send-btn {
 body.dark .vision-hud-dropdown-menu,
 body[data-theme="dark"] .vision-hud-dropdown-menu,
 body[data-theme="oled"] .vision-hud-dropdown-menu {
-  background: #27272a !important;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5) !important;
+  background: var(--card, #27272a) !important;
 }
 
 .vision-hud-dropdown-menu.show {
@@ -567,29 +489,16 @@ body[data-theme="oled"] .vision-hud-dropdown-menu {
   background: transparent !important;
   font-size: 12.5px !important;
   font-weight: 400 !important;
-  color: #334155 !important;
+  color: var(--text, #334155) !important;
   cursor: pointer !important;
   transition: background 0.15s ease !important;
   text-align: left !important;
   font-family: inherit !important;
 }
 
-body.dark .vision-hud-dropdown-item,
-body[data-theme="dark"] .vision-hud-dropdown-item,
-body[data-theme="oled"] .vision-hud-dropdown-item {
-  color: #e4e4e7 !important;
-}
-
 .vision-hud-dropdown-item:hover {
-  background: #f1f5f9 !important;
-  color: #0f172a !important;
-}
-
-body.dark .vision-hud-dropdown-item:hover,
-body[data-theme="dark"] .vision-hud-dropdown-item:hover,
-body[data-theme="oled"] .vision-hud-dropdown-item:hover {
-  background: #3f3f46 !important;
-  color: #ffffff !important;
+  background: var(--hover, #f1f5f9) !important;
+  color: var(--text, #0f172a) !important;
 }
 
 .vision-hud-dropdown-item.danger {
@@ -597,7 +506,7 @@ body[data-theme="oled"] .vision-hud-dropdown-item:hover {
 }
 
 .vision-hud-dropdown-item.danger:hover {
-  background: #fef2f2 !important;
+  background: rgba(239, 68, 68, 0.12) !important;
   color: #dc2626 !important;
 }
 
