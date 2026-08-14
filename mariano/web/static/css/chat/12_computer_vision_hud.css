@@ -1,10 +1,10 @@
 /* ==========================================================================
    12_COMPUTER_VISION_HUD.CSS
    Adaptive Application Theme Variables & Dynamic System Font Inherited HUD
-   Default Compact Window (380px) + Identical Standard Size Voice Orb (48px)
+   100% Full Edge-Dock Hide (Zero Content Leak) + 24px Peek Handle
    Crisp Subtle Outline ONLY (Zero Shadows): border: 1px solid var(--border)
    Unbold Rule: Heading & Greeting ONLY have weight; Everything else is 400
-   Strictly < 500 Lines Limit (~360 lines)
+   Strictly < 500 Lines Limit (~370 lines)
    ========================================================================== */
 
 /* ─── 1. Floating Widget Container ────────────────────────────────────────── */
@@ -98,17 +98,17 @@ body[data-theme="oled"] #vision-hud-launcher {
   letter-spacing: -0.1px !important;
 }
 
-/* ─── 2. Edge-Docked Peek State (Magnetic Collapse) ───────────────────────── */
+/* ─── 2. Edge-Docked Peek State (100% True Offscreen Collapse) ───────────── */
 #vision-hud-container.docked-right {
   right: 0 !important;
   left: auto !important;
-  transform: translateX(calc(100% - 24px)) !important;
+  transform: translateX(100%) !important;
 }
 
 #vision-hud-container.docked-left {
   left: 0 !important;
   right: auto !important;
-  transform: translateX(calc(-100% + 24px)) !important;
+  transform: translateX(-100%) !important;
 }
 
 #vision-hud-container.docked-right:hover,
@@ -117,15 +117,14 @@ body[data-theme="oled"] #vision-hud-launcher {
   transform: translateX(0) !important;
 }
 
-/* Peek Grab Handle */
+/* Peek Grab Handle — Sticks 24px into viewport */
 .vision-hud-peek-handle {
   position: absolute !important;
   top: 50% !important;
   transform: translateY(-50%) !important;
   width: 24px !important;
-  height: 64px !important;
-  background: var(--hover, #f1f5f9) !important;
-  border-radius: 12px !important;
+  height: 60px !important;
+  background: var(--bg, #F7F7F9) !important;
   display: none !important;
   align-items: center !important;
   justify-content: center !important;
@@ -134,28 +133,30 @@ body[data-theme="oled"] #vision-hud-launcher {
   user-select: none !important;
   color: var(--text-2, #64748b) !important;
   box-shadow: none !important;
-  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  border: 1px solid rgba(0, 0, 0, 0.09) !important;
 }
 
 body.dark .vision-hud-peek-handle,
 body[data-theme="dark"] .vision-hud-peek-handle,
 body[data-theme="oled"] .vision-hud-peek-handle {
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-}
-
-#vision-hud-container.docked-right .vision-hud-peek-handle,
-#vision-hud-container.docked-left .vision-hud-peek-handle {
-  display: flex !important;
+  background: var(--card, #18181b) !important;
+  border: 1px solid rgba(255, 255, 255, 0.09) !important;
 }
 
 #vision-hud-container.docked-right .vision-hud-peek-handle {
-  left: -20px !important;
-  border-radius: 12px 0 0 12px !important;
+  display: flex !important;
+  left: -24px !important;
+  right: auto !important;
+  border-radius: 10px 0 0 10px !important;
+  border-right: none !important;
 }
 
 #vision-hud-container.docked-left .vision-hud-peek-handle {
-  right: -20px !important;
-  border-radius: 0 12px 12px 0 !important;
+  display: flex !important;
+  right: -24px !important;
+  left: auto !important;
+  border-radius: 0 10px 10px 0 !important;
+  border-left: none !important;
 }
 
 /* ─── 3. Top Header Bar ──────────────────────────────────────────────────── */

@@ -399,10 +399,14 @@ class VisionHUDController {
       const screenW = window.innerWidth;
       if (rect.right > screenW - 60) {
         this.container.classList.add('docked-right');
-        this.container.classList.remove('docked-left');
+        this.container.classList.remove('docked-left', 'expanded');
+        this.container.style.left = '';
+        this.container.style.right = '0px';
       } else if (rect.left < 60) {
         this.container.classList.add('docked-left');
-        this.container.classList.remove('docked-right');
+        this.container.classList.remove('docked-right', 'expanded');
+        this.container.style.left = '0px';
+        this.container.style.right = '';
       } else {
         this.container.classList.remove('docked-right', 'docked-left', 'expanded');
       }
