@@ -54,9 +54,14 @@ class VisionHUDController {
 
       <div class="vision-hud-header">
         <span class="vision-hud-title">Ask Super AI</span>
-        <button type="button" class="vision-hud-close-btn" id="vision-hud-close" title="Close">
-          ${ICONS.close}
-        </button>
+        <div class="vision-hud-header-actions">
+          <button type="button" class="vision-hud-mic-btn" id="vision-hud-mic" title="Voice Input">
+            ${ICONS.mic}
+          </button>
+          <button type="button" class="vision-hud-close-btn" id="vision-hud-close" title="Close">
+            ${ICONS.close}
+          </button>
+        </div>
       </div>
 
       <div class="vision-hud-hero" id="vision-hud-hero">
@@ -102,9 +107,6 @@ class VisionHUDController {
               ${ICONS.plus}
             </button>
             <input type="text" class="vision-hud-input" id="vision-hud-input" placeholder="How else can I help..." autocomplete="off" />
-            <button type="button" class="vision-hud-mic-btn" id="vision-hud-mic" title="Voice Input">
-              ${ICONS.mic}
-            </button>
             <button type="button" class="vision-hud-send-btn" id="vision-hud-send" title="Send">
               ${ICONS.send}
             </button>

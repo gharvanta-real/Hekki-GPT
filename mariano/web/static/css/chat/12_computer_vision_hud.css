@@ -1,10 +1,10 @@
 /* ==========================================================================
    12_COMPUTER_VISION_HUD.CSS
    Adaptive Application Theme Variables & Dynamic System Font Inherited HUD
-   Suggestion Chips Grouped Directly on Top of Input Field
+   Mic Icon Positioned in Header Before Close Icon
    Crisp Subtle Outline ONLY (Zero Shadows): border: 1px solid var(--border)
    Unbold Rule: Heading & Greeting ONLY have weight; Everything else is 400
-   Strictly < 500 Lines Limit (~270 lines)
+   Strictly < 500 Lines Limit (~280 lines)
    ========================================================================== */
 
 /* ─── 1. Floating Widget Container ────────────────────────────────────────── */
@@ -158,7 +158,7 @@ body[data-theme="oled"] .vision-hud-peek-handle {
   border-radius: 0 12px 12px 0 !important;
 }
 
-/* ─── 3. Top Header Bar (Heading BOLD / Weight Preserved) ─────────────────── */
+/* ─── 3. Top Header Bar (Heading BOLD / Actions Right) ────────────────────── */
 .vision-hud-header {
   display: flex !important;
   align-items: center !important;
@@ -175,6 +175,41 @@ body[data-theme="oled"] .vision-hud-peek-handle {
   font-weight: 600 !important;
   color: var(--text, #1e293b) !important;
   letter-spacing: -0.2px !important;
+}
+
+.vision-hud-header-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+
+.vision-hud-mic-btn {
+  width: 28px !important;
+  height: 28px !important;
+  min-width: 28px !important;
+  min-height: 28px !important;
+  max-width: 28px !important;
+  max-height: 28px !important;
+  aspect-ratio: 1 / 1 !important;
+  box-sizing: border-box !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  color: var(--text-3, #64748b) !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 50% !important;
+  transition: color 0.15s ease, background 0.15s ease !important;
+  flex-shrink: 0 !important;
+}
+
+.vision-hud-mic-btn:hover {
+  color: var(--text, #0f172a) !important;
+  background: var(--hover, #f1f5f9) !important;
 }
 
 .vision-hud-close-btn {
@@ -436,34 +471,6 @@ body[data-theme="oled"] .vision-hud-input-capsule {
 .vision-hud-input::placeholder {
   color: var(--text-3, #94a3b8) !important;
   font-weight: 400 !important;
-}
-
-.vision-hud-mic-btn {
-  width: 30px !important;
-  height: 30px !important;
-  min-width: 30px !important;
-  min-height: 30px !important;
-  max-width: 30px !important;
-  max-height: 30px !important;
-  aspect-ratio: 1 / 1 !important;
-  box-sizing: border-box !important;
-  padding: 0 !important;
-  background: transparent !important;
-  border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
-  color: var(--text-3, #64748b) !important;
-  cursor: pointer !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  border-radius: 50% !important;
-  transition: color 0.15s ease !important;
-  flex-shrink: 0 !important;
-}
-
-.vision-hud-mic-btn:hover {
-  color: var(--text, #0f172a) !important;
 }
 
 .vision-hud-send-btn {
