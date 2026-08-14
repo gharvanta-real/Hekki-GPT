@@ -272,6 +272,13 @@ export function initSettings(setGreetingCallback) {
       const quickVoice = $('settings-quick-voice');
       if (quickVoice) quickVoice.checked = cfg.quick_voice_enabled !== false;
 
+      // Computer Vision Floating HUD toggle
+      const visionHudToggle = $('settings-vision-hud');
+      if (visionHudToggle) {
+        const isEnabled = localStorage.getItem('hekki_vision_hud_enabled') !== 'false';
+        visionHudToggle.checked = isEnabled;
+      }
+
 
 
       // Re-sync font dropdown from localStorage (client-only setting)
@@ -425,6 +432,19 @@ export function initSettings(setGreetingCallback) {
   // ── Quick Voice Overlay toggle ────────────────────────────────────────
   $('settings-quick-voice')?.addEventListener('change', e => {
     save({ quick_voice_enabled: e.target.checked });
+  });
+
+  // ── Computer Vision Floating HUD toggle ──────────────────────────────────
+  $('settings-vision-hud')?.addEventListener('change', e => {
+    const isChecked = e.target.checked;
+    localStorage.setItem('hekki_vision_hud_enabled', isChecked ? 'true' : 'false');
+    if (isChecked) {
+      window.VisionHUD?.enable();
+      if (window.showToast) window.showToast('Computer Vision', 'Floating Vision HUD Enabled', 2000);
+    } else {
+      window.VisionHUD?.disable();
+      if (window.showToast) window.showToast('Computer Vision', 'Floating Vision HUD Disabled', 2000);
+    }
   });
 
 

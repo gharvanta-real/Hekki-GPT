@@ -22,6 +22,7 @@ const ICONS = {
 class VisionHUDController {
   constructor() {
     this.container = null;
+    this.launcher = null;
     this.chatBody = null;
     this.input = null;
     this.dropdown = null;
@@ -30,6 +31,7 @@ class VisionHUDController {
     this.isDragging = false;
     this.startX = 0;
     this.startY = 0;
+    this.isEnabled = localStorage.getItem('hekki_vision_hud_enabled') !== 'false';
     this.init();
   }
 
@@ -37,6 +39,9 @@ class VisionHUDController {
     if (document.getElementById('vision-hud-container')) return;
     this.createDOM();
     this.bindEvents();
+    if (!this.isEnabled) {
+      this.disable();
+    }
   }
 
   createDOM() {
@@ -305,6 +310,7 @@ class VisionHUDController {
   }
 
   show() {
+    if (!this.isEnabled) return;
     this.container?.classList.remove('hidden');
     this.launcher?.classList.add('hidden');
     this.input?.focus();
@@ -312,10 +318,28 @@ class VisionHUDController {
 
   hide() {
     this.container?.classList.add('hidden');
-    this.launcher?.classList.remove('hidden');
+    if (this.isEnabled) {
+      this.launcher?.classList.remove('hidden');
+    } else {
+      this.launcher?.classList.add('hidden');
+    }
+  }
+
+  enable() {
+    this.isEnabled = true;
+    localStorage.setItem('hekki_vision_hud_enabled', 'true');
+    this.show();
+  }
+
+  disable() {
+    this.isEnabled = false;
+    localStorage.setItem('hekki_vision_hud_enabled', 'false');
+    this.container?.classList.add('hidden');
+    this.launcher?.classList.add('hidden');
   }
 
   toggle() {
+    if (!this.isEnabled) return;
     if (this.container?.classList.contains('hidden')) {
       this.show();
     } else {
