@@ -144,6 +144,9 @@ class VisionHUDController {
           </button>
         </div>
       </div>
+
+      <!-- CORNER RESIZE GRIP HANDLE -->
+      <div class="vision-hud-resize-handle" id="vision-hud-resize" title="Drag to resize window"></div>
     `;
 
     document.body.appendChild(wrap);
@@ -258,6 +261,8 @@ class VisionHUDController {
 
     // Setup Magnetic Edge Snapping
     this.setupMagneticSnapping();
+    // Setup Window Resizing Control
+    this.setupWindowResizing();
   }
 
   /* ─── Dedicated Voice Mode Controller ───────────────────────────────────── */
@@ -410,6 +415,47 @@ class VisionHUDController {
       } else {
         this.container.classList.remove('docked-right', 'docked-left', 'expanded');
       }
+    });
+  }
+
+  /* ─── Window Resizing (Width & Height Drag Control) ─────────────────────── */
+  setupWindowResizing() {
+    const resizer = this.container?.querySelector('#vision-hud-resize');
+    if (!resizer) return;
+
+    let isResizing = false;
+    let startW = 0;
+    let startH = 0;
+    let startX = 0;
+    let startY = 0;
+
+    resizer.addEventListener('mousedown', (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      isResizing = true;
+      startW = this.container.offsetWidth;
+      startH = this.container.offsetHeight;
+      startX = e.clientX;
+      startY = e.clientY;
+      this.container.style.transition = 'none';
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (!isResizing) return;
+      const deltaX = e.clientX - startX;
+      const deltaY = e.clientY - startY;
+
+      const newW = Math.max(280, Math.min(900, startW + deltaX));
+      const newH = Math.max(200, Math.min(850, startH + deltaY));
+
+      this.container.style.setProperty('width', `${newW}px`, 'important');
+      this.container.style.setProperty('height', `${newH}px`, 'important');
+    });
+
+    document.addEventListener('mouseup', () => {
+      if (!isResizing) return;
+      isResizing = false;
+      this.container.style.transition = '';
     });
   }
 

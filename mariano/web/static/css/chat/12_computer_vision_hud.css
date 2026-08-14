@@ -1,11 +1,12 @@
 /* ==========================================================================
    12_COMPUTER_VISION_HUD.CSS
    Adaptive Application Theme Variables & Dynamic System Font Inherited HUD
+   Interactive Window Resize Handle (Drag Bottom-Right Corner)
    Dedicated Separate Chat Page View (Hero & Chips 100% Removed on Msg)
    User Msg STRICT LEFT / AI Answer STRICT RIGHT
    Strict NO Outline & NO Shadow Rule: border: none !important; box-shadow: none !important;
    Unbold Rule: Heading & Greeting ONLY have weight; Everything else is 400
-   Strictly < 500 Lines Limit (~370 lines)
+   Strictly < 500 Lines Limit (~380 lines)
    ========================================================================== */
 
 /* ─── 1. Floating Widget Container ────────────────────────────────────────── */
@@ -297,6 +298,7 @@ body[data-theme="oled"] .vision-hud-peek-handle {
   border: none !important;
   outline: none !important;
   box-shadow: none !important;
+  flex: 1 !important;
 }
 
 .vision-hud-chat-body::-webkit-scrollbar { width: 3px !important; }
@@ -538,7 +540,8 @@ body[data-theme="oled"] .vision-hud-input-capsule {
 #vision-hud-container.voice-mode .vision-hud-header,
 #vision-hud-container.voice-mode .vision-hud-hero,
 #vision-hud-container.voice-mode .vision-hud-chat-body,
-#vision-hud-container.voice-mode .vision-hud-bottom-group {
+#vision-hud-container.voice-mode .vision-hud-bottom-group,
+#vision-hud-container.voice-mode .vision-hud-resize-handle {
   display: none !important;
 }
 
@@ -692,7 +695,36 @@ body[data-theme="oled"] .vision-hud-dropdown-menu {
   color: #dc2626 !important;
 }
 
-/* ─── 9. Animations ──────────────────────────────────────────────────────── */
+/* ─── 9. Interactive Window Resize Grip Handle ────────────────────────────── */
+.vision-hud-resize-handle {
+  position: absolute !important;
+  bottom: 2px !important;
+  right: 2px !important;
+  width: 16px !important;
+  height: 16px !important;
+  cursor: se-resize !important;
+  z-index: 100002 !important;
+  user-select: none !important;
+  opacity: 0.4 !important;
+  transition: opacity 0.15s ease !important;
+}
+
+.vision-hud-resize-handle::before {
+  content: '' !important;
+  position: absolute !important;
+  right: 4px !important;
+  bottom: 4px !important;
+  width: 6px !important;
+  height: 6px !important;
+  border-right: 2px solid var(--text-3, #94a3b8) !important;
+  border-bottom: 2px solid var(--text-3, #94a3b8) !important;
+}
+
+.vision-hud-resize-handle:hover {
+  opacity: 1 !important;
+}
+
+/* ─── 10. Animations ──────────────────────────────────────────────────────── */
 @keyframes visionOrbPulse {
   0%   { transform: scale(1); filter: blur(0.5px); }
   50%  { transform: scale(1.06); filter: blur(1.5px); }
