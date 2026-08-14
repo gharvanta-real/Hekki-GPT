@@ -86,17 +86,6 @@ class VisionHUDController {
 
       <!-- DEFAULT MODE BOTTOM GROUP -->
       <div class="vision-hud-bottom-group" id="vision-hud-bottom-group">
-        <div class="vision-hud-chips-grid" id="vision-hud-chips">
-          <button type="button" class="vision-hud-chip" data-prompt="Analyze my active desktop screen">
-            <span>Analyze Screen</span>
-            <span class="vision-hud-chip-icon">${ICONS.sparkle}</span>
-          </button>
-          <button type="button" class="vision-hud-chip" data-prompt="Find and click the primary save button">
-            <span>Click Element</span>
-            <span class="vision-hud-chip-icon">${ICONS.pointer}</span>
-          </button>
-        </div>
-
         <div class="vision-hud-input-wrap">
           <div class="vision-hud-dropdown-menu" id="vision-hud-dropdown">
             <button type="button" class="vision-hud-dropdown-item" data-action="capture_screen">

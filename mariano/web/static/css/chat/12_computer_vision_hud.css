@@ -1,12 +1,13 @@
 /* ==========================================================================
    12_COMPUTER_VISION_HUD.CSS
    Adaptive Application Theme Variables & Dynamic System Font Inherited HUD
+   Ultra-Sleek Clean Card (Suggestion Chips Removed)
    Interactive Window Resize Handle (Drag Bottom-Right Corner)
-   Dedicated Separate Chat Page View (Hero & Chips 100% Removed on Msg)
+   Dedicated Separate Chat Page View (Hero 100% Removed on Msg)
    User Msg STRICT LEFT / AI Answer STRICT RIGHT
    Strict NO Outline & NO Shadow Rule: border: none !important; box-shadow: none !important;
    Unbold Rule: Heading & Greeting ONLY have weight; Everything else is 400
-   Strictly < 500 Lines Limit (~380 lines)
+   Strictly < 500 Lines Limit (~360 lines)
    ========================================================================== */
 
 /* ─── 1. Floating Widget Container ────────────────────────────────────────── */
@@ -278,11 +279,9 @@ body[data-theme="oled"] .vision-hud-peek-handle {
   color: var(--text, #1e293b) !important;
 }
 
-/* HIDE HERO ORB & SUGGESTION CHIPS COMPLETELY ONCE CHAT HAS MESSAGES */
+/* HIDE HERO ORB COMPLETELY ONCE CHAT HAS MESSAGES */
 #vision-hud-container.has-messages .vision-hud-hero,
-#vision-hud-container.has-messages #vision-hud-hero,
-#vision-hud-container.has-messages .vision-hud-chips-grid,
-#vision-hud-container.has-messages #vision-hud-chips {
+#vision-hud-container.has-messages #vision-hud-hero {
   display: none !important;
 }
 
@@ -361,61 +360,13 @@ body[data-theme="oled"] .vision-hud-msg.user {
   margin-top: 2px !important;
 }
 
-/* ─── 6. Bottom Input & Categories Group ─────────────────────────────────── */
+/* ─── 6. Bottom Input Capsule Area ───────────────────────────────────────── */
 .vision-hud-bottom-group {
   display: flex !important;
   flex-direction: column !important;
   gap: 6px !important;
   margin-top: auto !important;
   padding-bottom: 14px !important;
-}
-
-.vision-hud-chips-grid {
-  display: grid !important;
-  grid-template-columns: 1fr 1fr !important;
-  gap: 6px !important;
-  padding: 0 18px !important;
-  border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
-}
-
-.vision-hud-chip {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  gap: 5px !important;
-  background: var(--hover, #f1f5f9) !important;
-  border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
-  border-radius: 6px !important;
-  padding: 2px 8px !important;
-  height: 24px !important;
-  box-sizing: border-box !important;
-  font-size: 11px !important;
-  font-weight: 400 !important;
-  color: var(--text, #334155) !important;
-  cursor: pointer !important;
-  font-family: inherit !important;
-  transition: background 0.15s ease, transform 0.1s ease !important;
-  text-align: left !important;
-  user-select: none !important;
-}
-
-.vision-hud-chip:hover {
-  background: var(--input-bg, #ffffff) !important;
-  transform: translateY(-1px) !important;
-}
-
-.vision-hud-chip-icon {
-  width: 12px !important;
-  height: 12px !important;
-  min-width: 12px !important;
-  min-height: 12px !important;
-  aspect-ratio: 1 / 1 !important;
-  color: #2563eb !important;
-  flex-shrink: 0 !important;
 }
 
 .vision-hud-input-wrap {
