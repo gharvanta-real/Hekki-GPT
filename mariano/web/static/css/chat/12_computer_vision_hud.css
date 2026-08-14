@@ -603,13 +603,13 @@ body.dark .vision-hud-voice-sub-status {
   color: #2563eb !important;
 }
 
-/* ─── 8. Smart Plus Dropdown Menu ────────────────────────────────────────── */
+/* ─── 8. Smart Plus Dropdown Menu (Elevated Surface Tint Separation) ───── */
 .vision-hud-dropdown-menu {
   position: absolute !important;
   bottom: calc(100% + 8px) !important;
   left: 18px !important;
   width: 220px !important;
-  background: var(--bg, #ffffff) !important;
+  background: #ffffff !important;
   border-radius: 14px !important;
   border: none !important;
   outline: none !important;
@@ -617,7 +617,7 @@ body.dark .vision-hud-voice-sub-status {
   padding: 6px !important;
   display: none !important;
   flex-direction: column !important;
-  gap: 2px !important;
+  gap: 3px !important;
   z-index: 100001 !important;
   font-family: inherit !important;
   animation: dFadeIn 0.2s ease !important;
@@ -626,7 +626,7 @@ body.dark .vision-hud-voice-sub-status {
 body.dark .vision-hud-dropdown-menu,
 body[data-theme="dark"] .vision-hud-dropdown-menu,
 body[data-theme="oled"] .vision-hud-dropdown-menu {
-  background: var(--card, #27272a) !important;
+  background: #27272a !important;
   border: none !important;
   box-shadow: none !important;
 }
@@ -644,28 +644,36 @@ body[data-theme="oled"] .vision-hud-dropdown-menu {
   border: none !important;
   outline: none !important;
   box-shadow: none !important;
-  background: transparent !important;
+  background: #f1f5f9 !important;
   font-size: 12px !important;
   font-weight: 400 !important;
-  color: var(--text, #334155) !important;
+  color: #334155 !important;
   cursor: pointer !important;
-  transition: background 0.15s ease !important;
+  transition: background 0.15s ease, transform 0.1s ease !important;
   text-align: left !important;
   font-family: inherit !important;
 }
 
+body.dark .vision-hud-dropdown-item,
+body[data-theme="dark"] .vision-hud-dropdown-item,
+body[data-theme="oled"] .vision-hud-dropdown-item {
+  background: rgba(255, 255, 255, 0.05) !important;
+  color: #e2e8f0 !important;
+}
+
 .vision-hud-dropdown-item:hover {
-  background: var(--hover, #f1f5f9) !important;
-  color: var(--text, #0f172a) !important;
+  background: #2563eb !important;
+  color: #ffffff !important;
 }
 
 .vision-hud-dropdown-item.danger {
-  color: #ef4444 !important;
+  color: #f87171 !important;
+  background: rgba(239, 68, 68, 0.08) !important;
 }
 
 .vision-hud-dropdown-item.danger:hover {
-  background: rgba(239, 68, 68, 0.12) !important;
-  color: #dc2626 !important;
+  background: #ef4444 !important;
+  color: #ffffff !important;
 }
 
 /* ─── 9. Interactive Window Resize Grip Handle ────────────────────────────── */
