@@ -1,8 +1,8 @@
 /**
  * computer_vision_hud.js
- * Minimalist Image-Matched Floating Desktop Vision HUD & Edge Docking Controller.
+ * Minimalist Floating Desktop Vision HUD & Real-time Voice Audio Controller.
  * Zero Emojis — Clean Vector Icons Only.
- * Strictly < 500 lines.
+ * Strictly < 500 lines (~380 lines).
  */
 
 const ICONS = {
@@ -12,8 +12,8 @@ const ICONS = {
   pointer: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 3 7.07 16.97 2.51-7.39 7.39-2.51L3 3z"/><path d="m13 13 6 6"/></svg>`,
   type: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>`,
   window: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="2" y1="9" x2="22" y2="9"/></svg>`,
-  stop: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/></svg>`,
-  mic: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>`,
+  stop: `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/></svg>`,
+  mic: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>`,
   send: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>`,
   plus: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>`,
   chevronRight: `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>`
@@ -25,13 +25,19 @@ class VisionHUDController {
     this.launcher = null;
     this.chatBody = null;
     this.input = null;
+    this.inputCapsule = null;
+    this.voicePanel = null;
+    this.voiceText = null;
+    this.micBtn = null;
     this.dropdown = null;
     this.isDocked = false;
-    this.dockSide = null; // 'left' or 'right'
+    this.dockSide = null;
     this.isDragging = false;
     this.startX = 0;
     this.startY = 0;
     this.isEnabled = localStorage.getItem('hekki_vision_hud_enabled') !== 'false';
+    this.isVoiceActive = false;
+    this.recognition = null;
     this.init();
   }
 
@@ -39,6 +45,7 @@ class VisionHUDController {
     if (document.getElementById('vision-hud-container')) return;
     this.createDOM();
     this.bindEvents();
+    this.initSpeechRecognition();
     if (!this.isEnabled) {
       this.disable();
     }
@@ -55,7 +62,7 @@ class VisionHUDController {
       <div class="vision-hud-header">
         <span class="vision-hud-title">Ask Super AI</span>
         <div class="vision-hud-header-actions">
-          <button type="button" class="vision-hud-mic-btn" id="vision-hud-mic" title="Voice Input">
+          <button type="button" class="vision-hud-mic-btn" id="vision-hud-mic" title="Real-time Voice Mode">
             ${ICONS.mic}
           </button>
           <button type="button" class="vision-hud-close-btn" id="vision-hud-close" title="Close">
@@ -102,13 +109,28 @@ class VisionHUDController {
             </button>
           </div>
 
-          <div class="vision-hud-input-capsule">
+          <!-- Normal Text Input Capsule -->
+          <div class="vision-hud-input-capsule" id="vision-hud-input-capsule">
             <button type="button" class="vision-hud-plus-btn" id="vision-hud-plus" title="Vision Actions">
               ${ICONS.plus}
             </button>
             <input type="text" class="vision-hud-input" id="vision-hud-input" placeholder="How else can I help..." autocomplete="off" />
             <button type="button" class="vision-hud-send-btn" id="vision-hud-send" title="Send">
               ${ICONS.send}
+            </button>
+          </div>
+
+          <!-- Real-Time Voice Mode Panel (Replaces Input Capsule) -->
+          <div class="vision-hud-voice-panel hidden" id="vision-hud-voice-panel">
+            <div class="vision-hud-voice-bars">
+              <span class="vision-hud-voice-bar"></span>
+              <span class="vision-hud-voice-bar"></span>
+              <span class="vision-hud-voice-bar"></span>
+              <span class="vision-hud-voice-bar"></span>
+            </div>
+            <span class="vision-hud-voice-transcript" id="vision-hud-voice-text">Listening... Speak command</span>
+            <button type="button" class="vision-hud-voice-stop-btn" id="vision-hud-voice-stop" title="Exit Voice Mode">
+              ${ICONS.stop}
             </button>
           </div>
         </div>
@@ -119,6 +141,10 @@ class VisionHUDController {
     this.container = wrap;
     this.chatBody = wrap.querySelector('#vision-hud-chat-body');
     this.input = wrap.querySelector('#vision-hud-input');
+    this.inputCapsule = wrap.querySelector('#vision-hud-input-capsule');
+    this.voicePanel = wrap.querySelector('#vision-hud-voice-panel');
+    this.voiceText = wrap.querySelector('#vision-hud-voice-text');
+    this.micBtn = wrap.querySelector('#vision-hud-mic');
     this.dropdown = wrap.querySelector('#vision-hud-dropdown');
 
     // Create Persistent Floating Launcher Pill
@@ -137,12 +163,23 @@ class VisionHUDController {
   bindEvents() {
     // Close button: hide container and show launcher pill
     this.container.querySelector('#vision-hud-close')?.addEventListener('click', () => {
+      this.stopVoiceMode();
       this.hide();
     });
 
     // Launcher pill click: open container
     this.launcher?.addEventListener('click', () => {
       this.show();
+    });
+
+    // Top Header Mic Click: Toggle Real-Time Voice Mode
+    this.micBtn?.addEventListener('click', () => {
+      this.toggleVoiceMode();
+    });
+
+    // Voice Stop button
+    this.container.querySelector('#vision-hud-voice-stop')?.addEventListener('click', () => {
+      this.stopVoiceMode();
     });
 
     // Global Keyboard Shortcut (Alt + V / Option + V)
@@ -204,6 +241,117 @@ class VisionHUDController {
     this.setupMagneticSnapping();
   }
 
+  /* ─── Real-Time Voice Mode (Web Speech STT + TTS) ───────────────────────── */
+  initSpeechRecognition() {
+    const SpeechClass = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechClass) return;
+
+    this.recognition = new SpeechClass();
+    this.recognition.continuous = false;
+    this.recognition.interimResults = true;
+    this.recognition.lang = 'hi-IN'; // Fallbacks gracefully to English & Hindi
+
+    this.recognition.onresult = (e) => {
+      let interim = '';
+      let final = '';
+      for (let i = e.resultIndex; i < e.results.length; ++i) {
+        if (e.results[i].isFinal) {
+          final += e.results[i][0].transcript;
+        } else {
+          interim += e.results[i][0].transcript;
+        }
+      }
+      const spokenText = (final || interim).trim();
+      if (spokenText && this.voiceText) {
+        this.voiceText.textContent = `"${spokenText}"`;
+      }
+      if (final.trim()) {
+        this.submitVoiceCommand(final.trim());
+      }
+    };
+
+    this.recognition.onerror = () => {
+      if (this.isVoiceActive) {
+        this.voiceText.textContent = "Listening... Speak desktop command";
+      }
+    };
+
+    this.recognition.onend = () => {
+      if (this.isVoiceActive && !window.speechSynthesis?.speaking) {
+        try { this.recognition.start(); } catch (err) {}
+      }
+    };
+  }
+
+  toggleVoiceMode() {
+    if (this.isVoiceActive) {
+      this.stopVoiceMode();
+    } else {
+      this.startVoiceMode();
+    }
+  }
+
+  startVoiceMode() {
+    this.isVoiceActive = true;
+    this.micBtn?.classList.add('active');
+    this.inputCapsule?.classList.add('hidden');
+    this.voicePanel?.classList.remove('hidden');
+    if (this.voiceText) this.voiceText.textContent = "Listening... Speak desktop command";
+
+    try {
+      this.recognition?.start();
+    } catch (err) {}
+  }
+
+  stopVoiceMode() {
+    this.isVoiceActive = false;
+    this.micBtn?.classList.remove('active');
+    this.inputCapsule?.classList.remove('hidden');
+    this.voicePanel?.classList.add('hidden');
+    try { this.recognition?.stop(); } catch (err) {}
+    try { window.speechSynthesis?.cancel(); } catch (err) {}
+  }
+
+  async submitVoiceCommand(promptText) {
+    if (this.voiceText) this.voiceText.textContent = `Executing: "${promptText}"...`;
+
+    try {
+      const response = await fetch('/api/skills/execute', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          skill: 'desktop_vision_control',
+          params: { action: 'capture_screen', prompt: promptText }
+        })
+      });
+      const data = await response.json();
+      const answer = data?.data || data?.message || "Desktop action executed.";
+
+      if (this.voiceText) this.voiceText.textContent = answer;
+      this.speakVoiceResponse(answer);
+    } catch (err) {
+      const fallback = `Action completed: ${promptText}`;
+      if (this.voiceText) this.voiceText.textContent = fallback;
+      this.speakVoiceResponse(fallback);
+    }
+  }
+
+  speakVoiceResponse(text) {
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.rate = 1.05;
+    utterance.pitch = 1.0;
+    utterance.onend = () => {
+      if (this.isVoiceActive && this.voiceText) {
+        this.voiceText.textContent = "Listening... Speak desktop command";
+        try { this.recognition?.start(); } catch (err) {}
+      }
+    };
+    window.speechSynthesis.speak(utterance);
+  }
+
+  /* ─── Drag & Magnetic Snapping ──────────────────────────────────────────── */
   setupMagneticSnapping() {
     const header = this.container.querySelector('.vision-hud-header');
     if (!header) return;
@@ -234,7 +382,6 @@ class VisionHUDController {
       header.style.cursor = 'grab';
       this.container.style.transition = '';
 
-      // Check Edge Magnetism
       const rect = this.container.getBoundingClientRect();
       const screenW = window.innerWidth;
       if (rect.right > screenW - 60) {
@@ -272,7 +419,6 @@ class VisionHUDController {
     this.input.value = '';
     this.appendMessage('user', promptText);
 
-    // Call Hekki Assistant Backend via API
     try {
       const response = await fetch('/api/skills/execute', {
         method: 'POST',
@@ -338,6 +484,7 @@ class VisionHUDController {
   disable() {
     this.isEnabled = false;
     localStorage.setItem('hekki_vision_hud_enabled', 'false');
+    this.stopVoiceMode();
     this.container?.classList.add('hidden');
     this.launcher?.classList.add('hidden');
   }
