@@ -235,11 +235,14 @@ class VisionHUDController {
     this.recognition.interimResults = true;
     this.recognition.lang = 'hi-IN';
 
+    this.recognition.onspeechstart = () => this.setRibbonAnimating(true);
+    this.recognition.onspeechend = () => this.setRibbonAnimating(false);
+
     this.recognition.onresult = (e) => {
       let interim = '', final = '';
+      this.setRibbonAnimating(true);
       for (let i = e.resultIndex; i < e.results.length; ++i) {
-        if (e.results[i].isFinal) final += e.results[i][0].transcript;
-        else interim += e.results[i][0].transcript;
+        e.results[i].isFinal ? final += e.results[i][0].transcript : interim += e.results[i][0].transcript;
       }
       const spokenText = (final || interim).trim();
       if (spokenText && this.voiceMainStatus) this.voiceMainStatus.textContent = `"${spokenText}"`;
@@ -247,11 +250,13 @@ class VisionHUDController {
     };
 
     this.recognition.onerror = () => {
+      this.setRibbonAnimating(false);
       if (this.isVoiceActive && this.voiceMainStatus) this.voiceMainStatus.textContent = "Listening to your voice command...";
     };
 
     this.recognition.onend = () => {
       if (this.isVoiceActive && !window.speechSynthesis?.speaking) {
+        this.setRibbonAnimating(false);
         try { this.recognition.start(); } catch (err) {}
       }
     };
@@ -275,6 +280,7 @@ class VisionHUDController {
   async submitVoiceCommand(promptText) {
     if (this.voiceMainStatus) this.voiceMainStatus.textContent = `"${promptText}"`;
     if (this.voiceSubStatus) this.voiceSubStatus.textContent = "Thinking with Gemini 3.1...";
+    this.setRibbonAnimating(true);
 
     try {
       const response = await fetch('/api/quick-voice', {
@@ -301,13 +307,16 @@ class VisionHUDController {
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.rate = 1.05;
     utterance.pitch = 1.0;
+    this.setRibbonAnimating(true);
     utterance.onend = () => {
+      this.setRibbonAnimating(false);
       if (this.isVoiceActive && this.voiceMainStatus) {
         this.voiceMainStatus.textContent = "Listening to your voice command...";
         if (this.voiceSubStatus) this.voiceSubStatus.textContent = "Speak your desktop goal";
         try { this.recognition?.start(); } catch (err) {}
       }
     };
+    utterance.onerror = () => this.setRibbonAnimating(false);
     window.speechSynthesis.speak(utterance);
   }
 
