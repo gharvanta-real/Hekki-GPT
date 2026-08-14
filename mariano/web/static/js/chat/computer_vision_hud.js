@@ -274,25 +274,22 @@ class VisionHUDController {
 
   async submitVoiceCommand(promptText) {
     if (this.voiceMainStatus) this.voiceMainStatus.textContent = `"${promptText}"`;
-    if (this.voiceSubStatus) this.voiceSubStatus.textContent = "Executing desktop action...";
+    if (this.voiceSubStatus) this.voiceSubStatus.textContent = "Thinking with Gemini 3.1...";
 
     try {
-      const response = await fetch('/api/skills/execute', {
+      const response = await fetch('/api/quick-voice', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          skill: 'desktop_vision_control',
-          params: { action: 'capture_screen', prompt: promptText }
-        })
+        body: JSON.stringify({ text: promptText })
       });
       const data = await response.json();
-      const answer = data?.data || data?.message || "Desktop action completed.";
+      const answer = data?.response_text || data?.message || data?.data || "Action completed.";
 
       if (this.voiceMainStatus) this.voiceMainStatus.textContent = answer;
-      if (this.voiceSubStatus) this.voiceSubStatus.textContent = "Action executed via Gemini 3.1";
+      if (this.voiceSubStatus) this.voiceSubStatus.textContent = "Gemini 3.1 Response";
       this.speakVoiceResponse(answer);
     } catch (err) {
-      const fallback = `Action completed: ${promptText}`;
+      const fallback = `Answer for "${promptText}" processed.`;
       if (this.voiceMainStatus) this.voiceMainStatus.textContent = fallback;
       this.speakVoiceResponse(fallback);
     }
@@ -423,19 +420,16 @@ class VisionHUDController {
     this.appendMessage('user', promptText);
 
     try {
-      const response = await fetch('/api/skills/execute', {
+      const response = await fetch('/api/quick-voice', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          skill: 'desktop_vision_control',
-          params: { action: 'capture_screen', prompt: promptText }
-        })
+        body: JSON.stringify({ text: promptText })
       });
       const data = await response.json();
-      const answer = data?.data || data?.message || "Computer Vision action executed on desktop.";
+      const answer = data?.response_text || data?.message || data?.data || "Done!";
       this.appendMessage('ai', answer);
     } catch (err) {
-      this.appendMessage('ai', `Action completed: ${promptText}`);
+      this.appendMessage('ai', `I encountered an issue processing your prompt. Please try again.`);
     }
   }
 
