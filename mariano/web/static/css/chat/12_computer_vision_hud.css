@@ -1,7 +1,7 @@
 /* ==========================================================================
    12_COMPUTER_VISION_HUD.CSS
    Adaptive Application Theme Variables & Dynamic System Font Inherited HUD
-   Strict Zero Shadow & Zero Border Rule: box-shadow: none !important; border: none !important;
+   Crisp Subtle Outline ONLY (Zero Shadows): border: 1px solid var(--border)
    Unbold Rule: Heading & Greeting ONLY have weight; Everything else is 400
    Strictly < 500 Lines Limit (~270 lines)
    ========================================================================== */
@@ -16,7 +16,7 @@
   max-height: 85vh !important;
   max-width: calc(100vw - 40px) !important;
   background: var(--bg, #F7F7F9) !important;
-  border: none !important;
+  border: 1px solid rgba(0, 0, 0, 0.09) !important;
   outline: none !important;
   box-shadow: none !important;
   border-radius: 16px !important;
@@ -25,13 +25,14 @@
   overflow: visible !important;
   z-index: 99999 !important;
   font-family: var(--font, var(--font-open-sans, "Open Sans", -apple-system, sans-serif)) !important;
-  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease, background 0.2s ease;
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease, background 0.2s ease, border-color 0.2s ease;
 }
 
 body.dark #vision-hud-container,
 body[data-theme="dark"] #vision-hud-container,
 body[data-theme="oled"] #vision-hud-container {
   background: var(--card, #18181b) !important;
+  border: 1px solid rgba(255, 255, 255, 0.09) !important;
   box-shadow: none !important;
 }
 
@@ -48,7 +49,7 @@ body[data-theme="oled"] #vision-hud-container {
   padding: 0 14px 0 10px !important;
   background: var(--bg, #F7F7F9) !important;
   border-radius: 9999px !important;
-  border: none !important;
+  border: 1px solid rgba(0, 0, 0, 0.09) !important;
   outline: none !important;
   box-shadow: none !important;
   display: flex !important;
@@ -57,7 +58,7 @@ body[data-theme="oled"] #vision-hud-container {
   cursor: pointer !important;
   z-index: 99998 !important;
   font-family: var(--font, var(--font-open-sans, "Open Sans", sans-serif)) !important;
-  transition: transform 0.2s ease, opacity 0.2s ease, background 0.2s ease !important;
+  transition: transform 0.2s ease, opacity 0.2s ease, background 0.2s ease, border-color 0.2s ease !important;
   user-select: none !important;
 }
 
@@ -65,6 +66,7 @@ body.dark #vision-hud-launcher,
 body[data-theme="dark"] #vision-hud-launcher,
 body[data-theme="oled"] #vision-hud-launcher {
   background: var(--card, #1e1e22) !important;
+  border: 1px solid rgba(255, 255, 255, 0.09) !important;
   box-shadow: none !important;
 }
 
@@ -131,7 +133,13 @@ body[data-theme="oled"] #vision-hud-launcher {
   user-select: none !important;
   color: var(--text-2, #64748b) !important;
   box-shadow: none !important;
-  border: none !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+
+body.dark .vision-hud-peek-handle,
+body[data-theme="dark"] .vision-hud-peek-handle,
+body[data-theme="oled"] .vision-hud-peek-handle {
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
 }
 
 #vision-hud-container.docked-right .vision-hud-peek-handle,
@@ -353,7 +361,7 @@ body[data-theme="oled"] .vision-hud-msg.user {
   border-radius: 9999px !important;
   padding: 4px 6px 4px 6px !important;
   gap: 8px !important;
-  border: none !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
   outline: none !important;
   box-shadow: none !important;
   height: 40px !important;
@@ -364,6 +372,7 @@ body.dark .vision-hud-input-capsule,
 body[data-theme="dark"] .vision-hud-input-capsule,
 body[data-theme="oled"] .vision-hud-input-capsule {
   background: var(--hover, #27272a) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
 }
 
 .vision-hud-plus-btn {
@@ -478,7 +487,7 @@ body[data-theme="oled"] .vision-hud-input-capsule {
   width: 230px !important;
   background: var(--bg, #ffffff) !important;
   border-radius: 14px !important;
-  border: none !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
   outline: none !important;
   box-shadow: none !important;
   padding: 6px !important;
@@ -494,6 +503,7 @@ body.dark .vision-hud-dropdown-menu,
 body[data-theme="dark"] .vision-hud-dropdown-menu,
 body[data-theme="oled"] .vision-hud-dropdown-menu {
   background: var(--card, #27272a) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
   box-shadow: none !important;
 }
 
