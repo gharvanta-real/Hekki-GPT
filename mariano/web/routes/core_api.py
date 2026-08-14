@@ -144,9 +144,10 @@ async def screen_capture():
             )
         )
 
+        analysis_text = response.text.strip() if (response and response.text) else "Screen captured successfully."
         import base64
         img_b64 = f"data:image/jpeg;base64,{base64.b64encode(img_bytes).decode('utf-8')}"
-        return {"success": True, "analysis": analysis, "image_url": img_b64}
+        return {"success": True, "analysis": analysis_text, "image_url": img_b64}
 
     except Exception as e:
         log.error("web.screen_capture_failed", error=str(e))
