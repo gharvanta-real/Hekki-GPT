@@ -16,9 +16,9 @@
   bottom: 30px;
   right: 30px;
   width: 380px !important;
-  height: auto !important;
+  height: 440px !important;
   min-width: 320px !important;
-  min-height: 240px !important;
+  min-height: 340px !important;
   max-height: 85vh !important;
   max-width: calc(100vw - 32px) !important;
   background: var(--bg, #F7F7F9) !important;

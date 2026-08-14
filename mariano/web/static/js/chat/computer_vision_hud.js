@@ -384,9 +384,9 @@ class VisionHUDController {
       const deltaX = e.clientX - startX;
       const deltaY = e.clientY - startY;
 
-      // Strict minimum bounds locked: 320px Width x 240px Height
+      // Strict minimum bounds locked: 320px Width x 340px Height
       const newW = Math.max(320, Math.min(900, startW + deltaX));
-      const newH = Math.max(240, Math.min(850, startH + deltaY));
+      const newH = Math.max(340, Math.min(850, startH + deltaY));
 
       this.container.style.setProperty('width', `${newW}px`, 'important');
       this.container.style.setProperty('height', `${newH}px`, 'important');
