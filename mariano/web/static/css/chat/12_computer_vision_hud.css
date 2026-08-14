@@ -1,7 +1,7 @@
 /* ==========================================================================
    12_COMPUTER_VISION_HUD.CSS
    Adaptive Application Theme Variables & Dynamic System Font Inherited HUD
-   Micro-Sleek Suggestion Chips (Height 24px) + Identical Voice Orb (48px)
+   User Msg LEFT / AI Msg RIGHT + Hide Hero & Chips on Msg + Compact Input Bar
    Strict NO Outline & NO Shadow Rule: border: none !important; box-shadow: none !important;
    Unbold Rule: Heading & Greeting ONLY have weight; Everything else is 400
    Strictly < 500 Lines Limit (~370 lines)
@@ -276,9 +276,15 @@ body[data-theme="oled"] .vision-hud-peek-handle {
   color: var(--text, #1e293b) !important;
 }
 
-/* ─── 5. Chat Scroll View (Default View) ──────────────────────────────────── */
+/* Hide Hero & Chips when user sends a message */
+#vision-hud-container.has-messages .vision-hud-hero,
+#vision-hud-container.has-messages .vision-hud-chips-grid {
+  display: none !important;
+}
+
+/* ─── 5. Chat Scroll View (User LEFT, AI RIGHT) ──────────────────────────── */
 .vision-hud-chat-body {
-  max-height: 240px !important;
+  max-height: 280px !important;
   overflow-y: auto !important;
   padding: 8px 18px !important;
   display: flex !important;
@@ -305,13 +311,14 @@ body[data-theme="oled"] .vision-hud-peek-handle {
   box-shadow: none !important;
 }
 
+/* USER MESSAGE: LEFT ALIGNED */
 .vision-hud-msg.user {
-  align-self: flex-end !important;
+  align-self: flex-start !important;
   max-width: 85% !important;
   background: rgba(37, 99, 235, 0.12) !important;
   color: #2563eb !important;
   padding: 8px 12px !important;
-  border-radius: 14px 14px 4px 14px !important;
+  border-radius: 14px 14px 14px 4px !important;
 }
 
 body.dark .vision-hud-msg.user,
@@ -321,13 +328,15 @@ body[data-theme="oled"] .vision-hud-msg.user {
   color: #93c5fd !important;
 }
 
+/* AI MESSAGE: RIGHT ALIGNED */
 .vision-hud-msg.ai {
-  align-self: flex-start !important;
+  align-self: flex-end !important;
   max-width: 90% !important;
   background: var(--hover, #f1f5f9) !important;
   color: var(--text, #1e293b) !important;
   padding: 9px 12px !important;
-  border-radius: 14px 14px 14px 4px !important;
+  border-radius: 14px 14px 4px 14px !important;
+  flex-direction: row-reverse !important;
 }
 
 .vision-hud-msg-avatar {
@@ -342,7 +351,7 @@ body[data-theme="oled"] .vision-hud-msg.user {
   margin-top: 2px !important;
 }
 
-/* ─── 6. Bottom Input & Categories Group (Default View) ─────────────────── */
+/* ─── 6. Bottom Input & Categories Group ─────────────────────────────────── */
 .vision-hud-bottom-group {
   display: flex !important;
   flex-direction: column !important;
@@ -407,17 +416,18 @@ body[data-theme="oled"] .vision-hud-msg.user {
   box-shadow: none !important;
 }
 
+/* Compact Input Capsule with minimal button gap */
 .vision-hud-input-capsule {
   display: flex !important;
   align-items: center !important;
   background: var(--input-bg, #ffffff) !important;
   border-radius: 9999px !important;
-  padding: 4px 5px 4px 5px !important;
-  gap: 6px !important;
+  padding: 3px 4px 3px 4px !important;
+  gap: 4px !important;
   border: none !important;
   outline: none !important;
   box-shadow: none !important;
-  height: 40px !important;
+  height: 38px !important;
   box-sizing: border-box !important;
 }
 
@@ -428,12 +438,12 @@ body[data-theme="oled"] .vision-hud-input-capsule {
 }
 
 .vision-hud-plus-btn {
-  width: 30px !important;
-  height: 30px !important;
-  min-width: 30px !important;
-  min-height: 30px !important;
-  max-width: 30px !important;
-  max-height: 30px !important;
+  width: 28px !important;
+  height: 28px !important;
+  min-width: 28px !important;
+  min-height: 28px !important;
+  max-width: 28px !important;
+  max-height: 28px !important;
   aspect-ratio: 1 / 1 !important;
   box-sizing: border-box !important;
   padding: 0 !important;
@@ -466,7 +476,7 @@ body[data-theme="oled"] .vision-hud-input-capsule {
   font-weight: 400 !important;
   font-family: inherit !important;
   color: var(--text, #1e293b) !important;
-  padding: 3px 4px !important;
+  padding: 2px 4px !important;
 }
 
 .vision-hud-input::placeholder {
@@ -475,12 +485,12 @@ body[data-theme="oled"] .vision-hud-input-capsule {
 }
 
 .vision-hud-send-btn {
-  width: 30px !important;
-  height: 30px !important;
-  min-width: 30px !important;
-  min-height: 30px !important;
-  max-width: 30px !important;
-  max-height: 30px !important;
+  width: 28px !important;
+  height: 28px !important;
+  min-width: 28px !important;
+  min-height: 28px !important;
+  max-width: 28px !important;
+  max-height: 28px !important;
   aspect-ratio: 1 / 1 !important;
   box-sizing: border-box !important;
   padding: 0 !important;
@@ -503,7 +513,7 @@ body[data-theme="oled"] .vision-hud-input-capsule {
   transform: scale(1.05) !important;
 }
 
-/* ─── 7. Dedicated Voice Screen UI (Identical 48px Orb Size) ─────────────── */
+/* ─── 7. Dedicated Voice Screen UI ────────────────────────────────────────── */
 .vision-hud-voice-view {
   display: none !important;
   flex-direction: column !important;
