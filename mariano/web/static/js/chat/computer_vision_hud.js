@@ -2,7 +2,8 @@
  * computer_vision_hud.js
  * Dedicated Image-Matched Voice Screen & Desktop Vision Controller.
  * Zero Emojis — Clean Vector Icons Only.
- * Strictly < 500 lines (~370 lines).
+ * Minimum Window Size Locked (320px W x 240px H) to prevent UI breakage.
+ * Strictly < 500 lines (~380 lines).
  */
 
 const ICONS = {
@@ -33,8 +34,6 @@ class VisionHUDController {
     this.input = null;
     this.micBtn = null;
     this.dropdown = null;
-    this.isDocked = false;
-    this.dockSide = null;
     this.isDragging = false;
     this.startX = 0;
     this.startY = 0;
@@ -49,9 +48,7 @@ class VisionHUDController {
     this.createDOM();
     this.bindEvents();
     this.initSpeechRecognition();
-    if (!this.isEnabled) {
-      this.disable();
-    }
+    if (!this.isEnabled) this.disable();
   }
 
   createDOM() {
@@ -105,31 +102,32 @@ class VisionHUDController {
             </button>
           </div>
 
-          <div class="vision-hud-input-capsule" id="vision-hud-input-capsule">
+          <div class="vision-hud-input-capsule">
             <button type="button" class="vision-hud-plus-btn" id="vision-hud-plus" title="Vision Actions">
               ${ICONS.plus}
             </button>
             <input type="text" class="vision-hud-input" id="vision-hud-input" placeholder="How else can I help..." autocomplete="off" />
-            <button type="button" class="vision-hud-send-btn" id="vision-hud-send" title="Send">
+            <button type="button" class="vision-hud-send-btn" id="vision-hud-send" title="Send Prompt">
               ${ICONS.send}
             </button>
           </div>
         </div>
       </div>
 
-      <!-- IMAGE-MATCHED DEDICATED VOICE SCREEN UI -->
-      <div class="vision-hud-voice-view hidden" id="vision-hud-voice-view">
+      <!-- DEDICATED VOICE SCREEN UI -->
+      <div class="vision-hud-voice-view" id="vision-hud-voice-view">
         <div class="vision-hud-voice-large-orb"></div>
         <div class="vision-hud-voice-status-box">
           <span class="vision-hud-voice-main-status" id="vision-hud-voice-main">Listening to your voice command...</span>
           <span class="vision-hud-voice-sub-status" id="vision-hud-voice-sub">Speak your desktop goal</span>
         </div>
+
         <div class="vision-hud-voice-controls-bar">
-          <button type="button" class="vision-hud-voice-circle-btn" id="vision-hud-voice-exit" title="Back to default">
-            ${ICONS.close}
-          </button>
-          <button type="button" class="vision-hud-voice-circle-btn mic-active" id="vision-hud-voice-mic-toggle" title="Mic Active">
+          <button type="button" class="vision-hud-voice-circle-btn mic-active" id="vision-hud-voice-mic-toggle" title="Listening Active">
             ${ICONS.mic}
+          </button>
+          <button type="button" class="vision-hud-voice-circle-btn" id="vision-hud-voice-exit" title="Exit Voice Mode">
+            ${ICONS.close}
           </button>
         </div>
       </div>
@@ -165,35 +163,21 @@ class VisionHUDController {
   }
 
   bindEvents() {
-    // Close button
     this.container.querySelector('#vision-hud-close')?.addEventListener('click', () => {
       this.closeVoiceMode();
       this.hide();
     });
 
-    // Launcher pill click
-    this.launcher?.addEventListener('click', () => {
-      this.show();
-    });
+    this.launcher?.addEventListener('click', () => this.show());
+    this.micBtn?.addEventListener('click', () => this.openVoiceMode());
+    this.container.querySelector('#vision-hud-voice-exit')?.addEventListener('click', () => this.closeVoiceMode());
 
-    // Top Header Mic: Enter Dedicated Voice Screen
-    this.micBtn?.addEventListener('click', () => {
-      this.openVoiceMode();
-    });
-
-    // Voice Screen '✕' Exit Button: Return to default mode
-    this.container.querySelector('#vision-hud-voice-exit')?.addEventListener('click', () => {
-      this.closeVoiceMode();
-    });
-
-    // Voice Screen Mic Button: Re-trigger listening
     this.container.querySelector('#vision-hud-voice-mic-toggle')?.addEventListener('click', () => {
       if (this.isVoiceActive) {
         try { this.recognition?.start(); } catch (err) {}
       }
     });
 
-    // Global Keyboard Shortcut (Alt + V)
     document.addEventListener('keydown', (e) => {
       if ((e.altKey && (e.key === 'v' || e.key === 'V')) || (e.ctrlKey && e.shiftKey && (e.key === 'v' || e.key === 'V'))) {
         e.preventDefault();
@@ -201,7 +185,6 @@ class VisionHUDController {
       }
     });
 
-    // Plus button dropdown toggle
     this.container.querySelector('#vision-hud-plus')?.addEventListener('click', (e) => {
       e.stopPropagation();
       this.dropdown.classList.toggle('show');
@@ -213,7 +196,6 @@ class VisionHUDController {
       }
     });
 
-    // Dropdown Actions
     this.dropdown.querySelectorAll('.vision-hud-dropdown-item').forEach(btn => {
       btn.addEventListener('click', () => {
         const action = btn.dataset.action;
@@ -222,15 +204,6 @@ class VisionHUDController {
       });
     });
 
-    // Suggestion chips click
-    this.container.querySelectorAll('.vision-hud-chip').forEach(chip => {
-      chip.addEventListener('click', () => {
-        const prompt = chip.dataset.prompt;
-        if (prompt) this.submitPrompt(prompt);
-      });
-    });
-
-    // Send on Enter or Button Click
     this.container.querySelector('#vision-hud-send')?.addEventListener('click', () => {
       const txt = this.input.value.trim();
       if (txt) this.submitPrompt(txt);
@@ -243,18 +216,14 @@ class VisionHUDController {
       }
     });
 
-    // Peek Handle Click
     this.container.querySelector('#vision-hud-peek')?.addEventListener('click', () => {
       this.container.classList.toggle('expanded');
     });
 
-    // Setup Magnetic Edge Snapping
     this.setupMagneticSnapping();
-    // Setup Window Resizing Control
     this.setupWindowResizing();
   }
 
-  /* ─── Dedicated Voice Mode Controller ───────────────────────────────────── */
   initSpeechRecognition() {
     const SpeechClass = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechClass) return;
@@ -265,28 +234,18 @@ class VisionHUDController {
     this.recognition.lang = 'hi-IN';
 
     this.recognition.onresult = (e) => {
-      let interim = '';
-      let final = '';
+      let interim = '', final = '';
       for (let i = e.resultIndex; i < e.results.length; ++i) {
-        if (e.results[i].isFinal) {
-          final += e.results[i][0].transcript;
-        } else {
-          interim += e.results[i][0].transcript;
-        }
+        if (e.results[i].isFinal) final += e.results[i][0].transcript;
+        else interim += e.results[i][0].transcript;
       }
       const spokenText = (final || interim).trim();
-      if (spokenText && this.voiceMainStatus) {
-        this.voiceMainStatus.textContent = `"${spokenText}"`;
-      }
-      if (final.trim()) {
-        this.submitVoiceCommand(final.trim());
-      }
+      if (spokenText && this.voiceMainStatus) this.voiceMainStatus.textContent = `"${spokenText}"`;
+      if (final.trim()) this.submitVoiceCommand(final.trim());
     };
 
     this.recognition.onerror = () => {
-      if (this.isVoiceActive && this.voiceMainStatus) {
-        this.voiceMainStatus.textContent = "Listening to your voice command...";
-      }
+      if (this.isVoiceActive && this.voiceMainStatus) this.voiceMainStatus.textContent = "Listening to your voice command...";
     };
 
     this.recognition.onend = () => {
@@ -299,20 +258,15 @@ class VisionHUDController {
   openVoiceMode() {
     this.isVoiceActive = true;
     this.container?.classList.add('voice-mode');
-
     if (this.voiceMainStatus) this.voiceMainStatus.textContent = "Listening to your voice command...";
     if (this.voiceSubStatus) this.voiceSubStatus.textContent = "Speak your desktop goal";
-
-    try {
-      this.recognition?.start();
-    } catch (err) {}
+    try { this.recognition?.start(); } catch (err) {}
   }
 
   closeVoiceMode() {
     this.isVoiceActive = false;
     try { this.recognition?.stop(); } catch (err) {}
     try { window.speechSynthesis?.cancel(); } catch (err) {}
-
     this.container?.classList.remove('voice-mode');
   }
 
@@ -358,7 +312,6 @@ class VisionHUDController {
     window.speechSynthesis.speak(utterance);
   }
 
-  /* ─── Drag & Magnetic Snapping ──────────────────────────────────────────── */
   setupMagneticSnapping() {
     const header = this.container.querySelector('.vision-hud-header');
     if (!header) return;
@@ -407,16 +360,13 @@ class VisionHUDController {
     });
   }
 
-  /* ─── Window Resizing (Width & Height Drag Control) ─────────────────────── */
+  /* ─── Window Resizing (Strict Locked Bounds: 320px W x 240px H) ─────────── */
   setupWindowResizing() {
     const resizer = this.container?.querySelector('#vision-hud-resize');
     if (!resizer) return;
 
     let isResizing = false;
-    let startW = 0;
-    let startH = 0;
-    let startX = 0;
-    let startY = 0;
+    let startW = 0, startH = 0, startX = 0, startY = 0;
 
     resizer.addEventListener('mousedown', (e) => {
       e.stopPropagation();
@@ -434,8 +384,9 @@ class VisionHUDController {
       const deltaX = e.clientX - startX;
       const deltaY = e.clientY - startY;
 
-      const newW = Math.max(280, Math.min(900, startW + deltaX));
-      const newH = Math.max(200, Math.min(850, startH + deltaY));
+      // Strict minimum bounds locked: 320px Width x 240px Height
+      const newW = Math.max(320, Math.min(900, startW + deltaX));
+      const newH = Math.max(240, Math.min(850, startH + deltaY));
 
       this.container.style.setProperty('width', `${newW}px`, 'important');
       this.container.style.setProperty('height', `${newH}px`, 'important');
@@ -451,8 +402,6 @@ class VisionHUDController {
   appendMessage(role, text) {
     this.container?.classList.add('has-messages');
     if (this.hero) this.hero.style.setProperty('display', 'none', 'important');
-    const chips = this.container?.querySelector('#vision-hud-chips');
-    if (chips) chips.style.setProperty('display', 'none', 'important');
     if (this.chatBody) this.chatBody.style.setProperty('display', 'flex', 'important');
 
     const row = document.createElement('div');
