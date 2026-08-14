@@ -1,7 +1,7 @@
 /* ==========================================================================
    12_COMPUTER_VISION_HUD.CSS
    Adaptive Application Theme Variables & Dynamic System Font Inherited HUD
-   Pure Application Theme Colors: var(--bg), var(--card), var(--input-bg), var(--hover), var(--text)
+   Strict Zero Shadow & Zero Border Rule: box-shadow: none !important; border: none !important;
    Unbold Rule: Heading & Greeting ONLY have weight; Everything else is 400
    Strictly < 500 Lines Limit (~270 lines)
    ========================================================================== */
@@ -18,7 +18,7 @@
   background: var(--bg, #F7F7F9) !important;
   border: none !important;
   outline: none !important;
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+  box-shadow: none !important;
   border-radius: 16px !important;
   display: flex !important;
   flex-direction: column !important;
@@ -32,7 +32,7 @@ body.dark #vision-hud-container,
 body[data-theme="dark"] #vision-hud-container,
 body[data-theme="oled"] #vision-hud-container {
   background: var(--card, #18181b) !important;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5) !important;
+  box-shadow: none !important;
 }
 
 #vision-hud-container.hidden {
@@ -50,7 +50,7 @@ body[data-theme="oled"] #vision-hud-container {
   border-radius: 9999px !important;
   border: none !important;
   outline: none !important;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1) !important;
+  box-shadow: none !important;
   display: flex !important;
   align-items: center !important;
   gap: 8px !important;
@@ -65,7 +65,7 @@ body.dark #vision-hud-launcher,
 body[data-theme="dark"] #vision-hud-launcher,
 body[data-theme="oled"] #vision-hud-launcher {
   background: var(--card, #1e1e22) !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+  box-shadow: none !important;
 }
 
 #vision-hud-launcher:hover {
@@ -84,7 +84,6 @@ body[data-theme="oled"] #vision-hud-launcher {
   aspect-ratio: 1 / 1 !important;
   border-radius: 50% !important;
   background: radial-gradient(circle at 35% 35%, #93c5fd 0%, #c084fc 60%, #f472b6 100%) !important;
-  box-shadow: 0 0 10px rgba(192, 132, 252, 0.5) !important;
   animation: visionOrbPulse 3s infinite ease-in-out !important;
   flex-shrink: 0 !important;
 }
@@ -131,6 +130,8 @@ body[data-theme="oled"] #vision-hud-launcher {
   z-index: 100000 !important;
   user-select: none !important;
   color: var(--text-2, #64748b) !important;
+  box-shadow: none !important;
+  border: none !important;
 }
 
 #vision-hud-container.docked-right .vision-hud-peek-handle,
@@ -156,6 +157,8 @@ body[data-theme="oled"] #vision-hud-launcher {
   padding: 16px 20px 8px 20px !important;
   background: transparent !important;
   user-select: none !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 .vision-hud-title {
@@ -175,6 +178,7 @@ body[data-theme="oled"] #vision-hud-launcher {
   background: transparent !important;
   border: none !important;
   outline: none !important;
+  box-shadow: none !important;
   cursor: pointer !important;
   color: var(--text-3, #94a3b8) !important;
   padding: 0 !important;
@@ -199,6 +203,8 @@ body[data-theme="oled"] #vision-hud-launcher {
   justify-content: center !important;
   padding: 14px 20px 18px 20px !important;
   text-align: center !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 .vision-hud-orb {
@@ -211,7 +217,6 @@ body[data-theme="oled"] #vision-hud-launcher {
   border-radius: 50% !important;
   background: radial-gradient(circle at 35% 35%, #93c5fd 0%, #c084fc 50%, #f472b6 100%) !important;
   filter: blur(0.5px) !important;
-  box-shadow: 0 0 28px rgba(192, 132, 252, 0.45) !important;
   animation: visionOrbPulse 3.5s infinite ease-in-out !important;
   margin-bottom: 12px !important;
   flex-shrink: 0 !important;
@@ -229,6 +234,8 @@ body[data-theme="oled"] #vision-hud-launcher {
   grid-template-columns: 1fr 1fr !important;
   gap: 10px !important;
   padding: 0 20px 16px 20px !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 .vision-hud-chip {
@@ -239,6 +246,7 @@ body[data-theme="oled"] #vision-hud-launcher {
   background: var(--hover, #f1f5f9) !important;
   border: none !important;
   outline: none !important;
+  box-shadow: none !important;
   border-radius: 12px !important;
   padding: 10px 14px !important;
   font-size: 12.5px !important;
@@ -274,6 +282,8 @@ body[data-theme="oled"] #vision-hud-launcher {
   display: flex !important;
   flex-direction: column !important;
   gap: 10px !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 .vision-hud-chat-body::-webkit-scrollbar { width: 3px !important; }
@@ -287,6 +297,8 @@ body[data-theme="oled"] #vision-hud-launcher {
   font-weight: 400 !important;
   line-height: 1.5 !important;
   font-family: inherit !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 .vision-hud-msg.user {
@@ -330,6 +342,8 @@ body[data-theme="oled"] .vision-hud-msg.user {
 .vision-hud-input-wrap {
   position: relative !important;
   padding: 8px 20px 18px 20px !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 .vision-hud-input-capsule {
@@ -340,6 +354,8 @@ body[data-theme="oled"] .vision-hud-msg.user {
   padding: 4px 6px 4px 6px !important;
   gap: 8px !important;
   border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
   height: 40px !important;
   box-sizing: border-box !important;
 }
@@ -364,6 +380,7 @@ body[data-theme="oled"] .vision-hud-input-capsule {
   background: var(--hover, #e2e8f0) !important;
   border: none !important;
   outline: none !important;
+  box-shadow: none !important;
   color: var(--text-2, #475569) !important;
   display: flex !important;
   align-items: center !important;
@@ -383,6 +400,7 @@ body[data-theme="oled"] .vision-hud-input-capsule {
   background: transparent !important;
   border: none !important;
   outline: none !important;
+  box-shadow: none !important;
   font-size: 13px !important;
   font-weight: 400 !important;
   font-family: inherit !important;
@@ -408,6 +426,7 @@ body[data-theme="oled"] .vision-hud-input-capsule {
   background: transparent !important;
   border: none !important;
   outline: none !important;
+  box-shadow: none !important;
   color: var(--text-3, #64748b) !important;
   cursor: pointer !important;
   display: flex !important;
@@ -436,6 +455,7 @@ body[data-theme="oled"] .vision-hud-input-capsule {
   background: #2563eb !important;
   border: none !important;
   outline: none !important;
+  box-shadow: none !important;
   color: #ffffff !important;
   display: flex !important;
   align-items: center !important;
@@ -459,7 +479,8 @@ body[data-theme="oled"] .vision-hud-input-capsule {
   background: var(--bg, #ffffff) !important;
   border-radius: 14px !important;
   border: none !important;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15), 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+  outline: none !important;
+  box-shadow: none !important;
   padding: 6px !important;
   display: none !important;
   flex-direction: column !important;
@@ -473,6 +494,7 @@ body.dark .vision-hud-dropdown-menu,
 body[data-theme="dark"] .vision-hud-dropdown-menu,
 body[data-theme="oled"] .vision-hud-dropdown-menu {
   background: var(--card, #27272a) !important;
+  box-shadow: none !important;
 }
 
 .vision-hud-dropdown-menu.show {
@@ -486,6 +508,8 @@ body[data-theme="oled"] .vision-hud-dropdown-menu {
   padding: 8px 12px !important;
   border-radius: 10px !important;
   border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
   background: transparent !important;
   font-size: 12.5px !important;
   font-weight: 400 !important;
