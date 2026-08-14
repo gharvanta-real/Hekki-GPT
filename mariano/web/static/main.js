@@ -30,6 +30,8 @@ import { ImagesPage } from '/static/js/pages/images_page.js';
 import { LiveCanvasEngine } from '/static/js/components/live_canvas.js';
 import { SlashMenuManager } from '/static/js/components/slash_menu.js';
 import { ChatMinimapManager } from '/static/js/components/chat_minimap.js';
+// Autonomous Computer Vision Floating HUD Widget
+import '/static/js/chat/computer_vision_hud.js?v=216';
 
 window.updateModelPills = updateModelPills;
 window.showToast = showToast;

@@ -1,0 +1,447 @@
+/* ==========================================================================
+   12_COMPUTER_VISION_HUD.CSS
+   Image-Matched Minimalist Floating Desktop Vision Widget & Edge Peek Handle
+   Compliant with NO Outlines / NO Shadows Rule (Flat Background Fills Only)
+   Strictly < 500 Lines Limit
+   ========================================================================== */
+
+/* ─── 1. Floating Widget Container ────────────────────────────────────────── */
+#vision-hud-container {
+  position: fixed !important;
+  bottom: 30px !important;
+  right: 30px !important;
+  width: 360px !important;
+  max-width: calc(100vw - 40px) !important;
+  background: #ffffff !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+  border-radius: 24px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: visible !important;
+  z-index: 99999 !important;
+  font-family: 'Open Sans', -apple-system, sans-serif !important;
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease, width 0.25s ease !important;
+}
+
+body.dark #vision-hud-container {
+  background: #18181b !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45) !important;
+}
+
+#vision-hud-container.hidden {
+  display: none !important;
+}
+
+/* ─── 2. Edge-Docked Peek State (Magnetic Collapse) ───────────────────────── */
+#vision-hud-container.docked-right {
+  right: 0 !important;
+  transform: translateX(calc(100% - 24px)) !important;
+}
+
+#vision-hud-container.docked-left {
+  left: 0 !important;
+  right: auto !important;
+  transform: translateX(calc(-100% + 24px)) !important;
+}
+
+#vision-hud-container.docked-right:hover,
+#vision-hud-container.docked-left:hover,
+#vision-hud-container.expanded {
+  transform: translateX(0) !important;
+}
+
+/* Peek Grab Handle */
+.vision-hud-peek-handle {
+  position: absolute !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  width: 24px !important;
+  height: 64px !important;
+  background: #f1f5f9 !important;
+  border-radius: 12px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  z-index: 100000 !important;
+  user-select: none !important;
+}
+
+body.dark .vision-hud-peek-handle {
+  background: #27272a !important;
+}
+
+#vision-hud-container.docked-right .vision-hud-peek-handle {
+  left: -20px !important;
+  border-radius: 12px 0 0 12px !important;
+}
+
+#vision-hud-container.docked-left .vision-hud-peek-handle {
+  right: -20px !important;
+  border-radius: 0 12px 12px 0 !important;
+}
+
+/* ─── 3. Top Header Bar ──────────────────────────────────────────────────── */
+.vision-hud-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 16px 20px 8px 20px !important;
+  background: transparent !important;
+  user-select: none !important;
+}
+
+.vision-hud-title {
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  color: #1e293b !important;
+  letter-spacing: -0.2px !important;
+}
+
+body.dark .vision-hud-title {
+  color: #f1f5f9 !important;
+}
+
+.vision-hud-close-btn {
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  cursor: pointer !important;
+  color: #94a3b8 !important;
+  padding: 4px !important;
+  border-radius: 50% !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: color 0.15s ease, background 0.15s ease !important;
+}
+
+.vision-hud-close-btn:hover {
+  color: #0f172a !important;
+  background: #f1f5f9 !important;
+}
+
+body.dark .vision-hud-close-btn:hover {
+  color: #ffffff !important;
+  background: #27272a !important;
+}
+
+/* ─── 4. Center Orb & Hero Area ──────────────────────────────────────────── */
+.vision-hud-hero {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 12px 20px 16px 20px !important;
+  text-align: center !important;
+}
+
+.vision-hud-orb {
+  width: 52px !important;
+  height: 52px !important;
+  border-radius: 50% !important;
+  background: radial-gradient(circle at 35% 35%, #93c5fd 0%, #c084fc 50%, #f472b6 100%) !important;
+  filter: blur(0.5px) !important;
+  box-shadow: 0 0 28px rgba(192, 132, 252, 0.45) !important;
+  animation: visionOrbPulse 3.5s infinite ease-in-out !important;
+  margin-bottom: 12px !important;
+}
+
+.vision-hud-hero-text {
+  font-size: 14.5px !important;
+  font-weight: 500 !important;
+  color: #1e293b !important;
+}
+
+body.dark .vision-hud-hero-text {
+  color: #f1f5f9 !important;
+}
+
+/* ─── 5. Suggestion Action Chips ─────────────────────────────────────────── */
+.vision-hud-chips-grid {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 8px !important;
+  padding: 0 18px 14px 18px !important;
+}
+
+.vision-hud-chip {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 6px !important;
+  background: #f8fafc !important;
+  border: none !important;
+  outline: none !important;
+  border-radius: 14px !important;
+  padding: 10px 12px !important;
+  font-size: 11.5px !important;
+  font-weight: 500 !important;
+  color: #334155 !important;
+  cursor: pointer !important;
+  transition: background 0.15s ease, transform 0.1s ease !important;
+  text-align: left !important;
+  user-select: none !important;
+}
+
+body.dark .vision-hud-chip {
+  background: #27272a !important;
+  color: #e4e4e7 !important;
+}
+
+.vision-hud-chip:hover {
+  background: #edf2f7 !important;
+  transform: translateY(-1px) !important;
+}
+
+body.dark .vision-hud-chip:hover {
+  background: #3f3f46 !important;
+}
+
+.vision-hud-chip-icon {
+  width: 14px !important;
+  height: 14px !important;
+  color: #2563eb !important;
+  flex-shrink: 0 !important;
+}
+
+/* ─── 6. Chat Scroll View ────────────────────────────────────────────────── */
+.vision-hud-chat-body {
+  max-height: 240px !important;
+  overflow-y: auto !important;
+  padding: 8px 18px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+}
+
+.vision-hud-chat-body::-webkit-scrollbar { width: 3px !important; }
+.vision-hud-chat-body::-webkit-scrollbar-thumb { background: #cbd5e1 !important; border-radius: 3px !important; }
+
+.vision-hud-msg {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 8px !important;
+  font-size: 12.5px !important;
+  line-height: 1.5 !important;
+}
+
+.vision-hud-msg.user {
+  align-self: flex-end !important;
+  max-width: 85% !important;
+  background: #eff6ff !important;
+  color: #1d4ed8 !important;
+  padding: 8px 14px !important;
+  border-radius: 16px 16px 4px 16px !important;
+}
+
+.vision-hud-msg.ai {
+  align-self: flex-start !important;
+  max-width: 90% !important;
+  background: #f1f5f9 !important;
+  color: #1e293b !important;
+  padding: 10px 14px !important;
+  border-radius: 16px 16px 16px 4px !important;
+}
+
+body.dark .vision-hud-msg.ai {
+  background: #27272a !important;
+  color: #f1f5f9 !important;
+}
+
+.vision-hud-msg-avatar {
+  width: 18px !important;
+  height: 18px !important;
+  border-radius: 50% !important;
+  background: radial-gradient(circle at 35% 35%, #93c5fd 0%, #c084fc 60%, #f472b6 100%) !important;
+  flex-shrink: 0 !important;
+  margin-top: 2px !important;
+}
+
+/* ─── 7. Bottom Capsule Input Bar & Dropdown ─────────────────────────────── */
+.vision-hud-input-wrap {
+  position: relative !important;
+  padding: 8px 18px 16px 18px !important;
+}
+
+.vision-hud-input-capsule {
+  display: flex !important;
+  align-items: center !important;
+  background: #f1f5f9 !important;
+  border-radius: 9999px !important;
+  padding: 4px 6px 4px 10px !important;
+  gap: 6px !important;
+  border: none !important;
+}
+
+body.dark .vision-hud-input-capsule {
+  background: #27272a !important;
+}
+
+.vision-hud-plus-btn {
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 50% !important;
+  background: #e2e8f0 !important;
+  border: none !important;
+  outline: none !important;
+  color: #475569 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  flex-shrink: 0 !important;
+}
+
+body.dark .vision-hud-plus-btn {
+  background: #3f3f46 !important;
+  color: #e4e4e7 !important;
+}
+
+.vision-hud-plus-btn:hover {
+  background: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+.vision-hud-input {
+  flex: 1 !important;
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  font-size: 13px !important;
+  font-family: inherit !important;
+  color: #1e293b !important;
+  padding: 4px 4px !important;
+}
+
+body.dark .vision-hud-input {
+  color: #f1f5f9 !important;
+}
+
+.vision-hud-input::placeholder {
+  color: #94a3b8 !important;
+}
+
+.vision-hud-mic-btn {
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  color: #64748b !important;
+  padding: 4px !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 50% !important;
+  transition: color 0.15s ease !important;
+}
+
+.vision-hud-mic-btn:hover {
+  color: #0f172a !important;
+}
+
+body.dark .vision-hud-mic-btn:hover {
+  color: #ffffff !important;
+}
+
+.vision-hud-send-btn {
+  width: 30px !important;
+  height: 30px !important;
+  border-radius: 50% !important;
+  background: #1e293b !important;
+  border: none !important;
+  outline: none !important;
+  color: #ffffff !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: transform 0.15s ease, background 0.15s ease !important;
+  flex-shrink: 0 !important;
+}
+
+.vision-hud-send-btn:hover {
+  background: #0f172a !important;
+  transform: scale(1.05) !important;
+}
+
+/* ─── 8. Smart Plus Dropdown Menu ────────────────────────────────────────── */
+.vision-hud-dropdown-menu {
+  position: absolute !important;
+  bottom: calc(100% + 8px) !important;
+  left: 18px !important;
+  width: 230px !important;
+  background: #ffffff !important;
+  border-radius: 16px !important;
+  border: none !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+  padding: 6px !important;
+  display: none !important;
+  flex-direction: column !important;
+  gap: 2px !important;
+  z-index: 100001 !important;
+  animation: dFadeIn 0.2s ease !important;
+}
+
+body.dark .vision-hud-dropdown-menu {
+  background: #27272a !important;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5) !important;
+}
+
+.vision-hud-dropdown-menu.show {
+  display: flex !important;
+}
+
+.vision-hud-dropdown-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding: 8px 12px !important;
+  border-radius: 10px !important;
+  border: none !important;
+  background: transparent !important;
+  font-size: 12.5px !important;
+  font-weight: 500 !important;
+  color: #334155 !important;
+  cursor: pointer !important;
+  transition: background 0.15s ease !important;
+  text-align: left !important;
+}
+
+body.dark .vision-hud-dropdown-item {
+  color: #e4e4e7 !important;
+}
+
+.vision-hud-dropdown-item:hover {
+  background: #f1f5f9 !important;
+  color: #0f172a !important;
+}
+
+body.dark .vision-hud-dropdown-item:hover {
+  background: #3f3f46 !important;
+  color: #ffffff !important;
+}
+
+.vision-hud-dropdown-item.danger {
+  color: #ef4444 !important;
+}
+
+.vision-hud-dropdown-item.danger:hover {
+  background: #fef2f2 !important;
+  color: #dc2626 !important;
+}
+
+/* ─── 9. Animations ──────────────────────────────────────────────────────── */
+@keyframes visionOrbPulse {
+  0%   { transform: scale(1); filter: blur(0.5px); }
+  50%  { transform: scale(1.06); filter: blur(1.5px); }
+  100% { transform: scale(1); filter: blur(0.5px); }
+}
+
+@keyframes dFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
