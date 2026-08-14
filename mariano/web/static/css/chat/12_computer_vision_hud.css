@@ -640,16 +640,16 @@ body[data-theme="oled"] .vision-hud-dropdown-menu {
   align-items: center !important;
   gap: 10px !important;
   padding: 8px 12px !important;
-  border-radius: 10px !important;
+  border-radius: 8px !important;
   border: none !important;
   outline: none !important;
   box-shadow: none !important;
-  background: #f1f5f9 !important;
+  background: transparent !important;
   font-size: 12px !important;
   font-weight: 400 !important;
-  color: #334155 !important;
+  color: var(--text, #334155) !important;
   cursor: pointer !important;
-  transition: background 0.15s ease, transform 0.1s ease !important;
+  transition: background 0.15s ease, color 0.15s ease !important;
   text-align: left !important;
   font-family: inherit !important;
 }
@@ -657,23 +657,30 @@ body[data-theme="oled"] .vision-hud-dropdown-menu {
 body.dark .vision-hud-dropdown-item,
 body[data-theme="dark"] .vision-hud-dropdown-item,
 body[data-theme="oled"] .vision-hud-dropdown-item {
-  background: rgba(255, 255, 255, 0.05) !important;
+  background: transparent !important;
   color: #e2e8f0 !important;
 }
 
 .vision-hud-dropdown-item:hover {
-  background: #2563eb !important;
+  background: var(--hover, #f1f5f9) !important;
+  color: var(--text, #0f172a) !important;
+}
+
+body.dark .vision-hud-dropdown-item:hover,
+body[data-theme="dark"] .vision-hud-dropdown-item:hover,
+body[data-theme="oled"] .vision-hud-dropdown-item:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
   color: #ffffff !important;
 }
 
 .vision-hud-dropdown-item.danger {
   color: #f87171 !important;
-  background: rgba(239, 68, 68, 0.08) !important;
+  background: transparent !important;
 }
 
 .vision-hud-dropdown-item.danger:hover {
-  background: #ef4444 !important;
-  color: #ffffff !important;
+  background: rgba(239, 68, 68, 0.15) !important;
+  color: #ef4444 !important;
 }
 
 /* ─── 9. Interactive Window Resize Grip Handle ────────────────────────────── */
