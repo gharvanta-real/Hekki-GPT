@@ -204,6 +204,7 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
       _currentMessageToolRuns = [];
       _writtenFilesThisMsg = [];
       window._firstResponseChunkProcessed = false;
+      if (window.setGeneratingState) window.setGeneratingState(true);
     }
 
     switch (e.kind) {
@@ -230,6 +231,7 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
 
     case 'thinking': {
       enterConversationCallback();
+      if (window.setGeneratingState) window.setGeneratingState(true);
       if (e.data && e.data.includes('Aider')) {
         _aiderActive = true;
       }

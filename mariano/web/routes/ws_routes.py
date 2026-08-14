@@ -128,6 +128,8 @@ async def websocket_endpoint(websocket: WebSocket):
             async for event in agent.run(query_text, project=project, project_path=project_path, chat_id=chat_id, permission_policy=permission_policy, aider_enabled=aider_enabled):
                 await websocket.send_json({"type": "agent_event", "kind": event.kind, "data": event.data, "metadata": event.metadata or {}})
             
+            await websocket.send_json({"type": "agent_event", "kind": "done", "data": "", "metadata": {}})
+            
             latest_chem = neuromodulator.state
             await websocket.send_json({
                 "type": "state_sync",

@@ -1,0 +1,198 @@
+/* ==========================================================================
+   settings/1a_settings_controls.css — Settings Rows, Inputs, Selects & Save Buttons
+   ========================================================================== */
+
+.settings-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 14px 0 !important;
+  min-height: 48px !important;
+  gap: 20px !important;
+  border-bottom: 1px solid var(--border, rgba(0, 0, 0, 0.08));
+}
+
+.settings-row:last-child {
+  border-bottom: none !important;
+}
+
+.row-info {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+  gap: 2px !important;
+  flex: 1 !important;
+  min-width: 0 !important;
+}
+
+.row-label {
+  display: block !important;
+  font-size: var(--fs-base, 14px) !important;
+  font-weight: 500 !important;
+  color: var(--text-primary, #09090b) !important;
+  line-height: 1.4 !important;
+}
+
+body.dark .row-label,
+body.oled .row-label,
+:root[data-theme="dark"] .row-label,
+:root[data-theme="oled"] .row-label {
+  color: #F4F4F5 !important;
+}
+
+.row-desc {
+  display: block !important;
+  font-size: var(--fs-xs, 12px) !important;
+  color: var(--text-3, #71717a) !important;
+  line-height: 1.4 !important;
+  margin-top: 1px !important;
+}
+
+body.dark .row-desc,
+body.oled .row-desc,
+:root[data-theme="dark"] .row-desc,
+:root[data-theme="oled"] .row-desc {
+  color: #A1A1AA !important;
+}
+
+.settings-select {
+  border: none !important;
+  outline: none !important;
+  background: var(--input-bg, #F1F3F6);
+  color: var(--text-primary);
+  font-family: var(--font);
+  font-size: 13px !important;
+  font-weight: 500;
+  padding: 6px 28px 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  min-width: 140px;
+  pointer-events: auto !important;
+  user-select: none;
+  transition: background-color 0.15s ease, color 0.15s ease;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2371717a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 13px;
+}
+
+.settings-select option {
+  background-color: var(--card, #ffffff);
+  color: var(--text-primary, #09090b);
+  padding: 8px 12px;
+}
+
+body.dark .settings-select,
+body.oled .settings-select {
+  background-color: #27272a !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  color: #ffffff !important;
+}
+
+body.dark .settings-select option,
+body.oled .settings-select option,
+:root[data-theme="dark"] .settings-select option,
+:root[data-theme="oled"] .settings-select option {
+  background-color: #1E1E1E !important;
+  color: #FFFFFF !important;
+}
+
+body.light .settings-select,
+:root[data-theme="light"] .settings-select {
+  background-color: #F1F3F6 !important;
+  color: #141414 !important;
+}
+
+.settings-select:hover {
+  opacity: 0.95;
+}
+
+.settings-input {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: var(--input-bg, #F1F3F6);
+  color: var(--text-primary);
+  font-family: var(--font);
+  font-size: 13px !important;
+  padding: 7px 12px;
+  border-radius: 8px;
+  min-width: 200px;
+  text-align: left !important;
+  transition: all 0.15s ease;
+}
+
+body.dark .settings-input,
+body.oled .settings-input {
+  background-color: #27272a;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  color: #ffffff;
+}
+
+body.light .settings-input,
+:root[data-theme="light"] .settings-input {
+  background-color: #F1F3F6 !important;
+  color: #141414 !important;
+}
+
+.settings-input:focus {
+  border-color: var(--accent, #2563eb) !important;
+}
+
+.settings-textarea {
+  width: 100%;
+  height: 90px;
+  border: none !important;
+  outline: none !important;
+  background: var(--input-bg, #F1F3F6);
+  color: var(--text-primary);
+  font-family: var(--font);
+  font-size: 13px !important;
+  padding: 10px 12px;
+  border-radius: 10px;
+  resize: vertical;
+  line-height: 1.5;
+  transition: border-color 0.15s ease;
+}
+
+body.dark .settings-textarea,
+body.oled .settings-textarea {
+  background-color: #27272a;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  color: #ffffff;
+}
+
+body.light .settings-textarea,
+:root[data-theme="light"] .settings-textarea {
+  background-color: #F1F3F6 !important;
+  color: #141414 !important;
+}
+
+.settings-textarea:focus {
+  border-color: var(--accent, #2563eb) !important;
+}
+
+.btn-pill-save {
+  padding: 7px 20px;
+  background: var(--text-primary, #09090b);
+  color: var(--bg, #ffffff);
+  border: none;
+  border-radius: 9999px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+body.dark .btn-pill-save,
+body.oled .btn-pill-save {
+  background: #ffffff;
+  color: #09090b;
+}
+
+.btn-pill-save:hover {
+  opacity: 0.9;
+}

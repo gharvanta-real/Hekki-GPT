@@ -1,0 +1,314 @@
+/* ==========================================================================
+   chat/12a_vision_hud_base.css — Computer Vision HUD Container & Hero Area
+   ========================================================================== */
+
+#vision-hud-container {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 380px !important;
+  height: 440px !important;
+  min-width: 320px !important;
+  min-height: 340px !important;
+  max-height: 85vh !important;
+  max-width: calc(100vw - 32px) !important;
+  background: var(--bg, #F7F7F9) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  outline: none !important;
+  box-shadow: none !important;
+  border-radius: 16px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: visible !important;
+  z-index: 99999 !important;
+  font-family: var(--font, var(--font-open-sans, "Open Sans", -apple-system, sans-serif)) !important;
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease, background 0.2s ease;
+}
+
+body.dark #vision-hud-container,
+body[data-theme="dark"] #vision-hud-container,
+body[data-theme="oled"] #vision-hud-container {
+  background: var(--card, #18181b) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: none !important;
+}
+
+#vision-hud-container.hidden { display: none !important; }
+
+#vision-hud-launcher {
+  position: fixed !important;
+  bottom: 24px !important;
+  right: 24px !important;
+  height: 40px !important;
+  padding: 0 14px 0 10px !important;
+  background: var(--bg, #F7F7F9) !important;
+  border-radius: 9999px !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  cursor: pointer !important;
+  z-index: 99998 !important;
+  font-family: var(--font, var(--font-open-sans, "Open Sans", sans-serif)) !important;
+  transition: transform 0.2s ease, opacity 0.2s ease, background 0.2s ease !important;
+  user-select: none !important;
+}
+
+body.dark #vision-hud-launcher,
+body[data-theme="dark"] #vision-hud-launcher,
+body[data-theme="oled"] #vision-hud-launcher {
+  background: var(--card, #1e1e22) !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+#vision-hud-launcher:hover { transform: scale(1.05) !important; }
+#vision-hud-launcher.hidden { display: none !important; }
+
+.vision-hud-launcher-ribbon {
+  width: 20px !important;
+  height: 20px !important;
+  min-width: 20px !important;
+  min-height: 20px !important;
+  aspect-ratio: 1 / 1 !important;
+  border-radius: 50% !important;
+  object-fit: contain !important;
+  flex-shrink: 0 !important;
+}
+
+.vision-hud-launcher-text {
+  font-size: 12.5px !important;
+  font-weight: 400 !important;
+  color: var(--text, #1e293b) !important;
+  letter-spacing: -0.1px !important;
+}
+
+#vision-hud-container.docked-right { right: 0 !important; left: auto !important; transform: translateX(100%) !important; }
+#vision-hud-container.docked-left { left: 0 !important; right: auto !important; transform: translateX(-100%) !important; }
+#vision-hud-container.docked-right:hover,
+#vision-hud-container.docked-left:hover,
+#vision-hud-container.expanded { transform: translateX(0) !important; }
+
+.vision-hud-peek-handle {
+  position: absolute !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  width: 24px !important;
+  height: 60px !important;
+  background: var(--bg, #F7F7F9) !important;
+  display: none !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  z-index: 100000 !important;
+  user-select: none !important;
+  color: var(--text-2, #64748b) !important;
+  box-shadow: none !important;
+  border: none !important;
+  outline: none !important;
+}
+
+body.dark .vision-hud-peek-handle,
+body[data-theme="dark"] .vision-hud-peek-handle,
+body[data-theme="oled"] .vision-hud-peek-handle {
+  background: var(--card, #18181b) !important;
+  border: none !important;
+}
+
+#vision-hud-container.docked-right .vision-hud-peek-handle { display: flex !important; left: -24px !important; right: auto !important; border-radius: 10px 0 0 10px !important; }
+#vision-hud-container.docked-left .vision-hud-peek-handle { display: flex !important; right: -24px !important; left: auto !important; border-radius: 0 10px 10px 0 !important; }
+
+.vision-hud-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 14px 18px 6px 18px !important;
+  background: transparent !important;
+  user-select: none !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.vision-hud-title { font-size: 14.5px !important; font-weight: 600 !important; color: var(--text, #1e293b) !important; letter-spacing: -0.2px !important; }
+.vision-hud-header-actions { display: flex !important; align-items: center !important; gap: 6px !important; }
+
+.vision-hud-mic-btn, .vision-hud-close-btn {
+  width: 28px !important;
+  height: 28px !important;
+  min-width: 28px !important;
+  min-height: 28px !important;
+  max-width: 28px !important;
+  max-height: 28px !important;
+  aspect-ratio: 1 / 1 !important;
+  box-sizing: border-box !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  color: var(--text-3, #64748b) !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 50% !important;
+  transition: color 0.15s ease, background 0.15s ease !important;
+  flex-shrink: 0 !important;
+}
+
+.vision-hud-mic-btn:hover, .vision-hud-close-btn:hover {
+  color: var(--text, #0f172a) !important;
+  background: var(--hover, #f1f5f9) !important;
+}
+
+.vision-hud-hero {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 10px 18px 12px 18px !important;
+  text-align: center !important;
+  margin: auto 0 !important;
+  flex: 1 !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.vision-hud-hero-ribbon {
+  width: 52px !important;
+  height: 52px !important;
+  min-width: 52px !important;
+  min-height: 52px !important;
+  aspect-ratio: 1 / 1 !important;
+  object-fit: contain !important;
+  margin-bottom: 8px !important;
+  flex-shrink: 0 !important;
+  transform: scale(1) !important;
+}
+
+.vision-hud-hero-text { font-size: 14px !important; font-weight: 500 !important; color: var(--text, #1e293b) !important; }
+
+#vision-hud-container.has-messages .vision-hud-hero,
+#vision-hud-container.has-messages #vision-hud-hero { display: none !important; }
+
+.vision-hud-chat-body {
+  max-height: 320px !important;
+  min-height: 140px !important;
+  overflow-y: auto !important;
+  padding: 8px 18px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  flex: 1 !important;
+}
+
+.vision-hud-chat-body::-webkit-scrollbar { width: 3px !important; }
+.vision-hud-chat-body::-webkit-scrollbar-thumb { background: var(--hover, #cbd5e1) !important; border-radius: 3px !important; }
+
+.vision-hud-msg {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 8px !important;
+  font-size: 12.5px !important;
+  font-weight: 400 !important;
+  line-height: 1.5 !important;
+  font-family: inherit !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.vision-hud-msg.user {
+  align-self: flex-start !important;
+  margin-right: auto !important;
+  margin-left: 0 !important;
+  max-width: 85% !important;
+  background: rgba(37, 99, 235, 0.12) !important;
+  color: #2563eb !important;
+  padding: 8px 12px !important;
+  border-radius: 14px 14px 14px 4px !important;
+}
+
+body.dark .vision-hud-msg.user,
+body[data-theme="dark"] .vision-hud-msg.user,
+body[data-theme="oled"] .vision-hud-msg.user {
+  background: rgba(37, 99, 235, 0.22) !important;
+  color: #93c5fd !important;
+}
+
+.vision-hud-msg.ai {
+  align-self: flex-end !important;
+  margin-left: auto !important;
+  margin-right: 0 !important;
+  max-width: 88% !important;
+  background: var(--hover, #f1f5f9) !important;
+  color: var(--text, #1e293b) !important;
+  padding: 9px 12px !important;
+  border-radius: 14px 14px 4px 14px !important;
+  flex-direction: row !important;
+  align-items: flex-start !important;
+  gap: 8px !important;
+}
+
+body.dark .vision-hud-msg.ai,
+body[data-theme="dark"] .vision-hud-msg.ai,
+body[data-theme="oled"] .vision-hud-msg.ai {
+  background: #27272a !important;
+  color: #f1f5f9 !important;
+}
+
+.vision-hud-msg-avatar {
+  width: 20px !important;
+  height: 20px !important;
+  min-width: 20px !important;
+  min-height: 20px !important;
+  aspect-ratio: 1 / 1 !important;
+  border-radius: 50% !important;
+  object-fit: contain !important;
+  flex-shrink: 0 !important;
+  margin-top: 1px !important;
+}
+
+.vision-hud-screenshot-card {
+  margin-top: 8px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+  max-width: 100% !important;
+  border-radius: 10px !important;
+  overflow: hidden !important;
+}
+
+.vision-hud-screenshot-thumb {
+  width: 100% !important;
+  max-width: 260px !important;
+  max-height: 140px !important;
+  object-fit: cover !important;
+  border-radius: 8px !important;
+  cursor: pointer !important;
+  transition: transform 0.15s ease, filter 0.15s ease !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.vision-hud-screenshot-thumb:hover {
+  transform: scale(1.02) !important;
+  filter: brightness(1.05) !important;
+}
+
+.vision-hud-screenshot-badge {
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  color: var(--text-3, #94a3b8) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+}

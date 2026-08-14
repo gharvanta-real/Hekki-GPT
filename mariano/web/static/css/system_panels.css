@@ -1,0 +1,162 @@
+/* ==========================================================================
+   system_panels.css — Unified Floating System Panels, Cards & Dropdown Engine
+   ==========================================================================
+   Connects all system cards, settings cards, modal containers, and floating
+   dropdown popups under a single modular CSS architecture.
+   ========================================================================== */
+
+/* ── 1. Unified Floating Popups & Dropdown Menus ────────────────────────── */
+.topnav-dropdown-menu,
+.user-menu-dropdown,
+.attach-dropdown,
+.attach-sub-dropdown,
+.dropdown-menu,
+.doc-dropdown-menu,
+.hekki-slash-popup,
+.permission-dropdown-menu,
+.permission-dropdown,
+.minimap-dropdown-popup,
+.desktop-dropdown-menu,
+.vision-hud-dropdown-menu {
+  position: absolute;
+  box-sizing: border-box;
+  border-radius: 12px !important;
+  padding: 6px !important;
+  box-shadow: none !important;
+  outline: none !important;
+  z-index: 10000;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.user-menu-dropdown {
+  position: fixed !important;
+  bottom: 16px !important;
+  left: 268px !important;
+  width: 240px !important;
+  z-index: 99999 !important;
+}
+
+#sidebar-nav.collapsed .user-menu-dropdown {
+  left: 68px !important;
+}
+
+/* Light Theme: Pure Clean White Cards over Soft Slate Canvas */
+body.light .topnav-dropdown-menu,
+body.light .user-menu-dropdown,
+body.light .attach-dropdown,
+body.light .attach-sub-dropdown,
+body.light .dropdown-menu,
+body.light .doc-dropdown-menu,
+body.light .hekki-slash-popup,
+body.light .permission-dropdown-menu,
+body.light .permission-dropdown,
+body.light .minimap-dropdown-popup,
+body.light .desktop-dropdown-menu,
+body.light .vision-hud-dropdown-menu,
+:root[data-theme="light"] .topnav-dropdown-menu,
+:root[data-theme="light"] .user-menu-dropdown,
+:root[data-theme="light"] .attach-dropdown,
+:root[data-theme="light"] .attach-sub-dropdown,
+:root[data-theme="light"] .dropdown-menu,
+:root[data-theme="light"] .doc-dropdown-menu,
+:root[data-theme="light"] .hekki-slash-popup,
+:root[data-theme="light"] .permission-dropdown-menu,
+:root[data-theme="light"] .permission-dropdown,
+:root[data-theme="light"] .minimap-dropdown-popup,
+:root[data-theme="light"] .desktop-dropdown-menu,
+:root[data-theme="light"] .vision-hud-dropdown-menu {
+  background: #FFFFFF !important;
+  border: 1px solid #E4E7EB !important;
+  color: #141414 !important;
+}
+
+/* Dark / OLED Theme: Dark Charcoal Elevated Surface Cards */
+body.dark .topnav-dropdown-menu,
+body.dark .user-menu-dropdown,
+body.dark .attach-dropdown,
+body.dark .attach-sub-dropdown,
+body.dark .dropdown-menu,
+body.dark .doc-dropdown-menu,
+body.dark .hekki-slash-popup,
+body.dark .permission-dropdown-menu,
+body.dark .permission-dropdown,
+body.dark .minimap-dropdown-popup,
+body.dark .desktop-dropdown-menu,
+body.dark .vision-hud-dropdown-menu,
+body.oled .topnav-dropdown-menu,
+body.oled .user-menu-dropdown,
+body.oled .attach-dropdown,
+body.oled .attach-sub-dropdown,
+body.oled .dropdown-menu,
+body.oled .doc-dropdown-menu,
+body.oled .hekki-slash-popup,
+body.oled .permission-dropdown-menu,
+body.oled .permission-dropdown,
+body.oled .minimap-dropdown-popup,
+body.oled .desktop-dropdown-menu,
+body.oled .vision-hud-dropdown-menu {
+  background: #1E1E1E !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #F4F4F5 !important;
+}
+
+/* ── 2. Unified Dropdown Item Hover Fills ──────────────────────────────── */
+.user-menu-item,
+.attach-dropdown-item,
+.dropdown-item,
+.topnav-item,
+.vision-hud-dropdown-item {
+  border-radius: 6px !important;
+  transition: background 0.1s ease, color 0.1s ease !important;
+}
+
+body.light .user-menu-item:hover,
+body.light .attach-dropdown-item:hover,
+body.light .dropdown-item:hover,
+body.light .topnav-item:hover,
+body.light .vision-hud-dropdown-item:hover,
+:root[data-theme="light"] .user-menu-item:hover,
+:root[data-theme="light"] .attach-dropdown-item:hover,
+:root[data-theme="light"] .dropdown-item:hover,
+:root[data-theme="light"] .topnav-item:hover,
+:root[data-theme="light"] .vision-hud-dropdown-item:hover {
+  background: #F1F3F6 !important;
+  color: #141414 !important;
+}
+
+body.dark .user-menu-item:hover,
+body.dark .attach-dropdown-item:hover,
+body.dark .dropdown-item:hover,
+body.dark .topnav-item:hover,
+body.dark .vision-hud-dropdown-item:hover,
+body.oled .user-menu-item:hover,
+body.oled .attach-dropdown-item:hover,
+body.oled .dropdown-item:hover,
+body.oled .topnav-item:hover,
+body.oled .vision-hud-dropdown-item:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #FFFFFF !important;
+}
+
+/* ── 3. System Section Cards (Settings & Modal Containers) ─────────────── */
+.settings-card-box,
+.settings-promo-card {
+  border-radius: 12px !important;
+  border: none !important;
+  overflow: hidden;
+  transition: background 0.15s ease;
+}
+
+body.light .settings-card-box,
+body.light .settings-promo-card,
+:root[data-theme="light"] .settings-card-box,
+:root[data-theme="light"] .settings-promo-card {
+  background: #FFFFFF !important;
+}
+
+body.dark .settings-card-box,
+body.dark .settings-promo-card,
+body.oled .settings-card-box,
+body.oled .settings-promo-card {
+  background: #1E1E1E !important;
+}

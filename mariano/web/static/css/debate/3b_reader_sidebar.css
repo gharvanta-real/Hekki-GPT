@@ -1,0 +1,46 @@
+/* ==========================================================================
+   debate/3b_reader_sidebar.css — Reader Topic Directory & Collapsed Sidebar Overrides
+   ========================================================================== */
+
+.directory-topics-list { gap: 0 !important; }
+.directory-topic-btn {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none !important;
+  border-radius: 8px;
+  padding: 0 2px;
+  height: 32px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-direction: row;
+}
+.directory-topic-btn:hover { background: var(--hover); transform: translateX(4px); }
+.directory-topic-btn:active { transform: scale(0.97); }
+.directory-topic-btn.active { background: var(--hover) !important; box-shadow: none !important; }
+.directory-topic-btn .dir-topic-title { font-size: 14px; font-weight: 400; color: var(--text-primary); }
+
+.debate-layout.collapsed-sidebar .sidebar-user-profile {
+  padding: 0 !important;
+  margin: 8px auto !important;
+  width: 36px; height: 36px;
+  justify-content: center;
+}
+.debate-layout.collapsed-sidebar .sidebar-user-profile > svg,
+.debate-layout.collapsed-sidebar .sidebar-user-profile > i,
+.debate-layout.collapsed-sidebar .sidebar-user-info,
+.debate-layout.collapsed-sidebar .user-download-btn {
+  display: none !important;
+}
+
+.debate-layout.collapsed-sidebar #debate-user-menu-dropdown {
+  position: fixed;
+  bottom: 12px;
+  left: 60px;
+  right: auto;
+  width: 240px;
+  z-index: 9999;
+}

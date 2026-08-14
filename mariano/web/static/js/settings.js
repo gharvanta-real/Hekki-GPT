@@ -26,6 +26,7 @@ export function initSettings(setGreetingCallback) {
     const _fk = localStorage.getItem('hekki_font') || 'segoe-ui';
     const _fontSel = document.getElementById('settings-font-family');
     if (_fontSel) _fontSel.value = _fk;
+    if (window.lucide) setTimeout(() => lucide.createIcons(), 50);
   };
 
   $('btn-open-settings')?.addEventListener('click', openSettingsPage);

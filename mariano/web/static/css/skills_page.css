@@ -349,7 +349,7 @@ body.dark .skills-btn.danger:hover {
 }
 
 .skill-row-tag {
-  font-size: 10px; /* pill font size */
+  font-size: 11px; /* pill font size */
   color: var(--text-2);
   background: var(--sidebar-bg); /* secondary background color */
   border: none; /* borderless pill */

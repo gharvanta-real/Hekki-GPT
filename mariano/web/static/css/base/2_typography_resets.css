@@ -1,0 +1,181 @@
+/* ==========================================================================
+   base/2_typography_resets.css — Typography Scale, Input Field Tokens & Resets
+   ========================================================================== */
+
+/* PEEK SEMANTIC TYPOGRAPHY STYLES */
+.type-heading { font-family: var(--font); font-size: var(--text-24); font-weight: 500; line-height: 1.50; }
+.type-h2 { font-family: var(--font); font-size: var(--text-24); font-weight: 500; line-height: 1.33; }
+.type-h1 { font-family: var(--font); font-size: var(--text-24); font-weight: 400; line-height: 1.17; }
+.type-large-body { font-family: var(--font); font-size: var(--text-18); font-weight: 500; line-height: 1.44; letter-spacing: var(--tracking-neg-0-27); }
+.type-body, .type-body-16, .type-body-16-400 { font-family: var(--font); font-size: var(--text-16); font-weight: 400; line-height: 1.50; }
+.type-button { font-family: var(--font); font-size: var(--text-16); font-weight: 400; line-height: 1.50; }
+.type-button-16 { font-family: var(--font); font-size: var(--text-16); font-weight: 400; line-height: 1.63; }
+.type-h2-14 { font-family: var(--font); font-size: var(--text-14); font-weight: 500; line-height: 1.43; }
+.type-small-body, .type-button-14 { font-family: var(--font); font-size: var(--text-14); font-weight: 500; line-height: 1.43; }
+.type-small-body-14, .type-small-body-14-400, .type-button-14-400, .type-link { font-family: var(--font); font-size: var(--text-14); font-weight: 400; line-height: 1.43; }
+.type-caption { font-family: var(--font); font-size: var(--text-12); font-weight: 500; line-height: 1.33; }
+.type-caption-12, .type-caption-12-400 { font-family: var(--font); font-size: var(--text-12); font-weight: 400; line-height: 1.43; }
+
+/* ACCESSIBILITY & FOCUS VISIBLE */
+:focus-visible {
+  outline: 2px solid var(--text-primary, #0D0D0D) !important;
+  outline-offset: 2px !important;
+}
+
+button, a, input, select, textarea {
+  transition: background-color 0.15s ease, color 0.15s ease, opacity 0.15s ease;
+}
+
+button:not(.canvas-btn):not(.canvas-btn-icon):not(.cap-icon-btn):not(.submit-btn):not(.action-btn):not(.code-action-btn):hover,
+.btn:hover,
+.icon-btn:hover,
+.dock-item:hover,
+.sidebar-action-btn:hover {
+  background-color: var(--hover);
+}
+
+button:not(.cap-icon-btn):not(.circle-btn):not(.img-lightbox-btn):not(.img-card-btn):not(.img-card-checkbox):not(.icon-btn):not(.modal-close):not(.btn-icon-circle):not(.submit-btn):not(#btn-submit-home):not(#btn-submit-conv):not(#btn-debate-start):not(#btn-debate-intervene):not(#coder-btn-send):not(.action-btn):not(.msg-expand-btn) {
+  min-height: 36px;
+  box-sizing: border-box;
+}
+
+.submit-btn,
+#btn-submit-home,
+#btn-submit-conv,
+#btn-debate-start,
+#btn-debate-intervene,
+#coder-btn-send,
+.cap-icon-btn,
+.circle-btn,
+.img-lightbox-btn,
+.img-card-btn,
+.img-card-checkbox,
+.btn-icon-circle,
+#btn-attach-home,
+#btn-attach-conv {
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  min-height: 32px !important;
+  max-width: 32px !important;
+  max-height: 32px !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box !important;
+  flex-shrink: 0 !important;
+}
+
+.hidden,
+button.hidden,
+.cap-icon-btn.hidden,
+.submit-btn.hidden {
+  display: none !important;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  box-shadow: none !important;
+  margin: 0;
+  padding: 0;
+}
+
+button, .btn, .button-pill, .badge, .pill, .chip, .tag, .badge-pill, .status-badge, .section-badge, .doc-sec-badge, .skill-badge, .cap-btn, .action-btn, .search-input, .settings-input, .shortcut, .quick-action-pill, .shortcut-btn {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  border-radius: 8px !important;
+  font-weight: 400 !important;
+}
+
+/* UNIFIED INPUT FIELD TOKEN */
+input[type="text"],
+input[type="password"],
+input[type="search"],
+input[type="number"],
+select,
+.settings-input,
+.settings-select,
+.search-input,
+#skills-search-input,
+.skills-search-wrapper input {
+  font-family: var(--font) !important;
+  font-size: var(--fs-md) !important;
+  line-height: 20px !important;
+  font-weight: 400 !important;
+  height: 36px !important;
+  padding: 8px 12px !important;
+  border-radius: 8px !important;
+  background: var(--input-bg, #F4F4F6) !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  color: var(--text) !important;
+  box-sizing: border-box !important;
+}
+
+input[id*="search"],
+input[class*="search"],
+.search-input,
+.search-field-wrapper input,
+#search-modal-input,
+#history-search-input,
+#plugins-search-input,
+#skills-search-input,
+.img-gallery-search,
+.search-bar input {
+  padding-left: 38px !important;
+  padding-right: 36px !important;
+  box-sizing: border-box !important;
+}
+
+#sidebar-nav button,
+#sidebar-nav a,
+#sidebar-dock button,
+.sidebar-action-btn,
+.debate-list-btn,
+.btn-new-chat-dock,
+.recent-item,
+.section-item,
+.sidebar-user-profile,
+#btn-sidebar-collapse,
+#btn-debate-sidebar-toggle,
+.debate-sidebar button,
+.debate-sidebar-inner button,
+.debate-sidebar-controls-list button,
+.debate-participant-card,
+.debate-doc-item,
+.attach-dropdown-item,
+.dropdown-item,
+.user-menu-item,
+.context-menu-item,
+.menu-item,
+.option-item,
+.cloud-option-item,
+.permission-dropdown-item,
+.dropdown-menu button,
+.attach-dropdown button {
+  border-radius: 6px !important;
+}
+
+html, body { height: 100%; width: 100%; }
+html { font-size: 16px; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: var(--fs-base);
+  line-height: 1.75;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  letter-spacing: 0.018em;
+  word-spacing: 0.04em;
+}
+
+h1, h2, h3, h4, .heading { letter-spacing: 0.01em !important; }
+code, pre, .mono, .timestamp, .action-time { letter-spacing: 0.03em !important; }
+a { color: inherit; text-decoration: none; }

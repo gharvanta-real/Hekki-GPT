@@ -341,6 +341,9 @@ class Router {
           window.updateTitleBreadcrumb('Settings', '');
         }
         if (window._loadSettingsOnPage) window._loadSettingsOnPage();
+        if (window.lucide) {
+          setTimeout(() => lucide.createIcons(), 50);
+        }
         break;
 
 

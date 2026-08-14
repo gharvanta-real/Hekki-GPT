@@ -134,7 +134,7 @@ export function initAttachDropdowns(inConversationState) {
           sub.innerHTML = `
             <div class="attach-dropdown-item" style="cursor:default; justify-content:space-between;">
               <div style="display:flex; align-items:center; gap:10px;">
-                <i data-lucide="check" style="color:#2563eb;"></i>
+                <i data-lucide="check" style="color:var(--text-primary);"></i>
                 <span>${singleModel.name}</span>
               </div>
               <span class="sub-item-badge">Both Agents</span>

@@ -1,0 +1,331 @@
+/* ==========================================================================
+   chat/2a_home_welcome.css — Home Screen Dashboard & Input Capsule Mode
+   ========================================================================== */
+
+#home-screen {
+  margin: 12vh auto auto auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 0 32px;
+}
+
+#home-screen.hidden { display: none !important; }
+
+.greeting {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.greeting img {
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 6px !important;
+  margin-bottom: 0 !important;
+  box-shadow: none !important;
+  filter: none !important;
+  border: none !important;
+  outline: none !important;
+}
+.greeting-star {
+  color: var(--orange);
+  font-size: 24px;
+  line-height: 1;
+  animation: spin 10s linear infinite;
+}
+.greeting-text {
+  font-family: var(--font-serif, var(--font)) !important;
+  font-size: 24px !important;
+  line-height: 28px !important;
+  font-weight: 400 !important;
+  color: var(--text) !important;
+  letter-spacing: normal !important;
+}
+
+#input-capsule,
+#input-capsule-conv {
+  position: relative;
+  width: 100%;
+  background: var(--input-bg, #F4F4F6);
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  transition: border-radius 0.22s cubic-bezier(0.4, 0, 0.2, 1), padding 0.22s cubic-bezier(0.4, 0, 0.2, 1), min-height 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body.light #input-capsule,
+body.light #input-capsule-conv,
+:root[data-theme="light"] #input-capsule,
+:root[data-theme="light"] #input-capsule-conv,
+body.dark #input-capsule,
+body.dark #input-capsule-conv,
+:root[data-theme="dark"] #input-capsule,
+:root[data-theme="dark"] #input-capsule-conv {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+#input-capsule:hover,
+#input-capsule-conv:hover,
+#input-capsule:focus-within,
+#input-capsule-conv:focus-within {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+#input-capsule {
+  max-width: 660px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 20px;
+}
+
+#input-capsule:not(.is-multiline),
+#input-capsule-conv:not(.is-multiline),
+.is-single-line#input-capsule,
+.is-single-line#input-capsule-conv {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  border-radius: 23px !important;
+  padding: 4px 8px 4px 10px !important;
+  min-height: 46px !important;
+  height: 46px !important;
+  gap: 6px !important;
+}
+
+#input-capsule:not(.is-multiline) .input-capsule-row:not(.hidden),
+#input-capsule-conv:not(.is-multiline) .input-capsule-row:not(.hidden),
+.is-single-line .input-capsule-row:not(.hidden) {
+  display: contents !important;
+}
+
+#input-capsule:not(.is-multiline) #btn-attach-home,
+#input-capsule-conv:not(.is-multiline) #btn-attach-conv,
+.is-single-line #btn-attach-home,
+.is-single-line #btn-attach-conv {
+  order: 1 !important;
+  flex-shrink: 0 !important;
+  margin-right: 2px !important;
+}
+
+#input-capsule:not(.is-multiline) #chat-input,
+#input-capsule-conv:not(.is-multiline) #chat-input-conv,
+.is-single-line #chat-input,
+.is-single-line #chat-input-conv {
+  order: 2 !important;
+  flex: 1 !important;
+  width: auto !important;
+  height: 26px !important;
+  min-height: 26px !important;
+  max-height: 26px !important;
+  line-height: 26px !important;
+  padding: 0 6px !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  white-space: nowrap !important;
+  resize: none !important;
+  border: none !important;
+  outline: none !important;
+  background: transparent !important;
+  color: var(--text) !important;
+  font-family: var(--font) !important;
+  font-size: 15px !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+#input-capsule:not(.is-multiline) #chat-input::-webkit-scrollbar,
+#input-capsule-conv:not(.is-multiline) #chat-input-conv::-webkit-scrollbar,
+.is-single-line #chat-input::-webkit-scrollbar,
+.is-single-line #chat-input-conv::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+#input-capsule:not(.is-multiline) .slash-tag-chip,
+#input-capsule-conv:not(.is-multiline) .slash-tag-chip,
+.is-single-line .slash-tag-chip {
+  order: 3 !important;
+  flex-shrink: 0 !important;
+}
+
+#input-capsule:not(.is-multiline) .model-pill,
+#input-capsule-conv:not(.is-multiline) .model-pill,
+.is-single-line .model-pill {
+  order: 4 !important;
+  flex-shrink: 0 !important;
+}
+
+#input-capsule:not(.is-multiline) .capsule-right:not(.hidden),
+#input-capsule-conv:not(.is-multiline) .capsule-right:not(.hidden),
+.is-single-line .capsule-right:not(.hidden) {
+  order: 5 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  flex-shrink: 0 !important;
+  margin-left: 0 !important;
+}
+
+#input-capsule.is-multiline,
+#input-capsule-conv.is-multiline {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  justify-content: flex-start !important;
+  border-radius: 18px !important;
+  padding: 10px 14px 8px !important;
+  min-height: 84px !important;
+  height: auto !important;
+  gap: 6px !important;
+}
+
+#input-capsule.is-multiline #chat-input,
+#input-capsule-conv.is-multiline #chat-input-conv {
+  width: 100% !important;
+  flex: none !important;
+  min-height: 36px !important;
+  max-height: 200px !important;
+  line-height: 1.6 !important;
+  padding: 0 !important;
+  overflow-y: auto !important;
+  white-space: pre-wrap !important;
+  resize: none !important;
+  border: none !important;
+  outline: none !important;
+  background: transparent !important;
+  color: var(--text) !important;
+  font-family: var(--font) !important;
+  font-size: 15px !important;
+  order: 1 !important;
+}
+
+#input-capsule.is-multiline .input-capsule-row,
+#input-capsule-conv.is-multiline .input-capsule-row {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+  margin-top: 4px !important;
+  order: 2 !important;
+}
+
+#chat-input::placeholder,
+#chat-input-conv::placeholder,
+#agent-task-input::placeholder {
+  color: var(--text-3) !important;
+  font-size: 15px !important;
+}
+
+.capsule-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 4px;
+}
+.capsule-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+}
+.capsule-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+}
+
+#btn-attach-home, #btn-attach-conv, #btn-attach {
+  width: 32px !important;
+  height: 32px !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: var(--hover) !important;
+  color: var(--text-2) !important;
+  cursor: pointer;
+  border-radius: 50% !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+  transition: background 0.15s ease, color 0.15s ease !important;
+}
+#btn-attach-home:hover, #btn-attach-conv:hover, #btn-attach:hover {
+  background: var(--hover-2) !important;
+  color: var(--text) !important;
+}
+
+#btn-voice-home, #btn-voice-conv, #btn-voice {
+  width: 32px !important;
+  height: 32px !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  color: var(--text-2) !important;
+  cursor: pointer;
+  border-radius: 50% !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+  transition: background 0.15s ease, color 0.15s ease !important;
+}
+#btn-voice-home:hover, #btn-voice-conv:hover, #btn-voice:hover {
+  background: var(--hover) !important;
+  color: var(--text) !important;
+}
+.cap-icon-btn i, .cap-icon-btn svg, .cap-icon-btn .lucide {
+  width: 16px !important;
+  height: 16px !important;
+  color: var(--text-2) !important;
+  stroke-width: 2.2px !important;
+  transition: color 0.15s ease !important;
+}
+.cap-icon-btn:hover i, .cap-icon-btn:hover svg, .cap-icon-btn:hover .lucide {
+  color: var(--text) !important;
+}
+.cap-icon-btn.active {
+  color: #dc2626 !important;
+  animation: mic-pulse 1.5s infinite;
+}
+@keyframes mic-pulse {
+  0%,100% { opacity: 0.6; }
+  50% { opacity: 1.0; }
+}
+
+.pill-group {
+  display: flex;
+  background: var(--sidebar-bg);
+  border-radius: 20px;
+  padding: 2px;
+}
+.pill-btn {
+  height: 22px;
+  padding: 0 10px;
+  border: none;
+  background: transparent;
+  font-family: var(--font);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  color: var(--text-3);
+  cursor: pointer;
+  border-radius: 18px;
+  transition: all 0.12s;
+}
+.pill-btn.active {
+  background: var(--card);
+  color: var(--text);
+  box-shadow: none !important;
+}

@@ -126,9 +126,14 @@ class AttachmentManager {
       const btn = document.getElementById(btnId);
       if (btn) {
         if (window.isGenerating && (btnId === 'btn-submit-home' || btnId === 'btn-submit-conv')) {
+          const isConv = btnId === 'btn-submit-conv';
+          const stopId = isConv ? 'btn-stop-gen-conv' : 'btn-stop-gen';
+          const stopBtn = document.getElementById(stopId);
+
           btn.classList.add('hidden');
-          const stopId = btnId === 'btn-submit-home' ? 'btn-stop-gen' : 'btn-stop-gen-conv';
-          document.getElementById(stopId)?.classList.remove('hidden');
+          btn.style.display = 'none';
+          stopBtn?.classList.remove('hidden');
+          if (stopBtn) stopBtn.style.display = '';
         } else {
           btn.classList.remove('hidden');
         }

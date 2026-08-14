@@ -1,0 +1,245 @@
+/* ==========================================================================
+   chat/9a_canvas_layout.css — Live Canvas Container, Header & Editor Viewport
+   ========================================================================== */
+
+.canvas-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  overflow: hidden;
+  border-radius: 12px;
+  border: none !important;
+}
+
+.canvas-header {
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 14px;
+  border-bottom: 1px solid var(--border) !important;
+  background: var(--bg);
+  gap: 10px;
+  user-select: none;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+.canvas-title-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow: hidden;
+  flex: 1;
+  min-width: 0;
+}
+
+.canvas-badge {
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: #18181b;
+  color: #ffffff;
+  letter-spacing: 0.03em;
+  flex-shrink: 0;
+}
+
+.canvas-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.canvas-tabs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--hover);
+  padding: 3px;
+  border-radius: 7px;
+}
+
+.canvas-tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-2);
+  background: transparent;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.canvas-tab:hover { color: var(--text); }
+.canvas-tab.active { background: var(--bg); color: var(--text); font-weight: 600; box-shadow: none !important; }
+
+.canvas-actions { display: flex; align-items: center; gap: 6px; }
+
+.canvas-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-2);
+  background: transparent;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+}
+.canvas-btn:hover { background: var(--hover); color: var(--text); }
+
+.canvas-btn-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  color: var(--text-2);
+  background: transparent;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+  flex-shrink: 0;
+}
+.canvas-btn-icon:hover { background: var(--hover); color: var(--text); }
+
+.canvas-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 6px;
+  background: var(--card);
+  border: none !important;
+  border-radius: 8px;
+  padding: 4px;
+  min-width: 160px;
+  box-shadow: none !important;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.canvas-dropdown.hidden { display: none !important; }
+
+.canvas-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text);
+  background: transparent;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  transition: background 0.15s ease;
+}
+.canvas-dropdown-item:hover { background: var(--hover); }
+
+.canvas-body { flex: 1; position: relative; overflow: hidden; display: flex; flex-direction: column; }
+.canvas-preview-wrapper, .canvas-diagram-wrapper { width: 100%; height: 100%; display: flex; flex-direction: column; position: relative; overflow: hidden; }
+.canvas-editor-wrapper { width: 100%; height: 100%; display: flex; flex-direction: row; position: relative; overflow: hidden; }
+.canvas-iframe { width: 100%; height: 100%; border: none; background: #ffffff; }
+
+.canvas-line-numbers {
+  min-width: 36px;
+  max-width: 44px;
+  padding: 16px 10px 16px 6px !important;
+  text-align: right;
+  font-family: var(--font);
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--text-3);
+  background: var(--bg);
+  border-right: 1px solid var(--border);
+  user-select: none;
+  overflow: hidden;
+  pointer-events: none;
+  box-sizing: border-box;
+}
+
+.canvas-line-numbers div {
+  font-size: 12px;
+  color: var(--text-3);
+  box-sizing: border-box;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding-right: 4px;
+}
+
+.canvas-code-textarea {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  padding: 16px 24px !important;
+  background: var(--bg) !important;
+  color: var(--text) !important;
+  font-family: var(--font) !important;
+  font-size: 13px !important;
+  line-height: 1.65 !important;
+  border: none !important;
+  outline: none !important;
+  resize: none !important;
+  white-space: pre-wrap !important;
+  word-break: break-word !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  box-sizing: border-box !important;
+}
+
+.mermaid-container { width: 100%; height: 100%; padding: 20px; overflow: auto; display: flex; align-items: center; justify-content: center; background: var(--bg); }
+.mermaid-loading { font-size: 13px; color: var(--text-3); }
+.mermaid-error { color: #ef4444; font-size: 12.5px; padding: 12px; background: rgba(239, 68, 68, 0.08); border-radius: 6px; }
+
+.canvas-paper-viewport {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  background: var(--input-bg, #f1f5f9);
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.canvas-paper-page {
+  width: 100%;
+  max-width: 680px;
+  min-height: 800px;
+  background: #ffffff;
+  color: #1e293b;
+  padding: 40px 48px;
+  border-radius: 6px;
+  box-shadow: none !important;
+  font-family: var(--font, 'Open Sans', sans-serif);
+  font-size: 13.5px;
+  line-height: 1.65;
+}

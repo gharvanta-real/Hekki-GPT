@@ -24,6 +24,7 @@
   <link rel="icon" type="image/png" href="/static/hekki.png">
   <link rel="apple-touch-icon" href="/static/hekki.png">
   <link class="cache-bust" rel="stylesheet" href="/static/theme.css?v=200">
+  <link class="cache-bust" rel="stylesheet" href="/static/css/system_panels.css?v=200">
   <link class="cache-bust" rel="stylesheet" href="/static/css/layout/0_desktop_topnav.css?v=200">
   <link class="cache-bust" rel="stylesheet" href="/static/css/chat.css?v=216">
   <link class="cache-bust" rel="stylesheet" href="/static/css/chat/11_debate_mode.css?v=216">
@@ -326,28 +327,31 @@
       </button>
 
       <div class="settings-nav-list" style="display:flex; flex-direction:column; gap:4px;">
-        <button class="modal-nav-item active" data-section="general">
+        <button class="modal-nav-item active" data-section="general" title="General">
           <i data-lucide="settings" style="width:16px;height:16px;"></i> <span>General</span>
         </button>
-        <button class="modal-nav-item" data-section="identity">
+        <button class="modal-nav-item" data-section="identity" title="Identity">
           <i data-lucide="user-round" style="width:16px;height:16px;"></i> <span>Identity</span>
         </button>
-        <button class="modal-nav-item" data-section="appearance">
+        <button class="modal-nav-item" data-section="appearance" title="Appearance">
           <i data-lucide="palette" style="width:16px;height:16px;"></i> <span>Appearance</span>
         </button>
-        <button class="modal-nav-item" data-section="gemini">
+        <button class="modal-nav-item" data-section="gemini" title="Gemini API">
           <i data-lucide="sparkles" style="width:16px;height:16px;"></i> <span>Gemini API</span>
         </button>
-        <button class="modal-nav-item" data-section="gateway">
+        <button class="modal-nav-item" data-section="gateway" title="Local Gateway">
           <i data-lucide="server" style="width:16px;height:16px;"></i> <span>Local Gateway</span>
         </button>
-        <button class="modal-nav-item" data-section="reasoning">
+        <button class="modal-nav-item" data-section="reasoning" title="Reasoning Mode">
           <i data-lucide="brain" style="width:16px;height:16px;"></i> <span>Reasoning Mode</span>
         </button>
-        <button class="modal-nav-item" data-section="skills">
+        <button class="modal-nav-item" data-section="skills" title="Skills &amp; Plugins">
           <i data-lucide="blocks" style="width:16px;height:16px;"></i> <span>Skills &amp; Plugins</span>
         </button>
-        <button class="modal-nav-item" data-section="about">
+        <button class="modal-nav-item" data-section="shortcuts" title="Keyboard Shortcuts">
+          <i data-lucide="keyboard" style="width:16px;height:16px;"></i> <span>Keyboard Shortcuts</span>
+        </button>
+        <button class="modal-nav-item" data-section="about" title="About Hekki">
           <i data-lucide="info" style="width:16px;height:16px;"></i> <span>About Hekki</span>
         </button>
       </div>
@@ -866,6 +870,88 @@
               <div class="skills-grid" id="skills-grid"></div>
             </section>
 
+            <!-- KEYBOARD SHORTCUTS -->
+            <section class="settings-section" id="section-shortcuts">
+              <h2 class="section-title">Keyboard Shortcuts</h2>
+              <p class="section-sub">Quickly navigate and execute desktop commands with keyboard shortcuts.</p>
+
+              <div class="settings-card-box" style="padding: 16px;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px;">
+                  
+                  <!-- Navigation Card -->
+                  <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <div style="font-size: 13.5px; font-weight: 600; color: var(--text-primary); display: flex; align-items: center; gap: 6px;">
+                      <i data-lucide="compass" style="width: 15px; height: 15px; color: var(--text-2);"></i> Global Navigation
+                    </div>
+                    
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--border);">
+                      <span style="font-size: 13px; color: var(--text-2);">Global Search</span>
+                      <div style="display: flex; gap: 3px; align-items: center;">
+                        <kbd class="shortcut-kbd">Ctrl</kbd><span style="font-size:11px;color:var(--text-3);">+</span><kbd class="shortcut-kbd">K</kbd>
+                      </div>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--border);">
+                      <span style="font-size: 13px; color: var(--text-2);">Start New Chat</span>
+                      <div style="display: flex; gap: 3px; align-items: center;">
+                        <kbd class="shortcut-kbd">Ctrl</kbd><span style="font-size:11px;color:var(--text-3);">+</span><kbd class="shortcut-kbd">N</kbd>
+                      </div>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--border);">
+                      <span style="font-size: 13px; color: var(--text-2);">Open Settings</span>
+                      <div style="display: flex; gap: 3px; align-items: center;">
+                        <kbd class="shortcut-kbd">Ctrl</kbd><span style="font-size:11px;color:var(--text-3);">+</span><kbd class="shortcut-kbd">,</kbd>
+                      </div>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0;">
+                      <span style="font-size: 13px; color: var(--text-2);">Toggle Theme (Light/Dark)</span>
+                      <div style="display: flex; gap: 3px; align-items: center;">
+                        <kbd class="shortcut-kbd">Ctrl</kbd><span style="font-size:11px;color:var(--text-3);">+</span><kbd class="shortcut-kbd">Shift</kbd><span style="font-size:11px;color:var(--text-3);">+</span><kbd class="shortcut-kbd">L</kbd>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Controls & Popups Card -->
+                  <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <div style="font-size: 13.5px; font-weight: 600; color: var(--text-primary); display: flex; align-items: center; gap: 6px;">
+                      <i data-lucide="sliders" style="width: 15px; height: 15px; color: var(--text-2);"></i> Controls & Popups
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--border);">
+                      <span style="font-size: 13px; color: var(--text-2);">Close Popups / Modals</span>
+                      <div style="display: flex; gap: 3px; align-items: center;">
+                        <kbd class="shortcut-kbd">Esc</kbd>
+                      </div>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--border);">
+                      <span style="font-size: 13px; color: var(--text-2);">Send Prompt / Message</span>
+                      <div style="display: flex; gap: 3px; align-items: center;">
+                        <kbd class="shortcut-kbd">Enter</kbd>
+                      </div>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--border);">
+                      <span style="font-size: 13px; color: var(--text-2);">New Line in Prompt</span>
+                      <div style="display: flex; gap: 3px; align-items: center;">
+                        <kbd class="shortcut-kbd">Shift</kbd><span style="font-size:11px;color:var(--text-3);">+</span><kbd class="shortcut-kbd">Enter</kbd>
+                      </div>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0;">
+                      <span style="font-size: 13px; color: var(--text-2);">Open User Menu</span>
+                      <div style="display: flex; gap: 3px; align-items: center;">
+                        <span style="font-size: 12px; color: var(--text-3);">Click Profile / Gear</span>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </section>
+
             <!-- ABOUT HEKKI -->
             <section class="settings-section" id="section-about">
               <h2 class="section-title">About Hekki</h2>
@@ -1246,7 +1332,7 @@
     </div>
   </div>
 
-  <script src="/static/main.js?v=215" type="module"></script>
+  <script src="/static/main.js?v=225" type="module"></script>
 
 
 

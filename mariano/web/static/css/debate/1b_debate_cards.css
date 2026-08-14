@@ -253,7 +253,7 @@ body.dark .des-card-avatar {
 }
 
 .debate-arrow { font-size: 11px; color: var(--text-3); }
-.debate-target-badge { font-size: 10px; color: var(--text-3); }
+.debate-target-badge { font-size: 11px; color: var(--text-3); }
 
 /* Bubbles & Summary Cards (Exact ChatGPT Specs: Segoe UI 400 16px/26px) */
 .debate-bubble,

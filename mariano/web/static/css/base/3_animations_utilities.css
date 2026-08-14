@@ -1,0 +1,163 @@
+/* ==========================================================================
+   base/3_animations_utilities.css — Keyframes, Scrollbars, Shimmer & Mascot
+   ========================================================================== */
+
+/* KEYBOARD FOCUS */
+:focus-visible {
+  outline: 2px solid var(--text-2);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+  outline: 2px solid var(--text-2);
+  outline-offset: 2px;
+}
+input, textarea, select, button { 
+  font-family: var(--font); 
+  letter-spacing: inherit; 
+  word-spacing: inherit; 
+}
+input[type="text"], 
+input[type="search"], 
+input[type="password"], 
+input[type="email"], 
+input[type="number"], 
+select, 
+.search-input, 
+.search-box, 
+.search-bar {
+  background: var(--input-bg);
+  color: var(--text);
+  font-family: var(--font);
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  border-radius: 12px !important;
+}
+
+#chat-input,
+#chat-input-conv,
+#agent-task-input,
+#debate-input,
+.chat-textarea {
+  background: transparent !important;
+  color: var(--text) !important;
+  font-family: var(--font) !important;
+  font-size: 15px !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+}
+
+#chat-input::placeholder,
+#chat-input-conv::placeholder,
+#agent-task-input::placeholder,
+#debate-input::placeholder,
+.chat-textarea::placeholder {
+  color: var(--text-3) !important;
+  font-size: 15px !important;
+}
+
+/* OPEN CANVAS LAUNCH BUTTON */
+.btn-canvas-launch,
+button.btn-canvas-launch {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  font-size: 11.5px !important;
+  font-weight: 600 !important;
+  color: #2563eb !important;
+  background: rgba(37, 99, 235, 0.12) !important;
+  padding: 4px 10px !important;
+  border-radius: 20px !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  cursor: pointer !important;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.12s ease !important;
+}
+.btn-canvas-launch:hover,
+button.btn-canvas-launch:hover {
+  background: #2563eb !important;
+  color: #ffffff !important;
+  transform: translateY(-1px);
+}
+.btn-canvas-launch i,
+.btn-canvas-launch svg,
+.btn-canvas-launch .lucide {
+  width: 13px !important;
+  height: 13px !important;
+  color: inherit !important;
+  stroke-width: 2.2px !important;
+}
+body.dark .btn-canvas-launch,
+body.dark button.btn-canvas-launch,
+[data-theme="dark"] .btn-canvas-launch,
+[data-theme="oled"] .btn-canvas-launch {
+  color: #60a5fa !important;
+  background: rgba(96, 165, 250, 0.22) !important;
+}
+body.dark .btn-canvas-launch:hover,
+body.dark button.btn-canvas-launch:hover,
+[data-theme="dark"] .btn-canvas-launch:hover,
+[data-theme="oled"] .btn-canvas-launch:hover {
+  color: #ffffff !important;
+  background: #2563eb !important;
+}
+
+/* KEYFRAMES */
+@keyframes spin    { to { transform: rotate(360deg); } }
+@keyframes fadeIn  { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@keyframes pulse   { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
+
+/* SCROLLBAR */
+::-webkit-scrollbar       { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-3); }
+
+/* SKELETON SHIMMER LOADING */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(90deg, var(--hover) 25%, var(--border) 50%, var(--hover) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite linear;
+}
+
+.skeleton-circle { border-radius: 50%; }
+.skeleton-bar { border-radius: 4px; height: 12px; width: 100%; margin: 6px 0; }
+
+/* REACTIVE GHOST MASCOT ANIMATION */
+.ghost-avatar-container {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.ghost-float-anim {
+  animation: ghost-levitate 3.2s ease-in-out infinite;
+  filter: drop-shadow(0 4px 10px rgba(99, 102, 241, 0.22));
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.2s ease;
+}
+
+.ghost-avatar-container:hover .ghost-float-anim {
+  transform: none;
+  filter: drop-shadow(0 6px 14px rgba(99, 102, 241, 0.4));
+}
+
+@keyframes ghost-levitate {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-4px) rotate(1.5deg); }
+}

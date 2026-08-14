@@ -1,0 +1,268 @@
+/* ==========================================================================
+   chat/2b_home_suggestions.css — Home Screen Pills, Controls & Voice Bar
+   ========================================================================== */
+
+.model-pill {
+  height: 28px !important;
+  padding: 0 6px !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  font-family: var(--font) !important;
+  font-size: 13px !important;
+  font-weight: 400 !important;
+  color: var(--text-2) !important;
+  opacity: 1 !important;
+  cursor: pointer;
+  border-radius: 6px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  transition: background 0.12s ease, color 0.12s ease !important;
+}
+.model-pill span {
+  font-size: 13px !important;
+  color: var(--text-2) !important;
+  opacity: 1 !important;
+  font-weight: 400 !important;
+}
+.model-pill:hover,
+.model-pill:active,
+.model-pill.active {
+  background: var(--hover) !important;
+  color: var(--text) !important;
+  opacity: 1 !important;
+}
+.model-pill:hover span {
+  color: var(--text) !important;
+}
+.model-pill .mi,
+.model-pill i,
+.model-pill svg,
+.model-pill .lucide {
+  font-size: 15px !important;
+  width: 15px !important;
+  height: 15px !important;
+  color: var(--text-3) !important;
+  transition: color 0.12s ease !important;
+}
+.model-pill:hover .mi,
+.model-pill:hover i,
+.model-pill:hover svg,
+.model-pill:hover .lucide,
+.model-pill:active .mi,
+.model-pill:active i,
+.model-pill:active svg,
+.model-pill:active .lucide {
+  color: var(--text) !important;
+}
+
+.permission-pill {
+  height: 24px;
+  padding: 0 10px;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: var(--hover);
+  font-family: var(--font);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  color: var(--text-2);
+  cursor: pointer;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: background 0.12s;
+  vertical-align: middle;
+}
+.permission-pill:hover { background: var(--hover); }
+
+.permission-dropdown {
+  position: absolute;
+  z-index: 10000;
+  background: var(--card);
+  border: none !important;
+  border-radius: 12px;
+  box-shadow: none !important;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  min-width: 170px;
+  bottom: 44px;
+}
+
+.stop-btn {
+  height: 28px;
+  padding: 0 12.5px;
+  border: none;
+  background: var(--hover);
+  color: var(--text-2);
+  cursor: pointer;
+  font-family: var(--font);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: background 0.12s, color 0.12s;
+  flex-shrink: 0;
+}
+.stop-btn:hover { background: var(--hover-2); color: var(--text); }
+.stop-btn i, .stop-btn svg {
+  width: 10px;
+  height: 10px;
+  fill: var(--text-2);
+  stroke: var(--text-2);
+  transition: fill 0.12s, stroke 0.12s;
+}
+.stop-btn:hover i, .stop-btn:hover svg { fill: var(--text); stroke: var(--text); }
+.stop-dots { letter-spacing: 1px; opacity: 0.8; animation: blink 1.2s step-end infinite; }
+
+.shortcuts { display: none !important; }
+.shortcut {
+  height: 32px;
+  padding: 0 14px;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: var(--input-bg, #F4F4F6);
+  color: var(--text-2);
+  cursor: pointer;
+  font-family: var(--font);
+  font-size: var(--fs-sm);
+  font-weight: 400 !important;
+  border-radius: 8px !important;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+.shortcut .mi, .shortcut i, .shortcut svg, .shortcut .lucide {
+  font-size: 15px; width: 15px; height: 15px; color: var(--text-3); transition: color 0.12s ease;
+}
+.shortcut:hover { background: var(--hover, #EEEEEC) !important; color: var(--text) !important; }
+.shortcut:hover .mi, .shortcut:hover i, .shortcut:hover svg, .shortcut:hover .lucide { color: var(--text) !important; }
+body.light .shortcut:hover, :root[data-theme="light"] .shortcut:hover { background: #EEEEEC !important; color: var(--text) !important; }
+body.dark .shortcut:hover, :root[data-theme="dark"] .shortcut:hover, body.oled .shortcut:hover, :root[data-theme="oled"] .shortcut:hover { background: #333332 !important; color: var(--text) !important; }
+
+.voice-waveform-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  height: 36px;
+  padding: 0 2px;
+}
+.voice-waveform-bar.hidden { display: none !important; }
+
+/* When Voice Recording is Active in Capsule, HIDE ALL OTHER INPUT ELEMENTS COMPLETELY */
+#input-capsule:has(.voice-waveform-bar:not(.hidden)),
+#input-capsule-conv:has(.voice-waveform-bar:not(.hidden)),
+#input-capsule.is-voice-active,
+#input-capsule-conv.is-voice-active {
+  padding: 5px 12px !important;
+  min-height: 46px !important;
+  height: 46px !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+}
+
+#input-capsule:has(.voice-waveform-bar:not(.hidden)) #chat-input,
+#input-capsule:has(.voice-waveform-bar:not(.hidden)) .input-capsule-row,
+#input-capsule:has(.voice-waveform-bar:not(.hidden)) #btn-attach-home,
+#input-capsule:has(.voice-waveform-bar:not(.hidden)) #single-model-pill,
+#input-capsule:has(.voice-waveform-bar:not(.hidden)) .capsule-left,
+#input-capsule:has(.voice-waveform-bar:not(.hidden)) .capsule-right,
+#input-capsule-conv:has(.voice-waveform-bar:not(.hidden)) #chat-input-conv,
+#input-capsule-conv:has(.voice-waveform-bar:not(.hidden)) .input-capsule-row,
+#input-capsule-conv:has(.voice-waveform-bar:not(.hidden)) #btn-attach-conv,
+#input-capsule-conv:has(.voice-waveform-bar:not(.hidden)) #conv-model-pill,
+#input-capsule-conv:has(.voice-waveform-bar:not(.hidden)) .capsule-left,
+#input-capsule-conv:has(.voice-waveform-bar:not(.hidden)) .capsule-right,
+#input-capsule.is-voice-active #chat-input,
+#input-capsule.is-voice-active .input-capsule-row,
+#input-capsule.is-voice-active #btn-attach-home,
+#input-capsule.is-voice-active #single-model-pill,
+#input-capsule.is-voice-active .capsule-left,
+#input-capsule.is-voice-active .capsule-right,
+#input-capsule-conv.is-voice-active #chat-input-conv,
+#input-capsule-conv.is-voice-active .input-capsule-row,
+#input-capsule-conv.is-voice-active #btn-attach-conv,
+#input-capsule-conv.is-voice-active #conv-model-pill,
+#input-capsule-conv.is-voice-active .capsule-left,
+#input-capsule-conv.is-voice-active .capsule-right {
+  display: none !important;
+}
+
+#input-capsule:has(.voice-waveform-bar:not(.hidden)) .voice-waveform-bar,
+#input-capsule-conv:has(.voice-waveform-bar:not(.hidden)) .voice-waveform-bar,
+#input-capsule.is-voice-active .voice-waveform-bar,
+#input-capsule-conv.is-voice-active .voice-waveform-bar {
+  display: flex !important;
+  width: 100% !important;
+}
+
+#btn-cancel-voice-home, #btn-cancel-voice-conv, #btn-stop-voice-home, #btn-stop-voice-conv {
+  width: 30px !important;
+  height: 30px !important;
+  min-width: 30px !important;
+  min-height: 30px !important;
+  border-radius: 50% !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  cursor: pointer !important;
+  transition: background 0.15s ease, color 0.15s ease !important;
+}
+
+body.light #btn-cancel-voice-home, body.light #btn-cancel-voice-conv, body.light #btn-stop-voice-home, body.light #btn-stop-voice-conv,
+:root[data-theme="light"] #btn-cancel-voice-home, :root[data-theme="light"] #btn-cancel-voice-conv, :root[data-theme="light"] #btn-stop-voice-home, :root[data-theme="light"] #btn-stop-voice-conv {
+  background: #F1F5F9 !important; color: #0F172A !important;
+}
+body.light #btn-cancel-voice-home:hover, body.light #btn-cancel-voice-conv:hover, body.light #btn-stop-voice-home:hover, body.light #btn-stop-voice-conv:hover,
+:root[data-theme="light"] #btn-cancel-voice-home:hover, :root[data-theme="light"] #btn-cancel-voice-conv:hover, :root[data-theme="light"] #btn-stop-voice-home:hover, :root[data-theme="light"] #btn-stop-voice-conv:hover {
+  background: #E2E8F0 !important; color: #0F172A !important;
+}
+
+body.dark #btn-cancel-voice-home, body.dark #btn-cancel-voice-conv, body.dark #btn-stop-voice-home, body.dark #btn-stop-voice-conv,
+body.oled #btn-cancel-voice-home, body.oled #btn-cancel-voice-conv, body.oled #btn-stop-voice-home, body.oled #btn-stop-voice-conv,
+:root[data-theme="dark"] #btn-cancel-voice-home, :root[data-theme="dark"] #btn-cancel-voice-conv, :root[data-theme="dark"] #btn-stop-voice-home, :root[data-theme="dark"] #btn-stop-voice-conv,
+:root[data-theme="oled"] #btn-cancel-voice-home, :root[data-theme="oled"] #btn-cancel-voice-conv, :root[data-theme="oled"] #btn-stop-voice-home, :root[data-theme="oled"] #btn-stop-voice-conv {
+  background: #2A2A2E !important; color: #F4F4F5 !important;
+}
+body.dark #btn-cancel-voice-home:hover, body.dark #btn-cancel-voice-conv:hover, body.dark #btn-stop-voice-home:hover, body.dark #btn-stop-voice-conv:hover,
+body.oled #btn-cancel-voice-home:hover, body.oled #btn-cancel-voice-conv:hover, body.oled #btn-stop-voice-home:hover, body.oled #btn-stop-voice-conv:hover,
+:root[data-theme="dark"] #btn-cancel-voice-home:hover, :root[data-theme="dark"] #btn-cancel-voice-conv:hover, :root[data-theme="dark"] #btn-stop-voice-home:hover, :root[data-theme="dark"] #btn-stop-voice-conv:hover,
+:root[data-theme="oled"] #btn-cancel-voice-home:hover, :root[data-theme="oled"] #btn-cancel-voice-conv:hover, :root[data-theme="oled"] #btn-stop-voice-home:hover, :root[data-theme="oled"] #btn-stop-voice-conv:hover {
+  background: #3A3A40 !important; color: #FFFFFF !important;
+}
+
+#btn-stop-voice-home i, #btn-stop-voice-conv i, #btn-stop-voice-home svg, #btn-stop-voice-conv svg {
+  color: #EF4444 !important; fill: #EF4444 !important;
+}
+
+.voice-waveform-track {
+  flex: 1; display: flex; align-items: center; justify-content: flex-end; height: 32px; overflow: hidden; position: relative;
+  mask-image: linear-gradient(to right, transparent 0px, black 24px, black 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0px, black 24px, black 100%);
+}
+
+.v-bars-wrapper { display: flex; align-items: center; justify-content: space-between; gap: 2px; width: 100%; height: 32px; flex: 1; }
+.v-bar {
+  flex: 1; min-width: 2px; max-width: 3.5px; min-height: 3px; max-height: 26px; height: 3px; background: var(--text-3, #71717a); border-radius: 2px; transition: height 0.04s ease, background 0.1s ease; opacity: 0.45;
+}
+body.dark .v-bar, body.oled .v-bar, :root[data-theme="dark"] .v-bar, :root[data-theme="oled"] .v-bar {
+  background: rgba(244, 244, 245, 0.40) !important;
+}
+.v-bar.active { background: var(--text, #ffffff) !important; opacity: 1 !important; }
+body.dark .v-bar.active, body.oled .v-bar.active, :root[data-theme="dark"] .v-bar.active, :root[data-theme="oled"] .v-bar.active {
+  background: #FFFFFF !important; opacity: 1 !important;
+}

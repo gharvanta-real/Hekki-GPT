@@ -1,9 +1,12 @@
+@import '1a_settings_controls.css';
+
 /* === FULL-PAGE CLEAN SETTINGS PANE === */
 
 #settings-pane {
   position: relative;
   width: 100%;
   height: 100%;
+  flex: 1;
   display: none;
   background: var(--bg);
   color: var(--text);
@@ -12,7 +15,8 @@
 }
 
 #settings-pane.visible {
-  display: block !important;
+  display: flex !important;
+  flex-direction: column !important;
 }
 
 /* Hide collapse panel button & back/forward arrows in Settings mode */
@@ -93,11 +97,21 @@ body[data-page="settings"] #sidebar-nav .nav-header {
 
 /* Container Cards (Cursor IDE Card Boxes) */
 .settings-card-box {
-  background: var(--card, #1e1e1e) !important;
+  background: var(--card, #FFFFFF) !important;
   border: none !important;
   border-radius: 12px !important;
   margin-bottom: 20px !important;
   overflow: hidden !important;
+}
+
+body.dark .settings-card-box,
+body.oled .settings-card-box {
+  background: #1E1E1E !important;
+}
+
+body.light .settings-card-box,
+:root[data-theme="light"] .settings-card-box {
+  background: #FFFFFF !important;
 }
 
 .settings-card-box .settings-row {
@@ -156,6 +170,8 @@ body[data-page="settings"] #sidebar-nav .nav-header {
   position: relative;
 }
 
+.modal-nav-item i,
+.modal-nav-item svg,
 .modal-nav-item .lucide {
   width: 16px;
   height: 16px;
@@ -172,6 +188,8 @@ body[data-page="settings"] #sidebar-nav .nav-header {
   border-radius: 8px !important;
 }
 
+.modal-nav-item:hover i,
+.modal-nav-item:hover svg,
 .modal-nav-item:hover .lucide {
   color: var(--text, #ffffff) !important;
 }
@@ -185,6 +203,8 @@ body[data-page="settings"] #sidebar-nav .nav-header {
   border-radius: 8px !important;
 }
 
+.modal-nav-item.active i,
+.modal-nav-item.active svg,
 .modal-nav-item.active .lucide {
   color: var(--text, #ffffff) !important;
 }
@@ -273,11 +293,25 @@ body.oled .modal-close:hover {
   letter-spacing: -0.01em;
 }
 
+body.dark .section-title,
+body.oled .section-title,
+:root[data-theme="dark"] .section-title,
+:root[data-theme="oled"] .section-title {
+  color: #FFFFFF !important;
+}
+
 .section-sub {
   font-size: var(--fs-sm);
   color: var(--text-3, #71717a);
   margin-bottom: 20px;
   line-height: 1.5;
+}
+
+body.dark .section-sub,
+body.oled .section-sub,
+:root[data-theme="dark"] .section-sub,
+:root[data-theme="oled"] .section-sub {
+  color: #A1A1AA !important;
 }
 
 /* PROMO HERO CARD (ChatGPT Style Top Callout) */
@@ -329,144 +363,3 @@ body.oled .settings-promo-card {
   margin-top: 1px;
 }
 
-/* ROW-BASED LIST ITEMS (ChatGPT Style Dividers & Alignment) */
-.settings-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 0;
-  min-height: 48px;
-  gap: 20px;
-  border-bottom: 1px solid var(--border, rgba(0, 0, 0, 0.08));
-}
-
-.settings-row:last-child {
-  border-bottom: none;
-}
-
-.row-info {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  flex: 1;
-}
-
-.row-label {
-  font-size: var(--fs-base);
-  font-weight: 400;
-  color: var(--text-primary, #09090b);
-}
-
-.row-desc {
-  font-size: var(--fs-sm);
-  color: var(--text-3, #71717a);
-  line-height: 1.4;
-}
-
-/* CONTROLS (Right-aligned ChatGPT Frameless Style) */
-.settings-select {
-  border: none !important;
-  outline: none !important;
-  background: var(--bg, #ffffff);
-  color: var(--text-primary);
-  font-family: var(--font);
-  font-size: 13px !important;
-  font-weight: 500;
-  padding: 6px 28px 6px 12px;
-  border-radius: 8px;
-  cursor: pointer;
-  min-width: 140px;
-  transition: all 0.15s ease;
-  appearance: none;
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2371717a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 10px center;
-  background-size: 13px;
-}
-
-body.dark .settings-select,
-body.oled .settings-select {
-  background-color: #27272a;
-  border-color: rgba(255, 255, 255, 0.12) !important;
-  color: #ffffff;
-}
-
-.settings-select:hover {
-  border-color: var(--text-3) !important;
-}
-
-.settings-input {
-  border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
-  background: var(--bg, #FCFCFC);
-  color: var(--text-primary);
-  font-family: var(--font);
-  font-size: 13px !important;
-  padding: 7px 12px;
-  border-radius: 8px;
-  min-width: 200px;
-  text-align: left !important;
-  transition: all 0.15s ease;
-}
-
-body.dark .settings-input,
-body.oled .settings-input {
-  background-color: #27272a;
-  border-color: rgba(255, 255, 255, 0.12) !important;
-  color: #ffffff;
-}
-
-.settings-input:focus {
-  border-color: var(--accent, #2563eb) !important;
-}
-
-.settings-textarea {
-  width: 100%;
-  height: 90px;
-  border: none !important;
-  outline: none !important;
-  background: var(--bg, #ffffff);
-  color: var(--text-primary);
-  font-family: var(--font);
-  font-size: 13px !important;
-  padding: 10px 12px;
-  border-radius: 10px;
-  resize: vertical;
-  line-height: 1.5;
-  transition: border-color 0.15s ease;
-}
-
-body.dark .settings-textarea,
-body.oled .settings-textarea {
-  background-color: #27272a;
-  border-color: rgba(255, 255, 255, 0.12) !important;
-  color: #ffffff;
-}
-
-.settings-textarea:focus {
-  border-color: var(--accent, #2563eb) !important;
-}
-
-/* CHATGPT STYLE BLACK PILL BUTTON */
-.btn-pill-save {
-  padding: 7px 20px;
-  background: var(--text-primary, #09090b);
-  color: var(--bg, #ffffff);
-  border: none;
-  border-radius: 9999px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: opacity 0.15s ease;
-}
-
-body.dark .btn-pill-save,
-body.oled .btn-pill-save {
-  background: #ffffff;
-  color: #09090b;
-}
-
-.btn-pill-save:hover {
-  opacity: 0.9;
-}

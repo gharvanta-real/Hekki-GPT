@@ -1,0 +1,198 @@
+/* ==========================================================================
+   chat/8d1_lightbox.css — Image Lightbox Modal & Confirmation Overlays
+   ========================================================================== */
+
+.img-gallery-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 12px;
+  border: none;
+  background: var(--card);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, transform 0.12s;
+}
+
+.img-gallery-btn:hover { background: var(--hover); border: none; }
+.img-gallery-btn-active { background: #191919 !important; border: none !important; color: #ffffff !important; }
+.img-gallery-btn-danger { background: rgba(239, 68, 68, 0.1) !important; border: none !important; color: #ef4444 !important; }
+.img-gallery-btn-danger:hover { background: #ef4444 !important; color: #ffffff !important; border: none !important; }
+
+.img-confirm-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.18s ease-out;
+}
+.img-confirm-modal-overlay.hidden { display: none !important; }
+
+.img-confirm-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(3px);
+}
+
+.img-confirm-dialog {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 420px;
+  background: var(--card);
+  border: none !important;
+  border-radius: 16px;
+  padding: 22px 24px;
+  box-shadow: none !important;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  gap: 16px;
+  animation: modalPop 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalPop {
+  from { transform: scale(0.96); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.img-confirm-header { display: flex; align-items: center; justify-content: space-between; width: 100%; }
+.img-confirm-title { margin: 0; font-size: 18px; font-weight: 600; color: var(--text-primary); font-family: var(--font); letter-spacing: -0.01em; }
+.img-confirm-close {
+  background: transparent;
+  border: none;
+  color: var(--text-3);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 6px;
+  transition: color 0.15s, background 0.15s;
+}
+.img-confirm-close:hover { color: var(--text-primary); background: var(--hover); }
+.img-confirm-body { margin: 0; }
+.img-confirm-msg { margin: 0; font-size: 14px; color: var(--text-secondary); font-family: var(--font); line-height: 1.55; text-align: left; }
+.img-confirm-actions { display: flex; align-items: center; justify-content: flex-end; gap: 10px; width: 100%; margin-top: 4px; }
+
+.img-confirm-btn {
+  padding: 8px 18px;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 8px;
+  border: none;
+  font-family: var(--font);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, transform 0.1s, opacity 0.15s;
+  outline: none;
+}
+
+.img-confirm-btn-cancel { background: var(--hover); color: var(--text-primary); border: none; }
+.img-confirm-btn-cancel:hover { background: var(--border); }
+.img-confirm-btn-action, .img-confirm-btn-danger {
+  background: var(--text-primary) !important; color: var(--bg) !important; border: none !important; font-weight: 600 !important;
+}
+.img-confirm-btn-action:hover, .img-confirm-btn-danger:hover { opacity: 0.9 !important; border: none !important; box-shadow: none !important; }
+
+.img-gallery-loading { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; height: 300px; color: var(--text-3); font-family: var(--font); font-size: 13px; }
+.img-gallery-spinner { width: 28px; height: 28px; border: none !important; border-top-color: var(--text-secondary); border-radius: 50%; animation: spin 0.9s linear infinite; }
+.img-gallery-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 340px; gap: 10px; text-align: center; }
+.img-gallery-empty-icon { margin-bottom: 4px; color: var(--text-3); }
+.img-gallery-empty-title { font-size: 15px; font-weight: 600; color: var(--text-secondary); font-family: var(--font); margin: 0; }
+.img-gallery-empty-sub { font-size: 12.5px; color: var(--text-3); font-family: var(--font); margin: 0; }
+
+.img-lightbox-overlay { position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center; }
+.img-lightbox-overlay.hidden { display: none; }
+.img-lightbox-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.40); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+
+.img-lightbox-modal {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  background: var(--card, #121215);
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 24px !important;
+  overflow: hidden;
+  max-width: min(92vw, 920px);
+  max-height: 90vh;
+  width: max-content;
+  animation: lb-in 0.22s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+@keyframes lb-in { from { opacity: 0; transform: scale(0.92); } to { opacity: 1; transform: scale(1); } }
+
+.img-lightbox-topbar, .img-lightbox-name { display: none !important; }
+
+.img-lightbox-actions {
+  position: absolute !important;
+  bottom: 18px !important;
+  left: 50% !important;
+  top: auto !important;
+  right: auto !important;
+  transform: translateX(-50%) !important;
+  z-index: 100 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  background: rgba(24, 24, 27, 0.85) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  padding: 6px 14px !important;
+  border-radius: 30px !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.img-lightbox-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  min-height: 32px !important;
+  max-width: 32px !important;
+  max-height: 32px !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 50% !important;
+  background: rgba(255, 255, 255, 0.14) !important;
+  color: #ffffff !important;
+  cursor: pointer;
+  padding: 0 !important;
+  flex-shrink: 0 !important;
+  transition: all 0.15s ease;
+}
+
+.img-lightbox-btn i, .img-lightbox-btn svg { color: #ffffff !important; stroke: #ffffff !important; width: 15px !important; height: 15px !important; }
+.img-lightbox-btn:hover { background: rgba(255, 255, 255, 0.28) !important; color: #ffffff !important; transform: none; }
+
+body.light .img-lightbox-actions, :root[data-theme="light"] .img-lightbox-actions { background: rgba(18, 18, 20, 0.88) !important; backdrop-filter: blur(16px) !important; }
+body.light .img-lightbox-btn, :root[data-theme="light"] .img-lightbox-btn { background: rgba(255, 255, 255, 0.16) !important; color: #ffffff !important; }
+body.light .img-lightbox-btn i, body.light .img-lightbox-btn svg, :root[data-theme="light"] .img-lightbox-btn i, :root[data-theme="light"] .img-lightbox-btn svg { color: #ffffff !important; stroke: #ffffff !important; }
+body.light .img-lightbox-btn:hover, :root[data-theme="light"] .img-lightbox-btn:hover { background: rgba(255, 255, 255, 0.30) !important; color: #ffffff !important; }
+
+.img-lightbox-body { position: relative; display: flex; align-items: center; justify-content: center; flex: 1; overflow: hidden; background: rgba(0,0,0,0.3); min-height: 200px; }
+.img-lightbox-img { max-width: 100%; max-height: 65vh; object-fit: contain; display: block; border-radius: 20px !important; }
+
+.img-lb-nav {
+  position: absolute; top: 50%; transform: translateY(-50%); width: 36px; height: 36px; border: none !important; border-radius: 50%; background: rgba(0,0,0,0.5); color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s, opacity 0.15s; z-index: 2;
+}
+.img-lb-nav:hover { background: rgba(0,0,0,0.8); }
+.img-lb-prev { left: 10px; }
+.img-lb-next { right: 10px; }
+
+.img-lightbox-footer { display: flex; align-items: center; justify-content: space-between; padding: 8px 14px; border-top: 1px solid var(--border); }
+.img-lb-meta { font-size: 12px; color: var(--text-3); font-family: var(--font); }
+.img-lb-counter { font-size: 12px; color: var(--text-3); font-family: var(--font); }

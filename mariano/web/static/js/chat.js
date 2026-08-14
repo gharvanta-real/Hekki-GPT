@@ -5,7 +5,7 @@
 import { ChatSessionManager } from './chat/session.js';
 import {
   escapeHtml, scrollChat, clearInputs, clearChatLogs,
-  formatTime, setGlobalSendCallback,
+  formatTime, setGlobalSendCallback, setGeneratingState,
   bindInputs as _bindInputs
 } from './chat/input.js';
 import { createMessageElement } from './chat/messages.js';
@@ -21,6 +21,7 @@ window.openImageLightbox = openImageLightbox;
 export {
   ChatSessionManager,
   escapeHtml, scrollChat, clearInputs, clearChatLogs, formatTime,
+  setGeneratingState,
   showCustomConfirm, showCustomPrompt, openImageLightbox
 };
 

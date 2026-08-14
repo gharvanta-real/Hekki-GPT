@@ -119,6 +119,7 @@ export function send(text, enterConversation, log) {
   
   appendMsg('user', fullMessageText, enterConversation, scrollChat);
   attachmentManager.clear();
+  window.isGenerating = true;
   clearInputs();
   window.setGeneratingState(true);
   log(`Sent: "${text}" with ${files.length} attachment(s)`, 'ok');

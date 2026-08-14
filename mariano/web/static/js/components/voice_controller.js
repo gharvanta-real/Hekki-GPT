@@ -86,11 +86,13 @@ export function bindVoice(voice, socket, inConversationState, log) {
 
   const showVoiceBar = () => {
     if (inConversationState.val) {
+      $('input-capsule-conv')?.classList.add('is-voice-active');
       $('input-row-conv')?.classList.add('hidden');
       $('chat-input-conv')?.classList.add('hidden');
       $('preview-area-conv')?.classList.add('hidden');
       $('voice-bar-conv')?.classList.remove('hidden');
     } else {
+      $('input-capsule')?.classList.add('is-voice-active');
       $('input-row-home')?.classList.add('hidden');
       $('chat-input')?.classList.add('hidden');
       $('preview-area-home')?.classList.add('hidden');
@@ -99,6 +101,9 @@ export function bindVoice(voice, socket, inConversationState, log) {
   };
 
   const hideVoiceBar = () => {
+    $('input-capsule')?.classList.remove('is-voice-active');
+    $('input-capsule-conv')?.classList.remove('is-voice-active');
+
     $('input-row-home')?.classList.remove('hidden');
     $('chat-input')?.classList.remove('hidden');
     $('voice-bar-home')?.classList.add('hidden');
@@ -160,6 +165,10 @@ export function bindVoice(voice, socket, inConversationState, log) {
       c.classList.remove('capsule-listening-active');
       c.style.removeProperty('--voice-level');
     });
+
+    if (window.setGeneratingState) {
+      window.setGeneratingState(window.isGenerating);
+    }
   };
 
   resetVoiceUIInstance = resetVoiceUI;

@@ -22,24 +22,11 @@ const ICONS = {
 
 class VisionHUDController {
   constructor() {
-    this.container = null;
-    this.launcher = null;
-    this.header = null;
-    this.hero = null;
-    this.chatBody = null;
-    this.bottomGroup = null;
-    this.voiceView = null;
-    this.voiceMainStatus = null;
-    this.voiceSubStatus = null;
-    this.input = null;
-    this.micBtn = null;
-    this.dropdown = null;
-    this.isDragging = false;
-    this.startX = 0;
-    this.startY = 0;
-    this.isEnabled = localStorage.getItem('hekki_vision_hud_enabled') !== 'false';
-    this.isVoiceActive = false;
-    this.recognition = null;
+    this.container = this.launcher = this.header = this.hero = this.chatBody = this.bottomGroup = null;
+    this.voiceView = this.voiceMainStatus = this.voiceSubStatus = this.input = this.micBtn = this.dropdown = null;
+    this.isDragging = false; this.startX = this.startY = 0;
+    this.isEnabled = localStorage.getItem('hekki_vision_hud_enabled') === 'true';
+    this.isVoiceActive = false; this.recognition = null;
     this.init();
   }
 
@@ -492,6 +479,10 @@ class VisionHUDController {
   }
 
   toggle() {
+    if (window.electronAPI && window.electronAPI.toggleOverlay) {
+      window.electronAPI.toggleOverlay();
+      return;
+    }
     if (this.isEnabled) this.container?.classList.contains('hidden') ? this.show() : this.hide();
   }
 }

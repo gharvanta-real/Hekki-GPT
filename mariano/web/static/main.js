@@ -4,7 +4,7 @@ import { initWaveCanvas } from '/static/wave_canvas.js';
 import { VoiceProcessor } from '/static/voice_processor.js';
 import { TabManager }     from '/static/tab_manager.js';
 
-import { bindInputs, clearInputs, appendMsg, scrollChat, ChatSessionManager } from '/static/js/chat.js';
+import { bindInputs, clearInputs, setGeneratingState, appendMsg, scrollChat, ChatSessionManager } from '/static/js/chat.js';
 import { initSettings }    from '/static/js/settings.js';
 import { bindNavigation }  from '/static/js/nav.js';
 import { router, initRouterState } from '/static/js/router.js';
@@ -322,7 +322,11 @@ window.HudLogger = {
     if (!window.tabs.map.has(key)) {
       const html = `
         <div style="padding: 16px; min-height: 100%; box-sizing: border-box; background: var(--bg); color: var(--text);">
-          <div id="hud-log-container" style="display: flex; flex-direction: column; gap: 6px; font-family: monospace; font-size: 12.5px;"></div>
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border);">
+            <span style="font-size: 13.5px; font-weight: 600; color: var(--text);">Process Execution Logs</span>
+            <button id="btn-copy-hud-logs" style="background: var(--sidebar-bg); color: var(--text); border: none; padding: 4px 10px; border-radius: 6px; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 4px;">Copy Logs</button>
+          </div>
+          <div id="hud-log-container" style="display: flex; flex-direction: column; gap: 6px; font-family: monospace; font-size: 13.5px;"></div>
         </div>
       `;
       const css = `
@@ -358,6 +362,17 @@ window.HudLogger = {
       const tab = window.tabs.map.get(key);
       const shadow = tab?.view.firstChild?.shadowRoot;
       const container = shadow?.getElementById('hud-log-container');
+      const copyBtn = shadow?.getElementById('btn-copy-hud-logs');
+
+      if (copyBtn) {
+        copyBtn.addEventListener('click', () => {
+          const logText = window.HudLogger.logs.map(l => `[${l.timestamp}] [${l.type.toUpperCase()}] ${l.text}`).join('\n');
+          navigator.clipboard.writeText(logText).then(() => {
+            if (window.showToast) window.showToast('Logs Copied', 'All execution logs copied to clipboard', 2500);
+          });
+        });
+      }
+
       if (container) {
         this.logs.forEach(log => {
           const line = document.createElement('div');
@@ -759,53 +774,81 @@ function setGreeting(nameOverride) {
 }
 
 window.isGenerating = false;
-window.setGeneratingState = function(isGenerating) {
-  window.isGenerating = isGenerating;
-  const btnHomeSubmit = $('btn-submit-home');
-  const btnConvSubmit = $('btn-submit-conv');
-  const btnHomeStop = $('btn-stop-gen');
-  const btnConvStop = $('btn-stop-gen-conv');
-
-  const inputHome = $('chat-input');
-  const inputConv = $('chat-input-conv');
-
-  const hasAtt = window.attachmentManager ? window.attachmentManager.hasFiles() : false;
-  const hasTextHome = (inputHome && inputHome.value.trim() !== '') || hasAtt;
-  const hasTextConv = (inputConv && inputConv.value.trim() !== '') || hasAtt;
-
-  if (isGenerating) {
-    if (hasTextHome) {
-      btnHomeSubmit?.classList.remove('hidden');
-      btnHomeStop?.classList.add('hidden');
-    } else {
-      btnHomeSubmit?.classList.add('hidden');
-      btnHomeStop?.classList.remove('hidden');
-    }
-
-    if (hasTextConv) {
-      btnConvSubmit?.classList.remove('hidden');
-      btnConvStop?.classList.add('hidden');
-    } else {
-      btnConvSubmit?.classList.add('hidden');
-      btnConvStop?.classList.remove('hidden');
-    }
-  } else {
-    btnHomeStop?.classList.add('hidden');
-    btnConvStop?.classList.add('hidden');
-    btnHomeSubmit?.classList.remove('hidden');
-    btnConvSubmit?.classList.remove('hidden');
-  }
-};
+window.setGeneratingState = setGeneratingState;
 
 //  SHORTCUTS 
 function bindShortcuts() {
   document.querySelectorAll('.shortcut').forEach(btn => {
     btn.addEventListener('click', () => {
       const label = btn.textContent.trim();
-      $('chat-input')?.focus();
-      $('chat-input').value = label + ': ';
-      $('chat-input').dispatchEvent(new Event('input'));
+      const input = $('chat-input') || $('chat-input-conv');
+      if (input) {
+        input.focus();
+        input.value = label + ': ';
+        input.dispatchEvent(new Event('input'));
+      }
     });
+  });
+
+  // Professional Global Keyboard Shortcuts Engine (Desktop App Standards)
+  document.addEventListener('keydown', (e) => {
+    const isCmdOrCtrl = e.metaKey || e.ctrlKey;
+    const isShift = e.shiftKey;
+    const key = e.key.toLowerCase();
+
+    // 1. Ctrl + K / Cmd + K -> Open Global Search
+    if (isCmdOrCtrl && key === 'k') {
+      e.preventDefault();
+      document.getElementById('search-modal-backdrop')?.classList.remove('hidden');
+      document.getElementById('search-input-modal')?.focus();
+      return;
+    }
+
+    // 2. Ctrl + N / Cmd + N -> Start New Chat
+    if (isCmdOrCtrl && key === 'n' && !isShift) {
+      e.preventDefault();
+      document.getElementById('btn-new-chat-dock')?.click() || document.getElementById('mode-home')?.click();
+      return;
+    }
+
+    // 3. Ctrl + , / Cmd + , -> Open Settings
+    if (isCmdOrCtrl && (key === ',' || e.keyCode === 188)) {
+      e.preventDefault();
+      if (window.router) window.router.navigate('settings');
+      return;
+    }
+
+    // 4. Ctrl + Shift + L / Cmd + Shift + L -> Toggle Theme (Light / Dark)
+    if (isCmdOrCtrl && isShift && key === 'l') {
+      e.preventDefault();
+      document.getElementById('btn-user-theme')?.click();
+      return;
+    }
+
+    // 5. Escape -> Close active floating popups, dropdowns, and modals
+    if (e.key === 'Escape') {
+      let closed = false;
+
+      const searchModal = document.getElementById('search-modal-backdrop');
+      if (searchModal && !searchModal.classList.contains('hidden')) {
+        searchModal.classList.add('hidden');
+        closed = true;
+      }
+
+      document.querySelectorAll('.user-menu-dropdown:not(.hidden), .topnav-dropdown-menu:not(.hidden), .attach-dropdown:not(.hidden), .cad-grid-dropdown-menu:not(.hidden)').forEach(d => {
+        d.classList.add('hidden');
+        d.style.display = 'none';
+        closed = true;
+      });
+
+      const lightbox = document.getElementById('img-lightbox-overlay');
+      if (lightbox && !lightbox.classList.contains('hidden')) {
+        lightbox.classList.add('hidden');
+        closed = true;
+      }
+
+      if (closed) e.preventDefault();
+    }
   });
 }
 

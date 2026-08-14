@@ -1,0 +1,355 @@
+/* ==========================================================================
+   chat/12b_vision_hud_voice.css — Computer Vision Voice HUD, Dropdowns & Animations
+   ========================================================================== */
+
+.vision-hud-bottom-group {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+  margin-top: auto !important;
+  padding-bottom: 14px !important;
+}
+
+.vision-hud-input-wrap {
+  position: relative !important;
+  padding: 0 18px !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.vision-hud-input-capsule {
+  display: flex !important;
+  align-items: center !important;
+  background: var(--input-bg, #ffffff) !important;
+  border-radius: 9999px !important;
+  padding: 3px 4px 3px 4px !important;
+  gap: 4px !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  height: 38px !important;
+  box-sizing: border-box !important;
+}
+
+body.dark .vision-hud-input-capsule,
+body[data-theme="dark"] .vision-hud-input-capsule,
+body[data-theme="oled"] .vision-hud-input-capsule {
+  background: var(--hover, #27272a) !important;
+}
+
+.vision-hud-plus-btn {
+  width: 28px !important;
+  height: 28px !important;
+  min-width: 28px !important;
+  min-height: 28px !important;
+  max-width: 28px !important;
+  max-height: 28px !important;
+  aspect-ratio: 1 / 1 !important;
+  box-sizing: border-box !important;
+  padding: 0 !important;
+  border-radius: 50% !important;
+  background: var(--hover, #e2e8f0) !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  color: var(--text-2, #475569) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  flex-shrink: 0 !important;
+}
+
+.vision-hud-plus-btn:hover {
+  background: var(--border, #cbd5e1) !important;
+  color: var(--text, #0f172a) !important;
+}
+
+.vision-hud-input {
+  flex: 1 !important;
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  font-size: 12.5px !important;
+  font-weight: 400 !important;
+  font-family: inherit !important;
+  color: var(--text, #1e293b) !important;
+  padding: 2px 4px !important;
+}
+
+.vision-hud-input::placeholder {
+  color: var(--text-3, #94a3b8) !important;
+  font-weight: 400 !important;
+}
+
+.vision-hud-send-btn {
+  width: 28px !important;
+  height: 28px !important;
+  min-width: 28px !important;
+  min-height: 28px !important;
+  max-width: 28px !important;
+  max-height: 28px !important;
+  aspect-ratio: 1 / 1 !important;
+  box-sizing: border-box !important;
+  padding: 0 !important;
+  border-radius: 50% !important;
+  background: #2563eb !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  color: #ffffff !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: transform 0.15s ease, background 0.15s ease !important;
+  flex-shrink: 0 !important;
+}
+
+.vision-hud-send-btn:hover {
+  opacity: 0.9 !important;
+  transform: scale(1.05) !important;
+}
+
+/* VOICE SCREEN UI */
+.vision-hud-voice-view {
+  display: none !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 24px 18px 20px 18px !important;
+  text-align: center !important;
+  margin: 0 !important;
+  flex: 1 !important;
+  height: 100% !important;
+  box-sizing: border-box !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  animation: dFadeIn 0.22s ease !important;
+}
+
+#vision-hud-container.voice-mode .vision-hud-header,
+#vision-hud-container.voice-mode .vision-hud-hero,
+#vision-hud-container.voice-mode .vision-hud-chat-body,
+#vision-hud-container.voice-mode .vision-hud-bottom-group,
+#vision-hud-container.voice-mode .vision-hud-resize-handle {
+  display: none !important;
+}
+
+#vision-hud-container.voice-mode .vision-hud-voice-view {
+  display: flex !important;
+}
+
+.vision-hud-voice-center-content {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: auto 0 !important;
+  gap: 14px !important;
+  max-width: 320px !important;
+}
+
+.vision-hud-voice-ribbon {
+  width: 54px !important;
+  height: 54px !important;
+  min-width: 54px !important;
+  min-height: 54px !important;
+  aspect-ratio: 1 / 1 !important;
+  object-fit: contain !important;
+  margin: 0 !important;
+  flex-shrink: 0 !important;
+  transform: scale(1) !important;
+  transition: transform 0.2s ease, filter 0.2s ease !important;
+}
+
+.vision-hud-voice-ribbon.active-speech {
+  animation: visionRibbonPulse 1.2s infinite ease-in-out !important;
+}
+
+@keyframes visionRibbonPulse {
+  0%   { transform: scale(1); filter: drop-shadow(0 0 4px rgba(147, 197, 253, 0.4)); }
+  50%  { transform: scale(1.12); filter: drop-shadow(0 0 16px rgba(192, 132, 252, 0.8)); }
+  100% { transform: scale(1); filter: drop-shadow(0 0 4px rgba(147, 197, 253, 0.4)); }
+}
+
+.vision-hud-voice-status-box {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 4px !important;
+  margin: 0 !important;
+  max-width: 300px !important;
+}
+
+.vision-hud-voice-main-status {
+  font-size: 13px !important;
+  font-weight: 400 !important;
+  color: var(--text, #1e293b) !important;
+  line-height: 1.5 !important;
+}
+
+.vision-hud-voice-sub-status {
+  font-size: 11.5px !important;
+  font-weight: 400 !important;
+  color: #a78bfa !important;
+}
+
+body.dark .vision-hud-voice-sub-status {
+  color: #c4b5fd !important;
+}
+
+.vision-hud-voice-controls-bar {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+  max-width: 220px !important;
+  padding: 0 4px !important;
+  margin-top: auto !important;
+  margin-bottom: 4px !important;
+}
+
+.vision-hud-voice-circle-btn {
+  width: 36px !important;
+  height: 36px !important;
+  min-width: 36px !important;
+  min-height: 36px !important;
+  aspect-ratio: 1 / 1 !important;
+  box-sizing: border-box !important;
+  border-radius: 50% !important;
+  background: var(--hover, #f1f5f9) !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  color: var(--text, #1e293b) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  flex-shrink: 0 !important;
+}
+
+.vision-hud-voice-circle-btn:hover {
+  background: var(--input-bg, #ffffff) !important;
+  transform: scale(1.06) !important;
+}
+
+.vision-hud-voice-circle-btn.mic-active {
+  background: rgba(37, 99, 235, 0.15) !important;
+  color: #2563eb !important;
+}
+
+/* SMART PLUS DROPDOWN MENU */
+.vision-hud-dropdown-menu {
+  position: absolute !important;
+  bottom: calc(100% + 8px) !important;
+  left: 18px !important;
+  width: 220px !important;
+  background: #ffffff !important;
+  border-radius: 14px !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  padding: 6px !important;
+  display: none !important;
+  flex-direction: column !important;
+  gap: 3px !important;
+  z-index: 100001 !important;
+  font-family: inherit !important;
+  animation: dFadeIn 0.2s ease !important;
+}
+
+body.dark .vision-hud-dropdown-menu,
+body[data-theme="dark"] .vision-hud-dropdown-menu,
+body[data-theme="oled"] .vision-hud-dropdown-menu {
+  background: #27272a !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.vision-hud-dropdown-menu.show { display: flex !important; }
+
+.vision-hud-dropdown-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding: 8px 12px !important;
+  border-radius: 8px !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  color: var(--text, #334155) !important;
+  cursor: pointer !important;
+  transition: background 0.15s ease, color 0.15s ease !important;
+  text-align: left !important;
+  font-family: inherit !important;
+}
+
+body.dark .vision-hud-dropdown-item,
+body[data-theme="dark"] .vision-hud-dropdown-item,
+body[data-theme="oled"] .vision-hud-dropdown-item {
+  background: transparent !important;
+  color: #e2e8f0 !important;
+}
+
+.vision-hud-dropdown-item:hover {
+  background: var(--hover, #f1f5f9) !important;
+  color: var(--text, #0f172a) !important;
+}
+
+body.dark .vision-hud-dropdown-item:hover,
+body[data-theme="dark"] .vision-hud-dropdown-item:hover,
+body[data-theme="oled"] .vision-hud-dropdown-item:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #ffffff !important;
+}
+
+.vision-hud-dropdown-item.danger { color: #f87171 !important; background: transparent !important; }
+.vision-hud-dropdown-item.danger:hover { background: rgba(239, 68, 68, 0.15) !important; color: #ef4444 !important; }
+
+.vision-hud-resize-handle {
+  position: absolute !important;
+  bottom: 2px !important;
+  right: 2px !important;
+  width: 16px !important;
+  height: 16px !important;
+  cursor: se-resize !important;
+  z-index: 100002 !important;
+  user-select: none !important;
+  opacity: 0.4 !important;
+  transition: opacity 0.15s ease !important;
+}
+
+.vision-hud-resize-handle::before {
+  content: '' !important;
+  position: absolute !important;
+  right: 4px !important;
+  bottom: 4px !important;
+  width: 6px !important;
+  height: 6px !important;
+  border-right: 2px solid var(--text-3, #94a3b8) !important;
+  border-bottom: 2px solid var(--text-3, #94a3b8) !important;
+}
+
+.vision-hud-resize-handle:hover { opacity: 1 !important; }
+
+@keyframes visionOrbPulse {
+  0%   { transform: scale(1); filter: blur(0.5px); }
+  50%  { transform: scale(1.06); filter: blur(1.5px); }
+  100% { transform: scale(1); filter: blur(0.5px); }
+}
+
+@keyframes dFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

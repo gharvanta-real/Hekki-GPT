@@ -1,0 +1,126 @@
+/* ==========================================================================
+   chat/9b_canvas_widgets.css — Live Canvas Prose, PDF Paper & Slash Popup
+   ========================================================================== */
+
+.canvas-paper-page pre,
+.canvas-paper-page code,
+.canvas-paper-page p,
+.canvas-paper-page div {
+  max-width: 100% !important;
+  white-space: pre-wrap !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  overflow-x: auto !important;
+  box-sizing: border-box !important;
+}
+
+.paper-resume-header {
+  text-align: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.paper-candidate-name { font-size: 18px; font-weight: 700; color: #0f172a; letter-spacing: 0.04em; margin: 0 0 6px 0; text-transform: none; }
+.paper-contact-info { font-size: 12px; color: #475569; font-weight: 500; word-spacing: 1px; }
+
+.canvas-paper-page h1, .canvas-paper-page h2, .canvas-paper-page h3, .paper-resume-body h2 {
+  color: #1e3a8a; margin-top: 22px; margin-bottom: 10px; font-weight: 700; text-transform: none; letter-spacing: 0.04em;
+}
+
+.canvas-paper-page h1 { font-size: 18px; border-bottom: 1.5px solid #cbd5e1; padding-bottom: 6px; }
+.canvas-paper-page h2, .paper-resume-body h2 { font-size: 14px; border-bottom: 1.5px solid #cbd5e1; padding-bottom: 4px; }
+.canvas-paper-page h3 { font-size: 13px; }
+
+.canvas-paper-page p, .paper-resume-body p { margin-bottom: 12px; }
+.canvas-paper-page ul, .canvas-paper-page ol, .paper-resume-body ul { padding-left: 24px; margin-bottom: 12px; }
+.canvas-paper-page li, .paper-resume-body li { margin-bottom: 4px; color: #334155; }
+
+[data-theme="dark"] .canvas-paper-page, [data-theme="oled"] .canvas-paper-page {
+  background: #1e293b; color: #f8fafc; box-shadow: none !important;
+}
+
+[data-theme="dark"] .canvas-paper-page h1, [data-theme="dark"] .canvas-paper-page h2, [data-theme="dark"] .canvas-paper-page h3,
+[data-theme="oled"] .canvas-paper-page h1, [data-theme="oled"] .canvas-paper-page h2, [data-theme="oled"] .canvas-paper-page h3 {
+  color: #ffffff;
+}
+
+.canvas-page-counter {
+  position: absolute;
+  bottom: 16px;
+  right: 20px;
+  background: rgba(15, 23, 42, 0.75);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 6px;
+  backdrop-filter: blur(8px);
+  pointer-events: none;
+  user-select: none;
+}
+
+.canvas-doc-viewport {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  background: var(--bg, #f8fafc);
+  padding: 24px 20px;
+  box-sizing: border-box;
+}
+
+.canvas-doc-prose {
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+  font-family: var(--font, 'Open Sans', sans-serif);
+  font-size: 13.5px;
+  line-height: 1.75;
+  color: var(--text, #18181b);
+  background: var(--card, #ffffff);
+  padding: 32px 36px;
+  border-radius: 16px;
+  border: none !important;
+  box-shadow: none !important;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  box-sizing: border-box;
+}
+
+.canvas-doc-prose h1 { font-size: 20px; font-weight: 700; color: var(--text, #18181b); margin: 0 0 16px 0; padding-bottom: 10px; border-bottom: 1.5px solid var(--border, #f1f5f9); line-height: 1.35; }
+.canvas-doc-prose h2 { font-size: 16px; font-weight: 600; color: var(--text, #18181b); margin: 24px 0 10px 0; padding-bottom: 6px; border-bottom: 1px solid var(--border, #f1f5f9); }
+.canvas-doc-prose h3 { font-size: 14px; font-weight: 600; color: var(--text, #374151); margin: 18px 0 8px 0; }
+.canvas-doc-prose h4 { font-size: 13px; font-weight: 600; color: var(--text, #374151); margin: 14px 0 6px 0; }
+
+.canvas-doc-prose p { margin: 0 0 14px 0; color: var(--text, #18181b); line-height: 1.7; }
+.canvas-doc-prose strong { font-weight: 700; color: var(--text, #09090b); }
+.canvas-doc-prose em { font-style: italic; }
+
+.canvas-doc-prose ul, .canvas-doc-prose ol { padding-left: 22px; margin: 0 0 12px 0; }
+.canvas-doc-prose li { margin-bottom: 5px; color: var(--text-primary, #18181b); }
+
+.canvas-doc-prose code { background: var(--hover, #f1f5f9); color: var(--text-primary, #18181b); font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 12px; padding: 2px 6px; border-radius: 4px; }
+.canvas-doc-prose pre { background: var(--hover, #f1f5f9); border-radius: 8px; padding: 14px 16px; overflow-x: auto; margin: 12px 0; }
+.canvas-doc-prose pre code { background: transparent; padding: 0; font-size: 12px; line-height: 1.6; }
+.canvas-doc-prose blockquote { border-left: 3px solid var(--text-3, #9ca3af); margin: 12px 0; padding: 8px 14px; background: var(--hover, #f1f5f9); border-radius: 0 6px 6px 0; color: var(--text-2, #374151); font-style: italic; }
+
+.canvas-doc-prose table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 13px; }
+.canvas-doc-prose th { background: var(--hover, #f1f5f9); font-weight: 600; padding: 8px 12px; text-align: left; color: var(--text-primary, #18181b); }
+.canvas-doc-prose td { padding: 7px 12px; border-bottom: 1px solid var(--hover, #f1f5f9); color: var(--text-primary, #18181b); vertical-align: top; }
+.canvas-doc-prose tr:last-child td { border-bottom: none; }
+.canvas-doc-prose hr { border: none; border-top: 1.5px solid var(--hover, #f1f5f9); margin: 20px 0; }
+
+body.oled .canvas-doc-viewport, body.dark .canvas-doc-viewport { background: var(--bg, #09090b); }
+body.oled .canvas-doc-prose, body.dark .canvas-doc-prose { background: var(--card, #121214); border-color: var(--border, rgba(255, 255, 255, 0.08)); box-shadow: none !important; }
+body.oled .canvas-doc-prose, body.dark .canvas-doc-prose, body.oled .canvas-doc-prose p, body.dark .canvas-doc-prose p, body.oled .canvas-doc-prose li, body.dark .canvas-doc-prose li, body.oled .canvas-doc-prose td, body.dark .canvas-doc-prose td { color: var(--text, #f1f5f9) !important; }
+body.oled .canvas-doc-prose strong, body.dark .canvas-doc-prose strong { color: #ffffff !important; }
+body.oled .canvas-doc-prose h1, body.dark .canvas-doc-prose h1, body.oled .canvas-doc-prose h2, body.dark .canvas-doc-prose h2 { color: #ffffff !important; border-bottom-color: rgba(255, 255, 255, 0.08); }
+body.oled .canvas-doc-prose h3, body.dark .canvas-doc-prose h3, body.oled .canvas-doc-prose h4, body.dark .canvas-doc-prose h4 { color: #e2e8f0 !important; }
+body.oled .canvas-doc-prose blockquote, body.dark .canvas-doc-prose blockquote { background: rgba(255, 255, 255, 0.04); color: #cbd5e1 !important; border-left-color: #3b82f6 !important; }
+body.oled .canvas-doc-prose pre, body.oled .canvas-doc-prose code, body.dark .canvas-doc-prose pre, body.dark .canvas-doc-prose code { background: rgba(255, 255, 255, 0.06); color: #60a5fa !important; }
+body.oled .canvas-doc-prose th, body.dark .canvas-doc-prose th { background: rgba(255, 255, 255, 0.06); color: #ffffff !important; }
+body.oled .canvas-doc-prose td, body.dark .canvas-doc-prose td { border-bottom-color: rgba(255, 255, 255, 0.06); }
+
+.hekki-slash-popup { position: fixed !important; z-index: 999999 !important; display: flex !important; flex-direction: column !important; }
+.hekki-slash-popup.hidden { display: none !important; }
+.hekki-slash-popup .attach-dropdown-item span { font-size: 14.5px !important; font-weight: 400 !important; }

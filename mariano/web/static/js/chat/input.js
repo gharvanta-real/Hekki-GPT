@@ -87,6 +87,9 @@ export function clearChatLogs() {
   // so that classList-based show/hide works correctly after a debate.
   const homeScreen = document.getElementById('home-screen');
   if (homeScreen) homeScreen.style.display = '';
+  if (window.setGeneratingState) {
+    window.setGeneratingState(false);
+  }
 }
 
 /** Formats ISO timestamp to human readable shorthand */
@@ -112,24 +115,27 @@ export function setGeneratingState(isGen) {
     const submitBtn = document.getElementById(isConv ? 'btn-submit-conv' : 'btn-submit-home');
     const stopBtn = document.getElementById(isConv ? 'btn-stop-gen-conv' : 'btn-stop-gen');
     const voiceBtn = document.getElementById(isConv ? 'btn-voice-conv' : 'btn-voice');
-    const textarea = document.getElementById(inputId);
-    const hasText = !!(textarea?.value?.trim());
 
     if (window.isGenerating) {
-      // Always hide voice mic while generating
+      // While AI is generating: ALWAYS hide voice mic & send button, show ONLY stop button
       voiceBtn?.classList.add('hidden');
-      // Always show stop button while generating
+      if (voiceBtn) voiceBtn.style.display = 'none';
+
+      submitBtn?.classList.add('hidden');
+      if (submitBtn) submitBtn.style.display = 'none';
+
       stopBtn?.classList.remove('hidden');
-      // Only show send if user has typed something (allow sending new query mid-gen)
-      if (hasText) {
-        submitBtn?.classList.remove('hidden');
-      } else {
-        submitBtn?.classList.add('hidden');
-      }
+      if (stopBtn) stopBtn.style.display = '';
     } else {
+      // Idle state: stop hidden, send & voice visible
       stopBtn?.classList.add('hidden');
+      if (stopBtn) stopBtn.style.display = 'none';
+
       voiceBtn?.classList.remove('hidden');
+      if (voiceBtn) voiceBtn.style.display = '';
+
       submitBtn?.classList.remove('hidden');
+      if (submitBtn) submitBtn.style.display = '';
     }
   });
 }
@@ -156,20 +162,27 @@ export function bindInputs(sendCallback, ChatSessionManager) {
     adjustHeight(textarea);
     const submitBtn = $(submitBtnId);
     const stopBtn = $(stopBtnId);
-    const hasText = !!(textarea.value?.trim());
+    const isConv = textarea.id === 'chat-input-conv';
+    const voiceBtn = $(isConv ? 'btn-voice-conv' : 'btn-voice');
 
     if (window.isGenerating) {
-      // Stop always visible during generation
+      voiceBtn?.classList.add('hidden');
+      if (voiceBtn) voiceBtn.style.display = 'none';
+
+      submitBtn?.classList.add('hidden');
+      if (submitBtn) submitBtn.style.display = 'none';
+
       stopBtn?.classList.remove('hidden');
-      // Send: visible only if user has typed text (to allow new query mid-gen)
-      if (hasText) {
-        submitBtn?.classList.remove('hidden');
-      } else {
-        submitBtn?.classList.add('hidden');
-      }
+      if (stopBtn) stopBtn.style.display = '';
     } else {
       stopBtn?.classList.add('hidden');
+      if (stopBtn) stopBtn.style.display = 'none';
+
+      voiceBtn?.classList.remove('hidden');
+      if (voiceBtn) voiceBtn.style.display = '';
+
       submitBtn?.classList.remove('hidden');
+      if (submitBtn) submitBtn.style.display = '';
     }
   };
 

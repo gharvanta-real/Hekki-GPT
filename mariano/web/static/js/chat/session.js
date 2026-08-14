@@ -379,6 +379,9 @@ export const ChatSessionManager = {
     }
 
     scrollChat();
+    if (window.setGeneratingState) {
+      window.setGeneratingState(false);
+    }
     this.renderChatsList();
   },
 
@@ -447,8 +450,8 @@ export const ChatSessionManager = {
 
           item.innerHTML = `
             <span class="lbl">${c.pinned ? '<i data-lucide="pin" style="width:12px;height:12px;margin-right:6px;color:var(--text-3);display:inline-block;vertical-align:-1px;"></i>' : ''}${escapeHtml(cleanTitle)}</span>
-            <span class="opt" style="cursor:pointer; display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px;">
-              <i data-lucide="more-horizontal" style="width:14px; height:14px; pointer-events:none;"></i>
+            <span class="opt" style="cursor:pointer; display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; margin-left:auto; flex-shrink:0;">
+              <i data-lucide="more-vertical" style="width:14px; height:14px; pointer-events:none;"></i>
             </span>
           `;
           item.addEventListener('click', (e) => {
@@ -502,8 +505,8 @@ export const ChatSessionManager = {
           item.title = cleanPgTitle;
           item.innerHTML = `
             <span class="lbl">${escapeHtml(cleanPgTitle)}</span>
-            <span class="opt" style="cursor:pointer; display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px;">
-              <i data-lucide="more-horizontal" style="width:14px; height:14px; pointer-events:none;"></i>
+            <span class="opt" style="cursor:pointer; display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; margin-left:auto; flex-shrink:0;">
+              <i data-lucide="more-vertical" style="width:14px; height:14px; pointer-events:none;"></i>
             </span>
           `;
 

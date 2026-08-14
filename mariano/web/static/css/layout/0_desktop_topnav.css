@@ -81,8 +81,8 @@
   top: 32px;
   left: 0;
   min-width: 230px;
-  background: var(--card, #FFFFFF);
-  border: none !important;
+  background: var(--card, #FFFFFF) !important;
+  border: 1px solid var(--border, #E4E7EB) !important;
   border-radius: 12px;
   box-shadow: none !important;
   padding: 6px;
@@ -91,6 +91,18 @@
   gap: 2px;
   z-index: 10000;
   -webkit-app-region: no-drag;
+}
+
+body.light .topnav-dropdown-menu,
+:root[data-theme="light"] .topnav-dropdown-menu {
+  background: #FFFFFF !important;
+  border: 1px solid #E4E7EB !important;
+}
+
+body.dark .topnav-dropdown-menu,
+body.oled .topnav-dropdown-menu {
+  background: #1E1E1E !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
 }
 
 .topnav-dropdown-menu.hidden {
@@ -115,6 +127,18 @@
 .topnav-item:hover {
   background: var(--hover, #F4F4F6);
   color: var(--text, #000000);
+}
+
+body.light .topnav-item:hover,
+:root[data-theme="light"] .topnav-item:hover {
+  background: #F1F3F6 !important;
+  color: #000000 !important;
+}
+
+body.dark .topnav-item:hover,
+body.oled .topnav-item:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #FFFFFF !important;
 }
 
 .topnav-item .shortcut,

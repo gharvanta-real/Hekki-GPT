@@ -22,12 +22,20 @@ class DesktopVisionControlSkill(BaseSkill):
     )
     version = "1.0.0"
     tags = ["computer_use", "vision", "gui", "cursor", "keyboard", "automation", "desktop"]
+    enabled = False  # Temporarily disabled per user request without removing any code
 
     def __init__(self):
         super().__init__()
         self._controller = ComputerVisionController()
 
     async def execute(self, **kwargs: Any) -> SkillResult:
+        if not getattr(self, "enabled", True):
+            return SkillResult(
+                success=False,
+                data="Desktop Vision Control is temporarily disabled.",
+                error="Computer Vision is currently disabled."
+            )
+
         action = kwargs.get("action", "").lower().strip()
         if not action:
             return SkillResult(

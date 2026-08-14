@@ -18,6 +18,12 @@ contextBridge.exposeInMainWorld('electronAPI', {
   /** Open external URLs safely in default system browser */
   openExternal: (url) => ipcRenderer.send('open-external', url),
 
+  /** Hide the system-wide floating overlay window */
+  hideOverlay: () => ipcRenderer.send('hide-overlay'),
+
+  /** Toggle the system-wide floating overlay window */
+  toggleOverlay: () => ipcRenderer.send('toggle-overlay'),
+
   /** Check if we are running inside Electron (vs plain browser). */
   isElectron: true,
 });

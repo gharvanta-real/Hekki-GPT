@@ -286,7 +286,17 @@ function createWindow() {
         }
     });
 
-    // ── IPC: Overlay query → forward to backend ────────────────────────────
+    // ── IPC: Overlay query & hide handlers ─────────────────────────────────
+    ipcMain.on('hide-overlay', () => {
+        if (overlayWindow && !overlayWindow.isDestroyed()) {
+            overlayWindow.hide();
+        }
+    });
+
+    ipcMain.on('toggle-overlay', () => {
+        toggleOverlayWindow();
+    });
+
     // ── Intercept close → hide to tray instead of quitting ──────────────────
     mainWindow.on('close', (event) => {
         if (!isQuitting) {
@@ -304,6 +314,52 @@ function createWindow() {
     });
 }
 
+// ── Floating Super AI Desktop Overlay Window ──────────────────────────────
+function toggleOverlayWindow() {
+    if (overlayWindow && !overlayWindow.isDestroyed()) {
+        if (overlayWindow.isVisible()) {
+            overlayWindow.hide();
+        } else {
+            overlayWindow.show();
+            overlayWindow.focus();
+        }
+        return;
+    }
+
+    const primaryDisplay = screen.getPrimaryDisplay();
+    const { width, height } = primaryDisplay.workAreaSize;
+    const overlayW = 420;
+    const overlayH = 480;
+
+    overlayWindow = new BrowserWindow({
+        width: overlayW,
+        height: overlayH,
+        x: width - overlayW - 24,
+        y: height - overlayH - 24,
+        frame: false,
+        transparent: true,
+        alwaysOnTop: true,
+        skipTaskbar: true,
+        resizable: true,
+        show: false,
+        icon: path.join(__dirname, 'assets', 'hekki.ico'),
+        webPreferences: {
+            nodeIntegration: false,
+            contextIsolation: true,
+            preload: path.join(__dirname, 'preload.js')
+        }
+    });
+
+    overlayWindow.loadURL('http://localhost:8000/overlay.html');
+
+    overlayWindow.once('ready-to-show', () => {
+        if (overlayWindow && !overlayWindow.isDestroyed()) {
+            overlayWindow.show();
+            overlayWindow.focus();
+        }
+    });
+}
+
 // ── System Tray ────────────────────────────────────────────────────
 function createTray() {
     const iconPath = path.join(__dirname, 'assets', 'hekki.ico');
@@ -312,7 +368,7 @@ function createTray() {
 
     const contextMenu = Menu.buildFromTemplate([
         {
-            label: 'Open Hekki',
+            label: 'Open Hekki Hub',
             type: 'normal',
             click: () => {
                 if (mainWindow && !mainWindow.isDestroyed()) {
@@ -322,6 +378,11 @@ function createTray() {
                     createWindow();
                 }
             }
+        },
+        {
+            label: 'Super AI Overlay (Alt+Space)',
+            type: 'normal',
+            click: () => toggleOverlayWindow()
         },
         { type: 'separator' },
         {
@@ -366,6 +427,19 @@ function createTray() {
 
 app.whenReady().then(() => {
     const savedTheme = getThemeFromSettings();
+
+    // Register Global Desktop Shortcuts (Alt+Space / Alt+V)
+    try {
+        globalShortcut.register('Alt+Space', () => {
+            toggleOverlayWindow();
+        });
+        globalShortcut.register('Alt+V', () => {
+            toggleOverlayWindow();
+        });
+        console.log('Global Desktop Overlay shortcuts registered: Alt+Space & Alt+V');
+    } catch (e) {
+        console.error('Failed to register global shortcuts:', e);
+    }
 
     // If launched with --hidden flag (auto-start from Windows startup), skip splash & main window
     const launchHidden = process.argv.includes('--hidden');

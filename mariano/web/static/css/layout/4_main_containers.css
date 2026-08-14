@@ -90,9 +90,10 @@
   display: flex;
 }
 
-/* Plugins & History panes fill the full #main area when visible */
+/* Plugins, History & Settings panes fill the full #main area when visible */
 #plugins-pane,
-#history-pane {
+#history-pane,
+#settings-pane {
   display: none;
   flex: 1;
   width: 100%;
@@ -103,8 +104,9 @@
   background: var(--bg);
 }
 #plugins-pane.visible,
-#history-pane.visible {
-  display: flex;
+#history-pane.visible,
+#settings-pane.visible {
+  display: flex !important;
 }
 
 /* Changelog pane fills the full #main area when visible */
@@ -384,7 +386,7 @@ body.dark .tab-btn.active {
 .tab-btn .close-x {
   margin-left: 2px;
   opacity: 0.4;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
   transition: opacity 0.1s, color 0.1s;
 }

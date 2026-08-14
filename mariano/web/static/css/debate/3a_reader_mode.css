@@ -1,0 +1,80 @@
+/* ==========================================================================
+   debate/3a_reader_mode.css — Documentary Reader Viewer & Print Layout
+   ========================================================================== */
+
+.debate-doc-viewer {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: var(--bg);
+  display: flex; flex-direction: column;
+  z-index: 100; height: 100%;
+}
+
+.doc-viewer-header {
+  height: 48px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  padding: 0 140px 0 16px !important;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.doc-viewer-btn {
+  font-size: 12px; font-weight: 500; color: var(--text-secondary);
+  padding: 4px 12px; border: none !important; border-radius: 20px;
+  cursor: pointer; background: transparent;
+  transition: background 0.12s, color 0.12s;
+  display: inline-flex; align-items: center; height: 28px;
+}
+.doc-viewer-btn:hover { background: var(--hover); color: var(--text-primary); }
+.doc-viewer-controls { display: flex; align-items: center; gap: 8px; }
+
+.doc-dropdown { position: relative; display: inline-block; }
+.doc-dropdown-menu {
+  display: none; position: absolute; right: 0; top: 28px;
+  background: var(--card) !important; border: none !important;
+  border-radius: 12px !important; min-width: 175px !important;
+  box-shadow: none !important; z-index: 110; padding: 6px !important; box-sizing: border-box;
+}
+.doc-dropdown-menu.show { display: block !important; }
+
+.dropdown-item {
+  width: 100% !important; height: 34px !important; padding: 0 10px !important;
+  background: transparent !important; border: none !important; border-radius: 8px !important;
+  font-family: var(--font) !important; font-size: 13px !important; font-weight: 400 !important;
+  text-align: left !important; color: var(--text-2) !important; cursor: pointer !important;
+  display: flex !important; align-items: center !important; gap: 10px !important;
+  transition: background 0.12s ease, color 0.12s ease !important; box-sizing: border-box !important;
+}
+
+.dropdown-item span, .doc-dropdown-menu .dropdown-item span {
+  font-family: var(--font) !important; font-size: 13px !important; font-weight: 400 !important;
+  line-height: 20px !important; color: var(--text-2) !important; transition: color 0.12s ease !important;
+}
+.dropdown-item:hover, .doc-dropdown-menu .dropdown-item:hover { background: var(--hover) !important; color: var(--text) !important; }
+.dropdown-item:hover span, .doc-dropdown-menu .dropdown-item:hover span { color: var(--text) !important; }
+.dropdown-item.btn-clear-docs, .dropdown-item.btn-clear-docs span, .doc-dropdown-menu .dropdown-item.btn-clear-docs span { color: #ef4444 !important; }
+
+.doc-viewer-content { flex: 1; overflow-y: auto; padding: 32px 64px; max-width: 800px; margin: 0 auto; width: 100%; line-height: 1.6; }
+.doc-hdr { margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 16px; }
+.doc-title { font-size: 18px; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; }
+.doc-subtitle { font-size: 12px; color: var(--text-3); }
+
+.doc-sec { margin-bottom: 28px; padding: 14px 18px; border-radius: 6px; background: transparent; border-left: 3px solid var(--border); }
+.doc-sec-badge {
+  display: inline-flex; align-items: center; font-size: 11px; font-weight: 600; text-transform: none; padding: 3px 10px; border-radius: 20px; color: var(--text-secondary); background-color: var(--sidebar-bg); border: none !important; box-shadow: none !important; margin-bottom: 8px;
+}
+.doc-sec-heading { font-size: 15px; font-weight: 600; color: var(--text-primary); margin-bottom: 6px; }
+.doc-sec-body { font-size: 13px; color: var(--text-secondary); }
+.doc-sec-sources { margin-top: 10px; font-size: 11px; color: var(--text-3); }
+.doc-sec-sources a { color: var(--text-secondary); text-decoration: underline; margin-right: 8px; }
+.doc-sec-sources a:hover { color: var(--text-primary); }
+
+@media print {
+  body * { visibility: hidden; }
+  #debate-doc-viewer, #debate-doc-viewer * { visibility: visible; }
+  #debate-doc-viewer { position: absolute; left: 0; top: 0; width: 100%; height: auto; background: white !important; color: black !important; }
+  .doc-viewer-header { display: none !important; }
+  .doc-viewer-content { max-width: 100%; padding: 0; margin: 0; box-shadow: none; background: white !important; color: black !important; }
+  .doc-sec { border-left: 2px solid #ccc !important; page-break-inside: avoid; }
+}

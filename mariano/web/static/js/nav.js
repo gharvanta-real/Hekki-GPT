@@ -137,46 +137,61 @@ export function bindNavigation(tabs, showToast, inConversationStateRef) {
   });
 
 
-  //  User Profile Dropdown 
-  const userProfileBtn = $('btn-sidebar-user-profile');
-  const userMenuDropdown = $('user-menu-dropdown');
-  if (userProfileBtn && userMenuDropdown) {
-    userProfileBtn.addEventListener('click', (e) => {
+  //  User Profile Dropdown — Global Event Delegation Engine
+  document.addEventListener('click', (e) => {
+    const userMenu = $('user-menu-dropdown') || $('debate-user-menu-dropdown');
+    const profileBtn = e.target.closest('#btn-sidebar-user-profile, .sidebar-user-profile, #btn-debate-sidebar-user-profile');
+
+    if (profileBtn) {
+      e.preventDefault();
       e.stopPropagation();
-      userMenuDropdown.classList.toggle('hidden');
-    });
+      if (userMenu) {
+        const isHidden = userMenu.classList.contains('hidden');
+        // Close other dropdowns first
+        document.querySelectorAll('.user-menu-dropdown, .topnav-dropdown-menu, .attach-dropdown, .cad-grid-dropdown-menu').forEach(d => {
+          if (d !== userMenu) {
+            d.classList.add('hidden');
+            d.style.display = 'none';
+          }
+        });
 
-    document.addEventListener('click', (e) => {
-      if (!userMenuDropdown.contains(e.target)) {
-        userMenuDropdown.classList.add('hidden');
-      }
-    });
-    
-    // Bind Plugins & Connectors button
-    const userPluginsBtn = $('btn-user-plugins');
-    if (userPluginsBtn) {
-      userPluginsBtn.addEventListener('click', () => {
-        router.navigateTo('plugins');
-      });
-    }
-
-    // Bind Skills & Capabilities button
-    const userSkillsBtn = $('btn-user-skills');
-    if (userSkillsBtn) {
-      userSkillsBtn.addEventListener('click', () => {
-        router.navigateTo('skills');
-      });
-    }
-
-    // Also close on any item click
-    userMenuDropdown.querySelectorAll('.user-menu-item').forEach(item => {
-      item.addEventListener('click', () => {
-        if (item.id !== 'btn-user-theme') {
-          userMenuDropdown.classList.add('hidden');
+        if (isHidden) {
+          userMenu.classList.remove('hidden');
+          userMenu.style.display = 'flex';
+        } else {
+          userMenu.classList.add('hidden');
+          userMenu.style.display = 'none';
         }
-      });
-    });
-  }
+      }
+      return;
+    }
+
+    // Delegated click handler for items inside user menu dropdown
+    const menuItem = e.target.closest('.user-menu-item');
+    if (menuItem) {
+      const itemId = menuItem.id;
+
+      if (itemId === 'btn-user-settings' || itemId === 'btn-debate-user-settings') {
+        if (userMenu) { userMenu.classList.add('hidden'); userMenu.style.display = 'none'; }
+        router.navigateTo('settings');
+      } else if (itemId === 'btn-user-plugins' || itemId === 'btn-debate-user-plugins') {
+        if (userMenu) { userMenu.classList.add('hidden'); userMenu.style.display = 'none'; }
+        router.navigateTo('plugins');
+      } else if (itemId === 'btn-user-skills' || itemId === 'btn-debate-user-skills') {
+        if (userMenu) { userMenu.classList.add('hidden'); userMenu.style.display = 'none'; }
+        router.navigateTo('skills');
+      } else if (itemId !== 'btn-user-theme' && itemId !== 'btn-debate-user-theme') {
+        if (userMenu) { userMenu.classList.add('hidden'); userMenu.style.display = 'none'; }
+      }
+      return;
+    }
+
+    // Close user menu if click is outside profile button & dropdown
+    if (userMenu && !userMenu.contains(e.target)) {
+      userMenu.classList.add('hidden');
+      userMenu.style.display = 'none';
+    }
+  });
 
   //  CAD Grid Menu Dropdown 
   const gridMenuBtn = $('cad-grid-menu-btn');
