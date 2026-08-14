@@ -1,7 +1,7 @@
 /* ==========================================================================
    12_COMPUTER_VISION_HUD.CSS
    Adaptive Application Theme Variables & Dynamic System Font Inherited HUD
-   Default Compact Window (380px) + Ultra-Sleek Voice Orb (82px)
+   Default Compact Window (380px) + Identical Standard Size Voice Orb (48px)
    Crisp Subtle Outline ONLY (Zero Shadows): border: 1px solid var(--border)
    Unbold Rule: Heading & Greeting ONLY have weight; Everything else is 400
    Strictly < 500 Lines Limit (~360 lines)
@@ -500,7 +500,7 @@ body[data-theme="oled"] .vision-hud-input-capsule {
   transform: scale(1.05) !important;
 }
 
-/* ─── 7. Dedicated Voice Screen UI (Compact 380px Card + Sleek 82px Orb) ─── */
+/* ─── 7. Dedicated Voice Screen UI (Identical 48px Orb Size) ─────────────── */
 .vision-hud-voice-view {
   display: none !important;
   flex-direction: column !important;
@@ -524,24 +524,18 @@ body[data-theme="oled"] .vision-hud-input-capsule {
 }
 
 .vision-hud-voice-large-orb {
-  width: 82px !important;
-  height: 82px !important;
-  min-width: 82px !important;
-  min-height: 82px !important;
+  width: 48px !important;
+  height: 48px !important;
+  min-width: 48px !important;
+  min-height: 48px !important;
   aspect-ratio: 1 / 1 !important;
   box-sizing: border-box !important;
   border-radius: 50% !important;
-  background: radial-gradient(circle at 35% 30%, #e0e7ff 0%, #d8b4fe 40%, #bbf7d0 75%, #fbcfe8 100%) !important;
-  filter: blur(0.8px) !important;
-  animation: voiceGiantOrbBreathing 4s infinite ease-in-out !important;
-  margin-bottom: 14px !important;
+  background: radial-gradient(circle at 35% 35%, #93c5fd 0%, #c084fc 50%, #f472b6 100%) !important;
+  filter: blur(0.5px) !important;
+  animation: visionOrbPulse 3.5s infinite ease-in-out !important;
+  margin-bottom: 12px !important;
   flex-shrink: 0 !important;
-}
-
-body.dark .vision-hud-voice-large-orb,
-body[data-theme="dark"] .vision-hud-voice-large-orb,
-body[data-theme="oled"] .vision-hud-voice-large-orb {
-  background: radial-gradient(circle at 35% 30%, #818cf8 0%, #c084fc 45%, #4ade80 80%, #f472b6 100%) !important;
 }
 
 .vision-hud-voice-status-box {
@@ -684,12 +678,6 @@ body[data-theme="oled"] .vision-hud-dropdown-menu {
   0%   { transform: scale(1); filter: blur(0.5px); }
   50%  { transform: scale(1.06); filter: blur(1.5px); }
   100% { transform: scale(1); filter: blur(0.5px); }
-}
-
-@keyframes voiceGiantOrbBreathing {
-  0%   { transform: scale(1); filter: blur(0.8px); }
-  50%  { transform: scale(1.06); filter: blur(1.5px); }
-  100% { transform: scale(1); filter: blur(0.8px); }
 }
 
 @keyframes dFadeIn {
