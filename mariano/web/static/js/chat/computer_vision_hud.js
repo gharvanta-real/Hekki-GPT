@@ -74,7 +74,7 @@ class VisionHUDController {
 
       <!-- DEFAULT MODE HERO -->
       <div class="vision-hud-hero" id="vision-hud-hero">
-        <div class="vision-hud-orb"></div>
+        <img src="/static/hekki.png" class="vision-hud-hero-ribbon" alt="Hekki AI" />
         <span class="vision-hud-hero-text">Ask Super AI anything</span>
       </div>
 
@@ -117,7 +117,7 @@ class VisionHUDController {
       <!-- DEDICATED VOICE SCREEN UI -->
       <div class="vision-hud-voice-view" id="vision-hud-voice-view">
         <div class="vision-hud-voice-center-content">
-          <div class="vision-hud-voice-large-orb"></div>
+          <img src="/static/hekki.png" class="vision-hud-voice-ribbon" alt="Hekki AI" />
           <div class="vision-hud-voice-status-box">
             <span class="vision-hud-voice-main-status" id="vision-hud-voice-main">Listening to your voice command...</span>
             <span class="vision-hud-voice-sub-status" id="vision-hud-voice-sub">Speak your desktop goal</span>
@@ -157,7 +157,7 @@ class VisionHUDController {
     launcher.className = 'hidden';
     launcher.title = 'Open Computer Vision (Alt+V)';
     launcher.innerHTML = `
-      <div class="vision-hud-launcher-orb"></div>
+      <img src="/static/hekki.png" class="vision-hud-launcher-ribbon" alt="Hekki AI" />
       <span class="vision-hud-launcher-text">Ask Super AI</span>
     `;
     document.body.appendChild(launcher);
@@ -406,7 +406,7 @@ class VisionHUDController {
     const row = document.createElement('div');
     row.className = `vision-hud-msg ${role}`;
     if (role === 'ai') {
-      row.innerHTML = `<div class="vision-hud-msg-avatar"></div><div class="vision-hud-msg-text">${this.escape(text)}</div>`;
+      row.innerHTML = `<img src="/static/hekki.png" class="vision-hud-msg-avatar" alt="Hekki" /><div class="vision-hud-msg-text">${this.escape(text)}</div>`;
     } else {
       row.innerHTML = `<div class="vision-hud-msg-text">${this.escape(text)}</div>`;
     }
