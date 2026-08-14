@@ -248,12 +248,10 @@ class VisionHUDController {
       if (spokenText && this.voiceMainStatus) this.voiceMainStatus.textContent = `"${spokenText}"`;
       if (final.trim()) this.submitVoiceCommand(final.trim());
     };
-
     this.recognition.onerror = () => {
       this.setRibbonAnimating(false);
       if (this.isVoiceActive && this.voiceMainStatus) this.voiceMainStatus.textContent = "Listening to your voice command...";
     };
-
     this.recognition.onend = () => {
       if (this.isVoiceActive && !window.speechSynthesis?.speaking) {
         this.setRibbonAnimating(false);
@@ -407,15 +405,25 @@ class VisionHUDController {
     });
   }
 
-  appendMessage(role, text) {
+  appendMessage(role, text, imageUrl = null) {
     this.container?.classList.add('has-messages');
     if (this.hero) this.hero.style.setProperty('display', 'none', 'important');
     if (this.chatBody) this.chatBody.style.setProperty('display', 'flex', 'important');
 
     const row = document.createElement('div');
     row.className = `vision-hud-msg ${role}`;
+    let previewHtml = '';
+    if (imageUrl) {
+      previewHtml = `
+        <div class="vision-hud-screenshot-card">
+          <img src="${imageUrl}" class="vision-hud-screenshot-thumb" alt="Desktop Screenshot" onclick="window.open('${imageUrl}', '_blank')" title="Click to view full screenshot" />
+          <span class="vision-hud-screenshot-badge">📸 Desktop Capture</span>
+        </div>
+      `;
+    }
+
     if (role === 'ai') {
-      row.innerHTML = `<img src="/static/hekki.png" class="vision-hud-msg-avatar" alt="Hekki" /><div class="vision-hud-msg-text">${this.escape(text)}</div>`;
+      row.innerHTML = `<img src="/static/hekki.png" class="vision-hud-msg-avatar" alt="Hekki" /><div class="vision-hud-msg-text">${this.escape(text)}${previewHtml}</div>`;
     } else {
       row.innerHTML = `<div class="vision-hud-msg-text">${this.escape(text)}</div>`;
     }
@@ -436,27 +444,19 @@ class VisionHUDController {
       });
       const data = await response.json();
       const answer = data?.response_text || data?.message || data?.data || "Done!";
-      this.appendMessage('ai', answer);
+      const imgUrl = data?.image_url || null;
+      this.appendMessage('ai', answer, imgUrl);
     } catch (err) {
       this.appendMessage('ai', `I encountered an issue processing your prompt. Please try again.`);
     }
   }
 
   handleQuickAction(action) {
-    if (action === 'capture_screen') {
-      this.submitPrompt('Take a screenshot of the desktop screen');
-    } else if (action === 'click_element') {
-      this.input.value = 'Click on ';
-      this.input.focus();
-    } else if (action === 'type_text') {
-      this.input.value = 'Type ';
-      this.input.focus();
-    } else if (action === 'focus_window') {
-      this.input.value = 'Focus window ';
-      this.input.focus();
-    } else if (action === 'stop_failsafe') {
-      this.appendMessage('ai', 'Emergency Stop: All automation routines halted.');
-    }
+    if (action === 'capture_screen') return this.submitPrompt('Take a screenshot of the desktop screen');
+    if (action === 'click_element') { this.input.value = 'Click on '; return this.input.focus(); }
+    if (action === 'type_text') { this.input.value = 'Type '; return this.input.focus(); }
+    if (action === 'focus_window') { this.input.value = 'Focus window '; return this.input.focus(); }
+    if (action === 'stop_failsafe') this.appendMessage('ai', 'Emergency Stop: All automation routines halted.');
   }
 
   escape(str) {
@@ -492,8 +492,7 @@ class VisionHUDController {
   }
 
   toggle() {
-    if (!this.isEnabled) return;
-    this.container?.classList.contains('hidden') ? this.show() : this.hide();
+    if (this.isEnabled) this.container?.classList.contains('hidden') ? this.show() : this.hide();
   }
 }
 

@@ -28,6 +28,15 @@ async def quick_voice(req: QuickVoiceRequest):
     from google import genai as genai_sdk
 
     try:
+        lower_text = req.text.strip().lower()
+        if any(kw in lower_text for kw in ["screenshot", "screen capture", "capture screen", "snip", "dekho screen", "screen dekho", "what is on my screen"]):
+            capture_res = await screen_capture()
+            if capture_res.get("success"):
+                return {
+                    "response_text": capture_res.get("analysis", "Screen captured successfully."),
+                    "image_url": capture_res.get("image_url")
+                }
+
         settings_obj = get_settings()
 
         from mariano.core.computer_use import ComputerUseEngine
@@ -139,8 +148,9 @@ async def screen_capture():
             )
         )
 
-        analysis = response.text.strip() if (response and response.text) else "Screen captured but Gemini returned no analysis."
-        return {"success": True, "analysis": analysis}
+        import base64
+        img_b64 = f"data:image/jpeg;base64,{base64.b64encode(img_bytes).decode('utf-8')}"
+        return {"success": True, "analysis": analysis, "image_url": img_b64}
 
     except Exception as e:
         log.error("web.screen_capture_failed", error=str(e))

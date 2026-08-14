@@ -369,6 +369,44 @@ body[data-theme="oled"] .vision-hud-msg.ai {
   margin-top: 1px !important;
 }
 
+/* ─── Screenshot Thumbnail Preview Card inside Response Bubble ──────────── */
+.vision-hud-screenshot-card {
+  margin-top: 8px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+  max-width: 100% !important;
+  border-radius: 10px !important;
+  overflow: hidden !important;
+}
+
+.vision-hud-screenshot-thumb {
+  width: 100% !important;
+  max-width: 260px !important;
+  max-height: 140px !important;
+  object-fit: cover !important;
+  border-radius: 8px !important;
+  cursor: pointer !important;
+  transition: transform 0.15s ease, filter 0.15s ease !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.vision-hud-screenshot-thumb:hover {
+  transform: scale(1.02) !important;
+  filter: brightness(1.05) !important;
+}
+
+.vision-hud-screenshot-badge {
+  font-size: 10px !important;
+  font-weight: 500 !important;
+  color: var(--text-3, #94a3b8) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+}
+
 /* ─── 6. Bottom Input Capsule Area ───────────────────────────────────────── */
 .vision-hud-bottom-group {
   display: flex !important;
