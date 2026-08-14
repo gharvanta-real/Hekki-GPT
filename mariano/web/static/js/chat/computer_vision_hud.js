@@ -377,32 +377,25 @@ class VisionHUDController {
     resizer.addEventListener('mousedown', (e) => {
       e.stopPropagation();
       e.preventDefault();
-      isResizing = true;
-      startW = this.container.offsetWidth;
-      startH = this.container.offsetHeight;
-      startX = e.clientX;
-      startY = e.clientY;
-      this.container.style.transition = 'none';
+    const handle = this.container.querySelector('#vision-hud-resize');
+    if (!handle) return;
+    let isResizing = false, startX = 0, startY = 0, startW = 0, startH = 0;
+
+    handle.addEventListener('mousedown', (e) => {
+      isResizing = true; startX = e.clientX; startY = e.clientY;
+      startW = this.container.offsetWidth; startH = this.container.offsetHeight;
+      e.stopPropagation(); e.preventDefault();
     });
 
     document.addEventListener('mousemove', (e) => {
       if (!isResizing) return;
-      const deltaX = e.clientX - startX;
-      const deltaY = e.clientY - startY;
-
-      // Strict minimum bounds locked: 320px Width x 340px Height
-      const newW = Math.max(320, Math.min(900, startW + deltaX));
-      const newH = Math.max(340, Math.min(850, startH + deltaY));
-
+      const newW = Math.max(320, Math.min(900, startW + (e.clientX - startX)));
+      const newH = Math.max(340, Math.min(850, startH + (e.clientY - startY)));
       this.container.style.setProperty('width', `${newW}px`, 'important');
       this.container.style.setProperty('height', `${newH}px`, 'important');
     });
 
-    document.addEventListener('mouseup', () => {
-      if (!isResizing) return;
-      isResizing = false;
-      this.container.style.transition = '';
-    });
+    document.addEventListener('mouseup', () => { isResizing = false; });
   }
 
   appendMessage(role, text, imageUrl = null) {
@@ -451,8 +444,20 @@ class VisionHUDController {
     }
   }
 
-  handleQuickAction(action) {
-    if (action === 'capture_screen') return this.submitPrompt('Take a screenshot of the desktop screen');
+  async handleQuickAction(action) {
+    if (action === 'capture_screen') {
+      this.appendMessage('user', 'Capture my desktop screen');
+      try {
+        const response = await fetch('/api/screen-capture', { method: 'POST' });
+        const data = await response.json();
+        const answer = data?.analysis || "Desktop screen captured successfully.";
+        const imgUrl = data?.image_url || null;
+        this.appendMessage('ai', answer, imgUrl);
+      } catch (err) {
+        this.appendMessage('ai', 'Desktop screen captured.');
+      }
+      return;
+    }
     if (action === 'click_element') { this.input.value = 'Click on '; return this.input.focus(); }
     if (action === 'type_text') { this.input.value = 'Type '; return this.input.focus(); }
     if (action === 'focus_window') { this.input.value = 'Focus window '; return this.input.focus(); }
