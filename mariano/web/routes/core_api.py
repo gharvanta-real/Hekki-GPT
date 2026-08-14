@@ -94,24 +94,20 @@ async def screen_capture():
             with mss.mss() as sct:
                 mon = sct.monitors[1] if len(sct.monitors) > 1 else sct.monitors[0]
                 sct_img = sct.grab(mon)
-                img = Image.frombytes(
-                    mode="RGBA",
-                    size=(sct_img.width, sct_img.height),
-                    data=bytes(sct_img.raw),
-                    decoder_name="raw",
-                    args=["BGRA"]
-                ).convert("RGB")
+                img = Image.frombytes("RGB", sct_img.size, sct_img.bgra, "raw", "BGRX")
         except Exception as mss_err:
-            capture_error = str(mss_err)
             try:
-                import pyautogui
-                img = pyautogui.screenshot().convert("RGB")
-                capture_error = ""
-            except Exception as pg_err:
-                return {
-                    "success": False,
-                    "analysis": f"Screen capture unavailable. mss: {capture_error} | pyautogui: {pg_err}"
-                }
+                from PIL import ImageGrab
+                img = ImageGrab.grab().convert("RGB")
+            except Exception as ig_err:
+                try:
+                    import pyautogui
+                    img = pyautogui.screenshot().convert("RGB")
+                except Exception as pg_err:
+                    return {
+                        "success": False,
+                        "analysis": f"Screen capture unavailable: {mss_err} | {ig_err} | {pg_err}"
+                    }
 
         img.thumbnail((1280, 800), Image.LANCZOS)
         buf = io.BytesIO()
