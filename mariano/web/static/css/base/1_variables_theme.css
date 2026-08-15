@@ -50,22 +50,22 @@
   --font-ai:     "Segoe WPC", "Segoe UI", sans-serif;
 
   /* CHATGPT PEEK TYPOGRAPHY RAW TOKENS */
-  --text-12: 12px;
-  --text-14: 14px;
-  --text-16: 16px;
-  --text-18: 18px;
-  --text-24: 24px;
+  --text-12: 13px;
+  --text-14: 15px;
+  --text-16: 17px;
+  --text-18: 19px;
+  --text-24: 26px;
   --tracking-neg-0-27: -0.27px;
 
   /* PEEK TYPOGRAPHY SCALE TOKENS */
-  --fs-xs:   12px;
-  --fs-sm:   15px;
-  --fs-base: 14px;
-  --fs-md:   15px;
-  --fs-lg:   18px;
-  --fs-xl:   18px;
-  --fs-2xl:  24px;
-  --fs-3xl:  24px;
+  --fs-xs:   13px;
+  --fs-sm:   16px;
+  --fs-base: 15px;
+  --fs-md:   16px;
+  --fs-lg:   19px;
+  --fs-xl:   20px;
+  --fs-2xl:  26px;
+  --fs-3xl:  28px;
 
   --radius-sm:   6px;
   --radius-md:   8px;

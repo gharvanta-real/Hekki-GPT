@@ -43,7 +43,7 @@ select,
   background: transparent !important;
   color: var(--text) !important;
   font-family: var(--font) !important;
-  font-size: 15px !important;
+  font-size: 16px !important;
   border: none !important;
   outline: none !important;
   box-shadow: none !important;
@@ -57,7 +57,7 @@ select,
 #debate-input::placeholder,
 .chat-textarea::placeholder {
   color: var(--text-3) !important;
-  font-size: 15px !important;
+  font-size: 16px !important;
 }
 
 /* OPEN CANVAS LAUNCH BUTTON */

@@ -286,7 +286,7 @@ body.dark .msg.ai blockquote {
 table :not(pre) > code,
 .table-wrapper :not(pre) > code {
   font-family: var(--font-mono), monospace;
-  font-size: 12px;
+  font-size: 13.5px;
   font-weight: 500;
   background: #e5e7eb;
   color: #991b1b;

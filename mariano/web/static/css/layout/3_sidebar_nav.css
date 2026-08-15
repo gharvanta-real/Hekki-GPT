@@ -13,8 +13,8 @@
 
 /* Microsoft Fluent System Icons (Regular / Outline SVG) */
 .fluent-icon {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   margin-right: 8px;
   flex-shrink: 0;
   display: inline-block;
@@ -198,33 +198,56 @@
   flex-shrink: 0;
   margin: 0 !important;
 }
-#btn-sidebar-collapse:hover {
+#btn-sidebar-collapse:hover,
+#btn-debate-sidebar-toggle:hover {
   background: var(--hover);
   color: var(--text);
 }
-.sidebar-collapse-label {
-  font-size: 12px;
-  color: var(--text-3);
-  font-weight: 400;
-  white-space: nowrap;
+
+/* Outer layout wrapper */
+.sidebar-main-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
+/* Sidebar Top Header (Brand / Logo) */
 .nav-header {
-  height: 30px;
+  padding: 12px 14px 8px 14px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 10px 0 10px;
   gap: 8px;
   flex-shrink: 0;
-  border-bottom: none;
-  margin-bottom: 2px;
 }
-
-.nav-title {
-  font-size: var(--fs-xl);     /* 16px */
-  font-weight: 600;
-  color: var(--text);
+.nav-header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow: hidden;
+}
+.nav-header-logo-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.nav-header-logo-wrapper img {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: none !important;
+  box-shadow: none !important;
+}
+.nav-header-title {
+  font-family: var(--font-serif, var(--font));
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: -0.01em;
 }
 
 .nav-inner {
@@ -314,9 +337,9 @@ body.dark .btn-new-chat-dock:hover {
 }
 #sidebar-nav:not(.collapsed) .sidebar-action-btn,
 #sidebar-nav:not(.collapsed) .btn-new-chat-dock {
-  height: 28px !important;
-  min-height: 28px !important;
-  max-height: 28px !important;
+  height: 32px !important;
+  min-height: 32px !important;
+  max-height: 32px !important;
   margin: 1px 0 !important;
   border-radius: 6px !important;
   padding: 0 8px !important;
@@ -324,7 +347,7 @@ body.dark .btn-new-chat-dock:hover {
   align-items: center !important;
   justify-content: flex-start !important;
   text-align: left !important;
-  gap: 6px !important;
+  gap: 8px !important;
   cursor: pointer;
   transition: background 0.12s ease, color 0.12s ease !important;
   position: relative;
@@ -334,9 +357,9 @@ body.dark .btn-new-chat-dock:hover {
 
 .section-item,
 .recent-item {
-  height: 28px !important;
-  min-height: 28px !important;
-  max-height: 28px !important;
+  height: 32px !important;
+  min-height: 32px !important;
+  max-height: 32px !important;
   margin: 1px 0 !important;
   border-radius: 6px !important;
   padding: 0 6px 0 8px !important;
@@ -385,9 +408,9 @@ body.light .section-item.active,
 #sidebar-nav .sidebar-user-name,
 #recent-list .section-item .lbl,
 #playground-list .section-item .lbl {
-  font-size: 14px !important;
+  font-size: 15px !important;
   font-weight: 400;
-  line-height: 20px;
+  line-height: 22px;
   color: var(--text-2);
   white-space: nowrap;
   overflow: hidden;
