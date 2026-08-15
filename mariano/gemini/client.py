@@ -463,6 +463,7 @@ class GeminiClient:
             f"- Current Real-World Date & Time: {current_time_str}\n"
             f"- Current Year: {now.year}\n"
             f"- Temporal Verification Rule: ALWAYS use this current real-world timestamp for date/time/year questions. NEVER hallucinate past dates or training cutoffs (like 2023 or 2024).\n"
+            f"- Strict Media/YouTube Rule: NEVER guess, fabricate, or hallucinate YouTube video IDs or links (especially never output dummy links like 'dQw4w9WgXcQ' / Rick Astley). If user asks for videos, you MUST call 'web_search' to get verified real watch URLs or provide a YouTube search query URL ('https://www.youtube.com/results?search_query=...').\n"
             f"- Current OS: {sys_os}\n"
             f"- User Home Directory: {sys_home}\n"
             f"- Current Working Directory: {sys_cwd}\n"

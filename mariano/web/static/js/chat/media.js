@@ -22,22 +22,42 @@ function _renderYoutubeCard(a, videoId) {
   a.dataset.hasPreview = 'yt';
   const thumbUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
   const watchUrl = `https://www.youtube.com/watch?v=${videoId}`;
+  const videoTitle = a.textContent.trim() || 'Watch on YouTube';
 
   const card = document.createElement('div');
   card.className = 'yt-preview-card';
   card.innerHTML = `
-    <div class="yt-thumb-wrap" style="position:relative; width:100%; cursor:pointer; border-radius:10px; overflow:hidden; background:#000;">
-      <img src="${thumbUrl}" loading="lazy" style="width:100%; height:130px; object-fit:cover; display:block; border-radius:10px; opacity:0.92;" />
-      <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none;">
-        <div style="width:38px; height:38px; background:rgba(255,0,0,0.88); border-radius:50%; display:flex; align-items:center; justify-content:center;">
+    <div class="yt-thumb-wrap" style="position:relative; width:100%; cursor:pointer; border-radius:10px; overflow:hidden; background:#0f0f11; min-height:110px;">
+      <img src="${thumbUrl}" alt="${escapeHtmlLocal(videoTitle)}" loading="lazy" style="width:100%; height:130px; object-fit:cover; display:block; border-radius:10px; opacity:0.95;" />
+      <div class="yt-play-overlay" style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none;">
+        <div style="width:38px; height:38px; background:rgba(255,0,0,0.9); border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 8px rgba(0,0,0,0.4);">
           <i data-lucide="play" style="width:16px;height:16px;color:#fff;margin-left:2px;"></i>
         </div>
       </div>
-      <a href="${watchUrl}" target="_blank" rel="noopener noreferrer" style="position:absolute; bottom:6px; right:6px; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); color:#fff; width:22px; height:22px; border-radius:5px; display:flex; align-items:center; justify-content:center; text-decoration:none; z-index:5;" title="Open on YouTube">
+      <a href="${watchUrl}" target="_blank" rel="noopener noreferrer" style="position:absolute; bottom:6px; right:6px; background:rgba(0,0,0,0.65); backdrop-filter:blur(4px); color:#fff; width:22px; height:22px; border-radius:5px; display:flex; align-items:center; justify-content:center; text-decoration:none; z-index:5;" title="Open on YouTube">
         <i data-lucide="external-link" style="width:11px; height:11px;"></i>
       </a>
     </div>
   `;
+
+  const imgEl = card.querySelector('img');
+  // Detect YouTube 120x90 placeholder for non-existent / broken video IDs
+  imgEl.addEventListener('load', () => {
+    if (imgEl.naturalWidth === 120 && imgEl.naturalHeight === 90) {
+      // Invalid / deleted video ID — convert to clean YouTube search fallback card
+      const thumbWrap = card.querySelector('.yt-thumb-wrap');
+      if (thumbWrap) {
+        thumbWrap.style.background = 'var(--hover, #27272a)';
+        thumbWrap.innerHTML = `
+          <div style="padding:16px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:8px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 32 32" fill="#ef4444"><path d="M29.41,9.26a3.5,3.5,0,0,0-2.47-2.47C24.76,6.2,16,6.2,16,6.2s-8.76,0-10.94.59A3.5,3.5,0,0,0,2.59,9.26,36.13,36.13,0,0,0,2,16a36.13,36.13,0,0,0,.59,6.74,3.5,3.5,0,0,0,2.47,2.47C7.24,25.8,16,25.8,16,25.8s8.76,0,10.94-.59a3.5,3.5,0,0,0,2.47-2.47A36.13,36.13,0,0,0,30,16,36.13,36.13,0,0,0,29.41,9.26ZM13,20.5V11.5L21,16Z"/></svg>
+            <span style="font-size:12px; font-weight:500; color:var(--text);">${escapeHtmlLocal(videoTitle)}</span>
+            <span style="font-size:10.5px; color:var(--text-3); opacity:0.8;">Search on YouTube &rarr;</span>
+          </div>
+        `;
+      }
+    }
+  });
 
   const thumbWrap = card.querySelector('.yt-thumb-wrap');
   thumbWrap.addEventListener('click', (e) => {
