@@ -74,8 +74,21 @@ body[data-page="settings"] #sidebar-nav .nav-header {
   padding: 6px 10px !important;
   margin-bottom: 10px !important;
   background: var(--card, #1e1e1e) !important;
-  border: none !important;
+  border: 1px solid var(--border-subtle, rgba(0, 0, 0, 0.08)) !important;
   border-radius: 8px !important;
+  box-shadow: none !important;
+  transition: border-color 0.15s ease !important;
+}
+
+.settings-search-wrap:focus-within {
+  border-color: var(--accent-primary, #2563EB) !important;
+  outline: 2px solid var(--accent-primary, #2563EB) !important;
+  outline-offset: 1px !important;
+}
+
+body.dark .settings-search-wrap,
+body.oled .settings-search-wrap {
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
 
 .settings-search-icon {
@@ -98,20 +111,23 @@ body[data-page="settings"] #sidebar-nav .nav-header {
 /* Container Cards (Cursor IDE Card Boxes) */
 .settings-card-box {
   background: var(--card, #FFFFFF) !important;
-  border: none !important;
+  border: 1px solid var(--border-subtle, rgba(0, 0, 0, 0.06)) !important;
   border-radius: 12px !important;
   margin-bottom: 20px !important;
   overflow: hidden !important;
+  box-shadow: none !important;
 }
 
 body.dark .settings-card-box,
 body.oled .settings-card-box {
   background: #1E1E1E !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
 }
 
 body.light .settings-card-box,
 :root[data-theme="light"] .settings-card-box {
   background: #FFFFFF !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
 }
 
 .settings-card-box .settings-row {
