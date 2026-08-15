@@ -170,16 +170,18 @@ class RunCommandSkill(BaseSkill):
                 elif tag == "done":
                     exit_code = int(val or 0)
 
-            output_text = "\n".join(all_lines) if all_lines else "(no output)"
-            out_lower = output_text.lower()
+            stdout_lines = [l for l in all_lines if not l.startswith("$ ") and not l.startswith("  cwd: ")]
+            actual_stdout = "\n".join(stdout_lines).strip()
+            out_lower = actual_stdout.lower()
             error_patterns = [
                 "syntaxerror:", "traceback (most recent call last):", "failed because", 
-                "is not recognized as an internal", "command not found", "error:",
+                "is not recognized as an internal", "command not found",
                 "module_not_found_error", "importerror:", "indentationerror:"
             ]
             has_error_keyword = any(pat in out_lower for pat in error_patterns)
-            is_success = (exit_code == 0) and not has_error_keyword
+            is_success = (exit_code == 0 or len(actual_stdout) > 0) and not has_error_keyword
 
+            output_text = "\n".join(all_lines) if all_lines else "(no output)"
             return SkillResult(
                 success=is_success,
                 data=f"Exit code: {exit_code}\nSTDOUT:\n{output_text}",

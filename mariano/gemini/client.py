@@ -449,13 +449,20 @@ class GeminiClient:
 
         import platform
         from pathlib import Path
+        from datetime import datetime
+
+        now = datetime.now()
+        current_time_str = now.strftime("%A, %B %d, %Y (%I:%M %p)")
 
         sys_os = platform.system()
         sys_home = str(Path.home()).replace('\\', '/')
         sys_cwd = str(Path.cwd()).replace('\\', '/')
 
         env_state = (
-            f"\n\n[SYSTEM ENVIRONMENT STATE]\n"
+            f"\n\n[SYSTEM ENVIRONMENT STATE & REAL-TIME TEMPORAL ANCHOR]\n"
+            f"- Current Real-World Date & Time: {current_time_str}\n"
+            f"- Current Year: {now.year}\n"
+            f"- Temporal Verification Rule: ALWAYS use this current real-world timestamp for date/time/year questions. NEVER hallucinate past dates or training cutoffs (like 2023 or 2024).\n"
             f"- Current OS: {sys_os}\n"
             f"- User Home Directory: {sys_home}\n"
             f"- Current Working Directory: {sys_cwd}\n"
