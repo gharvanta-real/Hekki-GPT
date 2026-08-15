@@ -54,7 +54,7 @@ export class ChatMinimapManager {
     this.centerScrollBtn = document.createElement('button');
     this.centerScrollBtn.className = 'chat-center-scroll-btn';
     this.centerScrollBtn.title = 'Jump to latest message';
-    this.centerScrollBtn.innerHTML = '<i data-lucide="arrow-down-circle" style="width:24px;height:24px;"></i>';
+    this.centerScrollBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 32 32" fill="currentColor" style="width:18px;height:18px;"><polygon points="24.59 16.59 17 24.17 17 4 15 4 15 24.17 7.41 16.59 6 18 16 28 26 18 24.59 16.59"/></svg>';
     if (window.lucide) lucide.createIcons({ parent: this.centerScrollBtn });
     parentPane.appendChild(this.centerScrollBtn);
 

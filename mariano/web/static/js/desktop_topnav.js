@@ -1,52 +1,46 @@
-/* === DESKTOP EXE TOP NAVIGATION BAR & MENU CONTROLLER === */
-document.addEventListener('DOMContentLoaded', () => {
+/* === DESKTOP TOP NAVIGATION BAR & MENU CONTROLLER === */
+
+function initDesktopTopnav() {
   const isElectron = window.electronAPI?.isElectron || navigator.userAgent.toLowerCase().includes('electron');
   if (isElectron) {
     document.documentElement.classList.add('is-electron');
-  } else {
-    return; // Do not initialize topnav in plain web browser mode
   }
 
   const topnav = document.getElementById('desktop-topnav');
-  if (!topnav) return;
 
-  // ── Close all open topnav dropdowns ────────────────────────────────────────
   function closeAllTopnavMenus() {
     document.querySelectorAll('.topnav-dropdown-menu').forEach(menu => {
       menu.classList.add('hidden');
+      menu.style.display = 'none';
     });
     document.querySelectorAll('.topnav-menu-btn').forEach(btn => {
       btn.classList.remove('active');
     });
   }
 
-  // ── Toggle menu dropdown ────────────────────────────────────────────────────
-  document.querySelectorAll('.topnav-menu-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
+  // ── Global Event Delegation for TopNav Buttons & Items ──────────────────────
+  document.addEventListener('click', (e) => {
+    // 1. TopNav Menu Header Buttons (File, Edit, View, Help, etc.)
+    const btn = e.target.closest('.topnav-menu-btn');
+    if (btn) {
       e.stopPropagation();
       const targetId = btn.dataset.menu;
       const targetMenu = document.getElementById(targetId);
-      const isAlreadyOpen = targetMenu && !targetMenu.classList.contains('hidden');
+      const isAlreadyOpen = targetMenu && !targetMenu.classList.contains('hidden') && targetMenu.style.display !== 'none';
 
       closeAllTopnavMenus();
 
       if (targetMenu && !isAlreadyOpen) {
         targetMenu.classList.remove('hidden');
+        targetMenu.style.display = 'flex';
         btn.classList.add('active');
       }
-    });
-  });
-
-  // Close menus when clicking outside
-  document.addEventListener('click', (e) => {
-    if (!topnav.contains(e.target)) {
-      closeAllTopnavMenus();
+      return;
     }
-  });
 
-  // ── Handle Action Commands ──────────────────────────────────────────────────
-  document.querySelectorAll('.topnav-item').forEach(item => {
-    item.addEventListener('click', (e) => {
+    // 2. TopNav Dropdown Menu Items
+    const item = e.target.closest('.topnav-item');
+    if (item) {
       e.stopPropagation();
       closeAllTopnavMenus();
       const action = item.dataset.action;
@@ -117,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
         case 'shortcuts':
         case 'docs':
         case 'about':
-          document.getElementById('btn-open-settings')?.click();
+          if (window.router) window.router.navigate('settings');
           setTimeout(() => {
             const targetSection = action === 'shortcuts' ? 'shortcuts' : 'about';
             document.querySelector(`.modal-nav-item[data-section="${targetSection}"]`)?.click();
@@ -126,6 +120,18 @@ document.addEventListener('DOMContentLoaded', () => {
         default:
           console.log('[TopNav Action]', action);
       }
-    });
+      return;
+    }
+
+    // 3. Close topnav menus if click is outside topnav
+    if (topnav && !topnav.contains(e.target)) {
+      closeAllTopnavMenus();
+    }
   });
-});
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initDesktopTopnav);
+} else {
+  initDesktopTopnav();
+}

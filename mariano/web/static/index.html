@@ -226,8 +226,8 @@
       <img src="/static/hekki.png" alt="Logo" style="width: 34px; height: 34px; border-radius: 50%; object-fit: contain; pointer-events: none;" />
     </div>
     <div class="dock-items">
-      <button class="dock-item active" id="mode-home" title="Chat Dashboard">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-compose" style="width:20px;height:20px;display:inline-block;vertical-align:middle;"><path d="M10 3H7a4 4 0 0 0-4 4v9a4 4 0 0 0 4 4h10a4 4 0 0 0 4-4v-4"></path><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"></path></svg>
+      <button class="dock-item active" id="btn-new-chat-dock" data-tab="home" title="New Chat (Home)">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" style="width:20px;height:20px;display:inline-block;vertical-align:middle;"><path d="M16,19a6.9908,6.9908,0,0,1-5.833-3.1287l1.666-1.1074a5.0007,5.0007,0,0,0,8.334,0l1.666,1.1074A6.9908,6.9908,0,0,1,16,19Z"/><path d="M20,8a2,2,0,1,0,2,2A1.9806,1.9806,0,0,0,20,8Z"/><path d="M12,8a2,2,0,1,0,2,2A1.9806,1.9806,0,0,0,12,8Z"/><path d="M17.7358,30,16,29l4-7h6a1.9966,1.9966,0,0,0,2-2V6a1.9966,1.9966,0,0,0-2-2H6A1.9966,1.9966,0,0,0,4,6V20a1.9966,1.9966,0,0,0,2,2h9v2H6a3.9993,3.9993,0,0,1-4-4V6A3.9988,3.9988,0,0,1,6,2H26a3.9988,3.9988,0,0,1,4,4V20a3.9993,3.9993,0,0,1-4,4H21.1646Z"/></svg>
       </button>
 
       <button class="dock-item" id="mode-coder" data-tab="coder" title="Coder IDE" style="position:relative;">
@@ -245,15 +245,15 @@
   <div id="sidebar-nav">
     <div class="nav-header">
       <button class="icon-btn" id="btn-sidebar-collapse" title="Collapse sidebar">
-        <i data-lucide="panel-left" style="width:16px; height:16px;"></i>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;display:inline-block;vertical-align:middle;"><path d="M28,4H4A2.0023,2.0023,0,0,0,2,6V26a2.0023,2.0023,0,0,0,2,2H28a2.0023,2.0023,0,0,0,2-2V6A2.0023,2.0023,0,0,0,28,4ZM4,6H16V26H4Z"/></svg>
       </button>
 
       <div class="nav-header-arrows" style="display: flex; align-items: center; gap: 2px; margin-left: auto;">
         <button class="icon-btn" id="btn-nav-back" title="Go Back">
-          <i data-lucide="arrow-left" style="width:16px; height:16px;"></i>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;"><polygon points="14 26 15.41 24.59 7.83 17 28 17 28 15 7.83 15 15.41 7.41 14 6 4 16 14 26"/></svg>
         </button>
         <button class="icon-btn" id="btn-nav-forward" title="Go Forward">
-          <i data-lucide="arrow-right" style="width:16px; height:16px;"></i>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;"><polygon points="18 6 16.57 7.393 24.15 15 4 15 4 17 24.15 17 16.57 24.573 18 26 28 16 18 6"/></svg>
         </button>
       </div>
     </div>
@@ -267,24 +267,24 @@
         <div class="nav-section" style="margin-top: 0px;">
           <div class="nav-section-actions" style="display: flex; flex-direction: column; gap: 2px; margin-top: 0;">
             <button class="sidebar-action-btn" id="btn-new-chat">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="icon icon-compose" style="width:16px; height:16px; margin-right:8px; display:inline-block; vertical-align:middle; flex-shrink:0;"><path d="M10 3H7a4 4 0 0 0-4 4v9a4 4 0 0 0 4 4h10a4 4 0 0 0 4-4v-4"></path><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"></path></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;margin-right:8px;display:inline-block;vertical-align:middle;flex-shrink:0;"><path d="M16,19a6.9908,6.9908,0,0,1-5.833-3.1287l1.666-1.1074a5.0007,5.0007,0,0,0,8.334,0l1.666,1.1074A6.9908,6.9908,0,0,1,16,19Z"/><path d="M20,8a2,2,0,1,0,2,2A1.9806,1.9806,0,0,0,20,8Z"/><path d="M12,8a2,2,0,1,0,2,2A1.9806,1.9806,0,0,0,12,8Z"/><path d="M17.7358,30,16,29l4-7h6a1.9966,1.9966,0,0,0,2-2V6a1.9966,1.9966,0,0,0-2-2H6A1.9966,1.9966,0,0,0,4,6V20a1.9966,1.9966,0,0,0,2,2h9v2H6a3.9993,3.9993,0,0,1-4-4V6A3.9988,3.9988,0,0,1,6,2H26a3.9988,3.9988,0,0,1,4,4V20a3.9993,3.9993,0,0,1-4,4H21.1646Z"/></svg>
               <span>New Chat</span>
             </button>
             <button class="sidebar-action-btn" id="btn-nav-chat-history">
-              <i data-lucide="history" style="width:16px; height:16px; margin-right:8px; display:inline-block; vertical-align:middle; flex-shrink:0;"></i>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;margin-right:8px;display:inline-block;vertical-align:middle;flex-shrink:0;"><path d="M18.3115,29.8096l-.3281-1.9727c5.8037-.9648,10.0166-5.9434,10.0166-11.8369,0-6.6167-5.3828-12-12-12s-12,5.3833-12,12h-2c0-7.7197,6.2803-14,14-14s14,6.2803,14,14c0,6.876-4.916,12.6836-11.6885,13.8096ZM13.5537,29.7861c-1.6157-.2842-3.1558-.8467-4.5767-1.6719l1.0039-1.7305c1.2178.707,2.5361,1.1895,3.9194,1.4336l-.3467,1.9688ZM5.293,25.0205c-1.0537-1.25-1.873-2.6582-2.4351-4.1846l1.877-.6914c.4814,1.3086,1.1836,2.5156,2.0874,3.5869l-1.5293,1.2891ZM20.5586,21.9727l-5.5586-5.5586V7h2v8.5859l4.9727,4.9727-1.4141,1.4141Z"/></svg>
               <span>Chat History</span>
             </button>
 
             <button class="sidebar-action-btn" id="btn-nav-plugins">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="icon icon-plugins" style="width:16px; height:16px; margin-right:8px; display:inline-block; vertical-align:middle; flex-shrink:0;"><path d="M9 2v6M15 2v6M12 17v5M5 8h14a1 1 0 0 1 1 1v4a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V9a1 1 0 0 1 1-1z"></path></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;margin-right:8px;display:inline-block;vertical-align:middle;flex-shrink:0;"><path d="M28.9,4.4l-1.4-1.4-3,3c-1.9-1.3-4.6-1.1-6.3.6l-3.5,3.5,7.1,7.1,3.5-3.5c1.7-1.7,1.9-4.4.6-6.3,0,0,3-3,3-3ZM23.8,12.3l-2.1,2.1-4.2-4.2,2.1-2.1c1.2-1.2,3.1-1.2,4.2,0,1.2,1.2,1.2,3.1,0,4.2ZM17.7,18.5l-1.4-1.4-1.9,1.9-1.4-1.4,1.9-1.9-1.4-1.4-1.9,1.9-1.4-1.4-3.5,3.5c-1.7,1.7-1.9,4.4-.6,6.3l-3,3,1.4,1.4,3-3c.8.5,1.8.8,2.8.8s2.6-.5,3.5-1.5l3.5-3.5-1.4-1.4,1.9-1.9h-.1ZM12.2,23.9c-1.1,1.1-3.1,1.1-4.2,0-1.2-1.2-1.2-3.1,0-4.2l2.1-2.1,4.2,4.2s-2.1,2.1-2.1,2.1ZM8,14h-4v-2h4v2ZM14,8h-2v-4h2v4ZM28,20h-4v-2h4v2ZM24.6858,25.9l-2.8284-2.8284,1.4142-1.4142,2.8284,2.8284-1.4142,1.4142ZM8.8071,10.0213l-2.8284-2.8284,1.4142-1.4142,2.8284,2.8284-1.4142,1.4142ZM20,28h-2v-4h2v4Z"/></svg>
               <span>Plugins</span>
             </button>
             <button class="sidebar-action-btn" id="nav-skills-btn">
-              <i data-lucide="blocks" style="width:16px; height:16px; margin-right:8px; display:inline-block; vertical-align:middle; flex-shrink:0;"></i>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;margin-right:8px;display:inline-block;vertical-align:middle;flex-shrink:0;"><circle cx="4" cy="22" r="2"/><path d="m13.5,30c-3.0586,0-5.9485-1.4867-7.7305-3.9771l1.6265-1.1638c1.4075,1.9667,3.6892,3.1409,6.104,3.1409,3.969,0,7.2578-3.1002,7.4873-7.0579l1.9966.1157c-.2908,5.0143-4.4565,8.9421-9.4839,8.9421Z"/><circle cx="28" cy="23" r="2"/><path d="m30.6411,19.0948l-1.9243-.5449c.188-.6638.2832-1.3535.2832-2.0499,0-4.1355-3.3645-7.5-7.5-7.5-1.0769,0-2.1157.223-3.0876.6628l-.8247-1.822c1.2329-.558,2.5491-.8408,3.9124-.8408,5.2383,0,9.5,4.2617,9.5,9.5,0,.8807-.1208,1.7537-.3589,2.5948Z"/><path d="m20.4141,14.5859l-3-3c-.3774-.3779-.8799-.5859-1.4141-.5859s-1.0366.208-1.4143.5859l-2.9998,3c-.3899.3896-.5859.9019-.5859,1.4141s.196,1.0244.5859,1.4141l2.9998,3c.3777.3779.8801.5859,1.4143.5859s1.0366-.208,1.4141-.5859l3-3c.3899-.3896.5859-.9019.5859-1.4141s-.196-1.0244-.5859-1.4141Zm-4.4141,4.4141l-3-3,3-3,2.9998,3-2.9998,3Z"/><circle cx="16" cy="3" r="2"/><path d="m8.0254,19.8821c-3.0999-1.6578-5.0254-4.8696-5.0254-8.3821C3,6.4729,6.9277,2.307,11.9421,2.0161l.1157,1.9966c-3.9578.2297-7.0579,3.5186-7.0579,7.4873,0,2.7732,1.5208,5.3092,3.9688,6.6184l-.9434,1.7637Z"/></svg>
               <span>Skills</span>
             </button>
             <button class="sidebar-action-btn" id="btn-nav-images">
-              <i data-lucide="images" style="width:16px; height:16px; margin-right:8px; display:inline-block; vertical-align:middle; flex-shrink:0;"></i>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;margin-right:8px;display:inline-block;vertical-align:middle;flex-shrink:0;"><path d="M19,14a3,3,0,1,0-3-3A3,3,0,0,0,19,14Zm0-4a1,1,0,1,1-1,1A1,1,0,0,1,19,10Z"/><path d="M26,4H6A2,2,0,0,0,4,6V26a2,2,0,0,0,2,2H26a2,2,0,0,0,2-2V6A2,2,0,0,0,26,4Zm0,22H6V20l5-5,5.59,5.59a2,2,0,0,0,2.82,0L21,19l5,5Zm0-4.83-3.59-3.59a2,2,0,0,0-2.82,0L18,19.17l-5.59-5.59a2,2,0,0,0-2.82,0L6,17.17V6H26Z"/></svg>
               <span>Images</span>
             </button>
           </div>
@@ -305,6 +305,7 @@
         <div class="nav-section" id="nav-section-playground" style="display:none; margin-top: 8px;">
           <div class="section-hdr collapsible-hdr" id="hdr-section-playground" style="display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: var(--text-3); letter-spacing: 0.02em; font-weight: 400; margin-bottom: 4px; padding: 4px 6px; cursor: pointer; user-select: none; border-radius: 6px; transition: background 0.15s ease;">
             <div style="display: flex; align-items: center; gap: 6px;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 32 32" fill="currentColor" style="width:14px;height:14px;display:inline-block;vertical-align:middle;flex-shrink:0;"><path d="M25.3943,24a7.8772,7.8772,0,0,0-1.6707-8.5684,3.918,3.918,0,0,0-1.0844-4.414l2.7759-2.7759a2.0025,2.0025,0,0,0,0-2.8286L22.5869,2.5849a2.0021,2.0021,0,0,0-2.8286,0L6.5859,15.7573a2.0027,2.0027,0,0,0,0,2.8286l2.8282,2.8282a2.0024,2.0024,0,0,0,2.8286,0l4.7749-4.7754a3.9329,3.9329,0,0,0,5.5139.4326A5.9442,5.9442,0,0,1,23.1775,24H16v4H4v2H28V24ZM10.8281,20,8,17.1714,9.8787,15.293l2.8283,2.8281ZM16,14a3.9811,3.9811,0,0,0,.0762.7524L14.1211,16.707l-2.8284-2.8281,9.88-9.88L24.001,6.8271l-3.2488,3.2491A3.9771,3.9771,0,0,0,16,14Zm4,2a2,2,0,1,1,2-2A2.0023,2.0023,0,0,1,20,16Zm6,12H18V26h8Z"/></svg>
               <span>Playground</span>
               <span class="badge-count" id="playground-count" style="font-size: 10px; background: rgba(37, 99, 235, 0.1); color: var(--accent, #2563eb); padding: 1px 6px; border-radius: 10px; font-weight: 500;">0</span>
             </div>
@@ -322,37 +323,46 @@
     <!-- SETTINGS VIEW SUBPANE (Renders inside main app sidebar #sidebar-nav) -->
     <div class="nav-inner" id="nav-inner-settings" style="display:none; flex-direction:column; gap:4px; padding:10px 10px 20px 10px; height:calc(100% - 32px); box-sizing:border-box; overflow-y:auto;">
       <button id="btn-back-settings" class="settings-back-btn" title="Back to Chat">
-        <i data-lucide="arrow-left" style="width:16px;height:16px;"></i>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;margin-right:6px;display:inline-block;vertical-align:middle;"><polygon points="14 26 15.41 24.59 7.83 17 28 17 28 15 7.83 15 15.41 7.41 14 6 4 16 14 26"/></svg>
         <span>Back</span>
       </button>
 
       <div class="settings-nav-list" style="display:flex; flex-direction:column; gap:4px;">
         <button class="modal-nav-item active" data-section="general" title="General">
-          <i data-lucide="settings" style="width:16px;height:16px;"></i> <span>General</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;margin-right:6px;display:inline-block;vertical-align:middle;flex-shrink:0;"><path d="M30,8h-4.1c-0.5-2.3-2.5-4-4.9-4s-4.4,1.7-4.9,4H2v2h14.1c0.5,2.3,2.5,4,4.9,4s4.4-1.7,4.9-4H30V8z M21,12c-1.7,0-3-1.3-3-3s1.3-3,3-3s3,1.3,3,3S22.7,12,21,12z"/><path d="M2,24h4.1c0.5,2.3,2.5,4,4.9,4s4.4-1.7,4.9-4H30v-2H15.9c-0.5-2.3-2.5-4-4.9-4s-4.4,1.7-4.9,4H2V24z M11,20c1.7,0,3,1.3,3,3s-1.3,3-3,3s-3-1.3-3-3S9.3,20,11,20z"/></svg>
+          <span>General</span>
         </button>
         <button class="modal-nav-item" data-section="identity" title="Identity">
-          <i data-lucide="user-round" style="width:16px;height:16px;"></i> <span>Identity</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;margin-right:6px;display:inline-block;vertical-align:middle;flex-shrink:0;"><path d="M16,19a6.9908,6.9908,0,0,1-5.833-3.1287l1.666-1.1074a5.0007,5.0007,0,0,0,8.334,0l1.666,1.1074A6.9908,6.9908,0,0,1,16,19Z"/><path d="M20,8a2,2,0,1,0,2,2A1.9806,1.9806,0,0,0,20,8Z"/><path d="M12,8a2,2,0,1,0,2,2A1.9806,1.9806,0,0,0,12,8Z"/><path d="M17.7358,30,16,29l4-7h6a1.9966,1.9966,0,0,0,2-2V6a1.9966,1.9966,0,0,0-2-2H6A1.9966,1.9966,0,0,0,4,6V20a1.9966,1.9966,0,0,0,2,2h9v2H6a3.9993,3.9993,0,0,1-4-4V6A3.9988,3.9988,0,0,1,6,2H26a3.9988,3.9988,0,0,1,4,4V20a3.9993,3.9993,0,0,1-4,4H21.1646Z"/></svg>
+          <span>Identity</span>
         </button>
         <button class="modal-nav-item" data-section="appearance" title="Appearance">
-          <i data-lucide="palette" style="width:16px;height:16px;"></i> <span>Appearance</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;margin-right:6px;display:inline-block;vertical-align:middle;flex-shrink:0;"><rect x="15" y="2" width="2" height="3"/><rect x="27" y="15" width="3" height="2"/><rect x="15" y="27" width="2" height="3"/><rect x="2" y="15" width="3" height="2"/><rect x="6.22" y="5.73" width="2" height="3" transform="translate(-3 7.23) rotate(-45)"/><rect x="23.27" y="6.23" width="3" height="2" transform="translate(2.14 19.63) rotate(-45)"/><rect x="23.77" y="23.27" width="2" height="3" transform="translate(-10.26 24.77) rotate(-45)"/><polygon points="5.47 25.13 7.59 23 9 24.42 6.88 26.54 5.47 25.13"/><path d="M16,8a8,8,0,1,0,8,8A8,8,0,0,0,16,8Zm0,14a6,6,0,0,1,0-12Z"/></svg>
+          <span>Appearance</span>
         </button>
         <button class="modal-nav-item" data-section="gemini" title="Gemini API">
-          <i data-lucide="sparkles" style="width:16px;height:16px;"></i> <span>Gemini API</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;margin-right:6px;display:inline-block;vertical-align:middle;flex-shrink:0;"><path d="m27,19c1.6543,0,3-1.3457,3-3s-1.3457-3-3-3c-1.302,0-2.4016.8384-2.8157,2h-5.7703l7.3008-7.3008c.3911.1875.8235.3008,1.2852.3008,1.6543,0,3-1.3457,3-3s-1.3457-3-3-3-3,1.3457-3,3c0,.4619.1135.894.3005,1.2852l-8.3005,8.3008v-6.5859c0-1.1025.897-2,2-2h2v-2h-2c-1.2002,0-2.2661.5425-3,1.3823-.7339-.8398-1.7998-1.3823-3-1.3823h-1c-4.9624,0-9,4.0371-9,9v6c0,4.9629,4.0376,9,9,9h1c1.2002,0,2.2661-.5425,3-1.3823.7339.8398,1.7998,1.3823,3,1.3823h2v-2h-2c-1.103,0-2-.8975-2-2v-6.5859l8.3005,8.3008c-.187.3911-.3005.8232-.3005,1.2852,0,1.6543,1.3457,3,3,3s3-1.3457,3-3-1.3457-3-3-3c-.4617,0-.894.1133-1.2852.3008l-7.3008-7.3008h5.7703c.4141,1.1616,1.5137,2,2.8157,2Zm0-4c.5513,0,1,.4482,1,1s-.4487,1-1,1-1-.4482-1-1,.4487-1,1-1Zm0-11c.5515,0,1,.4487,1,1s-.4485,1-1,1-1-.4487-1-1,.4485-1,1-1Zm-13,8h-2v2h2v4h-2c-1.6543,0-3,1.3457-3,3v2h2v-2c0-.5518.4487-1,1-1h2v4c0,1.1025-.897,2-2,2h-1c-3.5195,0-6.4324-2.6133-6.9202-6h1.9202v-2h-2v-4h3c1.6543,0,3-1.3457,3-3v-2h-2v2c0,.5518-.4487,1-1,1h-2.9202c.4878-3.3867,3.4006-6,6.9202-6h1c1.103,0,2,.8975,2,2v4Zm14,15c0,.5513-.4485,1-1,1s-1-.4487-1-1,.4485-1,1-1,1,.4487,1,1Z"/></svg>
+          <span>Gemini API</span>
         </button>
         <button class="modal-nav-item" data-section="gateway" title="Local Gateway">
-          <i data-lucide="server" style="width:16px;height:16px;"></i> <span>Local Gateway</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;margin-right:6px;display:inline-block;vertical-align:middle;flex-shrink:0;"><path d="M31,16a1.9857,1.9857,0,0,0-.5859-1.4141L24.6211,8.793,27.489,5.9253a2,2,0,1,0-1.414-1.4141L23.207,7.3789l-5.7929-5.793a1.9995,1.9995,0,0,0-2.8282,0L8.793,7.3789,5.925,4.5112A2,2,0,1,0,4.511,5.9253L7.3789,8.793l-5.793,5.7929a1.9995,1.9995,0,0,0,0,2.8282l5.793,5.7929L4.511,26.0747a2,2,0,1,0,1.414,1.4141l2.868-2.8677,5.7929,5.793a1.9995,1.9995,0,0,0,2.8282,0l5.7929-5.793,2.868,2.8677a2,2,0,1,0,1.414-1.4141L24.6211,23.207l5.793-5.7929A1.9866,1.9866,0,0,0,31,16Zm-7.793,5.793L20.4141,19,19,20.4141l2.793,2.7929L16,29l-5.793-5.793L13,20.4141,11.5859,19,8.793,21.793,3,16l5.7925-5.7935L11.5859,13,13,11.5859,10.2065,8.7925,16,3l5.7935,5.7925L19,11.5859,20.4141,13l2.7934-2.7935L29,16Z"/></svg>
+          <span>Local Gateway</span>
         </button>
         <button class="modal-nav-item" data-section="reasoning" title="Reasoning Mode">
-          <i data-lucide="brain" style="width:16px;height:16px;"></i> <span>Reasoning Mode</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;margin-right:6px;display:inline-block;vertical-align:middle;flex-shrink:0;"><path d="M30,13A11,11,0,0,0,19,2H11a9,9,0,0,0-9,9v3a5,5,0,0,0,5,5H8.1A5,5,0,0,0,13,23h1.38l4,7,1.73-1-4-6.89A2,2,0,0,0,14.38,21H13a3,3,0,0,1,0-6h1V13H13a5,5,0,0,0-4.9,4H7a3,3,0,0,1-3-3V12H6A3,3,0,0,0,9,9V8H7V9a1,1,0,0,1-1,1H4.08A7,7,0,0,1,11,4h6V6a1,1,0,0,1-1,1H14V9h2a3,3,0,0,0,3-3V4a9,9,0,0,1,8.05,5H26a3,3,0,0,0-3,3v1h2V12a1,1,0,0,1,1-1h1.77A8.76,8.76,0,0,1,28,13v1a5,5,0,0,1-5,5H20v2h3a7,7,0,0,0,3-.68V21a3,3,0,0,1-3,3H22v2h1a5,5,0,0,0,5-5V18.89A7,7,0,0,0,30,14Z"/></svg>
+          <span>Reasoning Mode</span>
         </button>
         <button class="modal-nav-item" data-section="skills" title="Skills &amp; Plugins">
-          <i data-lucide="blocks" style="width:16px;height:16px;"></i> <span>Skills &amp; Plugins</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;margin-right:6px;display:inline-block;vertical-align:middle;flex-shrink:0;"><circle cx="4" cy="22" r="2"/><path d="m13.5,30c-3.0586,0-5.9485-1.4867-7.7305-3.9771l1.6265-1.1638c1.4075,1.9667,3.6892,3.1409,6.104,3.1409,3.969,0,7.2578-3.1002,7.4873-7.0579l1.9966.1157c-.2908,5.0143-4.4565,8.9421-9.4839,8.9421Z"/><circle cx="28" cy="23" r="2"/><path d="m30.6411,19.0948l-1.9243-.5449c.188-.6638.2832-1.3535.2832-2.0499,0-4.1355-3.3645-7.5-7.5-7.5-1.0769,0-2.1157.223-3.0876.6628l-.8247-1.822c1.2329-.558,2.5491-.8408,3.9124-.8408,5.2383,0,9.5,4.2617,9.5,9.5,0,.8807-.1208,1.7537-.3589,2.5948Z"/><path d="m20.4141,14.5859l-3-3c-.3774-.3779-.8799-.5859-1.4141-.5859s-1.0366.208-1.4143.5859l-2.9998,3c-.3899.3896-.5859.9019-.5859,1.4141s.196,1.0244.5859,1.4141l2.9998,3c.3777.3779.8801.5859,1.4143.5859s1.0366-.208,1.4141-.5859l3-3c.3899-.3896.5859-.9019.5859-1.4141s-.196-1.0244-.5859-1.4141Zm-4.4141,4.4141l-3-3,3-3,2.9998,3-2.9998,3Z"/><circle cx="16" cy="3" r="2"/><path d="m8.0254,19.8821c-3.0999-1.6578-5.0254-4.8696-5.0254-8.3821C3,6.4729,6.9277,2.307,11.9421,2.0161l.1157,1.9966c-3.9578.2297-7.0579,3.5186-7.0579,7.4873,0,2.7732,1.5208,5.3092,3.9688,6.6184l-.9434,1.7637Z"/></svg>
+          <span>Skills &amp; Plugins</span>
         </button>
         <button class="modal-nav-item" data-section="shortcuts" title="Keyboard Shortcuts">
-          <i data-lucide="keyboard" style="width:16px;height:16px;"></i> <span>Keyboard Shortcuts</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;margin-right:6px;display:inline-block;vertical-align:middle;flex-shrink:0;"><path d="M18,30H4A2,2,0,0,1,2,28V6A2,2,0,0,1,4,4H20a2,2,0,0,1,2,2v8H20V6H4V28H18Z"/><path d="M26.41,18.59,28,17,21,10H14v7l7,7,1.59-1.59L17.41,17H16V15.59l6.59-6.59L25.17,11Z"/></svg>
+          <span>Keyboard Shortcuts</span>
         </button>
         <button class="modal-nav-item" data-section="about" title="About Hekki">
-          <i data-lucide="info" style="width:16px;height:16px;"></i> <span>About Hekki</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;margin-right:6px;display:inline-block;vertical-align:middle;flex-shrink:0;"><path d="M28,6H4A2,2,0,0,0,2,8V24a2,2,0,0,0,2,2H28a2,2,0,0,0,2-2V8A2,2,0,0,0,28,6ZM14,24H4V20H14Zm0-6H4V14H14Zm0-6H4V8H14Zm14,12H16V8H28Z"/></svg>
+          <span>About Hekki</span>
         </button>
       </div>
     </div>
@@ -365,39 +375,39 @@
       <div class="user-menu-dropdown hidden" id="user-menu-dropdown">
         <div class="user-menu-header" id="user-menu-header">User Account</div>
         <button class="user-menu-item" id="btn-user-settings">
-          <i data-lucide="settings" style="width:16px; height:16px; margin-right:8px; display:inline-block; vertical-align:middle; flex-shrink:0;"></i>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;margin-right:8px;display:inline-block;vertical-align:middle;flex-shrink:0;"><path d="M30,8h-4.1c-0.5-2.3-2.5-4-4.9-4s-4.4,1.7-4.9,4H2v2h14.1c0.5,2.3,2.5,4,4.9,4s4.4-1.7,4.9-4H30V8z M21,12c-1.7,0-3-1.3-3-3s1.3-3,3-3s3,1.3,3,3S22.7,12,21,12z"/><path d="M2,24h4.1c0.5,2.3,2.5,4,4.9,4s4.4-1.7,4.9-4H30v-2H15.9c-0.5-2.3-2.5-4-4.9-4s-4.4,1.7-4.9,4H2V24z M11,20c1.7,0,3,1.3,3,3s-1.3,3-3,3s-3-1.3-3-3S9.3,20,11,20z"/></svg>
           <span>Settings</span>
         </button>
         <button class="user-menu-item" id="btn-user-theme">
-          <i data-lucide="sun-moon" style="width:16px; height:16px; margin-right:8px; display:inline-block; vertical-align:middle; flex-shrink:0;"></i>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;margin-right:8px;display:inline-block;vertical-align:middle;flex-shrink:0;"><rect x="15" y="2" width="2" height="3"/><rect x="27" y="15" width="3" height="2"/><rect x="15" y="27" width="2" height="3"/><rect x="2" y="15" width="3" height="2"/><rect x="6.22" y="5.73" width="2" height="3" transform="translate(-3 7.23) rotate(-45)"/><rect x="23.27" y="6.23" width="3" height="2" transform="translate(2.14 19.63) rotate(-45)"/><rect x="23.77" y="23.27" width="2" height="3" transform="translate(-10.26 24.77) rotate(-45)"/><polygon points="5.47 25.13 7.59 23 9 24.42 6.88 26.54 5.47 25.13"/><path d="M16,8a8,8,0,1,0,8,8A8,8,0,0,0,16,8Zm0,14a6,6,0,0,1,0-12Z"/></svg>
           <span id="user-menu-theme-text">Toggle Theme</span>
         </button>
         <button class="user-menu-item" id="btn-user-plugins">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-plugins" style="width:16px; height:16px; margin-right:8px; display:inline-block; vertical-align:middle; flex-shrink:0;"><path d="M9 2v6M15 2v6M12 17v5M5 8h14a1 1 0 0 1 1 1v4a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V9a1 1 0 0 1 1-1z"></path></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;margin-right:8px;display:inline-block;vertical-align:middle;flex-shrink:0;"><path d="M28.9,4.4l-1.4-1.4-3,3c-1.9-1.3-4.6-1.1-6.3.6l-3.5,3.5,7.1,7.1,3.5-3.5c1.7-1.7,1.9-4.4.6-6.3,0,0,3-3,3-3ZM23.8,12.3l-2.1,2.1-4.2-4.2,2.1-2.1c1.2-1.2,3.1-1.2,4.2,0,1.2,1.2,1.2,3.1,0,4.2ZM17.7,18.5l-1.4-1.4-1.9,1.9-1.4-1.4,1.9-1.9-1.4-1.4-1.9,1.9-1.4-1.4-3.5,3.5c-1.7,1.7-1.9,4.4-.6,6.3l-3,3,1.4,1.4,3-3c.8.5,1.8.8,2.8.8s2.6-.5,3.5-1.5l3.5-3.5-1.4-1.4,1.9-1.9h-.1ZM12.2,23.9c-1.1,1.1-3.1,1.1-4.2,0-1.2-1.2-1.2-3.1,0-4.2l2.1-2.1,4.2,4.2s-2.1,2.1-2.1,2.1ZM8,14h-4v-2h4v2ZM14,8h-2v-4h2v4ZM28,20h-4v-2h4v2ZM24.6858,25.9l-2.8284-2.8284,1.4142-1.4142,2.8284,2.8284-1.4142,1.4142ZM8.8071,10.0213l-2.8284-2.8284,1.4142-1.4142,2.8284,2.8284-1.4142,1.4142ZM20,28h-2v-4h2v4Z"/></svg>
           <span>Plugins & Connectors</span>
         </button>
         <button class="user-menu-item" id="btn-user-skills">
-          <i data-lucide="blocks" style="width:16px; height:16px; margin-right:8px; display:inline-block; vertical-align:middle; flex-shrink:0;"></i>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;margin-right:8px;display:inline-block;vertical-align:middle;flex-shrink:0;"><circle cx="4" cy="22" r="2"/><path d="m13.5,30c-3.0586,0-5.9485-1.4867-7.7305-3.9771l1.6265-1.1638c1.4075,1.9667,3.6892,3.1409,6.104,3.1409,3.969,0,7.2578-3.1002,7.4873-7.0579l1.9966.1157c-.2908,5.0143-4.4565,8.9421-9.4839,8.9421Z"/><circle cx="28" cy="23" r="2"/><path d="m30.6411,19.0948l-1.9243-.5449c.188-.6638.2832-1.3535.2832-2.0499,0-4.1355-3.3645-7.5-7.5-7.5-1.0769,0-2.1157.223-3.0876.6628l-.8247-1.822c1.2329-.558,2.5491-.8408,3.9124-.8408,5.2383,0,9.5,4.2617,9.5,9.5,0,.8807-.1208,1.7537-.3589,2.5948Z"/><path d="m20.4141,14.5859l-3-3c-.3774-.3779-.8799-.5859-1.4141-.5859s-1.0366.208-1.4143.5859l-2.9998,3c-.3899.3896-.5859.9019-.5859,1.4141s.196,1.0244.5859,1.4141l2.9998,3c.3777.3779.8801.5859,1.4143.5859s1.0366-.208,1.4141-.5859l3-3c.3899-.3896.5859-.9019.5859-1.4141s-.196-1.0244-.5859-1.4141Zm-4.4141,4.4141l-3-3,3-3,2.9998,3-2.9998,3Z"/><circle cx="16" cy="3" r="2"/><path d="m8.0254,19.8821c-3.0999-1.6578-5.0254-4.8696-5.0254-8.3821C3,6.4729,6.9277,2.307,11.9421,2.0161l.1157,1.9966c-3.9578.2297-7.0579,3.5186-7.0579,7.4873,0,2.7732,1.5208,5.3092,3.9688,6.6184l-.9434,1.7637Z"/></svg>
           <span>Skills & Capabilities</span>
         </button>
         <button class="user-menu-item" id="btn-pwa-install">
-          <i data-lucide="download" style="width:16px; height:16px; margin-right:8px; display:inline-block; vertical-align:middle; flex-shrink:0;"></i>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;margin-right:8px;display:inline-block;vertical-align:middle;flex-shrink:0;"><circle cx="10" cy="28" r="2"/><circle cx="24" cy="28" r="2"/><path d="M4.9806,2.8039A1,1,0,0,0,4,2H0V4H3.18L7.0194,23.1961A1,1,0,0,0,8,24H26V22H8.82l-.8-4H26a1,1,0,0,0,.9762-.783L29.2445,7H27.1971l-1.9989,9H7.62Z"/><polygon points="21.586 6.586 18 10.172 18 2 16 2 16 10.172 12.414 6.586 11 8 17 14 23 8 21.586 6.586"/></svg>
           <span>Install App</span>
         </button>
         <div class="user-menu-divider"></div>
         <button class="user-menu-item" id="btn-user-logout">
-          <i data-lucide="log-out" style="width:16px; height:16px; margin-right:8px; color:#ef4444; display:inline-block; vertical-align:middle; flex-shrink:0;"></i>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="#ef4444" style="width:16px;height:16px;margin-right:8px;display:inline-block;vertical-align:middle;flex-shrink:0;"><path d="M26,30H14a2,2,0,0,1-2-2V25h2v3H26V4H14V7H12V4a2,2,0,0,1,2-2H26a2,2,0,0,1,2,2V28A2,2,0,0,1,26,30Z"/><polygon points="14.59 20.59 18.17 17 4 17 4 15 18.17 15 14.59 11.41 16 10 22 16 16 22 14.59 20.59"/></svg>
           <span style="color:#ef4444;">Log out</span>
         </button>
       </div>
 
       <!-- User Profile Action -->
       <div class="sidebar-user-profile" id="btn-sidebar-user-profile" style="border-top: none;">
-        <img class="sidebar-user-avatar" id="sidebar-user-avatar" src="/static/avatars/3d-avatar-1.webp" alt="User Avatar" />
+        <img class="sidebar-user-avatar" id="sidebar-user-avatar" src="/static/carbon_icons/misc/user-avatar.svg" alt="User Avatar" />
         <div class="sidebar-user-info">
           <div class="sidebar-user-name" id="sidebar-user-name">User</div>
         </div>
-        <i data-lucide="settings" style="width:16px; height:16px; color:var(--text); margin-left:auto; display:inline-block; vertical-align:middle; flex-shrink:0;"></i>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;color:var(--text);margin-left:auto;display:inline-block;vertical-align:middle;flex-shrink:0;"><path d="M30,8h-4.1c-0.5-2.3-2.5-4-4.9-4s-4.4,1.7-4.9,4H2v2h14.1c0.5,2.3,2.5,4,4.9,4s4.4-1.7,4.9-4H30V8z M21,12c-1.7,0-3-1.3-3-3s1.3-3,3-3s3,1.3,3,3S22.7,12,21,12z"/><path d="M2,24h4.1c0.5,2.3,2.5,4,4.9,4s4.4-1.7,4.9-4H30v-2H15.9c-0.5-2.3-2.5-4-4.9-4s-4.4,1.7-4.9,4H2V24z M11,20c1.7,0,3,1.3,3,3s-1.3,3-3,3s-3-1.3-3-3S9.3,20,11,20z"/></svg>
       </div>
     </div>
   </div>
@@ -409,10 +419,10 @@
       <div id="titlebar">
         <div class="tb-group">
           <button class="icon-btn" id="btn-sidebar-toggle-main" title="Toggle Sidebar">
-            <i data-lucide="sidebar"></i>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;"><path d="M26,4H6A2.002,2.002,0,0,0,4,6V26a2.002,2.002,0,0,0,2,2H26a2.002,2.002,0,0,0,2-2V6A2.002,2.002,0,0,0,26,4ZM6,6h6V26H6ZM26,26H14V6H26Z"/></svg>
           </button>
           <button class="icon-btn" id="btn-main-back" title="Back to Chat" style="display: none; margin-right: 4px;">
-            <i data-lucide="chevron-left" style="width: 16px; height: 16px;"></i>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;"><polygon points="16,22 6,12 7.4,10.6 16,19.2 24.6,10.6 26,12" transform="rotate(90 16 16)"/></svg>
           </button>
           <!-- Breadcrumb: ProjectName / Chat Title -->
           <div id="titlebar-breadcrumb"></div>
@@ -421,7 +431,7 @@
         </div>
         <div class="tb-group" style="gap: 8px; display: flex; align-items: center;">
           <button class="icon-btn" id="btn-toggle-sub-sidebar" title="Toggle Sub Sidebar">
-            <i data-lucide="sidebar"></i>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;"><path d="M26,4H6A2.002,2.002,0,0,0,4,6V26a2.002,2.002,0,0,0,2,2H26a2.002,2.002,0,0,0,2-2V6A2.002,2.002,0,0,0,26,4ZM6,6h6V26H6ZM26,26H14V6H26Z"/></svg>
           </button>
         </div>
       </div>
@@ -433,7 +443,7 @@
 
         <!-- PLAN TOGGLE BUTTON IN MAIN AREA -->
         <button class="main-plan-toggle-btn hidden" id="btn-toggle-drawer" title="Toggle Plan Panel">
-          <i data-lucide="sliders-horizontal"></i>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;"><path d="M26,4H6A2.002,2.002,0,0,0,4,6V26a2.002,2.002,0,0,0,2,2H26a2.002,2.002,0,0,0,2-2V6A2.002,2.002,0,0,0,26,4ZM18,26H6V6H18ZM26,26H20V6h6Z"/></svg>
         </button>
 
       <!-- CHAT PANE -->
@@ -491,7 +501,7 @@
                   <div class="input-capsule-row" id="input-row-home">
                     <!-- Attachment button (plus) -->
                     <button class="cap-icon-btn" id="btn-attach-home" title="Attach">
-                      <i data-lucide="plus"></i>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;"><polygon points="17 15 17 5 15 5 15 15 5 15 5 17 15 17 15 27 17 27 17 17 27 17 27 15 17 15"/></svg>
                     </button>
                     <!-- Faded Slash Command Tag Chip -->
                     <div class="slash-tag-chip hidden" id="slash-tag-home" style="display: none; align-items: center; gap: 5px; background: var(--hover); color: var(--text-3); font-size: 11.5px; font-family: var(--font); font-weight: 400 !important; padding: 2px 7px; border-radius: 6px; user-select: none; flex-shrink: 0; opacity: 0.75; transition: opacity 0.15s;">
@@ -502,23 +512,23 @@
                     <!-- Model Pill (center-left of button row) -->
                     <button class="model-pill" id="single-model-pill">
                       Hekki
-                      <i class="mi" data-lucide="chevron-down"></i>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 32 32" fill="currentColor" style="width:12px;height:12px;margin-left:2px;"><polygon points="24,12 16,22 8,12"/></svg>
                     </button>
 
                     <div class="capsule-right" style="margin-left: auto;">
                       <!-- Mic Placeholder / Voice Input Button -->
                       <button class="cap-icon-btn" id="btn-voice" title="Voice Input">
-                        <i data-lucide="mic"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;"><path d="M23,14v3A7,7,0,0,1,9,17V14H7v3a9,9,0,0,0,8,8.94V28H11v2H21V28H17V25.94A9,9,0,0,0,25,17V14Z"/><path d="M16,22a5,5,0,0,0,5-5V7A5,5,0,0,0,11,7V17A5,5,0,0,0,16,22ZM13,7a3,3,0,0,1,6,0V17a3,3,0,0,1-6,0Z"/></svg>
                       </button>
                       <!-- Submit / Send Button -->
                       <button class="submit-btn" id="btn-submit-home" title="Send Message">
-                        <i data-lucide="arrow-right"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;"><path d="M27.71,4.29a1,1,0,0,0-1.05-.23l-22,8a1,1,0,0,0,0,1.87l9.6,3.84,3.84,9.6A1,1,0,0,0,19,28h0a1,1,0,0,0,.92-.66l8-22A1,1,0,0,0,27.71,4.29ZM19,24.2l-2.79-7L21,12.41,19.59,11l-4.83,4.83L7.8,13,25.33,6.67Z"/></svg>
                       </button>
                       <button class="submit-btn hidden" id="btn-stop" title="Stop Recording" style="background: rgba(239, 68, 68, 0.08); color: #ef4444; border: none;">
-                        <i data-lucide="square" style="fill: currentColor;"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;"><rect x="6" y="6" width="20" height="20"/></svg>
                       </button>
                       <button class="submit-btn hidden" id="btn-stop-gen" title="Stop Generation" style="background: var(--text-primary, #09090b) !important; color: var(--bg, #ffffff) !important; border: none;">
-                        <i data-lucide="square" style="fill: currentColor;"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;"><rect x="6" y="6" width="20" height="20"/></svg>
                       </button>
                     </div>
                   </div>
@@ -574,7 +584,7 @@
                   <!-- Attachment wrapper (left) -->
                   <div class="capsule-left">
                     <button class="cap-icon-btn" id="btn-attach-conv" title="Attach">
-                      <i data-lucide="plus"></i>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;"><polygon points="17 15 17 5 15 5 15 15 5 15 5 17 15 17 15 27 17 27 17 17 27 17 27 15 17 15"/></svg>
                     </button>
                     <!-- Faded Slash Command Tag Chip -->
                     <div class="slash-tag-chip hidden" id="slash-tag-conv" style="display: none; align-items: center; gap: 5px; background: var(--hover); color: var(--text-3); font-size: 11.5px; font-family: var(--font); font-weight: 400 !important; padding: 2px 7px; border-radius: 6px; user-select: none; flex-shrink: 0; opacity: 0.75; transition: opacity 0.15s;">
@@ -586,24 +596,24 @@
                   <!-- Model Pill (center of button row) -->
                   <button class="model-pill" id="conv-model-pill">
                     Hekki
-                    <i class="mi" data-lucide="chevron-down"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 32 32" fill="currentColor" style="width:12px;height:12px;margin-left:2px;"><polygon points="24,12 16,22 8,12"/></svg>
                   </button>
 
                   <!-- Actions (right) -->
                   <div class="capsule-right" style="margin-left: auto;">
                     <!-- Mic Placeholder / Voice Input Button -->
                     <button class="cap-icon-btn" id="btn-voice-conv" title="Voice Input">
-                      <i data-lucide="mic"></i>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;"><path d="M23,14v3A7,7,0,0,1,9,17V14H7v3a9,9,0,0,0,8,8.94V28H11v2H21V28H17V25.94A9,9,0,0,0,25,17V14Z"/><path d="M16,22a5,5,0,0,0,5-5V7A5,5,0,0,0,11,7V17A5,5,0,0,0,16,22ZM13,7a3,3,0,0,1,6,0V17a3,3,0,0,1-6,0Z"/></svg>
                     </button>
                     <!-- Submit / Send Button -->
                     <button class="submit-btn" id="btn-submit-conv" title="Send Message">
-                      <i data-lucide="arrow-right"></i>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;"><path d="M27.71,4.29a1,1,0,0,0-1.05-.23l-22,8a1,1,0,0,0,0,1.87l9.6,3.84,3.84,9.6A1,1,0,0,0,19,28h0a1,1,0,0,0,.92-.66l8-22A1,1,0,0,0,27.71,4.29ZM19,24.2l-2.79-7L21,12.41,19.59,11l-4.83,4.83L7.8,13,25.33,6.67Z"/></svg>
                     </button>
-                    <button class="submit-btn hidden" id="btn-stop-conv" title="Stop Recording" style="background: rgba(239, 68, 68, 0.08); color: #ef4444; border: none;">
-                      <i data-lucide="square" style="fill: currentColor;"></i>
+                    <button class="submit-btn hidden" id="btn-stop-conv" title="Stop Recording" style="background: rgba(239, 68, 68, 0.10); color: #ef4444; border: none;">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;"><rect x="6" y="6" width="20" height="20"/></svg>
                     </button>
-                    <button class="submit-btn hidden" id="btn-stop-gen-conv" title="Stop Generation" style="background: var(--text-primary, #09090b) !important; color: var(--bg, #ffffff) !important; border: none;">
-                      <i data-lucide="square" style="fill: currentColor;"></i>
+                    <button class="submit-btn hidden" id="btn-stop-gen-conv" title="Stop Generation">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:14px;height:14px;"><rect x="7" y="7" width="18" height="18" rx="2"/></svg>
                     </button>
                   </div>
                 </div>
@@ -1042,20 +1052,20 @@
       <!-- Floating Translucent Toolbar Overlaying Top-Right INSIDE Image Frame -->
       <div class="lightbox-toolbar" style="position: absolute; top: 14px; right: 14px; display: flex; align-items: center; gap: 6px; background: rgba(24, 24, 27, 0.75); backdrop-filter: blur(16px); padding: 5px 10px; border-radius: 30px; z-index: 100; border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 4px 20px rgba(0,0,0,0.4);">
         <button id="lightbox-btn-download" class="lightbox-tool-btn" title="Download Image" style="background: rgba(255, 255, 255, 0.12); border: none; color: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; transition: all 0.15s ease;">
-          <i data-lucide="download" style="width: 15px; height: 15px; color:#ffffff;"></i>
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 32 32" fill="#ffffff" style="width:15px;height:15px;"><path d="M26,24v4H6V24H4v4a2,2,0,0,0,2,2H26a2,2,0,0,0,2-2V24Z"/><polygon points="15 3 15 19.59 11.41 16 10 17.41 16 23.41 22 17.41 20.59 16 17 19.59 17 3 15 3"/></svg>
         </button>
         <button id="lightbox-btn-copy" class="lightbox-tool-btn" title="Copy Image Link" style="background: rgba(255, 255, 255, 0.12); border: none; color: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; transition: all 0.15s ease;">
-          <i data-lucide="copy" style="width: 15px; height: 15px; color:#ffffff;"></i>
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 32 32" fill="#ffffff" style="width:15px;height:15px;"><path d="M28,10V28H10V10H28m0-2H10a2,2,0,0,0-2,2V28a2,2,0,0,0,2,2H28a2,2,0,0,0,2-2V10a2,2,0,0,0-2-2Z"/><path d="M4,18H2V4A2,2,0,0,1,4,2H18V4H4Z"/></svg>
         </button>
         <a id="lightbox-btn-external" target="_blank" rel="noopener noreferrer" class="lightbox-tool-btn" title="Open Source Link" style="background: rgba(255, 255, 255, 0.12); border: none; color: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; transition: all 0.15s ease; text-decoration: none;">
-          <i data-lucide="external-link" style="width: 15px; height: 15px; color:#ffffff;"></i>
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 32 32" fill="#ffffff" style="width:15px;height:15px;"><path d="M26,26H6V6H16V4H6A2,2,0,0,0,4,6V26a2,2,0,0,0,2,2H26a2,2,0,0,0,2-2V16H26Z"/><polygon points="28 4 20 4 20 6 24.59 6 15 15.59 16.41 17 26 7.41 26 12 28 12 28 4"/></svg>
         </a>
         <button id="lightbox-btn-zoom" class="lightbox-tool-btn" title="Toggle Zoom" style="background: rgba(255, 255, 255, 0.12); border: none; color: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; transition: all 0.15s ease;">
-          <i data-lucide="maximize-2" style="width: 15px; height: 15px; color:#ffffff;"></i>
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 32 32" fill="#ffffff" style="width:15px;height:15px;"><polygon points="20 2 20 4 26.586 4 18 12.582 19.414 14 28 5.414 28 12 30 12 30 2 20 2"/><polygon points="14 19.416 12.592 18 4 26.586 4 20 2 20 2 30 12 30 12 28 5.414 28 14 19.416"/></svg>
         </button>
         <div style="width: 1px; height: 16px; background: rgba(255,255,255,0.2); margin: 0 2px;"></div>
         <button id="lightbox-btn-close" class="lightbox-tool-btn close" title="Close (Esc)" style="background: rgba(255, 255, 255, 0.12); border: none; color: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; transition: all 0.15s ease;">
-          <i data-lucide="x" style="width: 15px; height: 15px; color:#ffffff;"></i>
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 32 32" fill="#ffffff" style="width:15px;height:15px;"><polygon points="17.4141 16 26 7.4141 24.5859 6 16 14.5859 7.4143 6 6 7.4141 14.5859 16 6 24.5859 7.4143 26 16 17.4141 24.5859 26 26 24.5859 17.4141 16"/></svg>
         </button>
       </div>
 
@@ -1332,7 +1342,7 @@
     </div>
   </div>
 
-  <script src="/static/main.js?v=225" type="module"></script>
+  <script src="/static/main.js?v=289" type="module"></script>
 
 
 

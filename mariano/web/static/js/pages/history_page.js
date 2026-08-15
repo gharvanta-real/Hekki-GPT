@@ -96,7 +96,7 @@ export class HistoryPage {
           <!-- CENTERED SEARCH INPUT BAR -->
           <div style="margin-bottom:20px; display:flex; justify-content:center;">
             <div style="position:relative; width:100%; max-width:540px;">
-              <i data-lucide="search" style="position:absolute; left:16px; top:50%; transform:translateY(-50%); width:15px; height:15px; color:var(--text-3); pointer-events:none;"></i>
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 32 32" fill="currentColor" style="position:absolute; left:16px; top:50%; transform:translateY(-50%); width:15px; height:15px; color:var(--text-3); pointer-events:none;"><path d="M29,27.5859l-7.5521-7.5521a11.0177,11.0177,0,1,0-1.4141,1.4141L27.5859,29ZM4,13a9,9,0,1,1,9,9A9.01,9.01,0,0,1,4,13Z"/></svg>
               <input type="text" id="history-search-input" value="${esc(this._searchQuery)}" placeholder="Search chats..." style="width:100%; height:42px; padding:0 38px 0 42px; background:var(--input-bg, #ffffff); border:none !important; border-radius:21px; color:var(--text); font-size:13.5px; font-family:inherit; outline:none !important; box-shadow:none !important; box-sizing:border-box;" autocomplete="off" />
               ${this._searchQuery ? `
                 <button id="history-search-clear" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); background:transparent; border:none; color:var(--text-3); cursor:pointer; display:flex; align-items:center; justify-content:center; padding:4px;">
@@ -152,8 +152,8 @@ export class HistoryPage {
 
                   <!-- PERMANENT RED TRASH ICON (RIGHT) — Instant delete on click -->
                   <div style="display:flex; align-items:center; flex-shrink:0;">
-                    <button class="history-del-btn" data-id="${chat.id}" title="Delete immediately" style="background:transparent; border:none !important; box-shadow:none !important; color:#ef4444 !important; opacity:0.75; cursor:pointer; padding:6px; display:flex; align-items:center; justify-content:center; border-radius:6px; transition:all 0.15s ease;" onmouseover="this.style.opacity='1'; this.style.color='#ef4444'; this.style.background='rgba(239,68,68,0.12)';" onmouseout="this.style.opacity='0.75'; this.style.color='#ef4444'; this.style.background='transparent';">
-                      <i data-lucide="trash-2" style="width:15px; height:15px; color:#ef4444 !important; stroke:#ef4444 !important;"></i>
+                    <button class="history-del-btn" data-id="${chat.id}" title="Delete immediately" style="background:transparent; border:none !important; box-shadow:none !important; color:#ef4444 !important; opacity:0.6; cursor:pointer; padding:6px 8px; display:flex; align-items:center; justify-content:center; border-radius:6px; transition:all 0.15s ease;" onmouseover="this.style.opacity='1'; this.style.background='rgba(239,68,68,0.1)';" onmouseout="this.style.opacity='0.6'; this.style.background='transparent';">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" style="width:15px;height:15px;display:block;flex-shrink:0;pointer-events:none;"><rect x="12" y="12" width="2" height="12"/><rect x="18" y="12" width="2" height="12"/><path d="M4,6V8H6V28a2,2,0,0,0,2,2H24a2,2,0,0,0,2-2V8h2V6ZM8,28V8H24V28Z"/><rect x="12" y="2" width="8" height="2"/></svg>
                     </button>
                   </div>
 

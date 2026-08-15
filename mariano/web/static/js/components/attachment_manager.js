@@ -126,16 +126,16 @@ class AttachmentManager {
       const btn = document.getElementById(btnId);
       if (btn) {
         if (window.isGenerating && (btnId === 'btn-submit-home' || btnId === 'btn-submit-conv')) {
-          const isConv = btnId === 'btn-submit-conv';
-          const stopId = isConv ? 'btn-stop-gen-conv' : 'btn-stop-gen';
+          const isConv  = btnId === 'btn-submit-conv';
+          const stopId  = isConv ? 'btn-stop-gen-conv' : 'btn-stop-gen';
           const stopBtn = document.getElementById(stopId);
 
           btn.classList.add('hidden');
           btn.style.display = 'none';
-          stopBtn?.classList.remove('hidden');
-          if (stopBtn) stopBtn.style.display = '';
-        } else {
+          if (stopBtn) { stopBtn.classList.remove('hidden'); stopBtn.style.display = 'inline-flex'; }
+        } else if (!window.isGenerating) {
           btn.classList.remove('hidden');
+          btn.style.display = 'inline-flex';
         }
       }
     });

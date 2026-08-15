@@ -70,20 +70,26 @@ export function attachAiActions(msgEl, text, toolRuns = []) {
     `;
   }
 
+  const SVG_LIKE_OUTLINE = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;"><path d="M26,12H20V6a3.0033,3.0033,0,0,0-3-3H14.8672a2.0094,2.0094,0,0,0-1.98,1.7173l-.8453,5.9165L8.4648,16H2V30H23a7.0078,7.0078,0,0,0,7-7V16A4.0045,4.0045,0,0,0,26,12ZM8,28H4V18H8Zm20-5a5.0057,5.0057,0,0,1-5,5H10V17.3027l3.9578-5.9365L14.8672,5H17a1.0008,1.0008,0,0,1,1,1v8h8a2.0025,2.0025,0,0,1,2,2Z"/></svg>`;
+  const SVG_LIKE_FILLED  = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;"><rect x="2" y="16" width="5" height="14"/><path d="M23,30H9V15.1973l3.0422-4.5635.8453-5.9165A2.0094,2.0094,0,0,1,14.8672,3H15a3.0033,3.0033,0,0,1,3,3v6h8a4.0045,4.0045,0,0,1,4,4v7A7.0078,7.0078,0,0,1,23,30Z"/></svg>`;
+  const SVG_DISLIKE_OUTLINE = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;"><path d="M30,16V9a7.0078,7.0078,0,0,0-7-7H2V16H8.4648l3.5774,5.3662.8453,5.9165A2.0094,2.0094,0,0,0,14.8672,29H17a3.0033,3.0033,0,0,0,3-3V20h6A4.0045,4.0045,0,0,0,30,16ZM8,14H4V4H8Zm20,2a2.0025,2.0025,0,0,1-2,2H18v8a1.0008,1.0008,0,0,1-1,1H14.8672l-.9094-6.3662L10,14.6973V4H23a5.0057,5.0057,0,0,1,5,5Z"/></svg>`;
+  const SVG_DISLIKE_FILLED  = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;"><rect x="2" y="2" width="5" height="14"/><path d="M23,2H9V16.8027l3.0422,4.5635.8453,5.9165A2.0094,2.0094,0,0,0,14.8672,29H15a3.0033,3.0033,0,0,0,3-3V20h8a4.0045,4.0045,0,0,0,4-4V9A7.0078,7.0078,0,0,0,23,2Z"/></svg>`;
+  const SVG_COPY_NORMAL = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;display:block;"><path d="M27.4,14.7l-6.1-6.1C21,8.2,20.5,8,20,8h-8c-1.1,0-2,0.9-2,2v18c0,1.1,0.9,2,2,2h14c1.1,0,2-0.9,2-2V16.1C28,15.6,27.8,15.1,27.4,14.7z M20,10l5.9,6H20V10z M12,28V10h6v6c0,1.1,0.9,2,2,2h6l0,10H12z"/><path d="M6,18H4V4c0-1.1,0.9-2,2-2h14v2H6V18z"/></svg>`;
+  const SVG_COPY_CHECK  = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="#16a34a" style="width:16px;height:16px;display:block;"><polygon points="13 24 4 15 5.414 13.586 13 21.171 26.586 7.586 28 9 13 24"/></svg>`;
+  const SVG_FORK = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;"><path d="m20,6c0,1.8584,1.2798,3.4106,3,3.8579v5.1421h-14v-5.1421c1.7202-.4473,3-1.9995,3-3.8579,0-2.2056-1.7944-4-4-4s-4,1.7944-4,4c0,1.8584,1.2798,3.4106,3,3.8579v5.1421c0,1.103.897,2,2,2h6v5.1421c-1.7202.4473-3,1.9995-3,3.8579,0,2.2056,1.7944,4,4,4s4-1.7944,4-4c0-1.8584-1.2798-3.4106-3-3.8579v-5.1421h6c1.103,0,2-.897,2-2v-5.1421c1.7202-.4473,3-1.9995,3-3.8579,0-2.2056-1.7944-4-4-4s-4,1.7944-4,4Zm-14,0c0-1.103.897-2,2-2s2,.897,2,2c0,1.103-.897,2-2,2s-2-.897-2-2Zm12,20c0,1.103-.897,2-2,2s-2-.897-2-2c0-1.103.897-2,2-2s2,.897,2,2ZM26,6c0,1.103-.897,2-2,2s-2-.897-2-2c0-1.103.897-2,2-2s2,.897,2,2Z"/></svg>`;
+
   const actions = document.createElement('div');
   actions.className = 'msg-actions ai-actions';
   actions.style.cssText = 'display:flex; align-items:center; justify-content:flex-end; gap:6px; margin-top:6px; flex-wrap:wrap; width:100%;';
   actions.innerHTML = `
     ${faviconsHtml}
     <div style="display:flex; align-items:center; gap:6px; margin-left:auto;">
-      <button class="action-btn btn-copy" title="Copy response"><i data-lucide="copy"></i></button>
-      <button class="action-btn btn-like" title="Good response"><i data-lucide="thumbs-up"></i></button>
-      <button class="action-btn btn-dislike" title="Bad response"><i data-lucide="thumbs-down"></i></button>
-      <button class="action-btn btn-fork" title="Fork conversation branch from here"><i data-lucide="git-fork"></i></button>
+      <button class="action-btn btn-copy" title="Copy response">${SVG_COPY_NORMAL}</button>
+      <button class="action-btn btn-like" title="Good response">${SVG_LIKE_OUTLINE}</button>
+      <button class="action-btn btn-dislike" title="Bad response">${SVG_DISLIKE_OUTLINE}</button>
+      <button class="action-btn btn-fork" title="Fork conversation branch from here">${SVG_FORK}</button>
     </div>
   `;
-
-  if (window.lucide) setTimeout(() => lucide.createIcons({ parent: actions }), 0);
 
   actions.querySelector('.btn-fork')?.addEventListener('click', () => {
     if (ChatSessionManager && ChatSessionManager.forkChat) {
@@ -91,33 +97,33 @@ export function attachAiActions(msgEl, text, toolRuns = []) {
     }
   });
 
-
-
   const streamCopyBtn = actions.querySelector('.btn-copy');
   streamCopyBtn?.addEventListener('click', () => {
     const cleanText = text.replace(/<think>[\s\S]*?<\/think>/i, '').trim();
     navigator.clipboard.writeText(cleanText).then(() => {
-      streamCopyBtn.innerHTML = '<i data-lucide="check" style="color:#16a34a"></i>';
-      if (window.lucide) lucide.createIcons({ parent: streamCopyBtn });
+      streamCopyBtn.innerHTML = SVG_COPY_CHECK;
       setTimeout(() => {
-        streamCopyBtn.innerHTML = '<i data-lucide="copy"></i>';
-        if (window.lucide) lucide.createIcons({ parent: streamCopyBtn });
+        streamCopyBtn.innerHTML = SVG_COPY_NORMAL;
       }, 3000);
-    });
+    }).catch(err => console.warn('Clipboard write failed', err));
   });
 
-  actions.querySelector('.btn-like')?.addEventListener('click', (e) => {
-    const btn = e.currentTarget;
-    btn.classList.toggle('active-like');
-    btn.style.color = btn.classList.contains('active-like') ? '#22c55e' : '';
+  const btnLike = actions.querySelector('.btn-like');
+  const btnDislike = actions.querySelector('.btn-dislike');
+
+  btnLike?.addEventListener('click', () => {
+    const isNowActive = btnLike.classList.toggle('active');
+    btnDislike?.classList.remove('active');
+    btnLike.innerHTML = isNowActive ? SVG_LIKE_FILLED : SVG_LIKE_OUTLINE;
+    if (btnDislike) btnDislike.innerHTML = SVG_DISLIKE_OUTLINE;
   });
 
-  actions.querySelector('.btn-dislike')?.addEventListener('click', (e) => {
-    const btn = e.currentTarget;
-    btn.classList.toggle('active-dislike');
-    btn.style.color = btn.classList.contains('active-dislike') ? '#ef4444' : '';
+  btnDislike?.addEventListener('click', () => {
+    const isNowActive = btnDislike.classList.toggle('active');
+    btnLike?.classList.remove('active');
+    btnDislike.innerHTML = isNowActive ? SVG_DISLIKE_FILLED : SVG_DISLIKE_OUTLINE;
+    if (btnLike) btnLike.innerHTML = SVG_LIKE_OUTLINE;
   });
 
   container.appendChild(actions);
-  if (window.lucide) setTimeout(() => lucide.createIcons({ parent: actions }), 0);
 }

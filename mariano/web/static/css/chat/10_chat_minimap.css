@@ -80,23 +80,30 @@
   bottom: 84px;
   left: 50%;
   transform: translateX(-50%) translateY(6px);
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: transparent !important;
-  background-color: transparent !important;
-  color: var(--text-primary, #1e293b);
+  width: 34px !important;
+  height: 34px !important;
+  border-radius: 50% !important;
+  background: #FFFFFF !important;
+  color: #334155 !important;
+  border: 1px solid #E2E8F0 !important;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   z-index: 88;
-  border: none !important;
-  box-shadow: none !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
   outline: none !important;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1), transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), color 0.15s ease;
+  transition: opacity 0.22s ease, transform 0.22s ease, background 0.15s ease;
+}
+
+body.dark .chat-center-scroll-btn,
+body.oled .chat-center-scroll-btn {
+  background: #27272A !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  color: #F4F4F5 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
 }
 
 .chat-center-scroll-btn.visible {
@@ -106,10 +113,20 @@
 }
 
 .chat-center-scroll-btn:hover {
-  background: transparent !important;
-  background-color: transparent !important;
-  color: var(--text-primary);
-  transform: translateX(-50%) translateY(-3px);
+  transform: translateX(-50%) translateY(-2px);
+  background: #F8FAFC !important;
+}
+
+body.dark .chat-center-scroll-btn:hover,
+body.oled .chat-center-scroll-btn:hover {
+  background: #3F3F46 !important;
+}
+
+.chat-center-scroll-btn svg {
+  width: 18px !important;
+  height: 18px !important;
+  min-width: 18px !important;
+  min-height: 18px !important;
 }
 
 /* FLOATING DROPDOWN POPUP MENU (Main background with subtle theme outline border, zero shadow) */

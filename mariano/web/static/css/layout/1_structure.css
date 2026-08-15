@@ -105,7 +105,7 @@
   background: var(--hover) !important;
   border: none !important;
   color: var(--text-2) !important;
-  display: inline-flex !important;
+  display: inline-flex;
   align-items: center !important;
   justify-content: center !important;
   cursor: pointer;
@@ -149,7 +149,26 @@
 #btn-stop-voice-conv i, #btn-stop-voice-conv svg {
   width: 12px !important;
   height: 12px !important;
-  stroke-width: 2.5px !important;
+  stroke-width: 0 !important;
+  fill: currentColor !important;
+}
+
+/* Stop-generation button: subtle, theme-aware — NOT a glaring solid white circle */
+#btn-stop-gen-conv {
+  background: var(--hover) !important;
+  color: var(--text-2) !important;
+}
+#btn-stop-gen-conv:hover {
+  background: var(--hover-2) !important;
+  color: var(--text) !important;
+}
+#btn-stop-gen {
+  background: var(--hover) !important;
+  color: var(--text-2) !important;
+}
+#btn-stop-gen:hover {
+  background: var(--hover-2) !important;
+  color: var(--text) !important;
 }
 
 /* Voice / Mic buttons */
@@ -169,8 +188,22 @@
   height: 16px !important;
   stroke-width: 2.5px !important;
 }
-.submit-btn.hidden {
+.submit-btn.hidden,
+#btn-submit-home.hidden,
+#btn-submit-conv.hidden,
+#btn-voice.hidden,
+#btn-voice-conv.hidden,
+#btn-stop.hidden,
+#btn-stop-conv.hidden,
+#btn-stop-gen.hidden,
+#btn-stop-gen-conv.hidden {
   display: none !important;
+}
+
+/* Stop-generation buttons: always start hidden — JS reveals them only during generation */
+#btn-stop-gen,
+#btn-stop-gen-conv {
+  display: none;
 }
 
 /* === WORKSPACE === */

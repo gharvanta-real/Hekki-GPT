@@ -160,3 +160,106 @@ body.oled .settings-card-box,
 body.oled .settings-promo-card {
   background: #1E1E1E !important;
 }
+
+/* ── 4. Universal Application-Wide SVG Icon Sizing Standards ──────────────── */
+svg {
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  min-height: 16px;
+  max-width: 16px;
+  max-height: 16px;
+  flex-shrink: 0;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   SVG path rules: explicit fill-attribute paths keep their fill, 
+   stroke-only paths (Lucide icons) get fill:none to prevent ghost fill.
+──────────────────────────────────────────────────────────────────────────── */
+svg polygon,
+svg path[fill]:not([fill="none"]) {
+  stroke: none !important;
+}
+
+svg path:not([fill]),
+svg path[fill="none"],
+svg polyline,
+svg line,
+svg circle:not([fill]):not([fill="none"]),
+svg rect:not([fill]):not([fill="none"]) {
+  fill: none;
+  stroke: currentColor !important;
+  stroke-width: 0.5px !important;
+  stroke-linejoin: round !important;
+  stroke-linecap: round !important;
+}
+
+/* ── 5. Input Capsule Send & Mic Action Buttons Sizing/Weight ─────────────── */
+.submit-btn svg,
+.submit-btn svg *,
+.cap-icon-btn svg,
+.cap-icon-btn svg *,
+#btn-voice svg,
+#btn-voice svg *,
+#btn-submit-home svg,
+#btn-submit-home svg *,
+#btn-voice-conv svg,
+#btn-voice-conv svg *,
+#btn-submit-conv svg,
+#btn-submit-conv svg * {
+  stroke: currentColor !important;
+  stroke-width: 0.7px !important;
+  stroke-linejoin: round !important;
+  stroke-linecap: round !important;
+  paint-order: stroke fill !important;
+}
+
+/* ── 6. Soft Theme-Aware Universal Icon Color (No Harsh Pure Black) ───────── */
+/* NOTE: We use color/stroke only — NOT fill — to avoid solid ghost on stroke icons */
+body.light svg,
+:root[data-theme="light"] svg {
+  color: #52525b;
+  stroke: #52525b;
+  opacity: 0.88;
+  transition: color 0.15s ease, opacity 0.15s ease, stroke 0.15s ease;
+}
+
+body.light button:hover svg,
+body.light a:hover svg,
+body.light .user-menu-item:hover svg,
+body.light .attach-dropdown-item:hover svg,
+body.light .dropdown-item:hover svg,
+:root[data-theme="light"] button:hover svg {
+  color: #18181b;
+  stroke: #18181b;
+  opacity: 1;
+}
+
+body.dark svg,
+body.oled svg {
+  color: #a1a1aa;
+  stroke: #a1a1aa;
+  opacity: 0.88;
+  transition: color 0.15s ease, opacity 0.15s ease, stroke 0.15s ease;
+}
+
+body.dark button:hover svg,
+body.dark a:hover svg,
+body.dark .user-menu-item:hover svg,
+body.dark .attach-dropdown-item:hover svg,
+body.dark .dropdown-item:hover svg,
+body.oled button:hover svg {
+  color: #ffffff;
+  stroke: #ffffff;
+  opacity: 1;
+}
+
+/* IBM Carbon fill-based icons: restore fill=currentColor so they render solid */
+svg[fill="currentColor"] path,
+svg[fill="currentColor"] polygon,
+svg[fill="currentColor"] rect,
+svg[fill="currentColor"] circle {
+  fill: currentColor !important;
+  stroke: none !important;
+}
+

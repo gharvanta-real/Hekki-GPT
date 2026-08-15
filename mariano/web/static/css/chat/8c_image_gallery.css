@@ -388,9 +388,14 @@
 }
 
 .img-card-btn.img-del-btn:hover {
-  background: #ef4444 !important;
+  background: rgba(239, 68, 68, 0.22) !important;
   border: none !important;
-  color: #ffffff !important;
+  color: #ef4444 !important;
+}
+
+.img-card-btn.img-del-btn:hover svg {
+  fill: #ef4444 !important;
+  color: #ef4444 !important;
 }
 
 .img-card-btn i,

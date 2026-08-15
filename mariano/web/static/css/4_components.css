@@ -11,6 +11,26 @@
   padding: var(--space-4);
 }
 
+/* Delete / Trash Button Global Hover Style — Red icon & soft red tint background */
+.img-del-btn:hover,
+.history-del-btn:hover,
+.search-result-delete-btn:hover,
+.btn-mcp-danger:hover,
+.btn-clear-docs:hover {
+  background: rgba(239, 68, 68, 0.22) !important;
+  color: #ef4444 !important;
+  border: none !important;
+}
+
+.img-del-btn:hover svg,
+.history-del-btn:hover svg,
+.search-result-delete-btn:hover svg,
+.btn-mcp-danger:hover svg,
+.btn-clear-docs:hover svg {
+  fill: #ef4444 !important;
+  color: #ef4444 !important;
+}
+
 .card-secondary {
   background-color: var(--bg-secondary);
   border-radius: var(--border-radius-md);
@@ -153,3 +173,16 @@ body.oled .shortcut-kbd {
   color: #F8FAFC;
   border: 1px solid rgba(255, 255, 255, 0.12);
 }
+
+/* ── Carbon & Plugin Monochrome Icons Dark Theme Adaptive Inversion ────── */
+body.dark img.carbon-mono-icon,
+body.oled img.carbon-mono-icon,
+[data-theme="dark"] img.carbon-mono-icon,
+[data-theme="oled"] img.carbon-mono-icon,
+body.dark img[src*="carbon_icons"]:not(.no-invert),
+body.oled img[src*="carbon_icons"]:not(.no-invert),
+[data-theme="dark"] img[src*="carbon_icons"]:not(.no-invert),
+[data-theme="oled"] img[src*="carbon_icons"]:not(.no-invert) {
+  filter: brightness(0) invert(1) opacity(0.92);
+}
+

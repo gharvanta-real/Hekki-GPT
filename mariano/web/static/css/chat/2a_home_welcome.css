@@ -49,21 +49,28 @@
   position: relative;
   width: 100%;
   background: var(--input-bg, #F4F4F6);
-  border: none !important;
+  border: 1px solid var(--border, #E4E7EB) !important;
   outline: none !important;
   box-shadow: none !important;
-  transition: border-radius 0.22s cubic-bezier(0.4, 0, 0.2, 1), padding 0.22s cubic-bezier(0.4, 0, 0.2, 1), min-height 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: border-color 0.18s ease, border-radius 0.22s cubic-bezier(0.4, 0, 0.2, 1), padding 0.22s cubic-bezier(0.4, 0, 0.2, 1), min-height 0.22s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 body.light #input-capsule,
 body.light #input-capsule-conv,
 :root[data-theme="light"] #input-capsule,
-:root[data-theme="light"] #input-capsule-conv,
+:root[data-theme="light"] #input-capsule-conv {
+  border: 1px solid var(--border, #E2E8F0) !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
 body.dark #input-capsule,
 body.dark #input-capsule-conv,
 :root[data-theme="dark"] #input-capsule,
-:root[data-theme="dark"] #input-capsule-conv {
-  border: none !important;
+:root[data-theme="dark"] #input-capsule-conv,
+body.oled #input-capsule,
+body.oled #input-capsule-conv {
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
   outline: none !important;
   box-shadow: none !important;
 }
@@ -72,9 +79,20 @@ body.dark #input-capsule-conv,
 #input-capsule-conv:hover,
 #input-capsule:focus-within,
 #input-capsule-conv:focus-within {
-  border: none !important;
+  border: 1px solid var(--border-hover, #CBD5E1) !important;
   outline: none !important;
   box-shadow: none !important;
+}
+
+body.dark #input-capsule:hover,
+body.dark #input-capsule-conv:hover,
+body.dark #input-capsule:focus-within,
+body.dark #input-capsule-conv:focus-within,
+body.oled #input-capsule:hover,
+body.oled #input-capsule-conv:hover,
+body.oled #input-capsule:focus-within,
+body.oled #input-capsule-conv:focus-within {
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
 }
 
 #input-capsule {

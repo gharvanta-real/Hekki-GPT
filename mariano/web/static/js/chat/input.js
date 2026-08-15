@@ -113,29 +113,19 @@ export function setGeneratingState(isGen) {
   ['chat-input', 'chat-input-conv'].forEach(inputId => {
     const isConv = inputId === 'chat-input-conv';
     const submitBtn = document.getElementById(isConv ? 'btn-submit-conv' : 'btn-submit-home');
-    const stopBtn = document.getElementById(isConv ? 'btn-stop-gen-conv' : 'btn-stop-gen');
-    const voiceBtn = document.getElementById(isConv ? 'btn-voice-conv' : 'btn-voice');
+    const stopBtn   = document.getElementById(isConv ? 'btn-stop-gen-conv' : 'btn-stop-gen');
+    const voiceBtn  = document.getElementById(isConv ? 'btn-voice-conv' : 'btn-voice');
 
     if (window.isGenerating) {
-      // While AI is generating: ALWAYS hide voice mic & send button, show ONLY stop button
-      voiceBtn?.classList.add('hidden');
-      if (voiceBtn) voiceBtn.style.display = 'none';
-
-      submitBtn?.classList.add('hidden');
-      if (submitBtn) submitBtn.style.display = 'none';
-
-      stopBtn?.classList.remove('hidden');
-      if (stopBtn) stopBtn.style.display = '';
+      // Generating: hide send + mic, show ONLY stop
+      if (voiceBtn)  { voiceBtn.style.display  = 'none'; voiceBtn.classList.add('hidden'); }
+      if (submitBtn) { submitBtn.style.display = 'none'; submitBtn.classList.add('hidden'); }
+      if (stopBtn)   { stopBtn.style.display   = 'inline-flex'; stopBtn.classList.remove('hidden'); }
     } else {
-      // Idle state: stop hidden, send & voice visible
-      stopBtn?.classList.add('hidden');
-      if (stopBtn) stopBtn.style.display = 'none';
-
-      voiceBtn?.classList.remove('hidden');
-      if (voiceBtn) voiceBtn.style.display = '';
-
-      submitBtn?.classList.remove('hidden');
-      if (submitBtn) submitBtn.style.display = '';
+      // Idle: hide stop, show send + mic
+      if (stopBtn)   { stopBtn.style.display   = 'none';        stopBtn.classList.add('hidden'); }
+      if (voiceBtn)  { voiceBtn.style.display  = 'inline-flex'; voiceBtn.classList.remove('hidden'); }
+      if (submitBtn) { submitBtn.style.display = 'inline-flex'; submitBtn.classList.remove('hidden'); }
     }
   });
 }
@@ -161,28 +151,18 @@ export function bindInputs(sendCallback, ChatSessionManager) {
     if (!textarea) return;
     adjustHeight(textarea);
     const submitBtn = $(submitBtnId);
-    const stopBtn = $(stopBtnId);
-    const isConv = textarea.id === 'chat-input-conv';
-    const voiceBtn = $(isConv ? 'btn-voice-conv' : 'btn-voice');
+    const stopBtn   = $(stopBtnId);
+    const isConv    = textarea.id === 'chat-input-conv';
+    const voiceBtn  = $(isConv ? 'btn-voice-conv' : 'btn-voice');
 
     if (window.isGenerating) {
-      voiceBtn?.classList.add('hidden');
-      if (voiceBtn) voiceBtn.style.display = 'none';
-
-      submitBtn?.classList.add('hidden');
-      if (submitBtn) submitBtn.style.display = 'none';
-
-      stopBtn?.classList.remove('hidden');
-      if (stopBtn) stopBtn.style.display = '';
+      if (voiceBtn)  { voiceBtn.style.display  = 'none';        voiceBtn.classList.add('hidden'); }
+      if (submitBtn) { submitBtn.style.display = 'none';        submitBtn.classList.add('hidden'); }
+      if (stopBtn)   { stopBtn.style.display   = 'inline-flex'; stopBtn.classList.remove('hidden'); }
     } else {
-      stopBtn?.classList.add('hidden');
-      if (stopBtn) stopBtn.style.display = 'none';
-
-      voiceBtn?.classList.remove('hidden');
-      if (voiceBtn) voiceBtn.style.display = '';
-
-      submitBtn?.classList.remove('hidden');
-      if (submitBtn) submitBtn.style.display = '';
+      if (stopBtn)   { stopBtn.style.display   = 'none';        stopBtn.classList.add('hidden'); }
+      if (voiceBtn)  { voiceBtn.style.display  = 'inline-flex'; voiceBtn.classList.remove('hidden'); }
+      if (submitBtn) { submitBtn.style.display = 'inline-flex'; submitBtn.classList.remove('hidden'); }
     }
   };
 

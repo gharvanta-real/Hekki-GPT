@@ -145,7 +145,7 @@ function _buildLayout() {
                     </button>
                     <div style="border-top: 1px solid var(--border); margin: 4px 0;"></div>
                     <button class="dropdown-item btn-clear-docs" id="btn-debate-clear-docs" style="color: #ef4444 !important;">
-                      <i data-lucide="trash-2" style="width: 15px; height: 15px; margin-right: 8px; color: #ef4444;"></i>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 32 32" fill="#ef4444" style="width:15px;height:15px;margin-right:8px;display:inline-block;"><rect x="12" y="12" width="2" height="12"/><rect x="18" y="12" width="2" height="12"/><path d="M4,6V8H6V28a2,2,0,0,0,2,2H24a2,2,0,0,0,2-2V8h2V6ZM8,28V8H24V28Z"/><rect x="12" y="2" width="8" height="2"/></svg>
                       <span>Clean All</span>
                     </button>
                   </div>
@@ -193,7 +193,7 @@ function _buildLayout() {
 
           <!-- User Profile Action -->
           <div class="sidebar-user-profile" id="btn-debate-sidebar-user-profile" style="border-top: none;">
-            <img class="sidebar-user-avatar" id="debate-sidebar-user-avatar" src="/static/avatars/3d-avatar-1.webp" alt="User Avatar" />
+            <img class="sidebar-user-avatar" id="debate-sidebar-user-avatar" src="/static/carbon_icons/misc/user-avatar.svg" alt="User Avatar" />
             <div class="sidebar-user-info">
               <div class="sidebar-user-name" id="debate-sidebar-user-name">User</div>
             </div>

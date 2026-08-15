@@ -1,7 +1,7 @@
 {
   "servers": [
     {
-      "id": "d7dbac62",
+      "id": "github",
       "name": "GitHub",
       "transport": "stdio",
       "enabled": true,

@@ -199,7 +199,7 @@ export function enhanceCodeBlocks(container) {
     const copyBtn = document.createElement('button');
     copyBtn.className = 'code-action-btn btn-copy';
     copyBtn.title = 'Copy Code';
-    copyBtn.innerHTML = '<i data-lucide="copy" style="width:14px;height:14px"></i>';
+    copyBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 32 32" fill="currentColor" style="width:14px;height:14px;display:block;"><path d="M27.4,14.7l-6.1-6.1C21,8.2,20.5,8,20,8h-8c-1.1,0-2,0.9-2,2v18c0,1.1,0.9,2,2,2h14c1.1,0,2-0.9,2-2V16.1C28,15.6,27.8,15.1,27.4,14.7z M20,10l5.9,6H20V10z M12,28V10h6v6c0,1.1,0.9,2,2,2h6l0,10H12z"/><path d="M6,18H4V4c0-1.1,0.9-2,2-2h14v2H6V18z"/></svg>';
 
     actions.appendChild(canvasBtn);
 
@@ -267,11 +267,9 @@ export function enhanceCodeBlocks(container) {
     copyBtn.addEventListener('click', async () => {
       try {
         await navigator.clipboard.writeText(rawCodeText);
-        copyBtn.innerHTML = '<i data-lucide="check" style="width:14px;height:14px;color:#16a34a"></i>';
-        if (window.lucide) lucide.createIcons({ parent: copyBtn });
+        copyBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 32 32" fill="#16a34a" style="width:14px;height:14px;display:block;"><polygon points="13 24 4 15 5.414 13.586 13 21.171 26.586 7.586 28 9 13 24"/></svg>';
         setTimeout(() => {
-          copyBtn.innerHTML = '<i data-lucide="copy" style="width:14px;height:14px"></i>';
-          if (window.lucide) lucide.createIcons({ parent: copyBtn });
+          copyBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 32 32" fill="currentColor" style="width:14px;height:14px;display:block;"><path d="M27.4,14.7l-6.1-6.1C21,8.2,20.5,8,20,8h-8c-1.1,0-2,0.9-2,2v18c0,1.1,0.9,2,2,2h14c1.1,0,2-0.9,2-2V16.1C28,15.6,27.8,15.1,27.4,14.7z M20,10l5.9,6H20V10z M12,28V10h6v6c0,1.1,0.9,2,2,2h6l0,10H12z"/><path d="M6,18H4V4c0-1.1,0.9-2,2-2h14v2H6V18z"/></svg>';
         }, 3000);
       } catch (err) { console.error('Failed to copy code', err); }
     });
@@ -292,7 +290,7 @@ export function enhanceTables(container) {
     const copyBtn = document.createElement('button');
     copyBtn.className = 'table-copy-btn';
     copyBtn.title = 'Copy Table as CSV';
-    copyBtn.innerHTML = '<i data-lucide="copy" style="width:13.5px;height:13.5px"></i>';
+    copyBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="13.5" height="13.5" viewBox="0 0 32 32" fill="currentColor" style="width:13.5px;height:13.5px;display:block;"><path d="M27.4,14.7l-6.1-6.1C21,8.2,20.5,8,20,8h-8c-1.1,0-2,0.9-2,2v18c0,1.1,0.9,2,2,2h14c1.1,0,2-0.9,2-2V16.1C28,15.6,27.8,15.1,27.4,14.7z M20,10l5.9,6H20V10z M12,28V10h6v6c0,1.1,0.9,2,2,2h6l0,10H12z"/><path d="M6,18H4V4c0-1.1,0.9-2,2-2h14v2H6V18z"/></svg>';
 
     const scrollContainer = document.createElement('div');
     scrollContainer.className = 'table-scroll-container';
@@ -317,11 +315,9 @@ export function enhanceTables(container) {
 
       try {
         await navigator.clipboard.writeText(csvContent);
-        copyBtn.innerHTML = '<i data-lucide="check" style="width:14px;height:14px;color:#16a34a"></i>';
-        if (window.lucide) lucide.createIcons({ parent: copyBtn });
+        copyBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 32 32" fill="#16a34a" style="width:14px;height:14px;display:block;"><polygon points="13 24 4 15 5.414 13.586 13 21.171 26.586 7.586 28 9 13 24"/></svg>';
         setTimeout(() => {
-          copyBtn.innerHTML = '<i data-lucide="copy" style="width:13.5px;height:13.5px"></i>';
-          if (window.lucide) lucide.createIcons({ parent: copyBtn });
+          copyBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="13.5" height="13.5" viewBox="0 0 32 32" fill="currentColor" style="width:13.5px;height:13.5px;display:block;"><path d="M27.4,14.7l-6.1-6.1C21,8.2,20.5,8,20,8h-8c-1.1,0-2,0.9-2,2v18c0,1.1,0.9,2,2,2h14c1.1,0,2-0.9,2-2V16.1C28,15.6,27.8,15.1,27.4,14.7z M20,10l5.9,6H20V10z M12,28V10h6v6c0,1.1,0.9,2,2,2h6l0,10H12z"/><path d="M6,18H4V4c0-1.1,0.9-2,2-2h14v2H6V18z"/></svg>';
         }, 3000);
       } catch (err) { console.error('Failed to copy table', err); }
     });

@@ -91,20 +91,19 @@ export function createMessageElement(type, text, timestamp, index, ChatSessionMa
         expandBtn.className = 'msg-expand-btn';
         expandBtn.type = 'button';
         expandBtn.title = 'Show more';
-        expandBtn.innerHTML = '<i data-lucide="chevron-down" style="width:14px;height:14px;"></i>';
+        expandBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" style="width:14px;height:14px;display:inline-block;"><path d="M16 22L6 12l1.4-1.4 8.6 8.6 8.6-8.6L26 12z"/></svg>';
         expandBtn.addEventListener('click', (e) => {
           e.stopPropagation();
           const isExpanded = bubble.classList.contains('expanded');
           if (isExpanded) {
             bubble.classList.remove('expanded');
             expandBtn.title = 'Show more';
-            expandBtn.innerHTML = '<i data-lucide="chevron-down" style="width:14px;height:14px;"></i>';
+            expandBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" style="width:14px;height:14px;display:inline-block;"><path d="M16 22L6 12l1.4-1.4 8.6 8.6 8.6-8.6L26 12z"/></svg>';
           } else {
             bubble.classList.add('expanded');
             expandBtn.title = 'Show less';
-            expandBtn.innerHTML = '<i data-lucide="chevron-up" style="width:14px;height:14px;"></i>';
+            expandBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" style="width:14px;height:14px;display:inline-block;"><path d="M16 10l10 10-1.4 1.4-8.6-8.6-8.6 8.6L6 20z"/></svg>';
           }
-          if (window.lucide) lucide.createIcons();
         });
         expandWrapper.appendChild(expandBtn);
         bubble.appendChild(expandWrapper);
@@ -116,30 +115,30 @@ export function createMessageElement(type, text, timestamp, index, ChatSessionMa
     actions.className = 'msg-actions';
     actions.innerHTML = `
       <span class="action-time">${timeStr}</span>
-      <button class="action-btn btn-copy" title="Copy text"><i data-lucide="copy"></i></button>
-      <button class="action-btn btn-edit" title="Edit prompt"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-compose" style="width:14px; height:14px; display:inline-block; vertical-align:middle;"><path d="M10 3H7a4 4 0 0 0-4 4v9a4 4 0 0 0 4 4h10a4 4 0 0 0 4-4v-4"></path><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"></path></svg></button>
-      <button class="action-btn btn-retry" title="Retry generation"><i data-lucide="refresh-cw"></i></button>
+      <button class="action-btn btn-copy" title="Copy text"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;display:block;"><path d="M27.4,14.7l-6.1-6.1C21,8.2,20.5,8,20,8h-8c-1.1,0-2,0.9-2,2v18c0,1.1,0.9,2,2,2h14c1.1,0,2-0.9,2-2V16.1C28,15.6,27.8,15.1,27.4,14.7z M20,10l5.9,6H20V10z M12,28V10h6v6c0,1.1,0.9,2,2,2h6l0,10H12z"/><path d="M6,18H4V4c0-1.1,0.9-2,2-2h14v2H6V18z"/></svg></button>
+      <button class="action-btn btn-edit" title="Edit prompt"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;"><rect x="2" y="26" width="28" height="2"/><path d="M25.4,9c0.8-0.8,0.8-2,0-2.8c0,0,0,0,0,0l-3.6-3.6c-0.8-0.8-2-0.8-2.8,0c0,0,0,0,0,0l-15,15V24h6.4L25.4,9z M20.4,4L24,7.6l-3,3L17.4,7L20.4,4z M6,22v-3.6l10-10l3.6,3.6l-10,10H6z"/></svg></button>
+      <button class="action-btn btn-retry" title="Retry generation"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;"><path d="M25.95,7.65l.0047-.0039c-.0918-.1094-.197-.2061-.2925-.3125-.1841-.2051-.3672-.41-.5635-.603-.1382-.1358-.2856-.2613-.43-.3907-.1831-.1645-.3657-.3286-.5581-.4824-.1592-.1279-.3244-.2466-.4895-.3667-.1921-.14-.3855-.2768-.5854-.4062-.1743-.1128-.3523-.2188-.5322-.3238q-.3081-.1786-.6253-.3408c-.1846-.0942-.37-.1846-.56-.27-.2224-.1-.449-.1914-.678-.2793-.1894-.0723-.3777-.1455-.5713-.209-.2463-.0815-.498-.1494-.7507-.2163-.1848-.0493-.3674-.1025-.5554-.1431-.29-.0634-.5865-.1074-.8833-.1508-.159-.023-.3145-.0552-.4754-.0728A12.9331,12.9331,0,0,0,6,7.7031V4H4v8h8V10H6.8115A10.961,10.961,0,0,1,16,5a11.1114,11.1114,0,0,1,1.189.0669c.1362.0146.268.042.4026.0615.2509.0366.5014.0742.7468.1275.1592.0346.3144.08.4712.1215.2131.0562.4258.1138.6335.1822.1643.0547.325.1167.4859.1782.1926.0742.3835.1509.5705.2349.1611.0727.3193.15.4763.23q.2677.1363.5262.2867c.153.0893.3046.18.4531.2758.1679.1089.3308.2242.4922.3413.1406.1026.2817.2037.417.3125.1616.1294.3156.2676.47.4063.1225.11.2478.2168.3652.332.1668.1636.3223.3379.4785.5117A10.9928,10.9928,0,1,1,5,16H3A13,13,0,1,0,25.95,7.65Z"/></svg></button>
     `;
     group.appendChild(actions);
     if (window.lucide) lucide.createIcons({ parent: actions });
 
     const userCopyBtn = actions.querySelector('.btn-copy');
-    userCopyBtn.addEventListener('click', () => {
-      navigator.clipboard.writeText(text).then(() => {
-        userCopyBtn.innerHTML = '<i data-lucide="check" style="color:#16a34a"></i>';
-        if (window.lucide) lucide.createIcons({ parent: userCopyBtn });
-        setTimeout(() => {
-          userCopyBtn.innerHTML = '<i data-lucide="copy"></i>';
-          if (window.lucide) lucide.createIcons({ parent: userCopyBtn });
-        }, 3000);
-      }).catch(err => console.warn('Clipboard write failed', err));
-    });
+    if (userCopyBtn) {
+      userCopyBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText(text).then(() => {
+          userCopyBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 32 32" fill="#16a34a" style="width:14px;height:14px;display:block;"><polygon points="13 24 4 15 5.414 13.586 13 21.171 26.586 7.586 28 9 13 24"/></svg>';
+          setTimeout(() => {
+            userCopyBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;display:block;"><path d="M27.4,14.7l-6.1-6.1C21,8.2,20.5,8,20,8h-8c-1.1,0-2,0.9-2,2v18c0,1.1,0.9,2,2,2h14c1.1,0,2-0.9,2-2V16.1C28,15.6,27.8,15.1,27.4,14.7z M20,10l5.9,6H20V10z M12,28V10h6v6c0,1.1,0.9,2,2,2h6l0,10H12z"/><path d="M6,18H4V4c0-1.1,0.9-2,2-2h14v2H6V18z"/></svg>';
+          }, 3000);
+        }).catch(err => console.warn('Clipboard write failed', err));
+      });
+    }
 
-    actions.querySelector('.btn-edit').addEventListener('click', () => {
+    actions.querySelector('.btn-edit')?.addEventListener('click', () => {
       makeUserMessageEditable(group, text, index, ChatSessionManager, globalSendCallbackRef);
     });
 
-    actions.querySelector('.btn-retry').addEventListener('click', () => {
+    actions.querySelector('.btn-retry')?.addEventListener('click', () => {
       triggerRetry(index, ChatSessionManager, globalSendCallbackRef);
     });
 
@@ -205,7 +204,7 @@ export function createMessageElement(type, text, timestamp, index, ChatSessionMa
           <div class="thought-container">
             <div class="thought-header">
               <span class="thought-title">Thinking Process</span>
-              <i class="mi-chevron thought-chevron" data-lucide="chevron-down" style="width:12px;height:12px;display:inline-block;vertical-align:middle;transition:transform 0.2s"></i>
+              <svg class="mi-chevron thought-chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" style="width:12px;height:12px;display:inline-block;vertical-align:middle;transition:transform 0.2s;flex-shrink:0;"><path d="M16 22L6 12l1.4-1.4 8.6 8.6 8.6-8.6L26 12z"/></svg>
             </div>
             <div class="thought-body collapsed" style="display: none;">
               <div class="thought-step">${window.marked ? sanitizeHtml(marked.parse(thoughtContent)) : escapeHtml(thoughtContent)}</div>
@@ -295,10 +294,10 @@ export function createMessageElement(type, text, timestamp, index, ChatSessionMa
         actions.innerHTML = `
           ${faviconsHtml}
           <div style="display:flex; align-items:center; gap:6px; margin-left:auto;">
-            <button class="action-btn btn-copy" title="Copy response"><i data-lucide="copy"></i></button>
-            <button class="action-btn btn-like" title="Good response"><i data-lucide="thumbs-up"></i></button>
-            <button class="action-btn btn-dislike" title="Bad response"><i data-lucide="thumbs-down"></i></button>
-            <button class="action-btn btn-fork" title="Fork conversation branch from here"><i data-lucide="git-fork"></i></button>
+            <button class="action-btn btn-copy" title="Copy response"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;display:block;"><path d="M27.4,14.7l-6.1-6.1C21,8.2,20.5,8,20,8h-8c-1.1,0-2,0.9-2,2v18c0,1.1,0.9,2,2,2h14c1.1,0,2-0.9,2-2V16.1C28,15.6,27.8,15.1,27.4,14.7z M20,10l5.9,6H20V10z M12,28V10h6v6c0,1.1,0.9,2,2,2h6l0,10H12z"/><path d="M6,18H4V4c0-1.1,0.9-2,2-2h14v2H6V18z"/></svg></button>
+            <button class="action-btn btn-like" title="Good response"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;"><path d="M26,12H20V6a3.0033,3.0033,0,0,0-3-3H14.8672a2.0094,2.0094,0,0,0-1.98,1.7173l-.8453,5.9165L8.4648,16H2V30H23a7.0078,7.0078,0,0,0,7-7V16A4.0045,4.0045,0,0,0,26,12ZM8,28H4V18H8Zm20-5a5.0057,5.0057,0,0,1-5,5H10V17.3027l3.9578-5.9365L14.8672,5H17a1.0008,1.0008,0,0,1,1,1v8h8a2.0025,2.0025,0,0,1,2,2Z"/></svg></button>
+            <button class="action-btn btn-dislike" title="Bad response"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;"><path d="M30,16V9a7.0078,7.0078,0,0,0-7-7H2V16H8.4648l3.5774,5.3662.8453,5.9165A2.0094,2.0094,0,0,0,14.8672,29H17a3.0033,3.0033,0,0,0,3-3V20h6A4.0045,4.0045,0,0,0,30,16ZM8,14H4V4H8Zm20,2a2.0025,2.0025,0,0,1-2,2H18v8a1.0008,1.0008,0,0,1-1,1H14.8672l-.9094-6.3662L10,14.6973V4H23a5.0057,5.0057,0,0,1,5,5Z"/></svg></button>
+            <button class="action-btn btn-fork" title="Fork conversation branch from here"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;"><path d="m20,6c0,1.8584,1.2798,3.4106,3,3.8579v5.1421h-14v-5.1421c1.7202-.4473,3-1.9995,3-3.8579,0-2.2056-1.7944-4-4-4s-4,1.7944-4,4c0,1.8584,1.2798,3.4106,3,3.8579v5.1421c0,1.103.897,2,2,2h6v5.1421c-1.7202.4473-3,1.9995-3,3.8579,0,2.2056,1.7944,4,4,4s4-1.7944,4-4c0-1.8584-1.2798-3.4106-3-3.8579v-5.1421h6c1.103,0,2-.897,2-2v-5.1421c1.7202-.4473,3-1.9995,3-3.8579,0-2.2056-1.7944-4-4-4s-4,1.7944-4,4Zm-14,0c0-1.103.897-2,2-2s2,.897,2,2c0,1.103-.897,2-2,2s-2-.897-2-2Zm12,20c0,1.103-.897,2-2,2s-2-.897-2-2c0-1.103.897-2,2-2s2,.897,2,2ZM26,6c0,1.103-.897,2-2,2s-2-.897-2-2c0-1.103.897-2,2-2s2,.897,2,2Z"/></svg></button>
           </div>
         `;
         group.appendChild(actions);
@@ -312,27 +311,39 @@ export function createMessageElement(type, text, timestamp, index, ChatSessionMa
 
 
 
+        const SVG_LIKE_OUTLINE = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;"><path d="M26,12H20V6a3.0033,3.0033,0,0,0-3-3H14.8672a2.0094,2.0094,0,0,0-1.98,1.7173l-.8453,5.9165L8.4648,16H2V30H23a7.0078,7.0078,0,0,0,7-7V16A4.0045,4.0045,0,0,0,26,12ZM8,28H4V18H8Zm20-5a5.0057,5.0057,0,0,1-5,5H10V17.3027l3.9578-5.9365L14.8672,5H17a1.0008,1.0008,0,0,1,1,1v8h8a2.0025,2.0025,0,0,1,2,2Z"/></svg>`;
+        const SVG_LIKE_FILLED  = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;"><rect x="2" y="16" width="5" height="14"/><path d="M23,30H9V15.1973l3.0422-4.5635.8453-5.9165A2.0094,2.0094,0,0,1,14.8672,3H15a3.0033,3.0033,0,0,1,3,3v6h8a4.0045,4.0045,0,0,1,4,4v7A7.0078,7.0078,0,0,1,23,30Z"/></svg>`;
+        const SVG_DISLIKE_OUTLINE = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;"><path d="M30,16V9a7.0078,7.0078,0,0,0-7-7H2V16H8.4648l3.5774,5.3662.8453,5.9165A2.0094,2.0094,0,0,0,14.8672,29H17a3.0033,3.0033,0,0,0,3-3V20h6A4.0045,4.0045,0,0,0,30,16ZM8,14H4V4H8Zm20,2a2.0025,2.0025,0,0,1-2,2H18v8a1.0008,1.0008,0,0,1-1,1H14.8672l-.9094-6.3662L10,14.6973V4H23a5.0057,5.0057,0,0,1,5,5Z"/></svg>`;
+        const SVG_DISLIKE_FILLED  = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;"><rect x="2" y="2" width="5" height="14"/><path d="M23,2H9V16.8027l3.0422,4.5635.8453,5.9165A2.0094,2.0094,0,0,0,14.8672,29H15a3.0033,3.0033,0,0,0,3-3V20h8a4.0045,4.0045,0,0,0,4-4V9A7.0078,7.0078,0,0,0,23,2Z"/></svg>`;
+        const SVG_COPY_NORMAL = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;display:block;"><path d="M27.4,14.7l-6.1-6.1C21,8.2,20.5,8,20,8h-8c-1.1,0-2,0.9-2,2v18c0,1.1,0.9,2,2,2h14c1.1,0,2-0.9,2-2V16.1C28,15.6,27.8,15.1,27.4,14.7z M20,10l5.9,6H20V10z M12,28V10h6v6c0,1.1,0.9,2,2,2h6l0,10H12z"/><path d="M6,18H4V4c0-1.1,0.9-2,2-2h14v2H6V18z"/></svg>`;
+        const SVG_COPY_CHECK  = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="#16a34a" style="width:16px;height:16px;display:block;"><polygon points="13 24 4 15 5.414 13.586 13 21.171 26.586 7.586 28 9 13 24"/></svg>`;
+
         const aiCopyBtn = actions.querySelector('.btn-copy');
-        aiCopyBtn.addEventListener('click', () => {
+        aiCopyBtn?.addEventListener('click', () => {
           const cleanText = text.replace(/<think>[\s\S]*?<\/think>/i, '').trim();
           navigator.clipboard.writeText(cleanText).then(() => {
-            aiCopyBtn.innerHTML = '<i data-lucide="check" style="color:#16a34a"></i>';
-            if (window.lucide) lucide.createIcons({ parent: aiCopyBtn });
+            aiCopyBtn.innerHTML = SVG_COPY_CHECK;
             setTimeout(() => {
-              aiCopyBtn.innerHTML = '<i data-lucide="copy"></i>';
-              if (window.lucide) lucide.createIcons({ parent: aiCopyBtn });
+              aiCopyBtn.innerHTML = SVG_COPY_NORMAL;
             }, 3000);
           }).catch(err => console.warn('Clipboard write failed', err));
         });
 
-        actions.querySelector('.btn-like').addEventListener('click', () => {
-          actions.querySelector('.btn-like').classList.toggle('active');
-          actions.querySelector('.btn-dislike').classList.remove('active');
+        const btnLike = actions.querySelector('.btn-like');
+        const btnDislike = actions.querySelector('.btn-dislike');
+
+        btnLike?.addEventListener('click', () => {
+          const isNowActive = btnLike.classList.toggle('active');
+          btnDislike?.classList.remove('active');
+          btnLike.innerHTML = isNowActive ? SVG_LIKE_FILLED : SVG_LIKE_OUTLINE;
+          if (btnDislike) btnDislike.innerHTML = SVG_DISLIKE_OUTLINE;
         });
 
-        actions.querySelector('.btn-dislike').addEventListener('click', () => {
-          actions.querySelector('.btn-dislike').classList.toggle('active');
-          actions.querySelector('.btn-like').classList.remove('active');
+        btnDislike?.addEventListener('click', () => {
+          const isNowActive = btnDislike.classList.toggle('active');
+          btnLike?.classList.remove('active');
+          btnDislike.innerHTML = isNowActive ? SVG_DISLIKE_FILLED : SVG_DISLIKE_OUTLINE;
+          if (btnLike) btnLike.innerHTML = SVG_LIKE_OUTLINE;
         });
 
         if (window.lucide) setTimeout(() => lucide.createIcons({ parent: actions }), 0);
@@ -363,7 +374,7 @@ export function createToolGroupCard(msg, escapeHtmlFn) {
   toolCard.innerHTML = `
     <div class="tool-group-header" style="display: flex; align-items: center; justify-content: space-between; padding: 4px 0; cursor: pointer; user-select: none;">
       <div style="display: flex; align-items: center; gap: 6px;">
-        <i data-lucide="chevron-right" class="chevron-icon" style="width:13px;height:13px;opacity:0.6;transition:transform 0.15s;display:inline-block;vertical-align:middle;"></i>
+        <svg data-chevron="right" class="chevron-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" style="width:13px;height:13px;opacity:0.7;transition:transform 0.15s;display:inline-block;vertical-align:middle;flex-shrink:0;"><path d="M12 8l10 8-10 8z"/></svg>
         <span class="tool-group-title" style="font-weight: 400; color: var(--text-secondary);">${titleText}</span>
       </div>
       <span class="tool-group-status" style="font-size: 11px; opacity: 0.6; font-weight: 400;">${statusHtml}</span>

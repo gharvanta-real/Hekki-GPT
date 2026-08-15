@@ -83,13 +83,13 @@ export class ImagesPage {
           <!-- Floating Translucent Toolbar Overlaying Bottom-Center INSIDE Image Frame -->
           <div class="img-lightbox-actions" style="position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); z-index: 100; display: flex; align-items: center; gap: 6px; background: rgba(24, 24, 27, 0.85) !important; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); padding: 5px 10px; border-radius: 30px; border: none !important; box-shadow: none !important;">
             <button class="img-lightbox-btn" id="img-lb-download" title="Download Image" style="width:30px; height:30px; border-radius:50%; background:rgba(255,255,255,0.14) !important; border:none !important; box-shadow:none !important; color:#ffffff !important; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.15s ease;">
-              <i data-lucide="download" style="width:15px;height:15px;color:#ffffff !important;stroke:#ffffff !important;"></i>
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 32 32" fill="#ffffff" style="width:14px;height:14px;display:inline-block;"><path d="M26 24v4H6v-4H4v4a2 2 0 0 0 2 2h20a2 2 0 0 0 2-2v-4zm-11 2.414l-6.707-6.707 1.414-1.414L15 23.586V2h2v21.586l5.293-5.293 1.414 1.414z"/></svg>
             </button>
             <button class="img-lightbox-btn img-card-btn img-del-btn" id="img-lb-delete" title="Delete Image" style="width:30px; height:30px; border-radius:50%; background:rgba(255,255,255,0.14) !important; border:none !important; box-shadow:none !important; color:#ffffff !important; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.15s ease;">
-              <i data-lucide="trash-2" style="width:15px;height:15px;color:#ffffff !important;stroke:#ffffff !important;"></i>
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 32 32" fill="#ffffff" style="width:14px;height:14px;display:inline-block;"><rect x="12" y="12" width="2" height="12"/><rect x="18" y="12" width="2" height="12"/><path d="M4,6V8H6V28a2,2,0,0,0,2,2H24a2,2,0,0,0,2-2V8h2V6ZM8,28V8H24V28Z"/><rect x="12" y="2" width="8" height="2"/></svg>
             </button>
             <button class="img-lightbox-btn" id="img-lb-close" title="Close" style="width:30px; height:30px; border-radius:50%; background:rgba(255,255,255,0.14) !important; border:none !important; box-shadow:none !important; color:#ffffff !important; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.15s ease;">
-              <i data-lucide="x" style="width:15px;height:15px;color:#ffffff !important;stroke:#ffffff !important;"></i>
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 32 32" fill="#ffffff" style="width:14px;height:14px;display:inline-block;"><polygon points="17.4141 16 26 7.4141 24.5859 6 16 14.5859 7.4143 6 6 7.4141 14.5859 16 6 24.5859 7.4143 26 16 17.4141 24.5859 26 26 24.5859 17.4141 16"/></svg>
             </button>
           </div>
 
@@ -357,14 +357,14 @@ export class ImagesPage {
           <!-- Top Overlay: Select Checkbox + Action Buttons -->
           <div class="img-gallery-top-overlay">
             <div class="img-card-checkbox ${isSelected ? 'checked' : ''}" data-idx="${idx}">
-              <i data-lucide="check"></i>
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 32 32" fill="currentColor" style="width:13px;height:13px;display:inline-block;"><polygon points="13 24 4 15 5.414 13.586 13 21.171 26.586 7.586 28 9 13 24"/></svg>
             </div>
             <div class="img-card-actions">
               <button class="img-card-btn img-dl-btn" data-idx="${idx}" title="Download">
-                <i data-lucide="download"></i>
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 32 32" fill="currentColor" style="width:14px;height:14px;display:inline-block;"><path d="M26 24v4H6v-4H4v4a2 2 0 0 0 2 2h20a2 2 0 0 0 2-2v-4zm-11 2.414l-6.707-6.707 1.414-1.414L15 23.586V2h2v21.586l5.293-5.293 1.414 1.414z"/></svg>
               </button>
               <button class="img-card-btn img-del-btn" data-idx="${idx}" title="Delete">
-                <i data-lucide="trash-2"></i>
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 32 32" fill="currentColor" style="width:14px;height:14px;display:inline-block;"><rect x="12" y="12" width="2" height="12"/><rect x="18" y="12" width="2" height="12"/><path d="M4,6V8H6V28a2,2,0,0,0,2,2H24a2,2,0,0,0,2-2V8h2V6ZM8,28V8H24V28Z"/><rect x="12" y="2" width="8" height="2"/></svg>
               </button>
             </div>
           </div>

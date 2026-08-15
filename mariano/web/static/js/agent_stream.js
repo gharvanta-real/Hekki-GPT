@@ -105,7 +105,7 @@ function _renderParsedMessage(containerEl, rawText) {
       <div class="thought-container">
         <div class="thought-header">
           <span class="thought-title">Thinking Process</span>
-          <i class="mi-chevron thought-chevron" data-lucide="chevron-down" style="width:12px;height:12px;display:inline-block;vertical-align:middle;transition:transform 0.2s"></i>
+          <svg class="mi-chevron thought-chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" style="width:12px;height:12px;display:inline-block;vertical-align:middle;transition:transform 0.2s;flex-shrink:0;"><path d="M16 22L6 12l1.4-1.4 8.6 8.6 8.6-8.6L26 12z"/></svg>
         </div>
         <div class="thought-body collapsed" style="display: none;">
           <div class="thought-step">${window.marked ? sanitizeHtml(marked.parse(thoughtContent)) : escapeHtml(thoughtContent)}</div>
@@ -217,7 +217,7 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
       alertEl.innerHTML = `
         <div class="msg-bubble ai-bubble" style="border: 1px solid var(--accent, #2563eb) !important; background: var(--input-bg) !important; padding: 10px 14px; border-radius: 10px; margin-top: 10px;">
           <div style="display:flex;align-items:center;gap:8px;font-weight:600;color:var(--text-primary);margin-bottom:4px;">
-            <i data-lucide="bell" style="width:16px;height:16px;color:var(--accent, #2563eb);"></i>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;color:var(--accent,#2563eb);flex-shrink:0;"><path d="M28.7 20.9C27.1 18.7 26 17.3 26 12a10 10 0 0 0-8-9.8V2h-4v.2A10 10 0 0 0 6 12c0 5.3-1.1 6.7-2.7 8.9l-.3.4V24h8a5 5 0 0 0 10 0h8v-2.7zm-12.7 7a3 3 0 0 1-3-3h6a3 3 0 0 1-3 3zm-9.9-6c1.5-2.1 2.9-4 2.9-9.9a8 8 0 0 1 16 0c0 5.9 1.4 7.8 2.9 9.9z"/></svg>
             <span>⏰ REMINDER ALERT</span>
           </div>
           <div style="font-size:13px;color:var(--text);">${escapeHtml(text)}</div>
@@ -506,7 +506,7 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
       
       card.innerHTML = `
         <div style="display:flex; align-items:center; gap:8px; font-size:13.5px; font-weight:600; color:var(--text-primary);">
-          <i data-lucide="shield-alert" style="width:16px; height:16px; color:#f59e0b;"></i>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;color:#f59e0b;flex-shrink:0;"><path d="M15 17h2v-6h-2zm0 4h2v-2h-2z"/><path d="M16 2L4 6v10c0 7.4 5 14 12 16 7-2 12-8.6 12-16V6zm10 14c0 6.2-4.1 11.9-10 14-5.9-2.1-10-7.8-10-14V7.4l10-3.3 10 3.3z"/></svg>
           <span>Workspace Access Permission Request</span>
         </div>
         <p style="font-size:12px; color:var(--text-secondary); margin:0; line-height:1.5;">
@@ -514,11 +514,11 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
         </p>
         <div style="display:flex; align-items:center; gap:10px; margin-top:4px; flex-wrap:wrap;">
           <button class="allow-everything-btn" style="border:none; background:var(--text-primary); color:var(--card); padding:8px 14px; border-radius:8px; font-size:12px; cursor:pointer; font-weight:600; display:flex; align-items:center; gap:6px; transition:opacity 0.1s;">
-            <i data-lucide="unlock" style="width:13px; height:13px;"></i>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" style="width:13px;height:13px;flex-shrink:0;"><path d="M24 14h-2v-4a6 6 0 0 0-12 0h2a4 4 0 0 1 8 0v4H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V16a2 2 0 0 0-2-2zm0 14H8V16h16zm-9-5v-4h2v4h-2z"/></svg>
             <span>Allow Everything</span>
           </button>
           <button class="allow-target-btn" style="border:none; background:var(--hover); color:var(--text-primary); padding:8px 14px; border-radius:8px; font-size:12px; cursor:pointer; font-weight:600; display:flex; align-items:center; gap:6px; transition:all 0.1s;">
-            <i data-lucide="folder-check" style="width:13px; height:13px;"></i>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" style="width:13px;height:13px;flex-shrink:0;"><path d="M14.5 12l-2-2H4v16h24V12zm9.5 12H6V8h5.7l2 2H24z"/><path d="M13.3 21.7L10 18.4l1.4-1.4 1.9 1.9 4.3-4.3 1.4 1.4z"/></svg>
             <span>Allow Only: ${escapeHtml(targetPath)}</span>
           </button>
           <button class="deny-btn" style="border:none; background:transparent; color:var(--text-3); padding:8px 10px; border-radius:8px; font-size:11.5px; cursor:pointer; font-weight:500;">
@@ -616,7 +616,7 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
         imgCard.innerHTML = `
           <div class="image-generation-shimmer"></div>
           <div class="image-generation-header">
-            <i data-lucide="image" style="width:13px;height:13px;margin-right:4px;"></i>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" style="width:13px;height:13px;margin-right:4px;flex-shrink:0;"><path d="M19 14a3 3 0 1 0-3-3 3 3 0 0 0 3 3zm0-4a1 1 0 1 1-1 1 1 1 0 0 1 1-1z"/><path d="M26 4H6a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h20a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 22H6V20l5-5 5.6 5.6a2 2 0 0 0 2.8 0L21 19l5 5zm0-4.8-3.6-3.6a2 2 0 0 0-2.8 0L18 19.2l-5.6-5.6a2 2 0 0 0-2.8 0L6 17.2V6h20z"/></svg>
             <span>Generating Image</span>
           </div>
           <div class="image-generation-center-content">
@@ -653,46 +653,47 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
       const endLine   = args.end_line   || '';
       const lineRange = (startLine && endLine) ? `L${startLine}–${endLine}` : (startLine ? `L${startLine}+` : '');
 
-      // Icon and label mapping — expanded to cover all tool names
+      // Icon and label mapping — updated with official IBM Carbon SVGs
       const _toolMeta = {
-        'file_manager:replace':       { icon: '<i data-lucide="file-diff" style="width:13px;height:13px;vertical-align:middle;display:inline-block;"></i>', label: 'Replacing',       detail: fileName },
-        'file_manager:multi_replace': { icon: '<i data-lucide="file-diff" style="width:13px;height:13px;vertical-align:middle;display:inline-block;"></i>', label: 'Multi-replacing', detail: fileName },
-        'run_command':                { icon: '<i data-lucide="terminal" style="width:13px;height:13px;vertical-align:middle;display:inline-block;"></i>', label: 'Ran command',    detail: escapeHtml(String(args.CommandLine||args.command||'').slice(0,55)) },
-        'generate_image':       { icon: '<i data-lucide="image" style="width:13px;height:13px;vertical-align:middle;display:inline-block;"></i>', label: 'generate_image', detail: escapeHtml(String(args.Prompt || args.prompt || Object.values(args)[0] || '').slice(0, 55)) },
-        'image_analysis':       { icon: '<i data-lucide="scan-eye" style="width:13px;height:13px;vertical-align:middle;display:inline-block;"></i>', label: 'image_analysis', detail: escapeHtml(String(args.prompt || Object.values(args)[0] || '').slice(0, 55)) },
-        'file_manager:read':    { icon: '<i data-lucide="file-text" style="width:13px;height:13px;vertical-align:middle;display:inline-block;"></i>', label: 'Reading',        detail: lineRange ? `${fileName}  <span style="opacity:0.45;font-size:10.5px;">${lineRange}</span>` : fileName },
-        'file_manager:write':   { icon: '<i data-lucide="file-edit" style="width:13px;height:13px;vertical-align:middle;display:inline-block;"></i>', label: 'Writing',        detail: fileName },
-        'file_manager:list':    { icon: '<i data-lucide="folder" style="width:13px;height:13px;vertical-align:middle;display:inline-block;"></i>', label: 'Listing',        detail: fileName || 'directory' },
-        'file_manager:grep':    { icon: '<i data-lucide="search" style="width:13px;height:13px;vertical-align:middle;display:inline-block;"></i>', label: 'Grepping',       detail: escapeHtml(args.pattern||'') },
-        'file_manager:search':  { icon: '<i data-lucide="search" style="width:13px;height:13px;vertical-align:middle;display:inline-block;"></i>', label: 'Searching',      detail: escapeHtml(args.pattern||'') },
-        'file_manager:delete':  { icon: '<i data-lucide="trash-2" style="width:13px;height:13px;vertical-align:middle;display:inline-block;"></i>', label: 'Deleting',       detail: fileName },
-        'file_manager:create_dir': { icon: '<i data-lucide="folder-plus" style="width:13px;height:13px;vertical-align:middle;display:inline-block;"></i>', label: 'Creating dir', detail: fileName },
-        'web_search':           { icon: '<i data-lucide="globe" style="width:13px;height:13px;vertical-align:middle;display:inline-block;"></i>', label: 'Web search',     detail: escapeHtml(String(args.query||'').slice(0,55)) },
-        'web_scraper':          { icon: '<i data-lucide="globe" style="width:13px;height:13px;vertical-align:middle;display:inline-block;"></i>', label: 'Scraping',       detail: escapeHtml(String(args.url||'').slice(0,55)) },
-        'deep_research':        { icon: '<i data-lucide="book-open" style="width:13px;height:13px;vertical-align:middle;display:inline-block;"></i>', label: 'Deep research', detail: escapeHtml(String(args.query||'').slice(0,55)) },
-        'physics_solver':       { icon: '<i data-lucide="cpu" style="width:13px;height:13px;vertical-align:middle;display:inline-block;"></i>', label: 'Physics solver', detail: escapeHtml(String(args.solver||args.query||'').slice(0,55)) },
-        'stock_data':           { icon: '<i data-lucide="trending-up" style="width:13px;height:13px;vertical-align:middle;display:inline-block;"></i>', label: 'Stock data', detail: escapeHtml(String(args.symbol||'').slice(0,55)) },
-        'weather':              { icon: '<i data-lucide="cloud" style="width:13px;height:13px;vertical-align:middle;display:inline-block;"></i>', label: 'Weather', detail: escapeHtml(String(args.location||'').slice(0,55)) },
-        'translator':           { icon: '<i data-lucide="languages" style="width:13px;height:13px;vertical-align:middle;display:inline-block;"></i>', label: 'Translator', detail: escapeHtml(String(args.text||'').slice(0,55)) },
-        'reminder':             { icon: '<i data-lucide="bell" style="width:13px;height:13px;vertical-align:middle;display:inline-block;"></i>', label: 'Reminder', detail: escapeHtml(String(args.message||'').slice(0,55)) },
-        'memory_ops':           { icon: '<i data-lucide="database" style="width:13px;height:13px;vertical-align:middle;display:inline-block;"></i>', label: 'Memory', detail: escapeHtml(String(args.action||'').slice(0,55)) },
-        'code_search':          { icon: '<i data-lucide="code" style="width:13px;height:13px;vertical-align:middle;display:inline-block;"></i>', label: 'Code search',    detail: escapeHtml(String(args.query||'').slice(0,55)) },
-        'shell':                { icon: '<i data-lucide="terminal" style="width:13px;height:13px;vertical-align:middle;display:inline-block;"></i>', label: 'Ran command',    detail: escapeHtml(String(args.command||'').slice(0,55)) },
-        'git':                  { icon: '<i data-lucide="git-branch" style="width:13px;height:13px;vertical-align:middle;display:inline-block;"></i>', label: 'Git',            detail: escapeHtml(String(args.command||args.action||'').slice(0,40)) },
-        'run_tests':            { icon: '<i data-lucide="check-circle-2" style="width:13px;height:13px;vertical-align:middle;display:inline-block;"></i>', label: 'Tests',          detail: '' },
-        'aider':                { icon: '<i data-lucide="sparkles" style="width:13px;height:13px;vertical-align:middle;display:inline-block;"></i>', label: 'Aider',          detail: escapeHtml(String(args.user_input||args.message||'').slice(0,55)) },
-        'system_control':       {
-          icon: '<i data-lucide="cog" style="width:13px;height:13px;vertical-align:middle;display:inline-block;"></i>',
-          label: action === 'run_command' ? 'Ran command' : action === 'copy_files' ? 'Copying' : action === 'open_app' ? 'Opening' : 'System',
-          detail: escapeHtml(String(args.command || args.source || args.app_name || '').slice(0,55))
-        },
+        'file_manager:replace':       { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 32 32" fill="currentColor" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><path d="M10,26V24H6V6H20V10h4v6h2V10a2,2,0,0,0-2-2H20a2,2,0,0,0-2-2H6A2,2,0,0,0,4,6V24a2,2,0,0,0,2,2Z"/><polygon points="26 21 21 21 21 16 19 16 19 21 14 21 14 23 19 23 19 28 21 28 21 23 26 23 26 21"/><rect x="8" y="10" width="8" height="2"/><rect x="8" y="14" width="6" height="2"/></svg>', label: 'Replacing',       detail: fileName },
+        'file_manager:multi_replace': { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 32 32" fill="currentColor" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><path d="M10,26V24H6V6H20V10h4v6h2V10a2,2,0,0,0-2-2H20a2,2,0,0,0-2-2H6A2,2,0,0,0,4,6V24a2,2,0,0,0,2,2Z"/><polygon points="26 21 21 21 21 16 19 16 19 21 14 21 14 23 19 23 19 28 21 28 21 23 26 23 26 21"/><rect x="8" y="10" width="8" height="2"/><rect x="8" y="14" width="6" height="2"/></svg>', label: 'Multi-replacing', detail: fileName },
+        'run_command':                { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 32 32" fill="currentColor" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><path d="M26,4H6A2,2,0,0,0,4,6V26a2,2,0,0,0,2,2H26a2,2,0,0,0,2-2V6A2,2,0,0,0,26,4Zm0,2v4H6V6ZM6,26V12H26V26Z"/><polygon points="10.76 16.18 13.58 19.01 10.76 21.84 12.17 23.25 16.41 19.01 12.17 14.77 10.76 16.18"/></svg>', label: 'Ran command',    detail: escapeHtml(String(args.CommandLine||args.command||'').slice(0,55)) },
+        'generate_image':       { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 32 32" fill="currentColor" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><path d="M19,14a3,3,0,1,0-3-3A3,3,0,0,0,19,14Zm0-4a1,1,0,1,1-1,1A1,1,0,0,1,19,10Z"/><path d="M26,4H6A2,2,0,0,0,4,6V26a2,2,0,0,0,2,2H26a2,2,0,0,0,2-2V6A2,2,0,0,0,26,4Zm0,22H6V20l5-5,5.59,5.59a2,2,0,0,0,2.82,0L21,19l5,5Zm0-4.83-3.59-3.59a2,2,0,0,0-2.82,0L18,19.17l-5.59-5.59a2,2,0,0,0-2.82,0L6,17.17V6H26Z"/></svg>', label: 'generate_image', detail: escapeHtml(String(args.Prompt || args.prompt || Object.values(args)[0] || '').slice(0, 55)) },
+        'image_analysis':       { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 32 32" fill="currentColor" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><path d="M19,14a3,3,0,1,0-3-3A3,3,0,0,0,19,14Zm0-4a1,1,0,1,1-1,1A1,1,0,0,1,19,10Z"/><path d="M26,4H6A2,2,0,0,0,4,6V26a2,2,0,0,0,2,2H26a2,2,0,0,0,2-2V6A2,2,0,0,0,26,4Zm0,22H6V20l5-5,5.59,5.59a2,2,0,0,0,2.82,0L21,19l5,5Zm0-4.83-3.59-3.59a2,2,0,0,0-2.82,0L18,19.17l-5.59-5.59a2,2,0,0,0-2.82,0L6,17.17V6H26Z"/></svg>', label: 'image_analysis', detail: escapeHtml(String(args.prompt || Object.values(args)[0] || '').slice(0, 55)) },
+        'file_manager:read':    { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 32 32" fill="currentColor" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><path d="M25.7,9.3l-7-7C18.5,2.1,18.3,2,18,2H8C6.9,2,6,2.9,6,4v24c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V10C26,9.7,25.9,9.5,25.7,9.3z M18,4.4l5.6,5.6H18V4.4z M24,28H8V4h8v6c0,1.1,0.9,2,2,2h6V28z"/><rect x="10" y="22" width="12" height="2"/><rect x="10" y="16" width="12" height="2"/></svg>', label: 'Reading',        detail: lineRange ? `${fileName}  <span style="opacity:0.45;font-size:10.5px;">${lineRange}</span>` : fileName },
+        'file_manager:write':   { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 32 32" fill="currentColor" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><rect x="2" y="26" width="28" height="2"/><path d="M25.4,9c0.8-0.8,0.8-2,0-2.8c0,0,0,0,0,0l-3.6-3.6c-0.8-0.8-2-0.8-2.8,0c0,0,0,0,0,0l-15,15V24h6.4L25.4,9z M20.4,4L24,7.6l-3,3L17.4,7L20.4,4z M6,22v-3.6l10-10l3.6,3.6l-10,10H6z"/></svg>', label: 'Writing',        detail: fileName },
+        'file_manager:list':    { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 32 32" fill="currentColor" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><path d="M14.5,12l-2-2H4v16h24V12H14.5z M26,24H6V8h5.7l2,2H26V24z"/></svg>', label: 'Listing',        detail: fileName || 'directory' },
+        'file_manager:grep':    { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 32 32" fill="currentColor" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><path d="M29,27.5859l-7.5521-7.5521a11.0177,11.0177,0,1,0-1.4141,1.4141L27.5859,29ZM4,13a9,9,0,1,1,9,9A9.01,9.01,0,0,1,4,13Z"/></svg>', label: 'Grepping',       detail: escapeHtml(args.pattern||'') },
+        'file_manager:search':  { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 32 32" fill="currentColor" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><path d="M29,27.5859l-7.5521-7.5521a11.0177,11.0177,0,1,0-1.4141,1.4141L27.5859,29ZM4,13a9,9,0,1,1,9,9A9.01,9.01,0,0,1,4,13Z"/></svg>', label: 'Searching',      detail: escapeHtml(args.pattern||'') },
+        'file_manager:delete':  { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 32 32" fill="currentColor" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><path d="M12,12h2v12H12ZM18,12h2v12H18Z"/><path d="M4,6V8H6V28a2,2,0,0,0,2,2H24a2,2,0,0,0,2-2V8h2V6ZM8,28V8H24V28Z"/><path d="M12,2h8v2H12Z"/></svg>', label: 'Deleting',       detail: fileName },
+        'file_manager:create_dir': { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 32 32" fill="currentColor" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><path d="M14.5,12l-2-2H4v16h24V12H14.5z M26,24H6V8h5.7l2,2H26V24z"/></svg>', label: 'Creating dir', detail: fileName },
+        'web_search':           { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 32 32" fill="currentColor" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><path d="M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2ZM28,15H22A24.26,24.26,0,0,0,19.21,4.45,12,12,0,0,1,28,15ZM16,28a5,5,0,0,1-.67,0A21.85,21.85,0,0,1,12,17H20a21.85,21.85,0,0,1-3.3,11A5,5,0,0,1,16,28ZM12,15a21.85,21.85,0,0,1,3.3-11,6,6,0,0,1,1.34,0A21.85,21.85,0,0,1,20,15Zm.76-10.55A24.26,24.26,0,0,0,10,15h-6A12,12,0,0,1,12.79,4.45ZM4.05,17h6a24.26,24.26,0,0,0,2.75,10.55A12,12,0,0,1,4.05,17ZM19.21,27.55A24.26,24.26,0,0,0,22,17h6A12,12,0,0,1,19.21,27.55Z"/></svg>', label: 'Web search',     detail: escapeHtml(String(args.query||'').slice(0,55)) },
+        'web_scraper':          { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 32 32" fill="currentColor" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><path d="M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2ZM28,15H22A24.26,24.26,0,0,0,19.21,4.45,12,12,0,0,1,28,15ZM16,28a5,5,0,0,1-.67,0A21.85,21.85,0,0,1,12,17H20a21.85,21.85,0,0,1-3.3,11A5,5,0,0,1,16,28ZM12,15a21.85,21.85,0,0,1,3.3-11,6,6,0,0,1,1.34,0A21.85,21.85,0,0,1,20,15Zm.76-10.55A24.26,24.26,0,0,0,10,15h-6A12,12,0,0,1,12.79,4.45ZM4.05,17h6a24.26,24.26,0,0,0,2.75,10.55A12,12,0,0,1,4.05,17ZM19.21,27.55A24.26,24.26,0,0,0,22,17h6A12,12,0,0,1,19.21,27.55Z"/></svg>', label: 'Scraping',       detail: escapeHtml(String(args.url||'').slice(0,55)) },
+        'deep_research':        { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 32 32" fill="currentColor" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><path d="M29,27.5859l-7.5521-7.5521a11.0177,11.0177,0,1,0-1.4141,1.4141L27.5859,29ZM4,13a9,9,0,1,1,9,9A9.01,9.01,0,0,1,4,13Z"/></svg>', label: 'Deep research', detail: escapeHtml(String(args.query||'').slice(0,55)) },
+        'code_search':          { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 32 32" fill="currentColor" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><polygon points="20 23.59 21.41 25 28.41 18 21.41 11 20 12.41 25.59 18 20 23.59"/><polygon points="12 8.41 10.59 7 3.59 14 10.59 21 12 19.59 6.41 14 12 8.41"/></svg>', label: 'Code search',    detail: escapeHtml(String(args.query||'').slice(0,55)) },
+        'shell':                { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 32 32" fill="currentColor" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><path d="M26,4H6A2,2,0,0,0,4,6V26a2,2,0,0,0,2,2H26a2,2,0,0,0,2-2V6A2,2,0,0,0,26,4Zm0,2v4H6V6ZM6,26V12H26V26Z"/><polygon points="10.76 16.18 13.58 19.01 10.76 21.84 12.17 23.25 16.41 19.01 12.17 14.77 10.76 16.18"/></svg>', label: 'Ran command',    detail: escapeHtml(String(args.command||'').slice(0,55)) },
+        'run_tests':            { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 32 32" fill="currentColor" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><polygon points="14 21.414 9 16.414 10.414 15 14 18.586 21.586 11 23 12.414 14 21.414"/></svg>', label: 'Tests',          detail: '' },
+        'stock':                { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 32 32" fill="currentColor" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><path d="M4 28h24v2H2z"/><path d="M22 6l3.59 3.59-6.59 6.59-4-4L4 23.17 5.41 24.59l9-9 4 4 8-8L30 15v-9z"/></svg>', label: 'Stock market', detail: escapeHtml(String(args.symbol||args.query||Object.values(args)[0]||'').slice(0,55)) },
+        'stock_data':           { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 32 32" fill="currentColor" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><path d="M4 28h24v2H2z"/><path d="M22 6l3.59 3.59-6.59 6.59-4-4L4 23.17 5.41 24.59l9-9 4 4 8-8L30 15v-9z"/></svg>', label: 'Stock data',   detail: escapeHtml(String(args.symbol||args.query||Object.values(args)[0]||'').slice(0,55)) },
+        'growth':               { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 32 32" fill="currentColor" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><path d="M4 28h24v2H2z"/><path d="M22 6l3.59 3.59-6.59 6.59-4-4L4 23.17 5.41 24.59l9-9 4 4 8-8L30 15v-9z"/></svg>', label: 'Growth trend', detail: escapeHtml(String(args.query||Object.values(args)[0]||'').slice(0,55)) },
       };
       const metaKey = (toolName === 'file_manager' && action) ? `file_manager:${action}` : toolName;
-      const meta = _toolMeta[metaKey] || {
-        icon: '<i data-lucide="wrench" style="width:13px;height:13px;vertical-align:middle;display:inline-block;"></i>',
-        label: toolName,
-        detail: escapeHtml(String(Object.values(args)[0] || '').slice(0, 55))
-      };
+      let meta = _toolMeta[metaKey] || _toolMeta[toolName.toLowerCase()];
+      const lowerTool = (toolName || '').toLowerCase();
+      if (!meta && (lowerTool.includes('stock') || lowerTool.includes('growth') || lowerTool.includes('market') || lowerTool.includes('finance') || lowerTool.includes('nifty') || lowerTool.includes('trade'))) {
+        meta = {
+          icon: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 32 32" fill="currentColor" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><path d="M4 28h24v2H2z"/><path d="M22 6l3.59 3.59-6.59 6.59-4-4L4 23.17 5.41 24.59l9-9 4 4 8-8L30 15v-9z"/></svg>',
+          label: toolName,
+          detail: escapeHtml(String(Object.values(args)[0] || '').slice(0, 55))
+        };
+      }
+      if (!meta) {
+        meta = {
+          icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><path d="M27.7 6.7l-2.4 2.4-2.4-2.4 2.4-2.4zM16 4a12 12 0 1 0 0 24A12 12 0 0 0 16 4zm0 22a10 10 0 1 1 0-20 10 10 0 0 1 0 20z"/><path d="M16 10a6 6 0 1 0 0 12 6 6 0 0 0 0-12zm0 10a4 4 0 1 1 0-8 4 4 0 0 1 0 8z"/></svg>',
+          label: toolName,
+          detail: escapeHtml(String(Object.values(args)[0] || '').slice(0, 55))
+        };
+      }
 
       // Line addition (+) and deletion (-) diff counter calculation for file operations
       let diffBadgeHtml = '';
@@ -749,8 +750,8 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
       ].join(';');
 
       card.innerHTML = `
-        <div style="display:flex;align-items:center;gap:6px;overflow:hidden;">
-          <span style="flex-shrink:0;opacity:0.85;display:inline-flex;align-items:center;">${meta.icon}</span>
+        <div style="display:flex;align-items:center;gap:6px;overflow:hidden;min-height:18px;">
+          <span style="flex-shrink:0;opacity:0.85;display:inline-flex;align-items:center;justify-content:center;min-width:15px;width:15px;height:15px;overflow:visible;">${meta.icon}</span>
           ${slashContent}
         </div>
         <span class="tool-status" style="flex-shrink:0;font-size:11px;color:var(--text-secondary);white-space:nowrap;opacity:0.85;">running<span class="dots">.</span></span>
@@ -801,7 +802,7 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
         imgGenCard.innerHTML = `
           <div class="image-generation-shimmer"></div>
           <div class="chat-image-gen-header">
-            <i data-lucide="image" style="width:14px;height:14px;margin-right:6px;"></i>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" style="width:14px;height:14px;margin-right:6px;flex-shrink:0;"><path d="M19 14a3 3 0 1 0-3-3 3 3 0 0 0 3 3zm0-4a1 1 0 1 1-1 1 1 1 0 0 1 1-1z"/><path d="M26 4H6a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h20a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 22H6V20l5-5 5.6 5.6a2 2 0 0 0 2.8 0L21 19l5 5zm0-4.8-3.6-3.6a2 2 0 0 0-2.8 0L18 19.2l-5.6-5.6a2 2 0 0 0-2.8 0L6 17.2V6h20z"/></svg>
             <span>Creating image</span>
           </div>
           <div class="image-generation-center-content">
@@ -1114,10 +1115,10 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
                 <span style="font-weight:600; color:var(--text-primary);">${files.length} ${fileWord} changed</span>
                 <span style="color:#22c55e; font-weight:600;">+${addCount}</span>
                 <span style="color:#ef4444; font-weight:600;">-${delCount}</span>
-                <i class="chevron-icon" data-lucide="chevron-down" style="width:14px; height:14px; color:var(--text-secondary); transition:transform 0.15s; margin-left:2px;"></i>
+                <svg class="chevron-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" style="width:14px;height:14px;color:var(--text-secondary);transition:transform 0.15s;margin-left:2px;flex-shrink:0;"><path d="M16 22L6 12l1.4-1.4 8.6 8.6 8.6-8.6L26 12z"/></svg>
               </div>
               <button class="review-btn" style="display:flex; align-items:center; gap:6px; border:1px solid var(--border); background:var(--hover); padding:4px 10px; border-radius:6px; font-size:11.5px; color:var(--text-primary); cursor:pointer; font-weight:500; transition:all 0.1s;">
-                <i data-lucide="file-check" style="width:13px; height:13px; color:var(--text-secondary);"></i>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" style="width:13px;height:13px;color:var(--text-secondary);flex-shrink:0;"><path d="M13.3 21.7L10 18.4l1.4-1.4 1.9 1.9 4.3-4.3 1.4 1.4z"/><path d="M25.7 9.3l-7-7A1 1 0 0 0 18 2H8a2 2 0 0 0-2 2v24a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V10a1 1 0 0 0-.3-.7zM18 4.4L23.6 10H18zM24 28H8V4h8v7a1 1 0 0 0 1 1h7z"/></svg>
                 <span>Review</span>
               </button>
             </div>
@@ -1199,7 +1200,7 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
                   <div style="background:transparent; color:var(--text-primary); font-family:var(--font-mono); font-size:11.5px; padding:16px; height:100%; box-sizing:border-box; overflow-y:auto; display:flex; flex-direction:column; gap:12px;">
                     <div style="font-weight:600; font-size:13px; color:var(--text-primary); border-bottom:1px solid var(--border); padding-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
                       <div style="display:flex; align-items:center; gap:8px;">
-                        <i data-lucide="git-commit" style="width:14px; height:14px; color:var(--text-3);"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" style="width:14px;height:14px;color:var(--text-3);flex-shrink:0;"><path d="M16 10a6 6 0 1 0 0 12 6 6 0 0 0 0-12zm0 10a4 4 0 1 1 0-8 4 4 0 0 1 0 8z"/><path d="M2 15h12v2H2zm16 0h12v2H18z"/></svg>
                         <span>Diff: ${filename}</span>
                       </div>
                       <span style="font-size:10px; font-weight:normal; color:var(--text-3); font-family:var(--font-mono); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:280px;" title="${filepath}">${filepath}</span>
@@ -1396,7 +1397,7 @@ function _ensureThoughtCard(enterConversationCallback) {
     <div class="thought-header open thinking-active">
       <span class="thought-spinner"></span>
       <span class="thought-title">Thinking Process</span>
-      <i class="mi-chevron thought-chevron" data-lucide="chevron-down" style="width:12px;height:12px;display:inline-block;vertical-align:middle;transition:transform 0.2s"></i>
+      <svg class="mi-chevron thought-chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" style="width:12px;height:12px;display:inline-block;vertical-align:middle;transition:transform 0.2s;flex-shrink:0;"><path d="M16 22L6 12l1.4-1.4 8.6 8.6 8.6-8.6L26 12z"/></svg>
     </div>
     <div class="thought-body">
       <p class="thought-step"></p>
@@ -1483,7 +1484,7 @@ function _ensureToolContainer(col, enterConversationCallback) {
   _streamToolContainer.innerHTML = `
     <div class="tool-group-header" style="display: flex; align-items: center; justify-content: space-between; padding: 4px 0; cursor: pointer; user-select: none;">
       <div style="display: flex; align-items: center; gap: 6px;">
-        <i data-lucide="chevron-right" class="chevron-icon" style="width:13px; height:13px; opacity:0.7; transition: transform 0.15s; display:inline-block; vertical-align:middle; transform: rotate(90deg);"></i>
+        <svg data-chevron="right" class="chevron-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" style="width:13px;height:13px;opacity:0.7;transition:transform 0.15s;display:inline-block;vertical-align:middle;transform:rotate(90deg);flex-shrink:0;"><path d="M12 8l10 8-10 8z"/></svg>
         <span class="tool-group-title" style="font-weight: 400; color: var(--text-secondary);">Executing actions (0s)</span>
       </div>
       <span class="tool-group-status" style="font-size: 11px; color:var(--blue); font-weight:400;">0s<span class="dots">...</span></span>
@@ -1634,7 +1635,12 @@ function _finalizeStreamResponse() {
             'max-width:280px',
           ].join(';');
           pill.title = `Open in Live Canvas: ${filePath}`;
-          pill.innerHTML = `<i data-lucide="${iconName}" style="width:13px;height:13px;flex-shrink:0;"></i><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(fileName)}</span><i data-lucide="external-link" style="width:11px;height:11px;opacity:0.5;flex-shrink:0;"></i>`;
+          pill.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" style="width:13px;height:13px;flex-shrink:0;">${
+            iconName === 'file-text' ? '<path d="M25.7 9.3l-7-7A1 1 0 0 0 18 2H8a2 2 0 0 0-2 2v24a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V10a1 1 0 0 0-.3-.7zM18 4.4L23.6 10H18zM24 28H8V4h8v7a1 1 0 0 0 1 1h7z"/>\n<rect x="10" y="18" width="12" height="2"/>\n<rect x="10" y="22" width="8" height="2"/>'
+            : iconName === 'layout' ? '<path d="M26 4H6a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h20a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 8H6V6h20zm-12 2h12v10H14zm-8 0h6v10H6z"/>'
+            : iconName === 'file-code' ? '<path d="M25.7 9.3l-7-7A1 1 0 0 0 18 2H8a2 2 0 0 0-2 2v24a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V10a1 1 0 0 0-.3-.7zM18 4.4L23.6 10H18zM24 28H8V4h8v7a1 1 0 0 0 1 1h7z"/>\n<path d="m14.5 22-1.4-1.4 2.6-2.6-2.6-2.6 1.4-1.4 4 4z"/>\n<rect x="10" y="22" width="5" height="2"/>'
+            : '<path d="M25.7 9.3l-7-7A1 1 0 0 0 18 2H8a2 2 0 0 0-2 2v24a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V10a1 1 0 0 0-.3-.7zM18 4.4L23.6 10H18zM24 28H8V4h8v7a1 1 0 0 0 1 1h7z"/>'
+          }</svg><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(fileName)}</span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" style="width:11px;height:11px;opacity:0.5;flex-shrink:0;"><path d="M26 26H6V6h10V4H6a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h20a2 2 0 0 0 2-2V16h-2z"/><path d="M26 6h-3.6l-8.2 8.2 1.4 1.4L24 7.4V11h2V4h-7v2z"/></svg>`;
           pill.addEventListener('mouseenter', () => { pill.style.background = 'var(--hover-2)'; pill.style.color = 'var(--text)'; });
           pill.addEventListener('mouseleave', () => { pill.style.background = 'var(--hover)'; pill.style.color = 'var(--text-2)'; });
           pill.addEventListener('click', () => {
@@ -1689,7 +1695,7 @@ function _ensureAiderConsoleCard(enterConversationCallback) {
       </div>
       <div style="display:flex; align-items:center; gap:6px;">
         <span id="aider-status-badge" style="font-size:11px; font-family:var(--font); font-weight:600; color:var(--text-secondary); text-transform:lowercase; letter-spacing:0.02em;">[scanning]</span>
-        <i class="chevron-icon" data-lucide="chevron-down" style="width:14px; height:14px; color:var(--text-secondary); transition:transform 0.15s;"></i>
+        <svg class="chevron-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" style="width:14px;height:14px;color:var(--text-secondary);transition:transform 0.15s;flex-shrink:0;"><path d="M16 22L6 12l1.4-1.4 8.6 8.6 8.6-8.6L26 12z"/></svg>
       </div>
     </div>
     
@@ -1697,24 +1703,24 @@ function _ensureAiderConsoleCard(enterConversationCallback) {
     <div class="aider-ux-panel" style="padding:12px 0; display:grid; grid-template-columns:1fr 1fr; gap:10px; font-size:13.5px; font-family:var(--font); border-bottom:1px dashed var(--border);">
       <div style="display:flex; flex-direction:column; gap:6px;">
         <div style="display:flex; align-items:center; gap:6px; color:var(--text-secondary);">
-          <i data-lucide="database" style="width:14px; height:14px; color:var(--text-3);"></i>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" style="width:14px;height:14px;color:var(--text-3);flex-shrink:0;"><path d="M13 11h6v2h-6zm0 4h6v2h-6zm-2-4H9v2h2zm0 4H9v2h2z"/><path d="M17 2H5a1 1 0 0 0-1 1v26a1 1 0 0 0 1 1h22a1 1 0 0 0 1-1V13zm1 3.4L23.6 11H18zM26 28H6V4h10v8a1 1 0 0 0 1 1h9z"/></svg>
           <span>Workspace files:</span>
           <strong id="aider-files-count" style="color:var(--text-primary); font-weight:500;">detecting...</strong>
         </div>
         <div style="display:flex; align-items:center; gap:6px; color:var(--text-secondary);">
-          <i data-lucide="file-code" style="width:14px; height:14px; color:var(--text-3);"></i>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" style="width:14px;height:14px;color:var(--text-3);flex-shrink:0;"><path d="M25.7 9.3l-7-7A1 1 0 0 0 18 2H8a2 2 0 0 0-2 2v24a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V10a1 1 0 0 0-.3-.7zM18 4.4L23.6 10H18zM24 28H8V4h8v7a1 1 0 0 0 1 1h7z"/><path d="m14.5 22-1.4-1.4 2.6-2.6-2.6-2.6 1.4-1.4 4 4z"/><rect x="10" y="22" width="5" height="2"/></svg>
           <span>Active file:</span>
           <strong id="aider-active-op" style="color:var(--text-primary); font-family:var(--font); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:180px; font-weight:500;">none</strong>
         </div>
       </div>
       <div style="display:flex; flex-direction:column; gap:6px; padding-left:14px; border-left:1px solid var(--border);">
         <div style="display:flex; align-items:center; gap:6px; color:var(--text-secondary);">
-          <i data-lucide="git-commit" style="width:14px; height:14px; color:var(--text-3);"></i>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" style="width:14px;height:14px;color:var(--text-3);flex-shrink:0;"><path d="M16 10a6 6 0 1 0 0 12 6 6 0 0 0 0-12zm0 10a4 4 0 1 1 0-8 4 4 0 0 1 0 8z"/><path d="M2 15h12v2H2zm16 0h12v2H18z"/></svg>
           <span>Staged updates:</span>
           <strong id="aider-commits-count" style="color:var(--text-primary); font-weight:500;">0 commits</strong>
         </div>
         <div style="display:flex; align-items:center; gap:6px; color:var(--text-secondary);">
-          <i data-lucide="diff" style="width:14px; height:14px; color:var(--text-3);"></i>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" style="width:14px;height:14px;color:var(--text-3);flex-shrink:0;"><path d="M24 20H8v-2h16zm0-6H8v-2h16z"/><path d="M26 4H6a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h20a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 22H6V6h20z"/></svg>
           <span>Changeset:</span>
           <span style="font-weight:500; color:var(--text-primary);" id="aider-additions-count">+0</span>
           <span style="font-weight:500; color:var(--text-secondary);" id="aider-deletions-count">-0</span>

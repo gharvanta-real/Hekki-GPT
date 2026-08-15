@@ -481,8 +481,11 @@ export function initSettings(setGreetingCallback) {
         }
         const card = document.createElement('div');
         card.className = 'skill-card';
+        const iconHtml = iconName === 'trending-up' 
+          ? `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 32 32" fill="currentColor" class="skill-icon" style="width:18px;height:18px;"><path d="M4 28h24v2H2z"/><path d="M22 6l3.59 3.59-6.59 6.59-4-4L4 23.17 5.41 24.59l9-9 4 4 8-8L30 15v-9z"/></svg>`
+          : `<i data-lucide="${iconName}" class="skill-icon"></i>`;
         card.innerHTML = `
-          <i data-lucide="${iconName}" class="skill-icon"></i>
+          ${iconHtml}
           <div class="skill-name">${s.name.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}</div>
           <div class="skill-ver">v${s.version || '1.0.0'}</div>
           <div class="skill-badge active-badge">Active</div>

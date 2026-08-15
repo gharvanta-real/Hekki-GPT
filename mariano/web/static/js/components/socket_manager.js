@@ -117,9 +117,9 @@ export function send(text, enterConversation, log) {
     model_beta: betaSel ? betaSel.value : null,
   }));
   
+  window.isGenerating = true;
   appendMsg('user', fullMessageText, enterConversation, scrollChat);
   attachmentManager.clear();
-  window.isGenerating = true;
   clearInputs();
   window.setGeneratingState(true);
   log(`Sent: "${text}" with ${files.length} attachment(s)`, 'ok');
