@@ -36,6 +36,9 @@
   /* Flat Surface Rules (Zero Borders & Shadows) */
   --border-none: none !important;
   --box-shadow-none: none !important;
+  /* Subtle Outline & Focus Tokens */
+  --border-subtle: rgba(0, 0, 0, 0.08);
+  --border-focus: rgba(37, 99, 235, 0.5);
   --border-radius-sm: 4px;
   --border-radius-md: 6px;
   --border-radius-lg: 8px;

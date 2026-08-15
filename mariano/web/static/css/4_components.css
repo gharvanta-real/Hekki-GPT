@@ -75,7 +75,30 @@
   box-shadow: none !important;
 }
 
-/* Floating Dropdown Lists & Selects — Clean White Background & Outline Border */
+/* Floating Dropdown Lists, Droplists, Pickers & Selects — Clean Outline Borders */
+select,
+.settings-select,
+.attach-rounds-select,
+.drawer-session-select,
+.debate-rounds-select,
+.debate-model-select,
+.model-dropdown,
+.model-picker-dropdown,
+.droplist-menu,
+.select-dropdown,
+.combo-dropdown,
+.filter-dropdown,
+.skill-picker-dropdown,
+.agent-picker-dropdown,
+.search-dropdown,
+.search-results-dropdown,
+.history-dropdown,
+.settings-dropdown,
+.prompt-dropdown,
+.voice-select,
+.theme-select,
+.provider-select,
+.mcp-server-select,
 .dropdown-menu,
 .doc-dropdown-menu,
 .hekki-slash-popup,
@@ -88,10 +111,35 @@
 .topnav-dropdown-menu {
   background: var(--card, #FFFFFF) !important;
   border: 1px solid var(--border, #E4E7EB) !important;
-  outline: none !important;
   box-shadow: none !important;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
 }
 
+select:hover,
+.settings-select:hover,
+.attach-rounds-select:hover,
+.drawer-session-select:hover,
+.debate-rounds-select:hover,
+.debate-model-select:hover {
+  border-color: var(--accent-primary, #2563EB) !important;
+}
+
+select:focus,
+.settings-select:focus,
+.attach-rounds-select:focus,
+.drawer-session-select:focus,
+.debate-rounds-select:focus,
+.debate-model-select:focus {
+  outline: 2px solid var(--accent-primary, #2563EB) !important;
+  outline-offset: 1px !important;
+}
+
+body.light select,
+body.light .settings-select,
+body.light .attach-rounds-select,
+body.light .drawer-session-select,
+body.light .debate-rounds-select,
+body.light .debate-model-select,
 body.light .dropdown-menu,
 body.light .doc-dropdown-menu,
 body.light .hekki-slash-popup,
@@ -102,6 +150,7 @@ body.light .minimap-dropdown-popup,
 body.light .user-menu-dropdown,
 body.light .desktop-dropdown-menu,
 body.light .topnav-dropdown-menu,
+:root[data-theme="light"] select,
 :root[data-theme="light"] .dropdown-menu,
 :root[data-theme="light"] .doc-dropdown-menu,
 :root[data-theme="light"] .hekki-slash-popup,
@@ -116,6 +165,12 @@ body.light .topnav-dropdown-menu,
   border: 1px solid #E4E7EB !important;
 }
 
+body.dark select,
+body.dark .settings-select,
+body.dark .attach-rounds-select,
+body.dark .drawer-session-select,
+body.dark .debate-rounds-select,
+body.dark .debate-model-select,
 body.dark .dropdown-menu,
 body.dark .doc-dropdown-menu,
 body.dark .hekki-slash-popup,
@@ -126,6 +181,12 @@ body.dark .minimap-dropdown-popup,
 body.dark .user-menu-dropdown,
 body.dark .desktop-dropdown-menu,
 body.dark .topnav-dropdown-menu,
+body.oled select,
+body.oled .settings-select,
+body.oled .attach-rounds-select,
+body.oled .drawer-session-select,
+body.oled .debate-rounds-select,
+body.oled .debate-model-select,
 body.oled .dropdown-menu,
 body.oled .doc-dropdown-menu,
 body.oled .hekki-slash-popup,
@@ -138,6 +199,17 @@ body.oled .desktop-dropdown-menu,
 body.oled .topnav-dropdown-menu {
   background: #1E1E1E !important;
   border: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+body.dark select:hover,
+body.dark .settings-select:hover,
+body.dark .attach-rounds-select:hover,
+body.dark .drawer-session-select:hover,
+body.dark .debate-rounds-select:hover,
+body.dark .debate-model-select:hover,
+body.oled select:hover,
+body.oled .settings-select:hover {
+  border-color: rgba(255, 255, 255, 0.3) !important;
 }
 
 .btn:hover {
@@ -184,5 +256,38 @@ body.oled img[src*="carbon_icons"]:not(.no-invert),
 [data-theme="dark"] img[src*="carbon_icons"]:not(.no-invert),
 [data-theme="oled"] img[src*="carbon_icons"]:not(.no-invert) {
   filter: brightness(0) invert(1) opacity(0.92);
+}
+
+/* ── 1. Keyboard & Accessibility Focus Rings ────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--accent-primary, #2563EB) !important;
+  outline-offset: 2px !important;
+}
+
+/* ── 2. Active Selection & Highlighted Cards ────────────────────────────── */
+.plugin-card.active,
+.skill-card.active,
+.model-card.active,
+.selected-card {
+  outline: 1.5px solid var(--accent-primary, #2563EB) !important;
+  outline-offset: -1px !important;
+}
+
+/* ── 3. Code Blocks & Terminal Snippets Boundary ────────────────────────── */
+.code-block-container,
+.terminal-output,
+.diff-container,
+pre:has(code) {
+  border: 1px solid var(--border-subtle, rgba(0, 0, 0, 0.08)) !important;
+}
+body.dark .code-block-container,
+body.dark .terminal-output,
+body.dark .diff-container,
+body.dark pre:has(code),
+body.oled .code-block-container,
+body.oled .terminal-output,
+body.oled .diff-container,
+body.oled pre:has(code) {
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
 }
 
