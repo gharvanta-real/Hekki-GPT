@@ -134,9 +134,9 @@ body.oled .chat-center-scroll-btn:hover {
   position: absolute;
   right: 36px;
   top: 50%;
-  width: 300px;
+  width: 320px;
   max-width: calc(100vw - 60px);
-  max-height: 420px;
+  max-height: 440px;
   background: var(--bg, #ffffff);
   border: 1px solid var(--border, #E8E8E6) !important;
   border-radius: 12px;
@@ -167,7 +167,7 @@ body.oled .chat-center-scroll-btn:hover {
   flex-direction: column;
   gap: 4px;
   overflow-y: auto;
-  max-height: 360px;
+  max-height: 380px;
   padding-right: 4px;
 }
 
@@ -185,12 +185,12 @@ body.oled .chat-center-scroll-btn:hover {
   display: block;
   width: 100%;
   box-sizing: border-box;
-  padding: 9px 12px;
+  padding: 10px 14px;
   border-radius: 8px;
   font-family: var(--font), sans-serif;
-  font-size: 12.5px;
+  font-size: 15px;
   font-weight: 400 !important;
-  line-height: 1.45;
+  line-height: 1.4;
   color: var(--text-2, #52525b);
   background: transparent;
   cursor: pointer;
@@ -200,7 +200,7 @@ body.oled .chat-center-scroll-btn:hover {
   border: none !important;
   box-shadow: none !important;
   transition: background-color 0.12s ease, color 0.12s ease;
-  min-height: 36px;
+  min-height: 38px;
 }
 
 .minimap-item:hover {
