@@ -200,7 +200,7 @@
   background: var(--card, #ffffff);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: none !important;
+  border: 1px solid var(--border, #E4E7EB) !important;
   border-radius: 10px;
   box-shadow: none !important;
   padding: 6px;
@@ -216,9 +216,14 @@ body.dark .chat-dropdown,
 body.oled .chat-dropdown,
 [data-theme="dark"] .chat-dropdown,
 [data-theme="oled"] .chat-dropdown {
-  background: var(--card, #1c1c1e);
-  border-color: var(--border, rgba(255, 255, 255, 0.12));
-  box-shadow: none !important;
+  background: #1E1E1E !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+body.light .chat-dropdown,
+:root[data-theme="light"] .chat-dropdown {
+  background: #FFFFFF !important;
+  border: 1px solid #E4E7EB !important;
 }
 
 @keyframes dropdownFadeIn {
