@@ -76,9 +76,9 @@ export function enhanceCodeBlocks(container) {
         const mHeader = document.createElement('div');
         mHeader.style.cssText = 'display:flex; align-items:center; justify-content:space-between; width:100%; border-bottom:1px solid var(--border); padding-bottom:6px;';
         mHeader.innerHTML = `
-          <span style="font-size:11px; font-weight:600; color:var(--text-3);">Mermaid Diagram</span>
-          <button class="code-action-btn btn-canvas" title="Open in Live Canvas" style="display:flex; align-items:center; gap:4px; font-size:11.5px; padding:3px 8px; border-radius:5px; border:1px solid var(--border); background:var(--bg); color:var(--text-2); cursor:pointer;">
-            <i data-lucide="layout" style="width:13px;height:13px"></i> Open in Canvas
+          <span style="font-size:13px; font-weight:500; color:var(--text-3);">Mermaid Diagram</span>
+          <button class="code-action-btn btn-canvas" title="Open in Live Canvas" style="display:flex; align-items:center; gap:5px; font-size:13px; padding:4px 10px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text-2); cursor:pointer;">
+            <i data-lucide="layout" style="width:14px;height:14px"></i> Open in Canvas
           </button>
         `;
 
@@ -521,15 +521,15 @@ export function enhanceCitationsAndFootnotes(container) {
       tooltipEl.className = 'ref-hover-tooltip';
       tooltipEl.style.cssText = 'position: fixed; background: var(--card); color: var(--text); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; max-width: 280px; z-index: 10005; font-family: var(--font); pointer-events: none; opacity: 0; transition: opacity 0.12s ease-out; box-shadow: none; font-weight: 400;';
 
-      const catBadge = category.label ? `<span style="font-size: 10px; opacity: 0.75; background: var(--hover); padding: 1px 5px; border-radius: 4px; color: var(--text-3); font-weight: 500; margin-left: auto;">${category.icon} ${category.label}</span>` : '';
+      const catBadge = category.label ? `<span style="font-size: 11.5px; opacity: 0.75; background: var(--hover); padding: 2px 6px; border-radius: 4px; color: var(--text-3); font-weight: 500; margin-left: auto;">${category.icon} ${category.label}</span>` : '';
 
       tooltipEl.innerHTML = `
         <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
-          <img src="${faviconUrl}" style="width: 12px; height: 12px; border-radius: 2px;" onerror="this.onerror=null; this.removeAttribute('src'); this.style.display='none';" />
-          <span style="font-size: 11.5px; font-weight: 600; color: var(--text);">${domain}</span>
+          <img src="${faviconUrl}" style="width: 14px; height: 14px; border-radius: 3px;" onerror="this.onerror=null; this.removeAttribute('src'); this.style.display='none';" />
+          <span style="font-size: 13.5px; font-weight: 500; color: var(--text);">${domain}</span>
           ${catBadge}
         </div>
-        <div style="font-size: 11.5px; color: var(--text-3); font-weight: 400; line-height: 1.35; max-height: 48px; overflow: hidden; text-overflow: ellipsis;">${escapeHtmlLocal(linkText || domain)}</div>
+        <div style="font-size: 13px; color: var(--text-3); font-weight: 400; line-height: 1.4; max-height: 52px; overflow: hidden; text-overflow: ellipsis;">${escapeHtmlLocal(linkText || domain)}</div>
       `;
 
       document.body.appendChild(tooltipEl);

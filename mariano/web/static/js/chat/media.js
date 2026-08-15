@@ -50,8 +50,8 @@ function _renderYoutubeCard(a, videoId) {
       thumbWrap.innerHTML = `
         <div style="padding:16px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:8px;">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 32 32" fill="#ef4444"><path d="M29.41,9.26a3.5,3.5,0,0,0-2.47-2.47C24.76,6.2,16,6.2,16,6.2s-8.76,0-10.94.59A3.5,3.5,0,0,0,2.59,9.26,36.13,36.13,0,0,0,2,16a36.13,36.13,0,0,0,.59,6.74,3.5,3.5,0,0,0,2.47,2.47C7.24,25.8,16,25.8,16,25.8s8.76,0,10.94-.59a3.5,3.5,0,0,0,2.47-2.47A36.13,36.13,0,0,0,30,16,36.13,36.13,0,0,0,29.41,9.26ZM13,20.5V11.5L21,16Z"/></svg>
-          <span style="font-size:12px; font-weight:500; color:var(--text);">${escapeHtmlLocal(videoTitle)}</span>
-          <span style="font-size:10.5px; color:var(--text-3); opacity:0.8;">Search on YouTube &rarr;</span>
+          <span style="font-size:14.5px; font-weight:500; color:var(--text);">${escapeHtmlLocal(videoTitle)}</span>
+          <span style="font-size:12.5px; color:var(--text-3); opacity:0.85;">Search on YouTube &rarr;</span>
         </div>
       `;
       thumbWrap.onclick = (e) => {

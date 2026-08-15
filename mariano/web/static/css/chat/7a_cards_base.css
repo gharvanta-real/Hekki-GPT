@@ -236,7 +236,7 @@ body.oled .chat-image-preview-card {
   padding: 10px 14px;
   background: linear-gradient(180deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0) 100%);
   border: none;
-  font-size: 12px;
+  font-size: 13.5px;
   gap: 8px;
   user-select: none;
   box-sizing: border-box;
@@ -259,7 +259,7 @@ body.oled .chat-image-preview-card {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: 12px;
+  font-size: 13.5px;
 }
 
 .chat-image-preview-open {

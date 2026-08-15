@@ -249,20 +249,20 @@
   color: var(--text-2);
 }
 
-/* Tool log body items inside expanded view — font-size +1px increase & unbold */
+/* Tool log body items inside expanded view — font-size +1-2px increase & unbold */
 .tool-log-card {
-  font-size: 13px !important;
+  font-size: 14px !important;
 }
 .ai-reasoning-card {
-  font-size: 12.5px !important;
+  font-size: 13.5px !important;
 }
 .tool-group-body summary,
 details summary,
 summary {
-  font-size: 12px !important;
+  font-size: 13.5px !important;
 }
 .tool-group-body pre {
-  font-size: 12px !important;
+  font-size: 13.5px !important;
 }
 .tool-log-card,
 .tool-log-card *,

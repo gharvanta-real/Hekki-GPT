@@ -743,7 +743,7 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
         'margin:3px 0 4px 0',
         'padding:4px 0',
         'background:transparent',
-        'font-size:12px',
+        'font-size:14px',
         'font-family:var(--font)',
         'color:var(--text-secondary)',
         'gap:10px',
@@ -754,7 +754,7 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
           <span style="flex-shrink:0;opacity:0.85;display:inline-flex;align-items:center;justify-content:center;min-width:15px;width:15px;height:15px;overflow:visible;">${meta.icon}</span>
           ${slashContent}
         </div>
-        <span class="tool-status" style="flex-shrink:0;font-size:11px;color:var(--text-secondary);white-space:nowrap;opacity:0.85;">running<span class="dots">.</span></span>
+        <span class="tool-status" style="flex-shrink:0;font-size:13px;color:var(--text-secondary);white-space:nowrap;opacity:0.85;">running<span class="dots">.</span></span>
       `;
 
       // Live brief execution hint line for transparent execution feedback
@@ -763,7 +763,7 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
         card.style.flexWrap = 'wrap';
         const hintEl = document.createElement('div');
         hintEl.className = 'tool-brief-hint';
-        hintEl.style.cssText = 'width: 100%; margin-top: 2px; padding-left: 21px; font-size: 11px; color: var(--text-secondary); font-family: var(--font-mono); opacity: 0.9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; box-sizing: border-box;';
+        hintEl.style.cssText = 'width: 100%; margin-top: 2px; padding-left: 21px; font-size: 13px; color: var(--text-secondary); font-family: var(--font-mono); opacity: 0.9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; box-sizing: border-box;';
         hintEl.innerHTML = `▸ Executing: ${escapeHtml(String(briefCmd).slice(0, 90))}`;
         card.appendChild(hintEl);
       }
@@ -1007,8 +1007,8 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
                 const rootDom = (dom || '').split('.').slice(-2).join('.');
                 const faviconUrl = `https://www.google.com/s2/favicons?domain=${encodeURIComponent(rootDom)}&sz=32`;
                 return `
-                  <span class="source-domain-chip" title="Verified Source: ${dom}" style="display: inline-flex; align-items: center; gap: 5px; padding: 3px 8px; border-radius: 4px; background: rgba(255,255,255,0.05); font-size: 11px; font-family: var(--font); color: var(--text-secondary); font-weight: 500;">
-                    <img src="${faviconUrl}" style="width: 12px; height: 12px; border-radius: 2px; filter: grayscale(20%); opacity: 0.85;" onerror="this.onerror=null; this.removeAttribute('src'); this.style.display='none';">
+                  <span class="source-domain-chip" title="Verified Source: ${dom}" style="display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px; border-radius: 6px; background: rgba(255,255,255,0.05); font-size: 13px; font-family: var(--font); color: var(--text-secondary); font-weight: 500;">
+                    <img src="${faviconUrl}" style="width: 14px; height: 14px; border-radius: 3px; filter: grayscale(20%); opacity: 0.85;" onerror="this.onerror=null; this.removeAttribute('src'); this.style.display='none';">
                     <span>${dom}</span>
                   </span>
                 `;
@@ -1040,8 +1040,8 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
             outputDetail.style.cssText = 'width: 100%; margin-top: 4px; padding-left: 21px; box-sizing: border-box;';
             outputDetail.innerHTML = `
               <details style="margin: 0; opacity: 0.95; width: 100%;" ${isTerminalCmd ? 'open' : ''}>
-                <summary style="cursor:pointer; color:var(--text-3); font-size:11px; font-weight:500; outline:none; user-select:none; display:inline-flex; align-items:center; gap:4px; padding: 2px 0;">
-                  <i data-lucide="${iconName}" style="width:12px;height:12px;color:var(--text-3);display:inline-block;vertical-align:middle;"></i>
+                <summary style="cursor:pointer; color:var(--text-3); font-size:13px; font-weight:500; outline:none; user-select:none; display:inline-flex; align-items:center; gap:4px; padding: 2px 0;">
+                  <i data-lucide="${iconName}" style="width:13px;height:13px;color:var(--text-3);display:inline-block;vertical-align:middle;"></i>
                   <span>${summaryLabel}</span>
                 </summary>
                 <pre class="tool-terminal-block" style="margin:6px 0 2px 0; max-height:220px; width:100%; box-sizing:border-box;">${escapeHtml(previewText)}</pre>
@@ -1477,19 +1477,19 @@ function _ensureToolContainer(col, enterConversationCallback) {
     'display: flex',
     'flex-direction: column',
     'font-family: var(--font)',
-    'font-size: 12px',
+    'font-size: 14px',
     'color: var(--text-3)',
   ].join(';');
 
   _streamToolContainer.innerHTML = `
     <div class="tool-group-header" style="display: flex; align-items: center; justify-content: space-between; padding: 4px 0; cursor: pointer; user-select: none;">
       <div style="display: flex; align-items: center; gap: 6px;">
-        <svg data-chevron="right" class="chevron-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" style="width:13px;height:13px;opacity:0.7;transition:transform 0.15s;display:inline-block;vertical-align:middle;transform:rotate(90deg);flex-shrink:0;"><path d="M12 8l10 8-10 8z"/></svg>
-        <span class="tool-group-title" style="font-weight: 400; color: var(--text-secondary);">Executing actions (0s)</span>
+        <svg data-chevron="right" class="chevron-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" style="width:14px;height:14px;opacity:0.75;transition:transform 0.15s;display:inline-block;vertical-align:middle;transform:rotate(90deg);flex-shrink:0;"><path d="M12 8l10 8-10 8z"/></svg>
+        <span class="tool-group-title" style="font-weight: 500; font-size: 14.5px; color: var(--text-secondary);">Executing actions (0s)</span>
       </div>
-      <span class="tool-group-status" style="font-size: 11px; color:var(--blue); font-weight:400;">0s<span class="dots">...</span></span>
+      <span class="tool-group-status" style="font-size: 13.5px; color:var(--blue); font-weight:400;">0s<span class="dots">...</span></span>
     </div>
-    <div class="tool-group-body" style="display: flex; flex-direction: column; padding-left: 14px; border-left: 1px dashed var(--border); margin-left: 4px; margin-top: 2px; gap: 3px;">
+    <div class="tool-group-body" style="display: flex; flex-direction: column; padding-left: 14px; border-left: 1px dashed var(--border); margin-left: 4px; margin-top: 2px; gap: 4px;">
     </div>
   `;
 

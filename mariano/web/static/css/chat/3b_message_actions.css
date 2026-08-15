@@ -245,7 +245,7 @@ body.dark .msg.ai blockquote {
 
 /* ── Codex-style 3-layer execution feed styles ── */
 .action-label {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--text-3);
   font-family: var(--font);
   margin: 10px 0 4px 0;
@@ -254,7 +254,7 @@ body.dark .msg.ai blockquote {
   opacity: 0.85;
 }
 .finding-label {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--text-2);
   font-family: var(--font);
   margin: 2px 0 10px 0;
@@ -265,7 +265,7 @@ body.dark .msg.ai blockquote {
 .msg.err {
   color: #dc2626;
   font-family: var(--font-mono);
-  font-size: var(--fs-sm);     /* 12px */
+  font-size: 13.5px;
   padding-left: 28px;
   align-self: flex-start;
 }

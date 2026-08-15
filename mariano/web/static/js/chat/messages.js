@@ -52,7 +52,7 @@ export function createMessageElement(type, text, timestamp, index, ChatSessionMa
       let iconName = 'file-text';
       if (['ZIP', 'RAR', '7Z', 'TAR', 'GZ'].includes(ext)) iconName = 'archive';
       else if (['PY', 'JS', 'HTML', 'CSS', 'JSON', 'CPP', 'C', 'TS'].includes(ext)) iconName = 'file-code';
-      attachmentCards.push(`<div class="user-file-attachment-card" style="align-self:flex-end;margin-bottom:0;padding:7px 12px;border-radius:12px;background:var(--card,#fff);border:1px solid var(--border)!important;display:inline-flex;align-items:center;gap:8px;font-size:12.5px;color:var(--text-primary);font-weight:500;max-width:280px;box-shadow:0 2px 6px rgba(0,0,0,0.06);"><i data-lucide="${iconName}" style="width:16px;height:16px;color:var(--accent,#2563eb);flex-shrink:0;"></i><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;">${escapeHtml(fileName)}</span><span style="font-size:9.5px;background:rgba(37,99,235,0.12);color:var(--accent,#2563eb);padding:1px 6px;border-radius:6px;text-transform:uppercase;font-weight:600;flex-shrink:0;">${ext}</span></div>`);
+      attachmentCards.push(`<div class="user-file-attachment-card" style="align-self:flex-end;margin-bottom:0;padding:8px 14px;border-radius:12px;background:var(--card,#fff);border:1px solid var(--border)!important;display:inline-flex;align-items:center;gap:8px;font-size:14.5px;color:var(--text-primary);font-weight:500;max-width:320px;box-shadow:0 2px 6px rgba(0,0,0,0.06);"><i data-lucide="${iconName}" style="width:17px;height:17px;color:var(--accent,#2563eb);flex-shrink:0;"></i><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;">${escapeHtml(fileName)}</span><span style="font-size:11px;background:rgba(37,99,235,0.12);color:var(--accent,#2563eb);padding:2px 7px;border-radius:6px;text-transform:uppercase;font-weight:500;flex-shrink:0;">${ext}</span></div>`);
     }
 
     if (attachmentCards.length > 0) {
@@ -369,29 +369,29 @@ export function createToolGroupCard(msg, escapeHtmlFn) {
 
   const toolCard = document.createElement('div');
   toolCard.className = 'tool-group-card';
-  toolCard.style.cssText = 'margin: 6px 0; display: flex; flex-direction: column; font-family: var(--font); font-size: 12px; color: var(--text-3);';
+  toolCard.style.cssText = 'margin: 6px 0; display: flex; flex-direction: column; font-family: var(--font); font-size: 14px; color: var(--text-3);';
 
   toolCard.innerHTML = `
     <div class="tool-group-header" style="display: flex; align-items: center; justify-content: space-between; padding: 4px 0; cursor: pointer; user-select: none;">
       <div style="display: flex; align-items: center; gap: 6px;">
-        <svg data-chevron="right" class="chevron-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" style="width:13px;height:13px;opacity:0.7;transition:transform 0.15s;display:inline-block;vertical-align:middle;flex-shrink:0;"><path d="M12 8l10 8-10 8z"/></svg>
-        <span class="tool-group-title" style="font-weight: 400; color: var(--text-secondary);">${titleText}</span>
+        <svg data-chevron="right" class="chevron-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" style="width:14px;height:14px;opacity:0.75;transition:transform 0.15s;display:inline-block;vertical-align:middle;flex-shrink:0;"><path d="M12 8l10 8-10 8z"/></svg>
+        <span class="tool-group-title" style="font-weight: 500; font-size: 14.5px; color: var(--text-secondary);">${titleText}</span>
       </div>
-      <span class="tool-group-status" style="font-size: 11px; opacity: 0.6; font-weight: 400;">${statusHtml}</span>
+      <span class="tool-group-status" style="font-size: 13.5px; opacity: 0.75; font-weight: 400;">${statusHtml}</span>
     </div>
-    <div class="tool-group-body" style="display: none; flex-direction: column; padding-left: 14px; border-left: 1px dashed var(--border); margin-left: 4px; margin-top: 2px; gap: 3px;">
+    <div class="tool-group-body" style="display: none; flex-direction: column; padding-left: 14px; border-left: 1px dashed var(--border); margin-left: 4px; margin-top: 2px; gap: 4px;">
       ${runs.map(r => {
         const statusSpan = r.status === 'done'
           ? '<span style="color: var(--text-3);">&#10003; done</span>'
           : '<span style="color: #ef4444;">&#10006; failed</span>';
         const reasoningHtml = r.reasoning
-          ? `<div class="ai-reasoning-card" style="margin: 3px 0 6px 14px; padding: 3px 0 3px 10px; border-left: 1px dashed var(--border); background: transparent; font-size: 11.5px; font-family: var(--font); color: var(--text-3); line-height: 1.55; opacity: 0.9;"><div style="white-space:pre-wrap;word-break:break-word;"><span>${escapeHtmlFn(r.reasoning)}</span></div></div>`
+          ? `<div class="ai-reasoning-card" style="margin: 3px 0 6px 14px; padding: 4px 0 4px 10px; border-left: 1px dashed var(--border); background: transparent; font-size: 13.5px; font-family: var(--font); color: var(--text-3); line-height: 1.5; opacity: 0.9;"><div style="white-space:pre-wrap;word-break:break-word;"><span>${escapeHtmlFn(r.reasoning)}</span></div></div>`
           : '';
         const isTerminal = r.label && (r.label.includes('Shell') || r.label.includes('Command') || r.label.includes('System') || r.label.includes('run_command'));
         const outputHtml = r.output
           ? `<div style="width: 100%; margin-top: 4px; padding-left: 21px; box-sizing: border-box;">
               <details style="margin: 0; opacity: 0.95; width: 100%;">
-                <summary style="cursor:pointer; color:var(--text-3); font-size:11px; font-weight:500; outline:none; user-select:none; display:inline-flex; align-items:center; gap:4px; padding: 2px 0;">
+                <summary style="cursor:pointer; color:var(--text-3); font-size:13px; font-weight:500; outline:none; user-select:none; display:inline-flex; align-items:center; gap:4px; padding: 2px 0;">
                   <span>${isTerminal ? '&#9654; Terminal Output' : '&#9654; View output details'}</span>
                 </summary>
                 <pre class="tool-output-block tool-terminal-block">${escapeHtmlFn(r.output)}</pre>
@@ -401,16 +401,16 @@ export function createToolGroupCard(msg, escapeHtmlFn) {
         const iconToUse = r.icon || '&#9654;';
         const rLabel = escapeHtmlFn(r.label || '');
         const rSlashDetail = r.detail
-          ? `<span style="font-weight:500;color:var(--text-secondary);white-space:nowrap;">${rLabel}</span><span style="color:var(--text-3);opacity:0.55;margin:0 1px;">/</span><span class="tool-detail" style="color:var(--text-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:340px;">${r.detail}</span>`
-          : `<span style="font-weight:500;color:var(--text-secondary);white-space:nowrap;">${rLabel}</span>`;
+          ? `<span style="font-weight:500;font-size:14px;color:var(--text-secondary);white-space:nowrap;">${rLabel}</span><span style="color:var(--text-3);opacity:0.55;margin:0 1px;">/</span><span class="tool-detail" style="color:var(--text-3);font-size:13.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:340px;">${r.detail}</span>`
+          : `<span style="font-weight:500;font-size:14px;color:var(--text-secondary);white-space:nowrap;">${rLabel}</span>`;
 
         return `
-          <div class="tool-log-card" style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; margin:3px 0 4px 0; padding:4px 0; background:transparent; font-size:12px; font-family:var(--font); color:var(--text-3); gap:10px;">
+          <div class="tool-log-card" style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; margin:3px 0 4px 0; padding:4px 0; background:transparent; font-size:14px; font-family:var(--font); color:var(--text-3); gap:10px;">
             <div style="display:flex; align-items:center; gap:6px; overflow:hidden;">
               <span style="flex-shrink:0; opacity:0.75;">${iconToUse}</span>
               ${rSlashDetail}
             </div>
-            <span class="tool-status" style="flex-shrink:0; font-size:11px; color:var(--text-3); white-space:nowrap; opacity:0.6;">${statusSpan}</span>
+            <span class="tool-status" style="flex-shrink:0; font-size:13px; color:var(--text-3); white-space:nowrap; opacity:0.75;">${statusSpan}</span>
             ${outputHtml}
           </div>
           ${reasoningHtml}
@@ -444,24 +444,16 @@ function makeUserMessageEditable(groupEl, originalText, index, ChatSessionManage
 
   const editContainer = document.createElement('div');
   editContainer.className = 'msg-edit-container';
-  const _editTa = document.createElement('textarea');
-  _editTa.className = 'msg-edit-textarea';
-  _editTa.value = originalText;
-  const _editBtnRow = document.createElement('div');
-  _editBtnRow.className = 'msg-edit-buttons';
-  const _cancelBtn = document.createElement('button');
-  _cancelBtn.className = 'msg-edit-btn btn-cancel';
-  _cancelBtn.textContent = 'Cancel';
-  const _saveBtn = document.createElement('button');
-  _saveBtn.className = 'msg-edit-btn save btn-save';
-  _saveBtn.textContent = 'Save & Submit';
-  _editBtnRow.appendChild(_cancelBtn);
-  _editBtnRow.appendChild(_saveBtn);
-  editContainer.appendChild(_editTa);
-  editContainer.appendChild(_editBtnRow);
+  editContainer.innerHTML = `
+    <textarea class="msg-edit-textarea">${escapeHtml(originalText)}</textarea>
+    <div class="msg-edit-buttons">
+      <button class="msg-edit-btn btn-cancel">Cancel</button>
+      <button class="msg-edit-btn save btn-save">Save &amp; Submit</button>
+    </div>
+  `;
   groupEl.appendChild(editContainer);
 
-  const textarea = _editTa;
+  const textarea = editContainer.querySelector('.msg-edit-textarea');
   textarea.focus();
   textarea.selectionStart = textarea.selectionEnd = textarea.value.length;
 

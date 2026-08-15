@@ -246,7 +246,7 @@ body.oled .tool-terminal-block {
   background: transparent;
   color: var(--text-2);
   font-family: var(--font-mono, monospace);
-  font-size: 12px;
+  font-size: 13.5px;
   line-height: 1.5;
   overflow-x: auto;
   white-space: pre-wrap;
@@ -271,13 +271,13 @@ body.oled .tool-terminal-block {
 
 /* Right Drawer Markdown overrides for clean, organized, compact content */
 #right-drawer .markdown-body {
-  font-size: 12.5px;
+  font-size: 14px;
   line-height: 1.6;
   color: var(--text-2);
 }
 
 #right-drawer .markdown-body h1 {
-  font-size: 14.5px; /* Mid-sized heading */
+  font-size: 16px; /* Mid-sized heading */
   font-weight: 500;  /* Medium weight, not bold */
   margin-top: 0;
   margin-bottom: 12px;
@@ -287,7 +287,7 @@ body.oled .tool-terminal-block {
 }
 
 #right-drawer .markdown-body h2 {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 500;
   margin-top: 18px;
   margin-bottom: 8px;
@@ -295,7 +295,7 @@ body.oled .tool-terminal-block {
 }
 
 #right-drawer .markdown-body h3 {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 500;
   margin-top: 14px;
   margin-bottom: 6px;
