@@ -181,7 +181,7 @@ class AudioOverviewManager {
 
     playerPill.innerHTML = `
       <button class="voice-pill-play-btn" title="Play">
-        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"></polygon></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="margin-left: 1px;"><polygon points="6 4 20 12 6 20 6 4"></polygon></svg>
       </button>
       
       <div class="voice-waveform-wrap" title="Click to seek">
@@ -193,12 +193,9 @@ class AudioOverviewManager {
 
       <span class="voice-pill-time">0:00</span>
 
-      <div class="voice-pill-actions">
-        <button class="voice-pill-btn btn-audio-rate" title="Playback Speed">1.0x</button>
-        <a href="${audioUrl}" download class="voice-pill-btn" title="Download audio">
-          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-        </a>
-      </div>
+      <a href="${audioUrl}" download class="voice-pill-dl-btn" title="Download audio">
+        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+      </a>
     `;
 
     container.appendChild(playerPill);
@@ -208,7 +205,6 @@ class AudioOverviewManager {
     const bars = playerPill.querySelectorAll('.vw-bar');
     const thumb = playerPill.querySelector('.voice-waveform-thumb');
     const timeLabel = playerPill.querySelector('.voice-pill-time');
-    const rateBtn = playerPill.querySelector('.btn-audio-rate');
 
     const formatTime = (secs) => {
       if (isNaN(secs) || secs < 0) return '0:00';
@@ -235,7 +231,7 @@ class AudioOverviewManager {
         if (this.currentAudio && this.currentAudio !== audio) {
           this.currentAudio.pause();
           if (this.currentPlayBtn) {
-            this.currentPlayBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"></polygon></svg>';
+            this.currentPlayBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="margin-left: 1px;"><polygon points="6 4 20 12 6 20 6 4"></polygon></svg>';
           }
         }
         audio.play();
@@ -244,7 +240,7 @@ class AudioOverviewManager {
         playBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>';
       } else {
         audio.pause();
-        playBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"></polygon></svg>';
+        playBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="margin-left: 1px;"><polygon points="6 4 20 12 6 20 6 4"></polygon></svg>';
       }
     });
 
@@ -261,7 +257,7 @@ class AudioOverviewManager {
     });
 
     audio.addEventListener('ended', () => {
-      playBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"></polygon></svg>';
+      playBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="margin-left: 1px;"><polygon points="6 4 20 12 6 20 6 4"></polygon></svg>';
       updateWaveform(0);
       timeLabel.innerText = formatTime(audio.duration);
     });
@@ -275,14 +271,6 @@ class AudioOverviewManager {
       audio.currentTime = pct * audio.duration;
       updateWaveform(pct * 100);
       timeLabel.innerText = formatTime(audio.currentTime);
-    });
-
-    // Speed toggle
-    rateBtn.addEventListener('click', () => {
-      this.currentRateIdx = (this.currentRateIdx + 1) % this.playbackRates.length;
-      const rate = this.playbackRates[this.currentRateIdx];
-      audio.playbackRate = rate;
-      rateBtn.innerText = `${rate.toFixed(1)}x`;
     });
   }
 
