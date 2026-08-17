@@ -272,11 +272,14 @@ body.light .section-item.active,
 #sidebar-nav .section-item svg,
 #sidebar-nav .section-item i,
 #sidebar-nav .section-item .lucide,
+#sidebar-nav .recent-item svg,
+#sidebar-nav .recent-item i,
+#sidebar-nav .recent-item .lucide,
 .debate-sidebar .icon-btn svg,
 .debate-sidebar .icon-btn i,
 .debate-sidebar .icon-btn .lucide {
-  width: 16px !important;
-  height: 16px !important;
+  width: 20px !important;
+  height: 20px !important;
   display: inline-block !important;
   vertical-align: middle !important;
   flex-shrink: 0 !important;

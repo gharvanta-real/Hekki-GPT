@@ -16,8 +16,8 @@
 
 /* Microsoft Fluent System Icons (Regular / Outline SVG) */
 .fluent-icon {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   margin-right: 8px;
   flex-shrink: 0;
   display: inline-block;
@@ -264,4 +264,44 @@
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+}
+
+/* === FLOATING SIDEBAR EXPAND BUTTON === */
+.floating-sidebar-expand-btn {
+  display: none !important;
+  position: absolute;
+  top: 12px;
+  left: 14px;
+  z-index: 999;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md, 8px);
+  background: transparent !important;
+  color: var(--text-2);
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.floating-sidebar-expand-btn:hover {
+  background: var(--hover) !important;
+  color: var(--text-primary);
+  border: none !important;
+}
+
+.floating-sidebar-expand-btn svg,
+.floating-sidebar-expand-btn i {
+  width: 17.5px !important;
+  height: 17.5px !important;
+  stroke: currentColor !important;
+  stroke-width: 2.2px !important;
+}
+
+/* Show floating expand button in Focus Mode */
+body.hekki-focus-mode .floating-sidebar-expand-btn {
+  display: flex !important;
 }

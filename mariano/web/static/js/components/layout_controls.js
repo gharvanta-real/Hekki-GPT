@@ -29,6 +29,22 @@ export function bindSidebarToggle() {
 
   // New collapse buttons
   $('btn-sidebar-collapse')?.addEventListener('click', toggle);
+
+  // Floating sidebar expand button (Focus Mode or Collapsed Sidebar)
+  $('btn-floating-sidebar-expand')?.addEventListener('click', () => {
+    if (document.body.classList.contains('hekki-focus-mode')) {
+      document.body.classList.remove('hekki-focus-mode');
+      localStorage.setItem('hekki_focus_mode', '0');
+      const focusChk = $('settings-focus-mode');
+      if (focusChk) focusChk.checked = false;
+    }
+    if (nav?.classList.contains('collapsed')) {
+      nav.classList.remove('collapsed');
+      localStorage.setItem('hekki_sidebar_collapsed', '0');
+      _updateCollapseIcon(false);
+    }
+    if (window.lucide) setTimeout(() => lucide.createIcons(), 50);
+  });
 }
 
 function _updateCollapseIcon(isCollapsed) {

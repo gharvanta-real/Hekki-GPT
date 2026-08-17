@@ -328,9 +328,9 @@ svg.lucide-trash-2 {
   color: var(--text-2);
 }
 .recent-item .lucide, .section-item .lucide, #sidebar-nav .lucide, #sidebar-nav svg {
-  width: 16px;
-  height: 16px;
-  stroke-width: 1.6px !important;
+  width: 20px;
+  height: 20px;
+  stroke-width: 1.8px !important;
   color: var(--text-2);
   opacity: 1 !important;
 }
