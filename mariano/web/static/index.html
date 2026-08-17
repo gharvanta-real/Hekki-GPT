@@ -35,7 +35,7 @@
   <meta name="theme-color" content="#FCFCFC">
   <link rel="manifest" href="/manifest.json">
   <link rel="icon" type="image/png" href="/static/hekki.png">
-  <link class="cache-bust" rel="stylesheet" href="/static/theme.css?v=435">
+  <link class="cache-bust" rel="stylesheet" href="/static/theme.css?v=436">
 
 
 
@@ -231,34 +231,45 @@
         <span id="topnav-audio-label" style="font-size:12px; font-weight:500; max-width:140px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Voice Overview</span>
       </button>
 
-      <!-- Spotify-Style Now Playing Dropdown Card (Exact Matching Reference) -->
+      <!-- Spotify-Style Now Playing Dropdown Card (Full Row Title, Progress Bar with Timings, Bottom Controls) -->
       <div class="topnav-audio-dropdown hidden" id="topnav-audio-dropdown">
         <div class="sw-content">
           <div class="sw-source-row">
-            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 32 32" fill="currentColor"><path d="M26 4H6a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h20a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 22H6V6h20v20z"/><circle cx="16" cy="16" r="4"/></svg>
-            <span class="sw-source-text">Hekki • Audio Overview</span>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 32 32" fill="currentColor"><path d="M26 4H6a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h20a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 22H6V6h20v20z"/><circle cx="16" cy="16" r="4"/></svg>
+              <span class="sw-source-text">Hekki • Audio Overview</span>
+            </div>
             <button class="sw-chevron-btn" id="sidebar-audio-close" title="Close player">
               <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
           </div>
 
-          <div class="sw-meta-row">
-            <div class="sw-text-block">
-              <div class="sw-title" id="sidebar-audio-title">Research</div>
-              <div class="sw-artist" id="sidebar-audio-subtitle">Voice Overview</div>
-            </div>
+          <!-- Full Row Title -->
+          <div class="sw-name-row">
+            <span class="sw-title" id="sidebar-audio-title">Voice Overview</span>
+          </div>
 
-            <div class="sw-controls">
-              <button class="sw-btn" id="sidebar-audio-rewind" title="Rewind 10s">
-                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><polygon points="19 20 9 12 19 4 19 20"/><rect x="4" y="4" width="3" height="16" rx="1"/></svg>
-              </button>
-              <button class="sw-btn-play" id="sidebar-audio-toggle" title="Play/Pause">
-                <svg id="sidebar-audio-toggle-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1.5"/><rect x="14" y="4" width="4" height="16" rx="1.5"/></svg>
-              </button>
-              <button class="sw-btn" id="sidebar-audio-forward" title="Forward 10s">
-                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 4 15 12 5 20 5 4"/><rect x="17" y="4" width="3" height="16" rx="1"/></svg>
-              </button>
+          <!-- Scrubber Progress Bar & Timestamps -->
+          <div class="sw-scrubber-row">
+            <input type="range" class="spotify-scrubber" id="sidebar-audio-scrubber" min="0" max="100" value="0" />
+            <div class="sw-time-row">
+              <span id="sidebar-audio-cur-time">0:00</span>
+              <span id="sidebar-audio-dur-time">0:00</span>
             </div>
+          </div>
+
+          <!-- Bottom Controls Row -->
+          <div class="sw-controls-row">
+            <button class="sidebar-ctrl-btn" id="sidebar-audio-speed" title="Speed" style="font-size:11px; padding:2px 6px; border-radius:10px; background:transparent; border:none; color:inherit; cursor:pointer;">1x</button>
+            <button class="sw-btn" id="sidebar-audio-rewind" title="Rewind 10s">
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><polygon points="19 20 9 12 19 4 19 20"/><rect x="4" y="4" width="3" height="16" rx="1"/></svg>
+            </button>
+            <button class="sw-btn-play" id="sidebar-audio-toggle" title="Play/Pause">
+              <svg id="sidebar-audio-toggle-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1.5"/><rect x="14" y="4" width="4" height="16" rx="1.5"/></svg>
+            </button>
+            <button class="sw-btn" id="sidebar-audio-forward" title="Forward 10s">
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 4 15 12 5 20 5 4"/><rect x="17" y="4" width="3" height="16" rx="1"/></svg>
+            </button>
           </div>
         </div>
 
@@ -1615,7 +1626,7 @@
     </button>
   </div>
 
-  <script src="/static/main.js?v=497" type="module"></script>
+  <script src="/static/main.js?v=498" type="module"></script>
 
 
 
