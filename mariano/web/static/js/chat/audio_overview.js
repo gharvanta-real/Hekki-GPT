@@ -174,37 +174,41 @@ class AudioOverviewManager {
     const audio = new Audio(audioUrl);
     const WAVE_BARS = [6, 10, 16, 8, 20, 24, 14, 22, 28, 18, 12, 24, 28, 16, 26, 20, 10, 22, 26, 14, 20, 24, 16, 12, 18, 24, 14, 20, 16, 12, 16, 22, 14, 8, 5];
     
-    const playerPill = document.createElement('div');
-    playerPill.className = 'voice-pill-player';
+    const playerWrapper = document.createElement('div');
+    playerWrapper.className = 'voice-player-container-wrap';
 
     const barsHtml = WAVE_BARS.map((h, i) => `<span class="vw-bar" data-i="${i}" style="height:${h}px;"></span>`).join('');
 
-    playerPill.innerHTML = `
-      <button class="voice-pill-play-btn" aria-label="Play audio">
-        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="margin-left: 1px;"><polygon points="6 4 20 12 6 20 6 4"></polygon></svg>
-      </button>
-      
-      <div class="voice-waveform-wrap">
-        <div class="voice-waveform-bars">
-          ${barsHtml}
+    playerWrapper.innerHTML = `
+      <div class="voice-player-divider voice-divider-top"></div>
+      <div class="voice-pill-player">
+        <button class="voice-pill-play-btn" aria-label="Play audio">
+          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="margin-left: 1px;"><polygon points="6 4 20 12 6 20 6 4"></polygon></svg>
+        </button>
+        
+        <div class="voice-waveform-wrap">
+          <div class="voice-waveform-bars">
+            ${barsHtml}
+          </div>
+          <div class="voice-waveform-thumb" style="left: 0%;"></div>
         </div>
-        <div class="voice-waveform-thumb" style="left: 0%;"></div>
+
+        <span class="voice-pill-time">0:00</span>
+
+        <a href="${audioUrl}" download class="voice-pill-dl-btn" aria-label="Download audio">
+          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        </a>
       </div>
-
-      <span class="voice-pill-time">0:00</span>
-
-      <a href="${audioUrl}" download class="voice-pill-dl-btn" aria-label="Download audio">
-        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-      </a>
+      <div class="voice-player-divider voice-divider-bottom"></div>
     `;
 
-    container.appendChild(playerPill);
+    container.appendChild(playerWrapper);
 
-    const playBtn = playerPill.querySelector('.voice-pill-play-btn');
-    const waveformWrap = playerPill.querySelector('.voice-waveform-wrap');
-    const bars = playerPill.querySelectorAll('.vw-bar');
-    const thumb = playerPill.querySelector('.voice-waveform-thumb');
-    const timeLabel = playerPill.querySelector('.voice-pill-time');
+    const playBtn = playerWrapper.querySelector('.voice-pill-play-btn');
+    const waveformWrap = playerWrapper.querySelector('.voice-waveform-wrap');
+    const bars = playerWrapper.querySelectorAll('.vw-bar');
+    const thumb = playerWrapper.querySelector('.voice-waveform-thumb');
+    const timeLabel = playerWrapper.querySelector('.voice-pill-time');
 
     const formatTime = (secs) => {
       if (isNaN(secs) || secs < 0) return '0:00';

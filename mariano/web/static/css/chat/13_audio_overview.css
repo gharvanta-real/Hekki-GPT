@@ -114,6 +114,23 @@
 }
 
 /* Modern Spotify / Voice Note Monochromatic Waveform Pill Player */
+.voice-player-container-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  margin: 6px 0;
+}
+
+.voice-player-divider {
+  width: 100%;
+  max-width: 480px;
+  height: 1px;
+  background: var(--border-subtle, rgba(148, 163, 184, 0.25));
+  border: none !important;
+  margin: 10px 0;
+}
+
 .voice-pill-player {
   display: flex;
   align-items: center;
