@@ -312,8 +312,7 @@ export class GlobalAudioPlayer {
       if (eqEl) eqEl.style.opacity = isPlaying ? '1' : '0.4';
     }
     if (this._topnavBtnEl) {
-      const eqEl = this._topnavBtnEl.querySelector('.lib-equalizer');
-      if (eqEl) eqEl.style.opacity = isPlaying ? '1' : '0.4';
+      this._topnavBtnEl.style.color = isPlaying ? 'var(--accent-primary, #2563EB)' : 'var(--text-2)';
     }
   }
 
