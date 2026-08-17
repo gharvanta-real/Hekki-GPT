@@ -171,19 +171,21 @@ class AudioOverviewManager {
    * Mounts an interactive flat voice waveform audio player widget into container
    */
   mountAudioPlayer(container, audioUrl, title = 'Audio Track') {
-    const audio = new Audio(audioUrl);
+    const player = window.globalAudioPlayer;
     const WAVE_BARS = [6, 10, 16, 8, 20, 24, 14, 22, 28, 18, 12, 24, 28, 16, 26, 20, 10, 22, 26, 14, 20, 24, 16, 12, 18, 24, 14, 20, 16, 12, 16, 22, 14, 8, 5];
     
     const playerWrapper = document.createElement('div');
     playerWrapper.className = 'voice-player-container-wrap';
 
     const barsHtml = WAVE_BARS.map((h, i) => `<span class="vw-bar" data-i="${i}" style="height:${h}px;"></span>`).join('');
+    const playSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="margin-left: 1px;"><polygon points="6 4 20 12 6 20 6 4"></polygon></svg>';
+    const pauseSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>';
 
     playerWrapper.innerHTML = `
       <div class="voice-player-divider voice-divider-top"></div>
       <div class="voice-pill-player">
         <button class="voice-pill-play-btn" aria-label="Play audio">
-          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="margin-left: 1px;"><polygon points="6 4 20 12 6 20 6 4"></polygon></svg>
+          ${playSvg}
         </button>
         
         <div class="voice-waveform-wrap">
@@ -229,53 +231,85 @@ class AudioOverviewManager {
       if (thumb) thumb.style.left = `${pct}%`;
     };
 
-    // Play/Pause
-    playBtn.addEventListener('click', () => {
-      if (audio.paused) {
-        if (this.currentAudio && this.currentAudio !== audio) {
-          this.currentAudio.pause();
-          if (this.currentPlayBtn) {
-            this.currentPlayBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="margin-left: 1px;"><polygon points="6 4 20 12 6 20 6 4"></polygon></svg>';
-          }
-        }
-        audio.play();
-        this.currentAudio = audio;
-        this.currentPlayBtn = playBtn;
-        playBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>';
-      } else {
-        audio.pause();
-        playBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="margin-left: 1px;"><polygon points="6 4 20 12 6 20 6 4"></polygon></svg>';
+    // Preload metadata to display duration immediately if not playing
+    const probe = new Audio(audioUrl);
+    probe.addEventListener('loadedmetadata', () => {
+      if (!player || player.getCurrentUrl() !== audioUrl) {
+        timeLabel.innerText = formatTime(probe.duration);
       }
     });
 
-    // Time update & Waveform sync
-    audio.addEventListener('timeupdate', () => {
-      if (!audio.duration) return;
-      const progress = (audio.currentTime / audio.duration) * 100;
-      updateWaveform(progress);
-      timeLabel.innerText = formatTime(audio.currentTime);
-    });
+    // Check if this track is currently active on GlobalAudioPlayer
+    if (player && player.getCurrentUrl() === audioUrl) {
+      const isPlaying = player.isPlaying();
+      playBtn.innerHTML = isPlaying ? pauseSvg : playSvg;
+      if (player._audio && player._audio.duration) {
+        const cur = player._audio.currentTime;
+        const dur = player._audio.duration;
+        updateWaveform((cur / dur) * 100);
+        timeLabel.innerText = formatTime(cur);
+      }
+    }
 
-    audio.addEventListener('loadedmetadata', () => {
-      timeLabel.innerText = formatTime(audio.duration);
-    });
-
-    audio.addEventListener('ended', () => {
-      playBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="margin-left: 1px;"><polygon points="6 4 20 12 6 20 6 4"></polygon></svg>';
-      updateWaveform(0);
-      timeLabel.innerText = formatTime(audio.duration);
+    // Play/Pause Click Handler
+    playBtn.addEventListener('click', () => {
+      if (player) {
+        if (player.getCurrentUrl() === audioUrl) {
+          player.togglePlayPause();
+        } else {
+          player.play(audioUrl, { title });
+        }
+      }
     });
 
     // Waveform click to seek
     waveformWrap.addEventListener('click', (e) => {
-      if (!audio.duration) return;
       const rect = waveformWrap.getBoundingClientRect();
       const clickX = Math.max(0, Math.min(rect.width, e.clientX - rect.left));
       const pct = (clickX / rect.width);
-      audio.currentTime = pct * audio.duration;
-      updateWaveform(pct * 100);
-      timeLabel.innerText = formatTime(audio.currentTime);
+      
+      if (player) {
+        if (player.getCurrentUrl() !== audioUrl) {
+          player.play(audioUrl, { title });
+        }
+        if (player._audio && player._audio.duration) {
+          player._audio.currentTime = pct * player._audio.duration;
+          updateWaveform(pct * 100);
+          timeLabel.innerText = formatTime(player._audio.currentTime);
+        }
+      }
     });
+
+    // Subscribe to GlobalAudioPlayer events for seamless state sync
+    if (player) {
+      player.on('*', ({ event, currentUrl, isPlaying, data }) => {
+        if (!document.body.contains(playerWrapper)) return;
+
+        if (currentUrl === audioUrl) {
+          if (event === 'play') {
+            playBtn.innerHTML = pauseSvg;
+          } else if (event === 'pause') {
+            playBtn.innerHTML = playSvg;
+          } else if (event === 'ended') {
+            playBtn.innerHTML = playSvg;
+            updateWaveform(0);
+            if (player._audio && player._audio.duration) {
+              timeLabel.innerText = formatTime(player._audio.duration);
+            }
+          } else if (event === 'timeupdate' && data) {
+            playBtn.innerHTML = isPlaying ? pauseSvg : playSvg;
+            if (data.duration) {
+              const pct = (data.currentTime / data.duration) * 100;
+              updateWaveform(pct);
+              timeLabel.innerText = formatTime(data.currentTime);
+            }
+          }
+        } else {
+          playBtn.innerHTML = playSvg;
+          updateWaveform(0);
+        }
+      });
+    }
   }
 
   /**
