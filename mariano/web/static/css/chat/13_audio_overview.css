@@ -118,7 +118,7 @@
   display: flex;
   align-items: center;
   gap: 14px;
-  background: #E8EDF5;
+  background: var(--input-bg, #E8EDF5);
   border-radius: 9999px;
   padding: 6px 16px 6px 6px;
   max-width: 480px;
@@ -130,19 +130,14 @@
   transition: background 0.15s ease;
 }
 
-body.dark .voice-pill-player,
-:root[data-theme="dark"] .voice-pill-player {
-  background: #1C1F26;
-}
-
 .voice-pill-play-btn {
   width: 34px !important;
   height: 34px !important;
   min-width: 34px !important;
   max-width: 34px !important;
   border-radius: 50% !important;
-  background: #FFFFFF !important;
-  color: #0E1E38 !important;
+  background: var(--hover, rgba(255, 255, 255, 0.12)) !important;
+  color: var(--text-primary, #FFFFFF) !important;
   border: none !important;
   box-shadow: none !important;
   outline: none !important;
@@ -152,22 +147,24 @@ body.dark .voice-pill-player,
   cursor: pointer !important;
   flex-shrink: 0 !important;
   padding: 0 !important;
-  transition: transform 0.12s ease, opacity 0.12s ease !important;
-}
-
-body.dark .voice-pill-play-btn,
-:root[data-theme="dark"] .voice-pill-play-btn {
-  background: #FFFFFF !important;
-  color: #0E1E38 !important;
+  transition: transform 0.12s ease, background 0.12s ease, color 0.12s ease !important;
 }
 
 body.light .voice-pill-play-btn,
 :root[data-theme="light"] .voice-pill-play-btn {
-  background: #FFFFFF !important;
-  color: #0E1E38 !important;
+  background: var(--hover, rgba(0, 0, 0, 0.08)) !important;
+  color: var(--text-primary, #0E1E38) !important;
+}
+
+body.dark .voice-pill-play-btn,
+:root[data-theme="dark"] .voice-pill-play-btn {
+  background: var(--hover, rgba(255, 255, 255, 0.12)) !important;
+  color: var(--text-primary, #FFFFFF) !important;
 }
 
 .voice-pill-play-btn:hover {
+  background: var(--btn-primary-bg, #2563EB) !important;
+  color: #FFFFFF !important;
   transform: scale(1.08);
 }
 
