@@ -180,11 +180,11 @@ class AudioOverviewManager {
     const barsHtml = WAVE_BARS.map((h, i) => `<span class="vw-bar" data-i="${i}" style="height:${h}px;"></span>`).join('');
 
     playerPill.innerHTML = `
-      <button class="voice-pill-play-btn" title="Play">
+      <button class="voice-pill-play-btn" aria-label="Play audio">
         <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="margin-left: 1px;"><polygon points="6 4 20 12 6 20 6 4"></polygon></svg>
       </button>
       
-      <div class="voice-waveform-wrap" title="Click to seek">
+      <div class="voice-waveform-wrap">
         <div class="voice-waveform-bars">
           ${barsHtml}
         </div>
@@ -193,7 +193,7 @@ class AudioOverviewManager {
 
       <span class="voice-pill-time">0:00</span>
 
-      <a href="${audioUrl}" download class="voice-pill-dl-btn" title="Download audio">
+      <a href="${audioUrl}" download class="voice-pill-dl-btn" aria-label="Download audio">
         <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
       </a>
     `;
