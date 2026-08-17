@@ -122,12 +122,28 @@ export class GlobalAudioPlayer {
       if (!el) return;
       el.addEventListener('mousedown', () => { this._isScrubbing = true; });
       el.addEventListener('touchstart', () => { this._isScrubbing = true; });
-      el.addEventListener('change', (e) => {
-        this._isScrubbing = false;
+      el.addEventListener('input', (e) => {
+        const val = parseFloat(e.target.value);
+        this._updateScrubberFill(el, val);
         if (this._audio.duration) {
-          this._audio.currentTime = (parseFloat(e.target.value) / 100) * this._audio.duration;
+          const previewSec = (val / 100) * this._audio.duration;
+          const cur = this._fmtTime(previewSec);
+          if (this._sidebarCurTimeEl) this._sidebarCurTimeEl.textContent = cur;
         }
       });
+      const finishScrub = (e) => {
+        if (!this._isScrubbing) return;
+        this._isScrubbing = false;
+        if (this._audio.duration) {
+          const val = parseFloat(el.value);
+          this._audio.currentTime = (val / 100) * this._audio.duration;
+          this._updateScrubberFill(this._scrubberEl, val);
+          this._updateScrubberFill(this._sidebarScrubberEl, val);
+        }
+      };
+      el.addEventListener('change', finishScrub);
+      el.addEventListener('mouseup', finishScrub);
+      el.addEventListener('touchend', finishScrub);
     };
 
     bindScrub(this._scrubberEl);
@@ -141,6 +157,14 @@ export class GlobalAudioPlayer {
 
     this._speedBtnEl?.addEventListener('click', cycleSpeed);
     this._sidebarSpeedBtnEl?.addEventListener('click', cycleSpeed);
+  }
+
+  _updateScrubberFill(el, pct) {
+    if (!el) return;
+    const isDark = document.body.classList.contains('dark') || document.body.classList.contains('oled') || document.documentElement.getAttribute('data-theme') === 'dark';
+    const activeColor = '#2563EB';
+    const trackColor = isDark ? 'rgba(255, 255, 255, 0.16)' : 'rgba(0, 0, 0, 0.12)';
+    el.style.background = `linear-gradient(to right, ${activeColor} 0%, ${activeColor} ${pct}%, ${trackColor} ${pct}%, ${trackColor} 100%)`;
   }
 
   _initAudioEvents() {
@@ -172,8 +196,14 @@ export class GlobalAudioPlayer {
       if (this._sidebarDurTimeEl) this._sidebarDurTimeEl.textContent = dur;
 
       const pct = this._audio.duration ? (this._audio.currentTime / this._audio.duration) * 100 : 0;
-      if (this._scrubberEl && this._audio.duration) this._scrubberEl.value = pct;
-      if (this._sidebarScrubberEl && this._audio.duration) this._sidebarScrubberEl.value = pct;
+      if (this._scrubberEl && this._audio.duration) {
+        this._scrubberEl.value = pct;
+        this._updateScrubberFill(this._scrubberEl, pct);
+      }
+      if (this._sidebarScrubberEl && this._audio.duration) {
+        this._sidebarScrubberEl.value = pct;
+        this._updateScrubberFill(this._sidebarScrubberEl, pct);
+      }
       this._notify('timeupdate', { currentTime: this._audio.currentTime, duration: this._audio.duration });
     });
 
@@ -209,7 +239,10 @@ export class GlobalAudioPlayer {
     if (this._barEl) this._barEl.classList.remove('hidden');
     if (this._titleEl) this._titleEl.textContent = displayTitle;
     if (this._timeEl) this._timeEl.textContent = '0:00 / 0:00';
-    if (this._scrubberEl) this._scrubberEl.value = 0;
+    if (this._scrubberEl) {
+      this._scrubberEl.value = 0;
+      this._updateScrubberFill(this._scrubberEl, 0);
+    }
 
     if (this._topnavBtnEl) this._topnavBtnEl.classList.remove('hidden');
     if (this._topnavLabelEl) this._topnavLabelEl.textContent = displayTitle;
@@ -217,7 +250,10 @@ export class GlobalAudioPlayer {
     if (this._sidebarTitleEl) this._sidebarTitleEl.textContent = displayTitle;
     if (this._sidebarCurTimeEl) this._sidebarCurTimeEl.textContent = '0:00';
     if (this._sidebarDurTimeEl) this._sidebarDurTimeEl.textContent = '0:00';
-    if (this._sidebarScrubberEl) this._sidebarScrubberEl.value = 0;
+    if (this._sidebarScrubberEl) {
+      this._sidebarScrubberEl.value = 0;
+      this._updateScrubberFill(this._sidebarScrubberEl, 0);
+    }
 
     if (this._sidebarCoverInner) {
       if (thumbUrl) {
