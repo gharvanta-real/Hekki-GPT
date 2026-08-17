@@ -118,22 +118,16 @@
   display: flex;
   align-items: center;
   gap: 14px;
-  background: var(--input-bg, #F3F4F6);
+  background: var(--input-bg) !important;
   border-radius: 9999px;
   padding: 6px 16px 6px 6px;
   max-width: 480px;
   width: 100%;
   box-sizing: border-box;
   user-select: none;
-  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  border: 1px solid var(--border-subtle) !important;
   box-shadow: none !important;
   transition: background 0.15s ease, border-color 0.15s ease;
-}
-
-body.dark .voice-pill-player,
-:root[data-theme="dark"] .voice-pill-player {
-  background: var(--input-bg, #18191E);
-  border: 1px solid rgba(255, 255, 255, 0.13) !important;
 }
 
 .voice-pill-play-btn {
@@ -142,9 +136,9 @@ body.dark .voice-pill-player,
   min-width: 34px !important;
   max-width: 34px !important;
   border-radius: 50% !important;
-  background: #0F172A !important;
-  color: #FFFFFF !important;
-  border: none !important;
+  background: var(--bg-card, #FFFFFF) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-subtle) !important;
   box-shadow: none !important;
   outline: none !important;
   display: flex !important;
@@ -153,32 +147,12 @@ body.dark .voice-pill-player,
   cursor: pointer !important;
   flex-shrink: 0 !important;
   padding: 0 !important;
-  transition: transform 0.12s ease, background 0.12s ease, opacity 0.12s ease !important;
+  transition: transform 0.12s ease, background 0.12s ease, color 0.12s ease !important;
 }
 
-body.light .voice-pill-play-btn,
-:root[data-theme="light"] .voice-pill-play-btn {
-  background: #0F172A !important;
-  color: #FFFFFF !important;
-}
-
-body.light .voice-pill-play-btn:hover,
-:root[data-theme="light"] .voice-pill-play-btn:hover {
-  background: #1E293B !important;
-  color: #FFFFFF !important;
-  transform: scale(1.06);
-}
-
-body.dark .voice-pill-play-btn,
-:root[data-theme="dark"] .voice-pill-play-btn {
-  background: rgba(255, 255, 255, 0.15) !important;
-  color: #FFFFFF !important;
-}
-
-body.dark .voice-pill-play-btn:hover,
-:root[data-theme="dark"] .voice-pill-play-btn:hover {
-  background: rgba(255, 255, 255, 0.25) !important;
-  color: #FFFFFF !important;
+.voice-pill-play-btn:hover {
+  background: var(--hover) !important;
+  color: var(--text-primary) !important;
   transform: scale(1.06);
 }
 
@@ -207,29 +181,19 @@ body.dark .voice-pill-play-btn:hover,
   min-width: 2.5px;
   max-width: 3.5px;
   border-radius: 3px;
-  background: rgba(148, 163, 184, 0.38);
+  background: var(--border-subtle, rgba(148, 163, 184, 0.38));
   transition: background 0.12s ease, transform 0.15s ease;
 }
 
-body.dark .vw-bar,
-:root[data-theme="dark"] .vw-bar {
-  background: rgba(255, 255, 255, 0.22);
-}
-
 .vw-bar.active {
-  background: #0F172A !important;
-}
-
-body.dark .vw-bar.active,
-:root[data-theme="dark"] .vw-bar.active {
-  background: #FFFFFF !important;
+  background: var(--text-primary) !important;
 }
 
 .voice-waveform-thumb {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #0F172A;
+  background: var(--text-primary);
   position: absolute;
   top: 50%;
   transform: translate(-50%, -50%);
@@ -237,15 +201,10 @@ body.dark .vw-bar.active,
   transition: left 0.1s linear;
 }
 
-body.dark .voice-waveform-thumb,
-:root[data-theme="dark"] .voice-waveform-thumb {
-  background: #FFFFFF;
-}
-
 .voice-pill-time {
   font-size: 12px;
   font-family: var(--font-mono);
-  color: var(--text-2, #64748B);
+  color: var(--text-2);
   font-weight: 500;
   white-space: nowrap;
   min-width: 36px;
@@ -254,18 +213,13 @@ body.dark .voice-waveform-thumb,
   margin-left: 2px;
 }
 
-body.dark .voice-pill-time,
-:root[data-theme="dark"] .voice-pill-time {
-  color: #94A3B8;
-}
-
 .voice-pill-dl-btn {
   width: 28px;
   height: 28px;
   min-width: 28px;
   border-radius: 50%;
   background: transparent;
-  color: var(--text-3, #64748B);
+  color: var(--text-3);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -278,20 +232,9 @@ body.dark .voice-pill-time,
   transition: background 0.12s ease, color 0.12s ease;
 }
 
-body.dark .voice-pill-dl-btn,
-:root[data-theme="dark"] .voice-pill-dl-btn {
-  color: #94A3B8;
-}
-
 .voice-pill-dl-btn:hover {
-  background: rgba(0, 0, 0, 0.08);
-  color: var(--text-primary);
-}
-
-body.dark .voice-pill-dl-btn:hover,
-:root[data-theme="dark"] .voice-pill-dl-btn:hover {
-  background: rgba(255, 255, 255, 0.12);
-  color: #FFFFFF;
+  background: var(--hover) !important;
+  color: var(--text-primary) !important;
 }
 
 /* Standalone Research Voice Card */
