@@ -168,39 +168,47 @@ class AudioOverviewManager {
   }
 
   /**
-   * Mounts an interactive flat audio player widget into container
+   * Mounts an interactive flat voice waveform audio player widget into container
    */
   mountAudioPlayer(container, audioUrl, title = 'Audio Track') {
     const audio = new Audio(audioUrl);
+    const WAVE_BARS = [6, 10, 16, 8, 20, 24, 14, 22, 28, 18, 12, 24, 28, 16, 26, 20, 10, 22, 26, 14, 20, 24, 16, 12, 18, 24, 14, 20, 16, 12, 16, 22, 14, 8, 5];
     
-    const playerBar = document.createElement('div');
-    playerBar.className = 'audio-player-bar';
+    const playerPill = document.createElement('div');
+    playerPill.className = 'voice-pill-player';
 
-    playerBar.innerHTML = `
-      <button class="audio-play-btn" title="Play">
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+    const barsHtml = WAVE_BARS.map((h, i) => `<span class="vw-bar" data-i="${i}" style="height:${h}px;"></span>`).join('');
+
+    playerPill.innerHTML = `
+      <button class="voice-pill-play-btn" title="Play">
+        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"></polygon></svg>
       </button>
-      <div class="audio-track-info">
-        <div class="audio-track-title">${escapeHtml(title)}</div>
-        <div class="audio-progress-container">
-          <input type="range" class="audio-scrubber" value="0" min="0" max="100" step="0.1">
-          <span class="audio-time-label">0:00 / 0:00</span>
+      
+      <div class="voice-waveform-wrap" title="Click to seek">
+        <div class="voice-waveform-bars">
+          ${barsHtml}
         </div>
+        <div class="voice-waveform-thumb" style="left: 0%;"></div>
       </div>
-      <div class="audio-controls-right">
-        <button class="btn-audio-rate" title="Playback Speed">1.0x</button>
-        <a href="${audioUrl}" download class="btn-audio-rate" title="Download MP3" style="text-decoration:none; display:inline-flex; align-items:center;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+
+      <span class="voice-pill-time">0:00</span>
+
+      <div class="voice-pill-actions">
+        <button class="voice-pill-btn btn-audio-rate" title="Playback Speed">1.0x</button>
+        <a href="${audioUrl}" download class="voice-pill-btn" title="Download audio">
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
         </a>
       </div>
     `;
 
-    container.appendChild(playerBar);
+    container.appendChild(playerPill);
 
-    const playBtn = playerBar.querySelector('.audio-play-btn');
-    const scrubber = playerBar.querySelector('.audio-scrubber');
-    const timeLabel = playerBar.querySelector('.audio-time-label');
-    const rateBtn = playerBar.querySelector('.btn-audio-rate');
+    const playBtn = playerPill.querySelector('.voice-pill-play-btn');
+    const waveformWrap = playerPill.querySelector('.voice-waveform-wrap');
+    const bars = playerPill.querySelectorAll('.vw-bar');
+    const thumb = playerPill.querySelector('.voice-waveform-thumb');
+    const timeLabel = playerPill.querySelector('.voice-pill-time');
+    const rateBtn = playerPill.querySelector('.btn-audio-rate');
 
     const formatTime = (secs) => {
       if (isNaN(secs) || secs < 0) return '0:00';
@@ -209,46 +217,64 @@ class AudioOverviewManager {
       return `${m}:${s < 10 ? '0' : ''}${s}`;
     };
 
+    const updateWaveform = (pct) => {
+      const activeIdx = Math.floor((pct / 100) * bars.length);
+      bars.forEach((b, idx) => {
+        if (idx <= activeIdx && pct > 0) {
+          b.classList.add('active');
+        } else {
+          b.classList.remove('active');
+        }
+      });
+      if (thumb) thumb.style.left = `${pct}%`;
+    };
+
     // Play/Pause
     playBtn.addEventListener('click', () => {
       if (audio.paused) {
         if (this.currentAudio && this.currentAudio !== audio) {
           this.currentAudio.pause();
           if (this.currentPlayBtn) {
-            this.currentPlayBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>';
+            this.currentPlayBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"></polygon></svg>';
           }
         }
         audio.play();
         this.currentAudio = audio;
         this.currentPlayBtn = playBtn;
-        playBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>';
+        playBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>';
       } else {
         audio.pause();
-        playBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>';
+        playBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"></polygon></svg>';
       }
     });
 
-    // Time update & Scrubber sync
+    // Time update & Waveform sync
     audio.addEventListener('timeupdate', () => {
       if (!audio.duration) return;
       const progress = (audio.currentTime / audio.duration) * 100;
-      scrubber.value = progress;
-      timeLabel.innerText = `${formatTime(audio.currentTime)} / ${formatTime(audio.duration)}`;
+      updateWaveform(progress);
+      timeLabel.innerText = formatTime(audio.currentTime);
     });
 
     audio.addEventListener('loadedmetadata', () => {
-      timeLabel.innerText = `0:00 / ${formatTime(audio.duration)}`;
+      timeLabel.innerText = formatTime(audio.duration);
     });
 
     audio.addEventListener('ended', () => {
-      playBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>';
-      scrubber.value = 0;
+      playBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"></polygon></svg>';
+      updateWaveform(0);
+      timeLabel.innerText = formatTime(audio.duration);
     });
 
-    // Scrubber interaction
-    scrubber.addEventListener('input', () => {
+    // Waveform click to seek
+    waveformWrap.addEventListener('click', (e) => {
       if (!audio.duration) return;
-      audio.currentTime = (scrubber.value / 100) * audio.duration;
+      const rect = waveformWrap.getBoundingClientRect();
+      const clickX = Math.max(0, Math.min(rect.width, e.clientX - rect.left));
+      const pct = (clickX / rect.width);
+      audio.currentTime = pct * audio.duration;
+      updateWaveform(pct * 100);
+      timeLabel.innerText = formatTime(audio.currentTime);
     });
 
     // Speed toggle

@@ -113,24 +113,35 @@
   scrollbar-width: thin;
 }
 
-/* Flat Audio Player Bar */
-.audio-player-bar {
+/* Modern Spotify / Voice Note Waveform Pill Player */
+.voice-pill-player {
   display: flex;
   align-items: center;
-  gap: 12px;
-  background: var(--input-bg);
-  padding: 8px 12px;
-  border-radius: var(--radius-sm);
+  gap: 10px;
+  background: #E8EDF5;
+  border-radius: 9999px;
+  padding: 6px 14px 6px 6px;
+  max-width: 460px;
+  width: 100%;
+  box-sizing: border-box;
+  user-select: none;
   border: none !important;
   box-shadow: none !important;
+  transition: background 0.15s ease;
 }
 
-.audio-play-btn {
+body.dark .voice-pill-player,
+:root[data-theme="dark"] .voice-pill-player {
+  background: #1C1F26;
+}
+
+.voice-pill-play-btn {
   width: 32px;
   height: 32px;
-  border-radius: var(--radius-pill);
-  background: var(--btn-primary-bg);
-  color: var(--btn-primary-text);
+  min-width: 32px;
+  border-radius: 50%;
+  background: #0E1E38;
+  color: #FFFFFF;
   border: none !important;
   box-shadow: none !important;
   display: flex;
@@ -138,86 +149,116 @@
   justify-content: center;
   cursor: pointer;
   flex-shrink: 0;
-  transition: opacity 0.15s ease;
+  transition: transform 0.12s ease, opacity 0.12s ease;
 }
 
-.audio-play-btn:hover {
-  opacity: 0.9;
+body.dark .voice-pill-play-btn,
+:root[data-theme="dark"] .voice-pill-play-btn {
+  background: #FFFFFF;
+  color: #0E1E38;
 }
 
-.audio-track-info {
+.voice-pill-play-btn:hover {
+  transform: scale(1.08);
+}
+
+.voice-waveform-wrap {
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  min-width: 0;
-}
-
-.audio-track-title {
-  font-size: var(--fs-xs);
-  font-weight: 600;
-  color: var(--text-primary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.audio-progress-container {
   display: flex;
   align-items: center;
-  gap: 8px;
-}
-
-.audio-scrubber {
-  flex: 1;
-  height: 4px;
-  -webkit-appearance: none;
-  appearance: none;
-  background: var(--hover);
-  border-radius: var(--radius-pill);
-  outline: none;
+  height: 28px;
+  position: relative;
   cursor: pointer;
+  min-width: 120px;
 }
 
-.audio-scrubber::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 10px;
-  height: 10px;
+.voice-waveform-bars {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2px;
+  width: 100%;
+  height: 100%;
+}
+
+.vw-bar {
+  flex: 1;
+  min-width: 2px;
+  max-width: 3.5px;
+  border-radius: 2px;
+  background: rgba(148, 163, 184, 0.45);
+  transition: background 0.12s ease, transform 0.15s ease;
+}
+
+.vw-bar.active {
+  background: var(--accent-primary, #2563EB) !important;
+}
+
+.voice-waveform-thumb {
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
-  background: var(--accent-primary);
-  cursor: pointer;
+  background: var(--accent-primary, #2563EB);
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  transition: left 0.1s linear;
 }
 
-.audio-time-label {
-  font-size: 10px;
-  color: var(--text-3);
+.voice-pill-time {
+  font-size: 11.5px;
   font-family: var(--font-mono);
-  min-width: 55px;
+  color: #5A6E94;
+  font-weight: 500;
+  white-space: nowrap;
+  min-width: 34px;
+  text-align: right;
+  flex-shrink: 0;
 }
 
-/* Speed / Fidelity Controls */
-.audio-controls-right {
+body.dark .voice-pill-time,
+:root[data-theme="dark"] .voice-pill-time {
+  color: #94A3B8;
+}
+
+.voice-pill-actions {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
+  flex-shrink: 0;
 }
 
-.btn-audio-rate {
-  background: var(--hover);
-  color: var(--text-2);
-  padding: 3px 7px;
-  border-radius: var(--radius-pill);
-  font-size: 10px;
+.voice-pill-btn {
+  background: transparent;
+  color: #5A6E94;
+  border-radius: 6px;
+  padding: 3px 6px;
+  font-size: 10.5px;
   font-family: var(--font-mono);
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
   border: none !important;
   box-shadow: none !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.12s ease, color 0.12s ease;
 }
 
-.btn-audio-rate:hover {
+body.dark .voice-pill-btn,
+:root[data-theme="dark"] .voice-pill-btn {
+  color: #94A3B8;
+}
+
+.voice-pill-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
   color: var(--text-primary);
+}
+
+body.light .voice-pill-btn:hover,
+:root[data-theme="light"] .voice-pill-btn:hover {
+  background: rgba(0, 0, 0, 0.06);
 }
 
 /* Standalone Research Voice Card */
@@ -239,5 +280,5 @@
   gap: 8px;
   color: var(--text-primary);
   font-size: var(--fs-sm);
-  font-weight: 600;
+  font-weight: 500;
 }
