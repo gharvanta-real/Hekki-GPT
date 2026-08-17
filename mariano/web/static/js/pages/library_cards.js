@@ -184,3 +184,21 @@ export function getDateCategory(iso) {
     return d.toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' });
   } catch { return 'Earlier'; }
 }
+
+export function renderHeaderRowHtml(dlText, delText) {
+  return `
+    <div class="library-header-row">
+      <h1 class="library-main-title">Library</h1>
+      <div class="library-actions">
+        <button class="library-action-btn" id="lib-download-all-btn" title="${dlText}">
+          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 32 32" fill="currentColor"><path d="M23.5,22H23V20h.5a4.5,4.5,0,0,0,.36-9L23,11l-.1-.82a7,7,0,0,0-13.88,0L9,11,8.14,11a4.5,4.5,0,0,0,.36,9H9v2H8.5A6.5,6.5,0,0,1,7.2,9.14a9,9,0,0,1,17.6,0A6.5,6.5,0,0,1,23.5,22Z"/><polygon points="17 26.17 17 14 15 14 15 26.17 12.41 23.59 11 25 16 30 21 25 19.59 23.59 17 26.17"/></svg>
+          <span>${dlText}</span>
+        </button>
+        <button class="library-action-btn" id="lib-delete-all-btn" title="${delText}">
+          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 32 32" fill="currentColor"><rect x="12" y="12" width="2" height="12"/><rect x="18" y="12" width="2" height="12"/><path d="M4,6V8H6V28a2,2,0,0,0,2,2H24a2,2,0,0,0,2-2V8h2V6ZM8,28V8H24V28Z"/><rect x="12" y="2" width="8" height="2"/></svg>
+          <span>${delText}</span>
+        </button>
+      </div>
+    </div>
+  `;
+}
