@@ -339,20 +339,23 @@ body.dark .sw-time-row,
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 20px;
+  gap: 16px;
   margin-top: 2px;
 }
 
 .sw-btn {
-  background: transparent;
+  background: transparent !important;
   border: none !important;
   color: #0E1E38;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0;
-  transition: transform 0.1s ease;
+  width: 28px;
+  height: 28px;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  transition: transform 0.12s ease, background 0.12s ease;
 }
 
 body.dark .sw-btn,
@@ -361,19 +364,28 @@ body.dark .sw-btn,
 }
 
 .sw-btn:hover {
-  transform: scale(1.12);
+  background: rgba(255, 255, 255, 0.1) !important;
+  transform: scale(1.1);
+}
+
+body.light .sw-btn:hover,
+:root[data-theme="light"] .sw-btn:hover {
+  background: rgba(0, 0, 0, 0.06) !important;
 }
 
 .sw-btn-play {
-  background: transparent;
+  background: transparent !important;
   border: none !important;
   color: #0E1E38;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0;
-  transition: transform 0.1s ease;
+  width: 32px;
+  height: 32px;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  transition: transform 0.12s ease, background 0.12s ease;
 }
 
 body.dark .sw-btn-play,
@@ -382,7 +394,36 @@ body.dark .sw-btn-play,
 }
 
 .sw-btn-play:hover {
-  transform: scale(1.15);
+  background: rgba(255, 255, 255, 0.12) !important;
+  transform: scale(1.12);
+}
+
+body.light .sw-btn-play:hover,
+:root[data-theme="light"] .sw-btn-play:hover {
+  background: rgba(0, 0, 0, 0.08) !important;
+}
+
+.sw-speed-btn {
+  font-size: 11px;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  padding: 3px 6px;
+  border-radius: 6px;
+  background: transparent !important;
+  border: none !important;
+  color: var(--text-2);
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+.sw-speed-btn:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: var(--text-primary);
+}
+
+body.light .sw-speed-btn:hover,
+:root[data-theme="light"] .sw-speed-btn:hover {
+  background: rgba(0, 0, 0, 0.06) !important;
 }
 
 /* Right faded artwork image */
