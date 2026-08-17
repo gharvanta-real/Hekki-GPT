@@ -1,39 +1,75 @@
 /* === CHAT MESSAGE ACTIONS, TABLES & CALLOUTS === */
-.msg.ai table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 16px 0;
-  font-size: 16.5px;
-  line-height: 1.6;
+.msg.ai table,
+.markdown-body table,
+.chat-bubble table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  margin: 18px 0 !important;
+  font-size: 16.5px !important;
+  line-height: 1.6 !important;
   border: none !important;
   box-shadow: none !important;
-  background: transparent;
+  background: transparent !important;
 }
-.msg.ai th {
-  background: transparent;
-  color: var(--text-primary);
-  font-weight: 600;
-  text-align: left;
-  padding: 10px 14px;
-  border-top: none !important;
-  border-left: none !important;
-  border-right: none !important;
-  border-bottom: 1px solid var(--border);
-  font-size: 16.5px;
+
+.msg.ai th,
+.markdown-body th,
+.chat-bubble th {
+  background: transparent !important;
+  color: var(--text-primary) !important;
+  font-weight: 600 !important;
+  text-align: left !important;
+  padding: 12px 16px !important;
+  border: none !important;
+  border-bottom: 1.5px solid var(--border-subtle, rgba(0, 0, 0, 0.12)) !important;
+  font-size: 16.5px !important;
 }
-.msg hr {
-  margin: 16px 0;
-  border: none;
-  border-top: 1px solid var(--border);
-  opacity: 0.45;
+
+body.dark .msg.ai th,
+body.dark .markdown-body th,
+body.dark .chat-bubble th,
+body.oled .msg.ai th,
+body.oled .markdown-body th,
+body.oled .chat-bubble th {
+  border-bottom: 1.5px solid rgba(255, 255, 255, 0.15) !important;
 }
-.msg.ai td {
-  padding: 10px 14px;
-  border-bottom: 1px solid var(--border);
-  color: var(--text-2);
+
+.msg.ai td,
+.markdown-body td,
+.chat-bubble td {
+  padding: 12px 16px !important;
+  border: none !important;
+  border-bottom: 1px solid var(--border-subtle, rgba(0, 0, 0, 0.08)) !important;
+  color: var(--text-2) !important;
+  transition: background-color 0.15s ease;
 }
-.msg.ai tr:hover {
-  background: var(--hover);
+
+body.dark .msg.ai td,
+body.dark .markdown-body td,
+body.dark .chat-bubble td,
+body.oled .msg.ai td,
+body.oled .markdown-body td,
+body.oled .chat-bubble td {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+.msg.ai tr:hover td,
+.markdown-body tr:hover td,
+.chat-bubble tr:hover td {
+  background: var(--hover) !important;
+}
+
+.msg hr,
+.markdown-body hr {
+  margin: 18px 0 !important;
+  border: none !important;
+  border-top: 1px solid var(--border-subtle, rgba(0, 0, 0, 0.08)) !important;
+}
+body.dark .msg hr,
+body.dark .markdown-body hr,
+body.oled .msg hr,
+body.oled .markdown-body hr {
+  border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
 }
 
 /* ── Clean Inline Clickable Links ── */
@@ -78,8 +114,8 @@ body.dark a.chat-link:hover {
 .callout-pagebreak {
   margin: 16px 0 12px 0 !important;
   border: none !important;
-  border-top: 1px solid var(--border) !important;
-  opacity: 0.45 !important;
+  border-top: 1px solid var(--border-subtle) !important;
+  opacity: 0.75 !important;
   width: 100%;
 }
 

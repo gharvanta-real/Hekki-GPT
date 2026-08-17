@@ -307,9 +307,6 @@ export function createMessageElement(type, text, timestamp, index, ChatSessionMa
             ChatSessionManager.forkChat(index);
           }
         });
-
-
-
         const SVG_LIKE_OUTLINE = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;"><path d="M26,12H20V6a3.0033,3.0033,0,0,0-3-3H14.8672a2.0094,2.0094,0,0,0-1.98,1.7173l-.8453,5.9165L8.4648,16H2V30H23a7.0078,7.0078,0,0,0,7-7V16A4.0045,4.0045,0,0,0,26,12ZM8,28H4V18H8Zm20-5a5.0057,5.0057,0,0,1-5,5H10V17.3027l3.9578-5.9365L14.8672,5H17a1.0008,1.0008,0,0,1,1,1v8h8a2.0025,2.0025,0,0,1,2,2Z"/></svg>`;
         const SVG_LIKE_FILLED  = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;"><rect x="2" y="16" width="5" height="14"/><path d="M23,30H9V15.1973l3.0422-4.5635.8453-5.9165A2.0094,2.0094,0,0,1,14.8672,3H15a3.0033,3.0033,0,0,1,3,3v6h8a4.0045,4.0045,0,0,1,4,4v7A7.0078,7.0078,0,0,1,23,30Z"/></svg>`;
         const SVG_DISLIKE_OUTLINE = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;"><path d="M30,16V9a7.0078,7.0078,0,0,0-7-7H2V16H8.4648l3.5774,5.3662.8453,5.9165A2.0094,2.0094,0,0,0,14.8672,29H17a3.0033,3.0033,0,0,0,3-3V20h6A4.0045,4.0045,0,0,0,30,16ZM8,14H4V4H8Zm20,2a2.0025,2.0025,0,0,1-2,2H18v8a1.0008,1.0008,0,0,1-1,1H14.8672l-.9094-6.3662L10,14.6973V4H23a5.0057,5.0057,0,0,1,5,5Z"/></svg>`;
@@ -322,22 +319,18 @@ export function createMessageElement(type, text, timestamp, index, ChatSessionMa
           const cleanText = text.replace(/<think>[\s\S]*?<\/think>/i, '').trim();
           navigator.clipboard.writeText(cleanText).then(() => {
             aiCopyBtn.innerHTML = SVG_COPY_CHECK;
-            setTimeout(() => {
-              aiCopyBtn.innerHTML = SVG_COPY_NORMAL;
-            }, 3000);
+            setTimeout(() => { aiCopyBtn.innerHTML = SVG_COPY_NORMAL; }, 3000);
           }).catch(err => console.warn('Clipboard write failed', err));
         });
 
         const btnLike = actions.querySelector('.btn-like');
         const btnDislike = actions.querySelector('.btn-dislike');
-
         btnLike?.addEventListener('click', () => {
           const isNowActive = btnLike.classList.toggle('active');
           btnDislike?.classList.remove('active');
           btnLike.innerHTML = isNowActive ? SVG_LIKE_FILLED : SVG_LIKE_OUTLINE;
           if (btnDislike) btnDislike.innerHTML = SVG_DISLIKE_OUTLINE;
         });
-
         btnDislike?.addEventListener('click', () => {
           const isNowActive = btnDislike.classList.toggle('active');
           btnLike?.classList.remove('active');
@@ -358,58 +351,63 @@ export function createMessageElement(type, text, timestamp, index, ChatSessionMa
 
 /** Render tool run cards restored from metadata on chat history load */
 export function createToolGroupCard(msg, escapeHtmlFn) {
-  const runs = msg.metadata.tool_runs;
+  const runs = msg.metadata.tool_runs || [];
   const durationSec = msg.metadata?.duration_sec || msg.metadata?.tool_runs_duration_sec || Math.max(1, (runs.length * 2));
   const titleText = `Worked for ${durationSec}s`;
   const hasFailed = runs.some(r => r.status === 'failed');
+  const svgCheck = '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;display:inline-block;"><polyline points="20 6 9 17 4 12"/></svg>';
+  const svgCross = '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;display:inline-block;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+  const svgChevron = '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;display:inline-block;vertical-align:middle;margin-right:3px;"><polyline points="9 18 15 12 9 6"/></svg>';
+  const fallbackIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:middle;"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>';
+
   const statusHtml = hasFailed
-    ? '<span style="color: #ef4444;">&#10006; failed</span>'
-    : '<span style="color: var(--text-3);">&#10003; completed</span>';
+    ? `<span style="color:#ef4444;display:inline-flex;align-items:center;gap:4px;">${svgCross} failed</span>`
+    : `<span style="color:var(--text-3);display:inline-flex;align-items:center;gap:4px;">${svgCheck} completed</span>`;
 
   const toolCard = document.createElement('div');
   toolCard.className = 'tool-group-card';
-  toolCard.style.cssText = 'margin: 6px 0; display: flex; flex-direction: column; font-family: var(--font); font-size: 14px; color: var(--text-3);';
+  toolCard.style.cssText = 'margin:6px 0;display:flex;flex-direction:column;font-family:var(--font);font-size:14px;color:var(--text-3);';
 
   toolCard.innerHTML = `
-    <div class="tool-group-header" style="display: flex; align-items: center; justify-content: space-between; padding: 4px 0; cursor: pointer; user-select: none;">
-      <div style="display: flex; align-items: center; gap: 6px;">
-        <svg data-chevron="right" class="chevron-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" style="width:14px;height:14px;opacity:0.75;transition:transform 0.15s;display:inline-block;vertical-align:middle;flex-shrink:0;"><path d="M12 8l10 8-10 8z"/></svg>
-        <span class="tool-group-title" style="font-weight: 500; font-size: 14.5px; color: var(--text-secondary);">${titleText}</span>
+    <div class="tool-group-header" style="display:flex;align-items:center;justify-content:space-between;padding:4px 0;cursor:pointer;user-select:none;">
+      <div style="display:flex;align-items:center;gap:6px;">
+        <svg data-chevron="right" class="chevron-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;opacity:0.75;transition:transform 0.15s;display:inline-block;vertical-align:middle;flex-shrink:0;"><polyline points="9 18 15 12 9 6"/></svg>
+        <span class="tool-group-title" style="font-weight:500;font-size:14.5px;color:var(--text-secondary);">${titleText}</span>
       </div>
-      <span class="tool-group-status" style="font-size: 13.5px; opacity: 0.75; font-weight: 400;">${statusHtml}</span>
+      <span class="tool-group-status" style="font-size:13.5px;opacity:0.85;font-weight:400;">${statusHtml}</span>
     </div>
-    <div class="tool-group-body" style="display: none; flex-direction: column; padding-left: 14px; border-left: 1px dashed var(--border); margin-left: 4px; margin-top: 2px; gap: 4px;">
+    <div class="tool-group-body" style="display:none;flex-direction:column;padding-left:14px;border-left:1px dashed var(--border-subtle);margin-left:4px;margin-top:2px;gap:4px;">
       ${runs.map(r => {
         const statusSpan = r.status === 'done'
-          ? '<span style="color: var(--text-3);">&#10003; done</span>'
-          : '<span style="color: #ef4444;">&#10006; failed</span>';
+          ? `<span style="color:var(--text-3);display:inline-flex;align-items:center;gap:3.5px;">${svgCheck} done</span>`
+          : `<span style="color:#ef4444;display:inline-flex;align-items:center;gap:3.5px;">${svgCross} failed</span>`;
         const reasoningHtml = r.reasoning
-          ? `<div class="ai-reasoning-card" style="margin: 3px 0 6px 14px; padding: 4px 0 4px 10px; border-left: 1px dashed var(--border); background: transparent; font-size: 13.5px; font-family: var(--font); color: var(--text-3); line-height: 1.5; opacity: 0.9;"><div style="white-space:pre-wrap;word-break:break-word;"><span>${escapeHtmlFn(r.reasoning)}</span></div></div>`
+          ? `<div class="ai-reasoning-card" style="margin:3px 0 6px 14px;padding:4px 0 4px 10px;border-left:1px dashed var(--border-subtle);background:transparent;font-size:13.5px;font-family:var(--font);color:var(--text-3);line-height:1.5;opacity:0.9;"><div style="white-space:pre-wrap;word-break:break-word;"><span>${escapeHtmlFn(r.reasoning)}</span></div></div>`
           : '';
         const isTerminal = r.label && (r.label.includes('Shell') || r.label.includes('Command') || r.label.includes('System') || r.label.includes('run_command'));
         const outputHtml = r.output
-          ? `<div style="width: 100%; margin-top: 4px; padding-left: 21px; box-sizing: border-box;">
-              <details style="margin: 0; opacity: 0.95; width: 100%;">
-                <summary style="cursor:pointer; color:var(--text-3); font-size:13px; font-weight:500; outline:none; user-select:none; display:inline-flex; align-items:center; gap:4px; padding: 2px 0;">
-                  <span>${isTerminal ? '&#9654; Terminal Output' : '&#9654; View output details'}</span>
+          ? `<div style="width:100%;margin-top:4px;padding-left:21px;box-sizing:border-box;">
+              <details style="margin:0;opacity:0.95;width:100%;">
+                <summary style="cursor:pointer;color:var(--text-3);font-size:13px;font-weight:500;outline:none;user-select:none;display:inline-flex;align-items:center;gap:2px;padding:2px 0;">
+                  ${svgChevron}<span>${isTerminal ? 'Terminal Output' : 'View output details'}</span>
                 </summary>
                 <pre class="tool-output-block tool-terminal-block">${escapeHtmlFn(r.output)}</pre>
               </details>
             </div>`
           : '';
-        const iconToUse = r.icon || '&#9654;';
+        const iconToUse = r.icon || fallbackIcon;
         const rLabel = escapeHtmlFn(r.label || '');
         const rSlashDetail = r.detail
-          ? `<span style="font-weight:500;font-size:14px;color:var(--text-secondary);white-space:nowrap;">${rLabel}</span><span style="color:var(--text-3);opacity:0.55;margin:0 1px;">/</span><span class="tool-detail" style="color:var(--text-3);font-size:13.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:340px;">${r.detail}</span>`
+          ? `<span style="font-weight:500;font-size:14px;color:var(--text-secondary);white-space:nowrap;">${rLabel}</span><span style="color:var(--text-3);opacity:0.55;margin:0 2px;">/</span><span class="tool-detail" style="color:var(--text-3);font-size:13.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:340px;">${r.detail}</span>`
           : `<span style="font-weight:500;font-size:14px;color:var(--text-secondary);white-space:nowrap;">${rLabel}</span>`;
 
         return `
-          <div class="tool-log-card" style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; margin:3px 0 4px 0; padding:4px 0; background:transparent; font-size:14px; font-family:var(--font); color:var(--text-3); gap:10px;">
-            <div style="display:flex; align-items:center; gap:6px; overflow:hidden;">
-              <span style="flex-shrink:0; opacity:0.75;">${iconToUse}</span>
+          <div class="tool-log-card" style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;margin:3px 0 4px 0;padding:4px 0;background:transparent;font-size:14px;font-family:var(--font);color:var(--text-3);gap:10px;">
+            <div style="display:flex;align-items:center;gap:6px;overflow:hidden;">
+              <span style="flex-shrink:0;opacity:0.85;display:inline-flex;align-items:center;">${iconToUse}</span>
               ${rSlashDetail}
             </div>
-            <span class="tool-status" style="flex-shrink:0; font-size:13px; color:var(--text-3); white-space:nowrap; opacity:0.75;">${statusSpan}</span>
+            <span class="tool-status" style="flex-shrink:0;font-size:13px;color:var(--text-3);white-space:nowrap;opacity:0.85;">${statusSpan}</span>
             ${outputHtml}
           </div>
           ${reasoningHtml}
