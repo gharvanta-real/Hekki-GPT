@@ -67,12 +67,12 @@ button.btn-canvas-launch {
   align-items: center !important;
   gap: 5px !important;
   font-size: 11.5px !important;
-  font-weight: 600 !important;
-  color: #2563eb !important;
-  background: rgba(37, 99, 235, 0.12) !important;
+  font-weight: 500 !important;
+  color: var(--text) !important;
+  background: var(--input-bg) !important;
+  border: 1px solid var(--border) !important;
   padding: 4px 10px !important;
   border-radius: 20px !important;
-  border: none !important;
   outline: none !important;
   box-shadow: none !important;
   cursor: pointer !important;
@@ -80,8 +80,8 @@ button.btn-canvas-launch {
 }
 .btn-canvas-launch:hover,
 button.btn-canvas-launch:hover {
-  background: #2563eb !important;
-  color: #ffffff !important;
+  background: var(--hover) !important;
+  color: var(--text) !important;
   transform: translateY(-1px);
 }
 .btn-canvas-launch i,
@@ -96,15 +96,16 @@ body.dark .btn-canvas-launch,
 body.dark button.btn-canvas-launch,
 [data-theme="dark"] .btn-canvas-launch,
 [data-theme="oled"] .btn-canvas-launch {
-  color: #60a5fa !important;
-  background: rgba(96, 165, 250, 0.22) !important;
+  color: var(--text) !important;
+  background: var(--input-bg) !important;
+  border-color: var(--border) !important;
 }
 body.dark .btn-canvas-launch:hover,
 body.dark button.btn-canvas-launch:hover,
 [data-theme="dark"] .btn-canvas-launch:hover,
 [data-theme="oled"] .btn-canvas-launch:hover {
-  color: #ffffff !important;
-  background: #2563eb !important;
+  color: var(--text) !important;
+  background: var(--hover) !important;
 }
 
 /* KEYFRAMES */
@@ -160,4 +161,68 @@ body.dark button.btn-canvas-launch:hover,
 @keyframes ghost-levitate {
   0%, 100% { transform: translateY(0px) rotate(0deg); }
   50% { transform: translateY(-4px) rotate(1.5deg); }
+}
+
+/* ==========================================================================
+   READING & DISPLAY — Body Modifier Classes
+   ========================================================================== */
+
+/* High Contrast Mode */
+body.hekki-high-contrast {
+  --text: #ffffff !important;
+  --text-2: #e4e4e7 !important;
+  --text-3: #a1a1aa !important;
+  --border: rgba(255,255,255,0.25) !important;
+}
+body.hekki-high-contrast.light {
+  --text: #000000 !important;
+  --text-2: #18181b !important;
+  --text-3: #3f3f46 !important;
+  --border: rgba(0,0,0,0.3) !important;
+}
+body.hekki-high-contrast .ai-message,
+body.hekki-high-contrast .msg-content,
+body.hekki-high-contrast .message-content {
+  color: var(--text) !important;
+}
+
+/* Reduce Motion */
+body.hekki-reduce-motion *,
+body.hekki-reduce-motion *::before,
+body.hekki-reduce-motion *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+}
+
+/* AI Message Tint */
+body.hekki-msg-tint .ai-message,
+body.hekki-msg-tint [data-role="assistant"] .msg-content {
+  background: rgba(37, 99, 235, 0.05) !important;
+  border-radius: 10px !important;
+  padding: 10px 14px !important;
+}
+body.light.hekki-msg-tint .ai-message,
+body.light.hekki-msg-tint [data-role="assistant"] .msg-content {
+  background: rgba(37, 99, 235, 0.06) !important;
+}
+
+/* Focus Mode — hide sidebar and nav */
+body.hekki-focus-mode #sidebar-nav,
+body.hekki-focus-mode #sidebar,
+body.hekki-focus-mode #titlebar {
+  display: none !important;
+}
+body.hekki-focus-mode #workspace {
+  margin-left: 0 !important;
+}
+body.hekki-focus-mode #main {
+  padding: 0 !important;
+}
+
+/* Dynamic Sidebar Navigation Visibility */
+.nav-item-hidden,
+#sidebar-nav .nav-item-hidden,
+#sidebar-nav .sidebar-action-btn.nav-item-hidden {
+  display: none !important;
 }

@@ -4,7 +4,7 @@
   max-width: 100%;
   align-self: center;
   font-family: var(--font);
-  font-size: 17px !important;
+  font-size: 15px !important;
   font-weight: 400;
   line-height: 1.55 !important;
   animation: fadeIn 0.2s ease;
@@ -24,7 +24,7 @@
   align-self: flex-end;
   color: var(--text);
   font-family: var(--font);
-  font-size: 17px !important;
+  font-size: 15px !important;
   font-weight: 400;
   line-height: 1.55 !important;
   word-break: break-word;
@@ -48,15 +48,10 @@
   left: 0;
   right: 0;
   height: 55px;
-  background: linear-gradient(to bottom, rgba(246, 247, 249, 0) 0%, var(--hover) 85%);
+  background: linear-gradient(to bottom, transparent 0%, var(--hover) 85%);
   pointer-events: none;
   transition: opacity 0.25s ease;
   border-radius: 0 0 16px 16px;
-}
-
-/* Dark Mode Fade Overlay */
-[data-theme="dark"] .msg.user.collapsible::after {
-  background: linear-gradient(to bottom, rgba(30, 41, 59, 0) 0%, var(--hover) 85%);
 }
 
 /* Expanded state */
@@ -338,9 +333,9 @@ summary {
   box-sizing: border-box;
   color: var(--text);
   font-family: var(--font) !important;
-  font-size: 16px !important;
+  font-size: 15px !important;
   font-weight: 400 !important;
-  line-height: 1.50 !important;
+  line-height: 1.55 !important;
   text-align: left;
 }
 .msg.ai h1, .msg.ai h2, .msg.ai h3, .msg.ai h4, .msg.ai h5, .msg.ai h6 {
@@ -369,8 +364,8 @@ summary {
   margin-top: 0;
   margin-bottom: 12px;
   font-family: var(--font) !important;
-  font-size: 16px !important;
-  line-height: 1.50 !important;
+  font-size: 15px !important;
+  line-height: 1.55 !important;
   font-weight: 400 !important;
   text-align: left;
 }

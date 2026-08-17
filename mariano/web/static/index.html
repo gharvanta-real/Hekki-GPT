@@ -2,7 +2,20 @@
 <html lang="en">
 <head>
   <style>
-    /* Anti-FOUC (Flash of Unstyled Content) */
+    /* Anti-FOUC & Global Modal Overlay */
+    .modal-overlay {
+      position: fixed !important;
+      inset: 0 !important;
+      background: rgba(0, 0, 0, 0.55) !important;
+      backdrop-filter: blur(4px) !important;
+      -webkit-backdrop-filter: blur(4px) !important;
+      z-index: 10005 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      padding: 20px !important;
+      box-sizing: border-box !important;
+    }
     .modal-overlay.hidden { display: none !important; }
     body { background-color: var(--bg, #111111); margin: 0; overflow: hidden; }
     #shell { opacity: 0; transition: opacity 0.3s ease-in; }
@@ -22,14 +35,7 @@
   <meta name="theme-color" content="#FCFCFC">
   <link rel="manifest" href="/manifest.json">
   <link rel="icon" type="image/png" href="/static/hekki.png">
-  <link rel="apple-touch-icon" href="/static/hekki.png">
-  <link class="cache-bust" rel="stylesheet" href="/static/theme.css?v=200">
-  <link class="cache-bust" rel="stylesheet" href="/static/css/system_panels.css?v=200">
-  <link class="cache-bust" rel="stylesheet" href="/static/css/layout/0_desktop_topnav.css?v=200">
-  <link class="cache-bust" rel="stylesheet" href="/static/css/chat.css?v=216">
-  <link class="cache-bust" rel="stylesheet" href="/static/css/chat/11_debate_mode.css?v=216">
-  <link class="cache-bust" rel="stylesheet" href="/static/css/chat/12_computer_vision_hud.css?v=216">
-  <link class="cache-bust" rel="stylesheet" href="/static/css/coder.css?v=200">
+  <link class="cache-bust" rel="stylesheet" href="/static/theme.css?v=220">
 
 
 
@@ -287,6 +293,14 @@
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;margin-right:8px;display:inline-block;vertical-align:middle;flex-shrink:0;"><path d="M19,14a3,3,0,1,0-3-3A3,3,0,0,0,19,14Zm0-4a1,1,0,1,1-1,1A1,1,0,0,1,19,10Z"/><path d="M26,4H6A2,2,0,0,0,4,6V26a2,2,0,0,0,2,2H26a2,2,0,0,0,2-2V6A2,2,0,0,0,26,4Zm0,22H6V20l5-5,5.59,5.59a2,2,0,0,0,2.82,0L21,19l5,5Zm0-4.83-3.59-3.59a2,2,0,0,0-2.82,0L18,19.17l-5.59-5.59a2,2,0,0,0-2.82,0L6,17.17V6H26Z"/></svg>
               <span>Images</span>
             </button>
+            <button class="sidebar-action-btn" id="btn-nav-workflows">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;margin-right:8px;display:inline-block;vertical-align:middle;flex-shrink:0;"><path d="M12,4H6A2,2,0,0,0,4,6V12a2,2,0,0,0,2,2h6a2,2,0,0,0,2-2V6A2,2,0,0,0,12,4ZM12,12H6V6h6Z"/><path d="M26,4H20a2,2,0,0,0-2,2V12a2,2,0,0,0,2,2h6a2,2,0,0,0,2-2V6A2,2,0,0,0,26,4Zm0,8H20V6h6Z"/><path d="M26,18H20a2,2,0,0,0-2,2v6a2,2,0,0,0,2,2h6a2,2,0,0,0,2-2V20A2,2,0,0,0,26,18Zm0,8H20V20h6Z"/><path d="M14,24a2,2,0,1,0-2,2A2,2,0,0,0,14,24Z"/></svg>
+              <span>Workflows</span>
+            </button>
+            <button class="sidebar-action-btn" id="btn-nav-graph">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;margin-right:8px;display:inline-block;vertical-align:middle;flex-shrink:0;"><circle cx="16" cy="6" r="3"/><circle cx="8" cy="24" r="3"/><circle cx="24" cy="24" r="3"/><path d="M14.5,8.6l-5,12.5,1.86.74,5-12.5Zm3,0,5,12.5,1.86-.74-5-12.5Z"/></svg>
+              <span>Knowledge Graph</span>
+            </button>
           </div>
         </div>
 
@@ -339,6 +353,14 @@
         <button class="modal-nav-item" data-section="appearance" title="Appearance">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;margin-right:6px;display:inline-block;vertical-align:middle;flex-shrink:0;"><rect x="15" y="2" width="2" height="3"/><rect x="27" y="15" width="3" height="2"/><rect x="15" y="27" width="2" height="3"/><rect x="2" y="15" width="3" height="2"/><rect x="6.22" y="5.73" width="2" height="3" transform="translate(-3 7.23) rotate(-45)"/><rect x="23.27" y="6.23" width="3" height="2" transform="translate(2.14 19.63) rotate(-45)"/><rect x="23.77" y="23.27" width="2" height="3" transform="translate(-10.26 24.77) rotate(-45)"/><polygon points="5.47 25.13 7.59 23 9 24.42 6.88 26.54 5.47 25.13"/><path d="M16,8a8,8,0,1,0,8,8A8,8,0,0,0,16,8Zm0,14a6,6,0,0,1,0-12Z"/></svg>
           <span>Appearance</span>
+        </button>
+        <button class="modal-nav-item" data-section="reading" title="Reading & Display">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;margin-right:6px;display:inline-block;vertical-align:middle;flex-shrink:0;"><path d="M28,6H4A2,2,0,0,0,2,8V24a2,2,0,0,0,2,2H28a2,2,0,0,0,2-2V8A2,2,0,0,0,28,6ZM14,24H4V20H14Zm0-6H4V14H14Zm0-6H4V8H14Zm14,12H16V8H28Z"/></svg>
+          <span>Reading & Display</span>
+        </button>
+        <button class="modal-nav-item" data-section="sidebar-pages" title="Sidebar & Pages">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;margin-right:6px;display:inline-block;vertical-align:middle;flex-shrink:0;"><path d="M28,4H4A2.0023,2.0023,0,0,0,2,6V26a2.0023,2.0023,0,0,0,2,2H28a2.0023,2.0023,0,0,0,2-2V6A2.0023,2.0023,0,0,0,28,4ZM4,6H16V26H4Z"/></svg>
+          <span>Sidebar & Pages</span>
         </button>
         <button class="modal-nav-item" data-section="gemini" title="Gemini API">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;margin-right:6px;display:inline-block;vertical-align:middle;flex-shrink:0;"><path d="m27,19c1.6543,0,3-1.3457,3-3s-1.3457-3-3-3c-1.302,0-2.4016.8384-2.8157,2h-5.7703l7.3008-7.3008c.3911.1875.8235.3008,1.2852.3008,1.6543,0,3-1.3457,3-3s-1.3457-3-3-3-3,1.3457-3,3c0,.4619.1135.894.3005,1.2852l-8.3005,8.3008v-6.5859c0-1.1025.897-2,2-2h2v-2h-2c-1.2002,0-2.2661.5425-3,1.3823-.7339-.8398-1.7998-1.3823-3-1.3823h-1c-4.9624,0-9,4.0371-9,9v6c0,4.9629,4.0376,9,9,9h1c1.2002,0,2.2661-.5425,3-1.3823.7339.8398,1.7998,1.3823,3,1.3823h2v-2h-2c-1.103,0-2-.8975-2-2v-6.5859l8.3005,8.3008c-.187.3911-.3005.8232-.3005,1.2852,0,1.6543,1.3457,3,3,3s3-1.3457,3-3-1.3457-3-3-3c-.4617,0-.894.1133-1.2852.3008l-7.3008-7.3008h5.7703c.4141,1.1616,1.5137,2,2.8157,2Zm0-4c.5513,0,1,.4482,1,1s-.4487,1-1,1-1-.4482-1-1,.4487-1,1-1Zm0-11c.5515,0,1,.4487,1,1s-.4485,1-1,1-1-.4487-1-1,.4485-1,1-1Zm-13,8h-2v2h2v4h-2c-1.6543,0-3,1.3457-3,3v2h2v-2c0-.5518.4487-1,1-1h2v4c0,1.1025-.897,2-2,2h-1c-3.5195,0-6.4324-2.6133-6.9202-6h1.9202v-2h-2v-4h3c1.6543,0,3-1.3457,3-3v-2h-2v2c0,.5518-.4487,1-1,1h-2.9202c.4878-3.3867,3.4006-6,6.9202-6h1c1.103,0,2,.8975,2,2v4Zm14,15c0,.5513-.4485,1-1,1s-1-.4487-1-1,.4485-1,1-1,1,.4487,1,1Z"/></svg>
@@ -510,9 +532,8 @@
                     </div>
 
                     <!-- Model Pill (center-left of button row) -->
-                    <button class="model-pill" id="single-model-pill">
-                      Hekki
-                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 32 32" fill="currentColor" style="width:12px;height:12px;margin-left:2px;"><polygon points="24,12 16,22 8,12"/></svg>
+                    <button class="model-pill cap-icon-btn" id="single-model-pill" title="Switch AI Model">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;display:block;"><path d="M16,21a5,5,0,1,1,5-5A5.0057,5.0057,0,0,1,16,21Zm0-8a3,3,0,1,0,3,3A3.0033,3.0033,0,0,0,16,13Z"/><path d="M26.86,12.4805h0a12.9277,12.9277,0,0,0-4.8575-4.9991q.2044-.213.4424-.4589h0c.82-.8482,1.93-1.9825,3.2622-3.3155A1,1,0,0,0,25,2c-.354,0-8.7363.0488-14.269,4.3018h0A12.15,12.15,0,0,0,7.481,9.998c-.1416-.1367-.295-.2841-.4585-.4423C6.1743,8.7349,5.04,7.6255,3.707,6.293A1,1,0,0,0,2,7c0,.3594.05,8.874,4.4058,14.4023a12.1023,12.1023,0,0,0,3.5918,3.1163c-.21.2177-.4346.4516-.6563.68h0c-.7954.8208-1.8286,1.8745-3.0483,3.0943A1,1,0,0,0,7,30c.2856,0,7.061-.0352,12.459-3.1055a12.9618,12.9618,0,0,0,5.06-4.8925q.3062.2937.68.6567c.82.7954,1.8745,1.8286,3.0943,3.0483A1,1,0,0,0,30,25C30,24.7119,29.9644,17.8877,26.86,12.4805Zm-3.03,6.1074-.5469,1.3672A10.5415,10.5415,0,0,1,18.47,25.1562,24.3514,24.3514,0,0,1,9.584,27.8135c.4409-.4492,3.8281-3.9824,3.8281-3.9824l-1.3682-.5474a9.8021,9.8021,0,0,1-4.0668-3.1191c-2.5406-3.2242-3.4585-7.7623-3.79-10.58.5435.5337,3.9815,3.8266,3.9815,3.8266l.5468-1.3672A9.8569,9.8569,0,0,1,11.95,7.8877h0C15.1665,5.415,19.6309,4.5146,22.4155,4.187c-.5332.5435-3.8276,3.9819-3.8276,3.9819l1.3677.5469a10.52,10.52,0,0,1,5.17,4.7608v0a24.29,24.29,0,0,1,2.688,8.94C27.3643,21.9751,23.83,18.5879,23.83,18.5879Z"/></svg>
                     </button>
 
                     <div class="capsule-right" style="margin-left: auto;">
@@ -594,9 +615,8 @@
                   </div>
 
                   <!-- Model Pill (center of button row) -->
-                  <button class="model-pill" id="conv-model-pill">
-                    Hekki
-                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 32 32" fill="currentColor" style="width:12px;height:12px;margin-left:2px;"><polygon points="24,12 16,22 8,12"/></svg>
+                  <button class="model-pill cap-icon-btn" id="conv-model-pill" title="Switch AI Model">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;display:block;"><path d="M16,21a5,5,0,1,1,5-5A5.0057,5.0057,0,0,1,16,21Zm0-8a3,3,0,1,0,3,3A3.0033,3.0033,0,0,0,16,13Z"/><path d="M26.86,12.4805h0a12.9277,12.9277,0,0,0-4.8575-4.9991q.2044-.213.4424-.4589h0c.82-.8482,1.93-1.9825,3.2622-3.3155A1,1,0,0,0,25,2c-.354,0-8.7363.0488-14.269,4.3018h0A12.15,12.15,0,0,0,7.481,9.998c-.1416-.1367-.295-.2841-.4585-.4423C6.1743,8.7349,5.04,7.6255,3.707,6.293A1,1,0,0,0,2,7c0,.3594.05,8.874,4.4058,14.4023a12.1023,12.1023,0,0,0,3.5918,3.1163c-.21.2177-.4346.4516-.6563.68h0c-.7954.8208-1.8286,1.8745-3.0483,3.0943A1,1,0,0,0,7,30c.2856,0,7.061-.0352,12.459-3.1055a12.9618,12.9618,0,0,0,5.06-4.8925q.3062.2937.68.6567c.82.7954,1.8745,1.8286,3.0943,3.0483A1,1,0,0,0,30,25C30,24.7119,29.9644,17.8877,26.86,12.4805Zm-3.03,6.1074-.5469,1.3672A10.5415,10.5415,0,0,1,18.47,25.1562,24.3514,24.3514,0,0,1,9.584,27.8135c.4409-.4492,3.8281-3.9824,3.8281-3.9824l-1.3682-.5474a9.8021,9.8021,0,0,1-4.0668-3.1191c-2.5406-3.2242-3.4585-7.7623-3.79-10.58.5435.5337,3.9815,3.8266,3.9815,3.8266l.5468-1.3672A9.8569,9.8569,0,0,1,11.95,7.8877h0C15.1665,5.415,19.6309,4.5146,22.4155,4.187c-.5332.5435-3.8276,3.9819-3.8276,3.9819l1.3677.5469a10.52,10.52,0,0,1,5.17,4.7608v0a24.29,24.29,0,0,1,2.688,8.94C27.3643,21.9751,23.83,18.5879,23.83,18.5879Z"/></svg>
                   </button>
 
                   <!-- Actions (right) -->
@@ -652,6 +672,12 @@
 
       <!-- ═══ PLUGINS HUB PANE (ChatGPT-style full page Plugins Store) ═══ -->
       <div id="plugins-pane"></div>
+
+      <!-- ═══ WORKFLOWS STUDIO PANE ═══ -->
+      <div id="workflows-pane"></div>
+
+      <!-- ═══ KNOWLEDGE GRAPH & MIND-MAP PANE ═══ -->
+      <div id="graph-pane"></div>
 
       <!-- ═══ HISTORY PANE (ChatGPT-style full page Search Chats) ═══ -->
       <div id="history-pane"></div>
@@ -785,6 +811,213 @@
               </div>
             </section>
 
+            <!-- READING & DISPLAY -->
+            <section class="settings-section" id="section-reading">
+              <h2 class="section-title">Reading &amp; Display</h2>
+              <p class="section-sub">Customize text size, contrast, spacing, and accessibility for a comfortable reading experience.</p>
+
+              <!-- Text Scale -->
+              <div class="settings-card-title">Text Scale</div>
+              <div class="settings-card-box">
+                <div class="settings-row">
+                  <div class="row-info">
+                    <span class="row-label">Interface Text Size</span>
+                    <span class="row-desc">Scale the font size across the entire chat and interface.</span>
+                  </div>
+                  <select class="settings-select" id="settings-text-size">
+                    <option value="0.88">Small (88%)</option>
+                    <option value="1.0" selected>Normal (100%)</option>
+                    <option value="1.1">Large (110%)</option>
+                    <option value="1.2">X-Large (120%)</option>
+                    <option value="1.35">XX-Large (135%)</option>
+                  </select>
+                </div>
+                <div class="settings-row">
+                  <div class="row-info">
+                    <span class="row-label">Message Line Height</span>
+                    <span class="row-desc">Controls vertical spacing between lines of text in AI responses.</span>
+                  </div>
+                  <select class="settings-select" id="settings-line-height">
+                    <option value="1.4">Compact</option>
+                    <option value="1.6" selected>Normal</option>
+                    <option value="1.85">Relaxed</option>
+                    <option value="2.1">Spacious</option>
+                  </select>
+                </div>
+                <div class="settings-row">
+                  <div class="row-info">
+                    <span class="row-label">Letter Spacing</span>
+                    <span class="row-desc">Adjusts spacing between individual characters for readability.</span>
+                  </div>
+                  <select class="settings-select" id="settings-letter-spacing">
+                    <option value="0em" selected>Normal (0)</option>
+                    <option value="0.02em">Slightly Wide</option>
+                    <option value="0.05em">Wide</option>
+                    <option value="0.08em">Very Wide</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Reading Comfort -->
+              <div class="settings-card-title">Reading Comfort</div>
+              <div class="settings-card-box">
+                <div class="settings-row">
+                  <div class="row-info">
+                    <span class="row-label">Message Max Width</span>
+                    <span class="row-desc">Controls how wide AI responses stretch on large screens.</span>
+                  </div>
+                  <select class="settings-select" id="settings-msg-width">
+                    <option value="580px">Narrow (580px)</option>
+                    <option value="720px" selected>Normal (720px)</option>
+                    <option value="860px">Wide (860px)</option>
+                    <option value="100%">Full Width</option>
+                  </select>
+                </div>
+                <div class="settings-row">
+                  <div class="row-info">
+                    <span class="row-label">AI Message Tint</span>
+                    <span class="row-desc">Adds a subtle background tint to AI replies for visual separation.</span>
+                  </div>
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="settings-msg-tint">
+                    <span class="toggle-track"></span>
+                  </label>
+                </div>
+                <div class="settings-row">
+                  <div class="row-info">
+                    <span class="row-label">Dyslexia-Friendly Font</span>
+                    <span class="row-desc">Switches to OpenDyslexic — a typeface designed to improve readability for dyslexia.</span>
+                  </div>
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="settings-dyslexia-font">
+                    <span class="toggle-track"></span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Contrast & Accessibility -->
+              <div class="settings-card-title">Contrast &amp; Accessibility</div>
+              <div class="settings-card-box">
+                <div class="settings-row">
+                  <div class="row-info">
+                    <span class="row-label">High Contrast Mode</span>
+                    <span class="row-desc">Increases text and border contrast for improved legibility in low-light conditions.</span>
+                  </div>
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="settings-high-contrast">
+                    <span class="toggle-track"></span>
+                  </label>
+                </div>
+                <div class="settings-row">
+                  <div class="row-info">
+                    <span class="row-label">Reduce Motion &amp; Animations</span>
+                    <span class="row-desc">Disables fade-ins, transitions, and micro-animations app-wide.</span>
+                  </div>
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="settings-reduce-motion">
+                    <span class="toggle-track"></span>
+                  </label>
+                </div>
+                <div class="settings-row">
+                  <div class="row-info">
+                    <span class="row-label">Focus Mode</span>
+                    <span class="row-desc">Hides the sidebar and top nav while reading — only chat content is visible.</span>
+                  </div>
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="settings-focus-mode">
+                    <span class="toggle-track"></span>
+                  </label>
+                </div>
+              </div>
+
+            </section>
+
+            <!-- SIDEBAR & PAGES VISIBILITY -->
+            <section class="settings-section" id="section-sidebar-pages">
+              <h2 class="section-title">Sidebar &amp; Pages</h2>
+              <p class="section-sub">Show or hide specific page links and feature modules from the left navigation sidebar.</p>
+
+              <div class="settings-card-title">Navigation Links Visibility</div>
+              <div class="settings-card-box">
+                <div class="settings-row">
+                  <div class="row-info">
+                    <span class="row-label">Chat History</span>
+                    <span class="row-desc">Show Chat History button in the sidebar.</span>
+                  </div>
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="toggle-nav-history" checked>
+                    <span class="toggle-track"></span>
+                  </label>
+                </div>
+
+                <div class="settings-row">
+                  <div class="row-info">
+                    <span class="row-label">Plugins &amp; Connectors</span>
+                    <span class="row-desc">Show Plugins Hub link in the sidebar.</span>
+                  </div>
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="toggle-nav-plugins" checked>
+                    <span class="toggle-track"></span>
+                  </label>
+                </div>
+
+                <div class="settings-row">
+                  <div class="row-info">
+                    <span class="row-label">Expert Skills</span>
+                    <span class="row-desc">Show Skills catalog button in the sidebar.</span>
+                  </div>
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="toggle-nav-skills" checked>
+                    <span class="toggle-track"></span>
+                  </label>
+                </div>
+
+                <div class="settings-row">
+                  <div class="row-info">
+                    <span class="row-label">Images Gallery</span>
+                    <span class="row-desc">Show Image Generator and Gallery link.</span>
+                  </div>
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="toggle-nav-images" checked>
+                    <span class="toggle-track"></span>
+                  </label>
+                </div>
+
+                <div class="settings-row">
+                  <div class="row-info">
+                    <span class="row-label">Autonomous Workflows</span>
+                    <span class="row-desc">Show Autonomous Workflows Studio link.</span>
+                  </div>
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="toggle-nav-workflows" checked>
+                    <span class="toggle-track"></span>
+                  </label>
+                </div>
+
+                <div class="settings-row">
+                  <div class="row-info">
+                    <span class="row-label">Knowledge Graph Studio</span>
+                    <span class="row-desc">Show Knowledge Graph &amp; Mind-Map link.</span>
+                  </div>
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="toggle-nav-graph" checked>
+                    <span class="toggle-track"></span>
+                  </label>
+                </div>
+
+                <div class="settings-row">
+                  <div class="row-info">
+                    <span class="row-label">Playground &amp; Debate</span>
+                    <span class="row-desc">Show Multi-Persona Debate and Playground group.</span>
+                  </div>
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="toggle-nav-playground" checked>
+                    <span class="toggle-track"></span>
+                  </label>
+                </div>
+              </div>
+            </section>
+
             <!-- GEMINI API -->
             <section class="settings-section" id="section-gemini">
               <h2 class="section-title">Gemini API &amp; Cloud Models</h2>
@@ -831,7 +1064,7 @@
                   </div>
                   <div style="display:flex; gap:8px; align-items:center;">
                     <input class="settings-input" id="settings-ollama-url" type="text" placeholder="http://localhost:11434" style="width:180px; text-align:left;">
-                    <button id="btn-fetch-local-models" type="button" style="padding:6px 12px; border-radius:8px; border:none; background:var(--hover); color:var(--text-primary); cursor:pointer; font-size:12px; font-weight:600; display:flex; align-items:center; gap:6px;">
+                    <button id="btn-fetch-local-models" type="button" style="padding:6px 12px; border-radius:8px; border:none; background:var(--hover); color:var(--text-primary); cursor:pointer; font-size:12px; font-weight:400; display:flex; align-items:center; gap:6px;">
                       <i data-lucide="refresh-cw" style="width:13px;height:13px;"></i> Fetch
                     </button>
                   </div>
@@ -890,7 +1123,7 @@
                   
                   <!-- Navigation Card -->
                   <div style="display: flex; flex-direction: column; gap: 12px;">
-                    <div style="font-size: 13.5px; font-weight: 600; color: var(--text-primary); display: flex; align-items: center; gap: 6px;">
+                    <div style="font-size: 13.5px; font-weight: 400; color: var(--text-primary); display: flex; align-items: center; gap: 6px;">
                       <i data-lucide="compass" style="width: 15px; height: 15px; color: var(--text-2);"></i> Global Navigation
                     </div>
                     
@@ -925,7 +1158,7 @@
 
                   <!-- Controls & Popups Card -->
                   <div style="display: flex; flex-direction: column; gap: 12px;">
-                    <div style="font-size: 13.5px; font-weight: 600; color: var(--text-primary); display: flex; align-items: center; gap: 6px;">
+                    <div style="font-size: 13.5px; font-weight: 400; color: var(--text-primary); display: flex; align-items: center; gap: 6px;">
                       <i data-lucide="sliders" style="width: 15px; height: 15px; color: var(--text-2);"></i> Controls & Popups
                     </div>
 
@@ -973,7 +1206,7 @@
                     <span class="row-label">Version</span>
                     <span class="row-desc">Active build release identifier</span>
                   </div>
-                  <span style="font-weight:600; color:var(--text-primary); font-family:monospace; font-size:12.5px;">v3.8.0-cursor-settings</span>
+                  <span style="font-weight:400; color:var(--text-primary); font-family:monospace; font-size:12.5px;">v3.8.0-cursor-settings</span>
                 </div>
 
                 <div class="settings-row">
@@ -1043,29 +1276,22 @@
 <input type="file" id="attach-file-input" style="display:none" multiple>
 
 <!-- Full-Screen Image Lightbox Modal -->
-<div id="image-lightbox-modal" class="modal-overlay hidden" style="z-index: 10000; background: rgba(0, 0, 0, 0.90); backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: center; position: fixed; inset: 0;">
+<div id="image-lightbox-modal" class="modal-overlay hidden" style="z-index: 10005; background: rgba(0, 0, 0, 0.90); backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: center; position: fixed; inset: 0;">
   <div class="lightbox-container" style="position: relative; max-width: 92vw; max-height: 92vh; display: flex; flex-direction: column; align-items: center; justify-content: center;">
     
     <!-- Image Display Box with Floating Overlay Toolbar -->
-    <div class="lightbox-img-wrapper" style="position: relative; max-width: 90vw; max-height: 88vh; border-radius: 20px; overflow: hidden; display: flex; align-items: center; justify-content: center; box-shadow: 0 25px 65px rgba(0,0,0,0.75); background: #09090b;">
+    <div class="lightbox-img-wrapper" style="position: relative; max-width: 90vw; max-height: 88vh; border-radius: 20px; overflow: hidden; display: flex; align-items: center; justify-content: center; box-shadow: none !important; border: none !important; background: #09090b;">
       
-      <!-- Floating Translucent Toolbar Overlaying Top-Right INSIDE Image Frame -->
-      <div class="lightbox-toolbar" style="position: absolute; top: 14px; right: 14px; display: flex; align-items: center; gap: 6px; background: rgba(24, 24, 27, 0.75); backdrop-filter: blur(16px); padding: 5px 10px; border-radius: 30px; z-index: 100; border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 4px 20px rgba(0,0,0,0.4);">
-        <button id="lightbox-btn-download" class="lightbox-tool-btn" title="Download Image" style="background: rgba(255, 255, 255, 0.12); border: none; color: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; transition: all 0.15s ease;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 32 32" fill="#ffffff" style="width:15px;height:15px;"><path d="M26,24v4H6V24H4v4a2,2,0,0,0,2,2H26a2,2,0,0,0,2-2V24Z"/><polygon points="15 3 15 19.59 11.41 16 10 17.41 16 23.41 22 17.41 20.59 16 17 19.59 17 3 15 3"/></svg>
+      <!-- Floating Action Buttons -->
+      <div class="lightbox-toolbar" style="position: absolute; top: 16px; right: 16px; display: flex; align-items: center; gap: 10px; z-index: 100; background: transparent !important; border: none !important; box-shadow: none !important; padding: 0 !important;">
+        <button id="lightbox-btn-download" class="lightbox-tool-btn" title="Download Image" style="background: rgba(18, 18, 20, 0.82); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: none !important; color: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 38px; height: 38px; border-radius: 50%; transition: transform 0.12s, background-color 0.15s; padding: 0; box-shadow: none !important;">
+          <svg id="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="20" height="20" fill="#ffffff" style="width:20px;height:20px;display:block;opacity:1 !important;color:#ffffff;"><path d="M23.5,22H23V20h.5a4.5,4.5,0,0,0,.36-9L23,11l-.1-.82a7,7,0,0,0-13.88,0L9,11,8.14,11a4.5,4.5,0,0,0,.36,9H9v2H8.5A6.5,6.5,0,0,1,7.2,9.14a9,9,0,0,1,17.6,0A6.5,6.5,0,0,1,23.5,22Z"/><polygon points="17 26.17 17 14 15 14 15 26.17 12.41 23.59 11 25 16 30 21 25 19.59 23.59 17 26.17"/></svg>
         </button>
-        <button id="lightbox-btn-copy" class="lightbox-tool-btn" title="Copy Image Link" style="background: rgba(255, 255, 255, 0.12); border: none; color: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; transition: all 0.15s ease;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 32 32" fill="#ffffff" style="width:15px;height:15px;"><path d="M28,10V28H10V10H28m0-2H10a2,2,0,0,0-2,2V28a2,2,0,0,0,2,2H28a2,2,0,0,0,2-2V10a2,2,0,0,0-2-2Z"/><path d="M4,18H2V4A2,2,0,0,1,4,2H18V4H4Z"/></svg>
-        </button>
-        <a id="lightbox-btn-external" target="_blank" rel="noopener noreferrer" class="lightbox-tool-btn" title="Open Source Link" style="background: rgba(255, 255, 255, 0.12); border: none; color: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; transition: all 0.15s ease; text-decoration: none;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 32 32" fill="#ffffff" style="width:15px;height:15px;"><path d="M26,26H6V6H16V4H6A2,2,0,0,0,4,6V26a2,2,0,0,0,2,2H26a2,2,0,0,0,2-2V16H26Z"/><polygon points="28 4 20 4 20 6 24.59 6 15 15.59 16.41 17 26 7.41 26 12 28 12 28 4"/></svg>
-        </a>
-        <button id="lightbox-btn-zoom" class="lightbox-tool-btn" title="Toggle Zoom" style="background: rgba(255, 255, 255, 0.12); border: none; color: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; transition: all 0.15s ease;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 32 32" fill="#ffffff" style="width:15px;height:15px;"><polygon points="20 2 20 4 26.586 4 18 12.582 19.414 14 28 5.414 28 12 30 12 30 2 20 2"/><polygon points="14 19.416 12.592 18 4 26.586 4 20 2 20 2 30 12 30 12 28 5.414 28 14 19.416"/></svg>
-        </button>
-        <div style="width: 1px; height: 16px; background: rgba(255,255,255,0.2); margin: 0 2px;"></div>
-        <button id="lightbox-btn-close" class="lightbox-tool-btn close" title="Close (Esc)" style="background: rgba(255, 255, 255, 0.12); border: none; color: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; transition: all 0.15s ease;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 32 32" fill="#ffffff" style="width:15px;height:15px;"><polygon points="17.4141 16 26 7.4141 24.5859 6 16 14.5859 7.4143 6 6 7.4141 14.5859 16 6 24.5859 7.4143 26 16 17.4141 24.5859 26 26 24.5859 17.4141 16"/></svg>
+        <button id="lightbox-btn-close" class="lightbox-tool-btn close" title="Close (Esc)" style="background: rgba(18, 18, 20, 0.82); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: none !important; color: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 38px; height: 38px; border-radius: 50%; transition: transform 0.12s, background-color 0.15s; padding: 0; box-shadow: none !important;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" style="width:19px;height:19px;display:block;opacity:1 !important;color:#ffffff;stroke-width:2.8px;">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
         </button>
       </div>
 
@@ -1075,24 +1301,24 @@
   </div>
 </div>
 
-<!-- Custom Modal Dialog (Confirm/Prompt) -->
-<div id="custom-dialog-modal" class="modal-overlay hidden" style="z-index: 9999;">
-  <div class="modal-box compact">
-    <div class="modal-header">
-      <h3 id="custom-dialog-title">Confirm Action</h3>
-      <button class="icon-btn" id="custom-dialog-close" title="Close">
-        <i data-lucide="x"></i>
+<!-- Custom Modal Dialog (Confirm/Prompt/Rename) -->
+<div id="custom-dialog-modal" class="modal-overlay hidden" style="z-index: 10005;">
+  <div class="modal-box compact" style="width: 100%; max-width: 400px; background: var(--card); border: 1px solid var(--border) !important; border-radius: 16px; padding: 22px 24px; box-shadow: none !important; display: flex; flex-direction: column; gap: 14px;">
+    <div class="modal-header" style="display: flex; align-items: center; justify-content: space-between; width: 100%; border-bottom: none; padding: 0;">
+      <h3 id="custom-dialog-title" style="margin: 0; font-size: 15px; font-weight: 400; color: var(--text); font-family: var(--font);">Confirm Action</h3>
+      <button class="icon-btn" id="custom-dialog-close" title="Close" style="background: transparent; border: none; color: var(--text-3); cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 4px;">
+        <i data-lucide="x" style="width: 16px; height: 16px;"></i>
       </button>
     </div>
-    <div class="modal-body">
-      <p id="custom-dialog-message">Are you sure?</p>
-      <div id="custom-dialog-input-container" class="hidden" style="margin-top: 12px;">
-        <input type="text" id="custom-dialog-input" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; font-family: var(--font); background: var(--bg); color: var(--text);">
+    <div class="modal-body" style="padding: 0; margin: 0; width: 100%;">
+      <p id="custom-dialog-message" style="margin: 0; font-size: 13px; color: var(--text-3); font-family: var(--font); line-height: 1.5; font-weight: 400; word-break: break-word;">Are you sure?</p>
+      <div id="custom-dialog-input-container" class="hidden" style="margin-top: 10px; width: 100%;">
+        <input type="text" id="custom-dialog-input" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; font-family: var(--font); font-size: 13px; font-weight: 400; background: var(--input-bg); color: var(--text); outline: none; box-sizing: border-box;">
       </div>
     </div>
-    <div class="modal-footer">
-      <button class="msg-edit-btn btn-cancel" id="custom-dialog-cancel">Cancel</button>
-      <button class="msg-edit-btn save btn-save" id="custom-dialog-confirm">Confirm</button>
+    <div class="modal-footer" style="display: flex; align-items: center; justify-content: flex-end; gap: 8px; width: 100%; margin: 6px 0 0 0; padding: 0; border-top: none;">
+      <button class="msg-edit-btn btn-cancel" id="custom-dialog-cancel" style="padding: 6px 16px; font-size: 12.5px; font-weight: 400; border-radius: 16px; border: 1px solid var(--border) !important; background: var(--input-bg) !important; color: var(--text-2) !important; cursor: pointer; transition: background 0.15s ease;" onmouseover="this.style.background='var(--hover)';" onmouseout="this.style.background='var(--input-bg)';">Cancel</button>
+      <button class="msg-edit-btn save btn-save" id="custom-dialog-confirm" style="padding: 6px 16px; font-size: 12.5px; font-weight: 500; border-radius: 16px; border: none !important; background: var(--btn-primary-bg) !important; color: var(--btn-primary-text) !important; cursor: pointer; transition: opacity 0.15s ease;">Confirm</button>
     </div>
   </div>
 </div>
@@ -1129,7 +1355,7 @@
     
     <!-- Header -->
     <div class="modal-header" style="padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--card); flex-shrink: 0;">
-      <h3 style="margin:0; font-size:14px; font-weight:600; display: flex; align-items: center; gap: 8px; color: var(--text-primary);" id="project-modal-title">
+      <h3 style="margin:0; font-size:14px; font-weight:400; display: flex; align-items: center; gap: 8px; color: var(--text-primary);" id="project-modal-title">
         <i data-lucide="folder" style="width: 16px; height: 16px; color: var(--text-secondary);"></i>
         <span>Project Workspace</span>
       </h3>
@@ -1169,33 +1395,33 @@
 
         <!-- View 2: New Project Form -->
         <div id="project-view-new" class="hidden" style="display: flex; flex-direction: column; gap: 16px;">
-          <h4 style="margin: 0; font-size: 13px; font-weight: 600; color: var(--text-primary);">New Workspace</h4>
+          <h4 style="margin: 0; font-size: 13px; font-weight: 400; color: var(--text-primary);">New Workspace</h4>
           
           <div>
-            <label style="display:block; font-size:11px; font-weight:600; color:var(--text-secondary); margin-bottom:6px;">Workspace Name</label>
-            <input type="text" id="input-new-name" placeholder="e.g. coffee-brand" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; font-size:12px; background: var(--bg); color: var(--text-primary); outline: none;">
+            <label style="display:block; font-size:11.5px; font-weight:400; color:var(--text-secondary); margin-bottom:6px;">Workspace Name</label>
+            <input type="text" id="input-new-name" placeholder="e.g. coffee-brand" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; font-size:12px; background: var(--bg); color: var(--text-primary); outline: none; font-weight: 400;">
           </div>
           
           <div style="font-size:11px; color:var(--text-secondary); line-height:1.5;">
-            <span style="font-weight: 500; color: var(--text-primary);">Path:</span>
-            <div id="preview-new-path" style="margin-top: 4px; font-family: var(--font-mono); background: var(--hover); padding: 6px 10px; border-radius: 4px; color: var(--text-primary);">data/workspace/...</div>
+            <span style="font-weight: 400; color: var(--text-primary);">Path:</span>
+            <div id="preview-new-path" style="margin-top: 4px; font-family: var(--font-mono); background: var(--hover); padding: 6px 10px; border-radius: 4px; color: var(--text-primary); font-weight: 400;">data/workspace/...</div>
           </div>
           
           <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 10px;">
-            <button class="btn-cancel-outline btn-project-view-back" style="font-size: 11px;">Back</button>
-            <button class="msg-edit-btn save btn-save btn-project-confirm" data-mode="new" style="padding: 6px 16px; font-size: 11px;">Load Workspace</button>
+            <button class="btn-cancel-outline btn-project-view-back" style="font-size: 11px; font-weight: 400; padding: 6px 16px; border-radius: 16px; border: 1px solid var(--border) !important; background: var(--input-bg) !important; color: var(--text-2) !important; cursor: pointer;">Back</button>
+            <button class="msg-edit-btn save btn-save btn-project-confirm" data-mode="new" style="padding: 6px 16px; font-size: 11px; font-weight: 500; border-radius: 16px; border: none !important; background: var(--btn-primary-bg) !important; color: var(--btn-primary-text) !important; cursor: pointer;">Load Workspace</button>
           </div>
         </div>
 
         <!-- View 3: Open Existing Form -->
         <div id="project-view-exist" class="hidden" style="display: flex; flex-direction: column; gap: 16px;">
-          <h4 style="margin: 0; font-size: 13px; font-weight: 600; color: var(--text-primary);">Open Existing</h4>
+          <h4 style="margin: 0; font-size: 13px; font-weight: 400; color: var(--text-primary);">Open Existing</h4>
           
           <div>
-            <label style="display:block; font-size:11px; font-weight:600; color:var(--text-secondary); margin-bottom:6px;">Local Folder Path</label>
+            <label style="display:block; font-size:11.5px; font-weight:400; color:var(--text-secondary); margin-bottom:6px;">Local Folder Path</label>
             <div style="display:flex; gap:8px;">
-              <input type="text" id="input-exist-path" placeholder="e.g. C:\Projects\my-site" style="flex:1; padding:8px 12px; border:1px solid var(--border); border-radius:6px; font-size:12px; background:var(--bg); color:var(--text-primary); outline: none;">
-              <button id="btn-browse-folder" style="padding:0 12px; background:var(--hover); color:var(--text-primary); border:1px solid var(--border); border-radius:6px; font-size:11px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:6px;">
+              <input type="text" id="input-exist-path" placeholder="e.g. C:\Projects\my-site" style="flex:1; padding:8px 12px; border:1px solid var(--border); border-radius:6px; font-size:12px; background:var(--bg); color:var(--text-primary); outline: none; font-weight: 400;">
+              <button id="btn-browse-folder" style="padding:0 12px; background:var(--hover); color:var(--text-primary); border:1px solid var(--border); border-radius:6px; font-size:11px; font-weight:400; cursor:pointer; display:flex; align-items:center; gap:6px;">
                 <i data-lucide="folder" style="width:14px; height:14px; color:var(--text-secondary);"></i>
                 <span>Browse</span>
               </button>
@@ -1203,13 +1429,13 @@
           </div>
           
           <div style="font-size:11px; color:var(--text-secondary); line-height:1.5;">
-            <span style="font-weight: 500; color: var(--text-primary);">Detected Project Name:</span>
-            <div id="preview-exist-name" style="margin-top: 4px; font-family: var(--font-mono); background: var(--hover); padding: 6px 10px; border-radius: 4px; color: var(--text-primary); font-weight: 600;">None</div>
+            <span style="font-weight: 400; color: var(--text-primary);">Detected Project Name:</span>
+            <div id="preview-exist-name" style="margin-top: 4px; font-family: var(--font-mono); background: var(--hover); padding: 6px 10px; border-radius: 4px; color: var(--text-primary); font-weight: 400;">None</div>
           </div>
           
           <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 10px;">
-            <button class="btn-cancel-outline btn-project-view-back" style="font-size: 11px;">Back</button>
-            <button class="msg-edit-btn save btn-save btn-project-confirm" data-mode="exist" style="padding: 6px 16px; font-size: 11px;">Load Workspace</button>
+            <button class="btn-cancel-outline btn-project-view-back" style="font-size: 11px; font-weight: 400; padding: 6px 16px; border-radius: 16px; border: 1px solid var(--border) !important; background: var(--input-bg) !important; color: var(--text-2) !important; cursor: pointer;">Back</button>
+            <button class="msg-edit-btn save btn-save btn-project-confirm" data-mode="exist" style="padding: 6px 16px; font-size: 11px; font-weight: 500; border-radius: 16px; border: none !important; background: var(--btn-primary-bg) !important; color: var(--btn-primary-text) !important; cursor: pointer;">Load Workspace</button>
           </div>
         </div>
 
@@ -1230,23 +1456,23 @@
     <!-- STEP 1: Choose -->
     <div id="coder-popup-step-choose" style="display:flex; flex-direction:column; gap:12px; width:100%;">
       <div style="display:flex; align-items:center; justify-content:space-between;">
-        <h3 style="margin:0; font-size:15px; font-weight:600; color:var(--text-primary);">Setup Workspace</h3>
+        <h3 style="margin:0; font-size:14px; font-weight:400; color:var(--text-primary);">Setup Workspace</h3>
         <button id="coder-popup-close" class="icon-btn" title="Close" style="width:24px; height:24px;">
           <i data-lucide="x" style="width:14px; height:14px;"></i>
         </button>
       </div>
-      <p style="margin:0; font-size:12px; color:var(--text-3); line-height:1.5;">Choose how you want to initialize Hekki Coder</p>
+      <p style="margin:0; font-size:12px; color:var(--text-3); line-height:1.5; font-weight:400;">Choose how you want to initialize Hekki Coder</p>
       
       <div style="display:flex; flex-direction:column; gap:8px; margin-top:4px;">
         <button id="coder-card-new" class="coder-popup-choice-btn" style="width:100%; display:flex; align-items:center; gap:10px; padding:10px 12px; background:var(--hover); border:1px solid var(--border); border-radius:8px; cursor:pointer; color:var(--text); font-family:var(--font); font-size:13px; text-align:left; transition:all 0.1s;">
           <i data-lucide="folder-plus" style="width:15px; height:15px; color:var(--text-3); flex-shrink:0;"></i>
-          <span style="font-weight:500; flex:1;">Create New Workspace</span>
+          <span style="font-weight:400; flex:1;">Create New Workspace</span>
           <i data-lucide="chevron-right" style="width:13px; height:13px; color:var(--text-3);"></i>
         </button>
 
         <button id="coder-card-existing" class="coder-popup-choice-btn" style="width:100%; display:flex; align-items:center; gap:10px; padding:10px 12px; background:var(--hover); border:1px solid var(--border); border-radius:8px; cursor:pointer; color:var(--text); font-family:var(--font); font-size:13px; text-align:left; transition:all 0.1s;">
           <i data-lucide="folder-open" style="width:15px; height:15px; color:var(--text-3); flex-shrink:0;"></i>
-          <span style="font-weight:500; flex:1;">Open Existing Workspace</span>
+          <span style="font-weight:400; flex:1;">Open Existing Workspace</span>
           <i data-lucide="chevron-right" style="width:13px; height:13px; color:var(--text-3);"></i>
         </button>
       </div>
@@ -1258,23 +1484,23 @@
         <button class="coder-popup-back icon-btn" style="width:24px; height:24px;">
           <i data-lucide="arrow-left" style="width:14px; height:14px;"></i>
         </button>
-        <h3 style="margin:0; font-size:15px; font-weight:600; color:var(--text-primary);">New Workspace</h3>
+        <h3 style="margin:0; font-size:14px; font-weight:400; color:var(--text-primary);">New Workspace</h3>
       </div>
 
       <div>
-        <label style="display:block; font-size:11px; font-weight:600; color:var(--text-3); margin-bottom:6px;">Project Name</label>
+        <label style="display:block; font-size:11.5px; font-weight:400; color:var(--text-3); margin-bottom:6px;">Project Name</label>
         <input id="coder-new-project-name" type="text" placeholder="e.g. coffee-brand"
-          style="width:100%; padding:8px 12px; border:1px solid var(--border); border-radius:6px; font-size:13px; background:var(--bg); color:var(--text); outline:none; box-sizing:border-box; font-family:var(--font);">
+          style="width:100%; padding:8px 12px; border:1px solid var(--border); border-radius:6px; font-size:13px; font-weight:400; background:var(--bg); color:var(--text); outline:none; box-sizing:border-box; font-family:var(--font);">
       </div>
 
       <div style="background:var(--hover); border-radius:6px; padding:8px 12px; font-size:11px; line-height:1.4;">
-        <div style="color:var(--text-3); font-size:10px; font-weight:600; margin-bottom:2px;">Target Path</div>
-        <div style="font-family:monospace; color:var(--text-2);">data/workspaces/&lt;name&gt;</div>
+        <div style="color:var(--text-3); font-size:10px; font-weight:400; margin-bottom:2px;">Target Path</div>
+        <div style="font-family:monospace; color:var(--text-2); font-weight:400;">data/workspaces/&lt;name&gt;</div>
       </div>
 
       <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:6px;">
-        <button class="coder-popup-back msg-edit-btn btn-cancel" style="font-size:11px;">Back</button>
-        <button id="coder-btn-create-project" class="msg-edit-btn save btn-save" style="padding:6px 16px; font-size:11px;">Create Workspace</button>
+        <button class="coder-popup-back msg-edit-btn btn-cancel" style="font-size: 11px; font-weight: 400; padding: 6px 16px; border-radius: 16px; border: 1px solid var(--border) !important; background: var(--input-bg) !important; color: var(--text-2) !important; cursor: pointer;">Back</button>
+        <button id="coder-btn-create-project" class="msg-edit-btn save btn-save" style="padding: 6px 16px; font-size: 11px; font-weight: 500; border-radius: 16px; border: none !important; background: var(--btn-primary-bg) !important; color: var(--btn-primary-text) !important; cursor: pointer;">Create Workspace</button>
       </div>
     </div>
 
@@ -1284,15 +1510,15 @@
         <button class="coder-popup-back icon-btn" style="width:24px; height:24px;">
           <i data-lucide="arrow-left" style="width:14px; height:14px;"></i>
         </button>
-        <h3 style="margin:0; font-size:15px; font-weight:600; color:var(--text-primary);">Open Existing</h3>
+        <h3 style="margin:0; font-size:14px; font-weight:400; color:var(--text-primary);">Open Existing</h3>
       </div>
 
       <div>
-        <label style="display:block; font-size:11px; font-weight:600; color:var(--text-3); margin-bottom:6px;">Local Folder Path</label>
+        <label style="display:block; font-size:11.5px; font-weight:400; color:var(--text-3); margin-bottom:6px;">Local Folder Path</label>
         <div style="display:flex; gap:8px;">
           <input id="coder-exist-path" type="text" placeholder="e.g. D:\\Projects\\my-site"
-            style="flex:1; padding:8px 12px; border:1px solid var(--border); border-radius:6px; font-size:13px; background:var(--bg); color:var(--text); outline:none; font-family:monospace; box-sizing:border-box;">
-          <button id="coder-btn-browse-existing" style="padding:0 12px; background:var(--hover); border:1px solid var(--border); border-radius:6px; cursor:pointer; color:var(--text); font-family:var(--font); font-size:13px; font-weight:600; display:flex; align-items:center; gap:6px; transition:border-color 0.12s, background 0.12s;" onmouseover="this.style.borderColor='var(--text-3)'" onmouseout="this.style.borderColor='var(--border)'">
+            style="flex:1; padding:8px 12px; border:1px solid var(--border); border-radius:6px; font-size:13px; font-weight:400; background:var(--bg); color:var(--text); outline:none; font-family:monospace; box-sizing:border-box;">
+          <button id="coder-btn-browse-existing" style="padding:0 12px; background:var(--hover); border:1px solid var(--border); border-radius:6px; cursor:pointer; color:var(--text); font-family:var(--font); font-size:13px; font-weight:400; display:flex; align-items:center; gap:6px; transition:border-color 0.12s, background 0.12s;" onmouseover="this.style.borderColor='var(--text-3)'" onmouseout="this.style.borderColor='var(--border)'">
             <i data-lucide="folder" style="width:14px; height:14px; color:var(--text-3); flex-shrink:0;"></i>
             <span>Browse</span>
           </button>
@@ -1300,47 +1526,19 @@
       </div>
 
       <div style="background:var(--hover); border-radius:6px; padding:8px 12px; font-size:11px; line-height:1.4;">
-        <div style="color:var(--text-3); font-size:10px; font-weight:600; margin-bottom:2px;">Selected Path Preview</div>
-        <div id="coder-exist-path-preview" style="font-family:monospace; color:var(--text-2); word-break:break-all;">—</div>
+        <div style="color:var(--text-3); font-size:10px; font-weight:400; margin-bottom:2px;">Selected Path Preview</div>
+        <div id="coder-exist-path-preview" style="font-family:monospace; color:var(--text-2); word-break:break-all; font-weight:400;">—</div>
       </div>
 
       <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:6px;">
-        <button class="coder-popup-back msg-edit-btn btn-cancel" style="font-size:11px;">Back</button>
-        <button id="coder-btn-load-existing" class="msg-edit-btn save btn-save" style="padding:6px 16px; font-size:11px;">Load Workspace</button>
+        <button class="coder-popup-back msg-edit-btn btn-cancel" style="font-size: 11px; font-weight: 400; padding: 6px 16px; border-radius: 16px; border: 1px solid var(--border) !important; background: var(--input-bg) !important; color: var(--text-2) !important; cursor: pointer;">Back</button>
+        <button id="coder-btn-load-existing" class="msg-edit-btn save btn-save" style="padding: 6px 16px; font-size: 11px; font-weight: 500; border-radius: 16px; border: none !important; background: var(--btn-primary-bg) !important; color: var(--btn-primary-text) !important; cursor: pointer;">Load Workspace</button>
       </div>
     </div>
 
   </div>
 </div>
 
-  <!-- IMAGE PREVIEW LIGHTBOX OVERLAY -->
-  <div id="image-lightbox" class="lightbox-overlay hidden">
-    <div class="lightbox-backdrop" id="lightbox-backdrop"></div>
-    <div class="lightbox-content" id="lightbox-content" style="position: relative; max-width: 90vw; max-height: 88vh; border-radius: 20px; overflow: hidden; display: flex; align-items: center; justify-content: center; box-shadow: 0 25px 65px rgba(0,0,0,0.75); background: #09090b;">
-      
-      <!-- Floating Translucent Toolbar Overlaying Top-Right INSIDE Image Frame -->
-      <div class="lightbox-controls" style="position: absolute; top: 14px; right: 14px; display: flex; align-items: center; gap: 6px; background: rgba(24, 24, 27, 0.75); backdrop-filter: blur(16px); padding: 5px 10px; border-radius: 30px; z-index: 100; border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 4px 20px rgba(0,0,0,0.4);">
-        <button class="lightbox-btn" id="btn-lightbox-zoom-in" title="Zoom In" style="background: rgba(255, 255, 255, 0.12); border: none; color: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; transition: all 0.15s ease;">
-          <i data-lucide="zoom-in" style="width: 15px; height: 15px; color:#ffffff;"></i>
-        </button>
-        <button class="lightbox-btn" id="btn-lightbox-zoom-out" title="Zoom Out" style="background: rgba(255, 255, 255, 0.12); border: none; color: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; transition: all 0.15s ease;">
-          <i data-lucide="zoom-out" style="width: 15px; height: 15px; color:#ffffff;"></i>
-        </button>
-        <button class="lightbox-btn" id="btn-lightbox-reset" title="Reset Zoom" style="background: rgba(255, 255, 255, 0.12); border: none; color: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; transition: all 0.15s ease;">
-          <i data-lucide="maximize-2" style="width: 15px; height: 15px; color:#ffffff;"></i>
-        </button>
-        <button class="lightbox-btn" id="btn-lightbox-download" title="Download Image" style="background: rgba(255, 255, 255, 0.12); border: none; color: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; transition: all 0.15s ease;">
-          <i data-lucide="download" style="width: 15px; height: 15px; color:#ffffff;"></i>
-        </button>
-        <div class="lightbox-divider" style="width: 1px; height: 16px; background: rgba(255,255,255,0.2); margin: 0 2px;"></div>
-        <button class="lightbox-btn close" id="btn-lightbox-close" title="Close" style="background: rgba(255, 255, 255, 0.12); border: none; color: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; transition: all 0.15s ease;">
-          <i data-lucide="x" style="width: 15px; height: 15px; color:#ffffff;"></i>
-        </button>
-      </div>
-
-      <img src="" id="lightbox-img" alt="Preview Image" draggable="false" style="max-width: 100%; max-height: 88vh; object-fit: contain; display: block; border-radius: 20px; user-select: none;" />
-    </div>
-  </div>
 
   <script src="/static/main.js?v=289" type="module"></script>
 

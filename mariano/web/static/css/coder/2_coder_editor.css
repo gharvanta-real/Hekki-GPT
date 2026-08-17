@@ -203,17 +203,17 @@
   flex-shrink: 0;
 }
 .coder-context-menu-item.delete {
-  color: #dc2626;
+  color: var(--text);
 }
 .coder-context-menu-item.delete i {
-  color: #dc2626;
+  color: var(--text-3);
 }
 .coder-context-menu-item.delete:hover {
-  background: rgba(220, 38, 38, 0.12);
-  color: #dc2626;
+  background: var(--hover);
+  color: var(--text);
 }
 .coder-context-menu-item.delete:hover i {
-  color: #dc2626;
+  color: var(--text);
 }
 
 .coder-context-menu-header {

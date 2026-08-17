@@ -1,8 +1,5 @@
 /* ==========================================================================
    system_panels.css — Unified Floating System Panels, Cards & Dropdown Engine
-   ==========================================================================
-   Connects all system cards, settings cards, modal containers, and floating
-   dropdown popups under a single modular CSS architecture.
    ========================================================================== */
 
 /* ── 1. Unified Floating Popups & Dropdown Menus ────────────────────────── */
@@ -20,12 +17,15 @@
 .vision-hud-dropdown-menu {
   position: absolute;
   box-sizing: border-box;
-  border-radius: 12px !important;
+  border-radius: var(--radius-lg) !important;
   padding: 6px !important;
   box-shadow: none !important;
+  border: none !important;
   outline: none !important;
   z-index: 10000;
-  transition: background 0.15s ease, border-color 0.15s ease;
+  background: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 .user-menu-dropdown {
@@ -40,125 +40,36 @@
   left: 68px !important;
 }
 
-/* Light Theme: Pure Clean White Cards over Soft Slate Canvas */
-body.light .topnav-dropdown-menu,
-body.light .user-menu-dropdown,
-body.light .attach-dropdown,
-body.light .attach-sub-dropdown,
-body.light .dropdown-menu,
-body.light .doc-dropdown-menu,
-body.light .hekki-slash-popup,
-body.light .permission-dropdown-menu,
-body.light .permission-dropdown,
-body.light .minimap-dropdown-popup,
-body.light .desktop-dropdown-menu,
-body.light .vision-hud-dropdown-menu,
-:root[data-theme="light"] .topnav-dropdown-menu,
-:root[data-theme="light"] .user-menu-dropdown,
-:root[data-theme="light"] .attach-dropdown,
-:root[data-theme="light"] .attach-sub-dropdown,
-:root[data-theme="light"] .dropdown-menu,
-:root[data-theme="light"] .doc-dropdown-menu,
-:root[data-theme="light"] .hekki-slash-popup,
-:root[data-theme="light"] .permission-dropdown-menu,
-:root[data-theme="light"] .permission-dropdown,
-:root[data-theme="light"] .minimap-dropdown-popup,
-:root[data-theme="light"] .desktop-dropdown-menu,
-:root[data-theme="light"] .vision-hud-dropdown-menu {
-  background: #FFFFFF !important;
-  border: 1px solid #E4E7EB !important;
-  color: #141414 !important;
-}
-
-/* Dark / OLED Theme: Dark Charcoal Elevated Surface Cards */
-body.dark .topnav-dropdown-menu,
-body.dark .user-menu-dropdown,
-body.dark .attach-dropdown,
-body.dark .attach-sub-dropdown,
-body.dark .dropdown-menu,
-body.dark .doc-dropdown-menu,
-body.dark .hekki-slash-popup,
-body.dark .permission-dropdown-menu,
-body.dark .permission-dropdown,
-body.dark .minimap-dropdown-popup,
-body.dark .desktop-dropdown-menu,
-body.dark .vision-hud-dropdown-menu,
-body.oled .topnav-dropdown-menu,
-body.oled .user-menu-dropdown,
-body.oled .attach-dropdown,
-body.oled .attach-sub-dropdown,
-body.oled .dropdown-menu,
-body.oled .doc-dropdown-menu,
-body.oled .hekki-slash-popup,
-body.oled .permission-dropdown-menu,
-body.oled .permission-dropdown,
-body.oled .minimap-dropdown-popup,
-body.oled .desktop-dropdown-menu,
-body.oled .vision-hud-dropdown-menu {
-  background: #1E1E1E !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  color: #F4F4F5 !important;
-}
-
 /* ── 2. Unified Dropdown Item Hover Fills ──────────────────────────────── */
 .user-menu-item,
 .attach-dropdown-item,
 .dropdown-item,
 .topnav-item,
 .vision-hud-dropdown-item {
-  border-radius: 6px !important;
-  transition: background 0.1s ease, color 0.1s ease !important;
+  border-radius: var(--radius-sm) !important;
+  transition: background-color 0.12s ease, color 0.12s ease !important;
+  color: var(--text-2);
 }
 
-body.light .user-menu-item:hover,
-body.light .attach-dropdown-item:hover,
-body.light .dropdown-item:hover,
-body.light .topnav-item:hover,
-body.light .vision-hud-dropdown-item:hover,
-:root[data-theme="light"] .user-menu-item:hover,
-:root[data-theme="light"] .attach-dropdown-item:hover,
-:root[data-theme="light"] .dropdown-item:hover,
-:root[data-theme="light"] .topnav-item:hover,
-:root[data-theme="light"] .vision-hud-dropdown-item:hover {
-  background: #F1F3F6 !important;
-  color: #141414 !important;
-}
-
-body.dark .user-menu-item:hover,
-body.dark .attach-dropdown-item:hover,
-body.dark .dropdown-item:hover,
-body.dark .topnav-item:hover,
-body.dark .vision-hud-dropdown-item:hover,
-body.oled .user-menu-item:hover,
-body.oled .attach-dropdown-item:hover,
-body.oled .dropdown-item:hover,
-body.oled .topnav-item:hover,
-body.oled .vision-hud-dropdown-item:hover {
-  background: rgba(255, 255, 255, 0.08) !important;
-  color: #FFFFFF !important;
+.user-menu-item:hover,
+.attach-dropdown-item:hover,
+.dropdown-item:hover,
+.topnav-item:hover,
+.vision-hud-dropdown-item:hover {
+  background: var(--hover) !important;
+  color: var(--text-primary) !important;
 }
 
 /* ── 3. System Section Cards (Settings & Modal Containers) ─────────────── */
 .settings-card-box,
 .settings-promo-card {
-  border-radius: 12px !important;
+  border-radius: var(--radius-lg) !important;
   border: none !important;
+  box-shadow: none !important;
   overflow: hidden;
-  transition: background 0.15s ease;
-}
-
-body.light .settings-card-box,
-body.light .settings-promo-card,
-:root[data-theme="light"] .settings-card-box,
-:root[data-theme="light"] .settings-promo-card {
-  background: #FFFFFF !important;
-}
-
-body.dark .settings-card-box,
-body.dark .settings-promo-card,
-body.oled .settings-card-box,
-body.oled .settings-promo-card {
-  background: #1E1E1E !important;
+  background: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+  transition: background-color 0.15s ease;
 }
 
 /* ── 4. Universal Application-Wide SVG Icon Sizing Standards ──────────────── */
@@ -172,10 +83,7 @@ svg {
   flex-shrink: 0;
 }
 
-/* ─────────────────────────────────────────────────────────────────────────
-   SVG path rules: explicit fill-attribute paths keep their fill, 
-   stroke-only paths (Lucide icons) get fill:none to prevent ghost fill.
-──────────────────────────────────────────────────────────────────────────── */
+/* Explicit fill-attribute paths keep their fill, stroke-only paths get fill:none */
 svg polygon,
 svg path[fill]:not([fill="none"]) {
   stroke: none !important;
@@ -189,7 +97,7 @@ svg circle:not([fill]):not([fill="none"]),
 svg rect:not([fill]):not([fill="none"]) {
   fill: none;
   stroke: currentColor !important;
-  stroke-width: 0.5px !important;
+  stroke-width: 1.5px !important;
   stroke-linejoin: round !important;
   stroke-linecap: round !important;
 }
@@ -208,53 +116,31 @@ svg rect:not([fill]):not([fill="none"]) {
 #btn-submit-conv svg,
 #btn-submit-conv svg * {
   stroke: currentColor !important;
-  stroke-width: 0.7px !important;
+  stroke-width: 1.5px !important;
   stroke-linejoin: round !important;
   stroke-linecap: round !important;
   paint-order: stroke fill !important;
 }
 
-/* ── 6. Soft Theme-Aware Universal Icon Color (No Harsh Pure Black) ───────── */
-/* NOTE: We use color/stroke only — NOT fill — to avoid solid ghost on stroke icons */
-body.light svg,
-:root[data-theme="light"] svg {
-  color: #52525b;
-  stroke: #52525b;
-  opacity: 0.88;
+/* ── 6. Soft Theme-Aware Universal Icon Color ───────────────────────────── */
+svg {
+  color: var(--text-2);
+  stroke: var(--text-2);
+  opacity: 0.9;
   transition: color 0.15s ease, opacity 0.15s ease, stroke 0.15s ease;
 }
 
-body.light button:hover svg,
-body.light a:hover svg,
-body.light .user-menu-item:hover svg,
-body.light .attach-dropdown-item:hover svg,
-body.light .dropdown-item:hover svg,
-:root[data-theme="light"] button:hover svg {
-  color: #18181b;
-  stroke: #18181b;
+button:hover svg,
+a:hover svg,
+.user-menu-item:hover svg,
+.attach-dropdown-item:hover svg,
+.dropdown-item:hover svg {
+  color: var(--text-primary);
+  stroke: var(--text-primary);
   opacity: 1;
 }
 
-body.dark svg,
-body.oled svg {
-  color: #a1a1aa;
-  stroke: #a1a1aa;
-  opacity: 0.88;
-  transition: color 0.15s ease, opacity 0.15s ease, stroke 0.15s ease;
-}
-
-body.dark button:hover svg,
-body.dark a:hover svg,
-body.dark .user-menu-item:hover svg,
-body.dark .attach-dropdown-item:hover svg,
-body.dark .dropdown-item:hover svg,
-body.oled button:hover svg {
-  color: #ffffff;
-  stroke: #ffffff;
-  opacity: 1;
-}
-
-/* IBM Carbon fill-based icons: restore fill=currentColor so they render solid */
+/* IBM Carbon fill-based icons: restore fill=currentColor */
 svg[fill="currentColor"] path,
 svg[fill="currentColor"] polygon,
 svg[fill="currentColor"] rect,
@@ -262,4 +148,3 @@ svg[fill="currentColor"] circle {
   fill: currentColor !important;
   stroke: none !important;
 }
-

@@ -2,6 +2,7 @@
 import { attachmentManager } from '../components/attachment_manager.js';
 import { updateInputStatsIndicator } from './input_stats.js';
 import { isDebateModeActive, handleInlineDebateSubmit, initInlineDebateMode } from './debate_mode.js?v=215';
+import { createMessageElement } from './messages.js';
 
 // Shared mutable state (exported for session.js to access)
 export let activeChatId = localStorage.getItem('hekki_active_chat_id') || null;
@@ -54,23 +55,29 @@ export function updateCapsuleLayoutState(textarea) {
   const previewArea = capsule.querySelector('.input-preview-area');
   const hasAttachments = previewArea && !previewArea.classList.contains('hidden') && previewArea.children.length > 0;
   
-  // Switch to multi-line card layout if text contains newline (\n), exceeds 80 characters, or has attachments
-  const isMulti = val.includes('\n') || (val.length > 80) || hasAttachments;
+  // Switch to multi-line card layout if text contains newline (\n), exceeds 60 characters, or has attachments
+  const isMulti = val.includes('\n') || (val.length > 60) || hasAttachments;
 
-  requestAnimationFrame(() => {
-    if (isMulti) {
-      if (!capsule.classList.contains('is-multiline')) {
-        capsule.classList.add('is-multiline');
-        capsule.classList.remove('is-single-line');
-      }
-    } else {
-      if (!capsule.classList.contains('is-single-line')) {
-        capsule.classList.remove('is-multiline');
-        capsule.classList.add('is-single-line');
-      }
-      textarea.scrollTop = 0;
+  if (isMulti) {
+    if (!capsule.classList.contains('is-multiline')) {
+      capsule.classList.add('is-multiline');
+      capsule.classList.remove('is-single-line');
     }
-  });
+    requestAnimationFrame(() => {
+      textarea.style.height = 'auto';
+      const scrollH = textarea.scrollHeight;
+      if (scrollH > 0) {
+        textarea.style.height = `${Math.min(240, Math.max(48, scrollH))}px`;
+      }
+    });
+  } else {
+    if (!capsule.classList.contains('is-single-line')) {
+      capsule.classList.remove('is-multiline');
+      capsule.classList.add('is-single-line');
+    }
+    textarea.style.height = '';
+    textarea.scrollTop = 0;
+  }
 }
 
 export function clearChatLogs() {
@@ -143,8 +150,17 @@ export function bindInputs(sendCallback, ChatSessionManager) {
   const $ = id => document.getElementById(id);
 
   const adjustHeight = (textarea) => {
-    textarea.style.height = 'auto';
-    textarea.style.height = `${textarea.scrollHeight}px`;
+    if (!textarea) return;
+    const capsule = textarea.closest('#input-capsule, #input-capsule-conv, .home-capsule');
+    if (capsule && capsule.classList.contains('is-multiline')) {
+      textarea.style.height = 'auto';
+      const scrollH = textarea.scrollHeight;
+      if (scrollH > 0) {
+        textarea.style.height = `${Math.min(240, Math.max(48, scrollH))}px`;
+      }
+    } else {
+      textarea.style.height = '';
+    }
   };
 
   const handleInputToggle = (textarea, submitBtnId, stopBtnId) => {
@@ -176,8 +192,115 @@ export function bindInputs(sendCallback, ChatSessionManager) {
     return text.trim();
   };
 
+  const handleDirectImageGenerate = async (prompt) => {
+    if (!prompt) {
+      if (window.showToast) window.showToast('Please enter an image prompt', 'warning');
+      return;
+    }
+    clearInputs();
+
+    if (window.inConversationState) window.inConversationState.val = true;
+    const homeScreen = document.getElementById('home-screen');
+    if (homeScreen) {
+      homeScreen.style.display = 'none';
+      homeScreen.classList.add('hidden');
+    }
+    const inputBar = document.getElementById('bottom-input-bar');
+    if (inputBar) {
+      inputBar.classList.remove('hidden');
+    }
+    if (typeof window.enterConversation === 'function') window.enterConversation();
+    if (typeof window.enterConversationState === 'function') window.enterConversationState();
+
+    let activeCid = ChatSessionManager.getActiveChatId();
+    if (!activeCid) {
+      activeCid = 'chat_' + Date.now();
+      ChatSessionManager.setActiveChatId(activeCid);
+      const newChat = { id: activeCid, title: prompt.slice(0, 30), messages: [] };
+      const chats = ChatSessionManager.getChats();
+      chats.unshift(newChat);
+      ChatSessionManager.saveChats(chats);
+      ChatSessionManager.renderChatsList();
+    }
+
+    const fullUserText = '/Images-U ' + prompt;
+    ChatSessionManager.appendMessage('user', fullUserText);
+
+    const chats = ChatSessionManager.getChats();
+    const chat = chats.find(c => c.id === activeCid);
+    const userIndex = chat ? chat.messages.length - 1 : 0;
+
+    const userEl = createMessageElement(
+      'user', fullUserText, new Date().toISOString(), userIndex,
+      ChatSessionManager, () => ChatSessionManager.getSendCallback()
+    );
+    const col = document.getElementById('chat-col') || document.getElementById('chat-log');
+    if (col && userEl) col.appendChild(userEl);
+    scrollChat();
+
+    const aiGroup = document.createElement('div');
+    aiGroup.className = 'msg-group ai direct-img-group';
+    aiGroup.innerHTML = `
+      <div class="msg ai" style="display:flex; flex-direction:column; gap:6px;">
+        <div style="background:var(--hover); border-radius:18px !important; padding:10px 16px; display:inline-flex; align-items:center; gap:10px; width:fit-content; max-width:85%; color:var(--text); font-family:var(--font); font-size:15px; font-weight:400; line-height:1.55; border:none !important; box-shadow:none !important;">
+          <svg style="animation:spin 1s linear infinite; width:16px; height:16px; flex-shrink:0; color:var(--primary);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>
+          <span>Generating image: <em>"${escapeHtml(prompt)}"</em></span>
+        </div>
+      </div>
+    `;
+    if (col) col.appendChild(aiGroup);
+    scrollChat();
+
+    try {
+      const res = await fetch('/api/images/direct-generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: prompt, width: 1024, height: 1024, model: 'flux' })
+      });
+      const data = await res.json();
+      if (!data.success || !data.image) {
+        throw new Error(data.error || 'Image generation failed');
+      }
+
+      const img = data.image;
+      const aiResponseMd = `![Generated Image](${img.render_url})\n\n**Prompt:** ${prompt}\n\n*Saved to Library: \`${img.name}\`*`;
+      ChatSessionManager.appendMessage('assistant', aiResponseMd);
+
+      aiGroup.remove();
+
+      const updatedChats = ChatSessionManager.getChats();
+      const activeC = updatedChats.find(c => c.id === activeCid);
+      const aiIndex = activeC ? activeC.messages.length - 1 : 0;
+      const aiEl = createMessageElement(
+        'ai', aiResponseMd, new Date().toISOString(), aiIndex,
+        ChatSessionManager, () => ChatSessionManager.getSendCallback()
+      );
+      if (col && aiEl) col.appendChild(aiEl);
+      scrollChat();
+
+      if (window.sounds?.playReceive) window.sounds.playReceive();
+      if (window.showToast) window.showToast('Image generated and saved to Library ✓', 'success');
+      if (window.imagesPageInstance) window.imagesPageInstance.refresh();
+    } catch (err) {
+      aiGroup.innerHTML = `
+        <div class="msg ai" style="display:flex; flex-direction:column; gap:6px;">
+          <div style="background:var(--hover); border-radius:18px !important; padding:10px 16px; display:inline-flex; align-items:center; gap:10px; width:fit-content; max-width:85%; color:#ef4444; font-family:var(--font); font-size:15px; font-weight:400; line-height:1.55; border:none !important; box-shadow:none !important;">
+            <span>Direct generation failed: ${escapeHtml(err.message || String(err))}</span>
+          </div>
+        </div>
+      `;
+      scrollChat();
+    }
+  };
+
   const triggerSend = (text) => {
     const lower = (text || '').toLowerCase().trim();
+    const isDirectImgCmd = lower.startsWith('/images-u');
+    if (isDirectImgCmd) {
+      const prompt = text.replace(/^\/images-u\s*/i, '').trim();
+      handleDirectImageGenerate(prompt);
+      return;
+    }
     const isDebateCmd = lower.startsWith('/debate') || isDebateModeActive();
     if (isDebateCmd) {
       const topic = text.replace(/^\/debate\s*/i, '').trim();

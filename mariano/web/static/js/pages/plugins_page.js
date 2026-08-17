@@ -230,20 +230,20 @@ export class PluginsPage {
 
     gridContainer.innerHTML = `
       <div style="margin-bottom:24px;">
-        <div style="font-size:13px; font-weight:500; color:var(--text-3); margin-bottom:8px; display:flex; align-items:center; gap:6px;">
+        <div style="font-size:13px; font-weight:400; color:var(--text-3); margin-bottom:8px; display:flex; align-items:center; gap:6px;">
           <span>Connected Connectors</span>
-          <span style="font-size:12px; background:var(--input-bg); padding:1px 8px; border-radius:20px; color:var(--text-2);">${installedList.length}</span>
+          <span style="font-size:12px; background:var(--input-bg); padding:1px 8px; border-radius:20px; color:var(--text-2); font-weight:400;">${installedList.length}</span>
         </div>
         <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
           ${installedList.length === 0 ? `
-            <div style="font-size:13px; color:var(--text-3); background:var(--card); border:none !important; padding:8px 14px; border-radius:20px; width:100%; box-sizing:border-box;">
+            <div style="font-size:13px; color:var(--text-3); background:var(--card); border:none !important; padding:8px 14px; border-radius:20px; width:100%; box-sizing:border-box; font-weight:400;">
               No active MCP connectors yet. Click the <strong>＋ icon</strong> on any plugin below to connect.
             </div>
           ` : installedList.map(s => {
             return `
               <div onclick="window.pluginsPageInstance.showDetail('${s.id}')" style="display:flex; align-items:center; gap:8px; background:var(--card); border:none !important; padding:6px 14px; border-radius:20px; cursor:pointer; transition:background 0.15s ease;">
                 ${getCompanyLogoSvg(s.id, 16)}
-                <span style="font-size:13.5px; font-weight:500; color:var(--text);">${esc(s.name)}</span>
+                <span style="font-size:13.5px; font-weight:400; color:var(--text);">${esc(s.name)}</span>
                 <span style="width:6px; height:6px; border-radius:50%; background:#16a34a; margin-left:2px;"></span>
               </div>`;
           }).join('')}
@@ -255,7 +255,7 @@ export class PluginsPage {
         if (items.length === 0) return '';
         return `
           <div style="margin-bottom:28px;">
-            <h3 style="font-size:14px; font-weight:600; color:var(--text); margin-bottom:10px;">${cat}</h3>
+            <h3 style="font-size:13.5px; font-weight:400; color:var(--text); margin-bottom:10px;">${cat}</h3>
             <div style="display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:10px;">
               ${items.map(item => this._renderPluginCard(item)).join('')}
             </div>
@@ -280,12 +280,16 @@ export class PluginsPage {
         <div style="max-width:780px; margin:0 auto; width:100%;">
           <div style="display:flex; align-items:center; justify-content:space-between; margin-top:8px; margin-bottom:24px; width:100%;">
             <div>
-              <h1 style="font-size:19px; font-weight:600; color:var(--text); margin:0;">Plugins &amp; Connectors</h1>
-              <p style="font-size:13px; color:var(--text-3); margin-top:2px;">Work with Hekki across your favorite tools, services, and databases.</p>
+              <h1 style="font-size:18px; font-weight:400; color:var(--text); margin:0;">Plugins &amp; Connectors</h1>
+              <p style="font-size:13px; color:var(--text-3); margin-top:2px; font-weight:400;">Work with Hekki across your favorite tools, services, and databases.</p>
             </div>
             <div style="position:relative; width:220px;">
+              <style>
+                #plugins-search-input::placeholder { font-weight: 400 !important; color: var(--text-3) !important; opacity: 0.75; font-size: 13px; font-family: var(--font) !important; }
+                #plugins-search-input { font-weight: 400 !important; font-family: var(--font) !important; }
+              </style>
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 32 32" fill="currentColor" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); width:14px; height:14px; color:var(--text-3); pointer-events:none;"><path d="M29,27.5859l-7.5521-7.5521a11.0177,11.0177,0,1,0-1.4141,1.4141L27.5859,29ZM4,13a9,9,0,1,1,9,9A9.01,9.01,0,0,1,4,13Z"/></svg>
-              <input type="text" id="plugins-search-input" placeholder="Search plugins..." style="width:100%; height:34px; padding:0 12px 0 34px; background:var(--input-bg); border:1px solid var(--border, rgba(255,255,255,0.08)) !important; border-radius:17px; color:var(--text); font-size:13px; outline:none !important; box-shadow:none !important;" />
+              <input type="text" id="plugins-search-input" placeholder="Search plugins..." style="width:100%; height:34px; padding:0 12px 0 34px; background:var(--input-bg); border:1px solid var(--border, rgba(255,255,255,0.08)) !important; border-radius:17px; color:var(--text); font-size:13px; font-weight:400; outline:none !important; box-shadow:none !important;" />
             </div>
           </div>
           <div id="plugins-grid-container"></div>
@@ -313,17 +317,17 @@ export class PluginsPage {
   _renderPluginCard(item) {
     const isConnected = this._isPluginConnected(item);
     return `
-      <div onclick="window.pluginsPageInstance.showDetail('${item.id}')" style="background:var(--card); border:1px solid var(--border, rgba(255,255,255,0.06)) !important; outline:none !important; border-radius:12px; padding:12px 14px; display:flex; align-items:center; justify-content:space-between; gap:10px; cursor:pointer; transition:background 0.15s ease;" onmouseover="this.style.background='var(--hover)';" onmouseout="this.style.background='var(--card)';">
+      <div onclick="window.pluginsPageInstance.showDetail('${item.id}')" style="background:var(--card); border:1px solid var(--border, rgba(255,255,255,0.06)) !important; outline:none !important; border-radius:17px; padding:12px 14px; display:flex; align-items:center; justify-content:space-between; gap:10px; cursor:pointer; transition:background 0.15s ease;" onmouseover="this.style.background='var(--hover)';" onmouseout="this.style.background='var(--card)';">
         <div style="display:flex; gap:12px; align-items:center; flex:1; min-width:0;">
-          <div style="width:38px; height:38px; border-radius:10px; background:var(--input-bg); display:flex; align-items:center; justify-content:center; flex-shrink:0; color:var(--text);">
+          <div style="width:38px; height:38px; border-radius:12px; background:var(--input-bg); display:flex; align-items:center; justify-content:center; flex-shrink:0; color:var(--text);">
             ${getCompanyLogoSvg(item.id, 20)}
           </div>
           <div style="display:flex; flex-direction:column; gap:2px; min-width:0;">
-            <div style="font-size:15px; font-weight:500; color:var(--text); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${esc(item.name)}</div>
-            <div style="font-size:13.5px; color:var(--text-3); line-height:1.3; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${esc(item.subtitle)}</div>
+            <div style="font-size:14px; font-weight:400; color:var(--text); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${esc(item.name)}</div>
+            <div style="font-size:13px; color:var(--text-3); line-height:1.3; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:400;">${esc(item.subtitle)}</div>
           </div>
         </div>
-        <button onclick="event.stopPropagation(); window.pluginsPageInstance.toggleConnect('${item.id}')" title="${isConnected ? 'Disconnect' : 'Connect'} ${esc(item.name)}" style="width:34px; height:34px; min-width:34px; min-height:34px; border-radius:8px; background:${isConnected ? 'rgba(22,163,74,0.12)' : 'var(--input-bg)'}; border:none !important; outline:none !important; cursor:pointer; flex-shrink:0; display:flex; align-items:center; justify-content:center; transition:all 0.15s ease; color:${isConnected ? '#16a34a' : 'var(--text)'};">
+        <button onclick="event.stopPropagation(); window.pluginsPageInstance.toggleConnect('${item.id}')" title="${isConnected ? 'Disconnect' : 'Connect'} ${esc(item.name)}" style="width:34px; height:34px; min-width:34px; min-height:34px; border-radius:10px; background:${isConnected ? 'rgba(22,163,74,0.12)' : 'var(--input-bg)'}; border:none !important; outline:none !important; cursor:pointer; flex-shrink:0; display:flex; align-items:center; justify-content:center; transition:all 0.15s ease; color:${isConnected ? '#16a34a' : 'var(--text)'};">
           ${isConnected ? '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 32 32" fill="#16a34a" style="width:14px;height:14px;display:block;flex-shrink:0;"><polygon points="13 24 4 15 5.414 13.586 13 21.171 26.586 7.586 28 9 13 24"/></svg>' : '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;display:block;flex-shrink:0;"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>'}
         </button>
       </div>
@@ -354,7 +358,7 @@ export class PluginsPage {
     this._root.innerHTML = `
       <div class="plugins-detail-wrapper" style="display:flex; flex-direction:column; width:100%; height:100%; flex:1; min-width:0; overflow-y:auto; padding:40px 24px 48px; background:var(--bg); color:var(--text); font-family:var(--font); box-sizing:border-box;">
         <div style="max-width:780px; margin:0 auto 20px; width:100%;">
-          <button onclick="window.pluginsPageInstance.showCatalog()" style="background:transparent; border:none; color:var(--text-2); font-size:13px; font-weight:500; cursor:pointer; display:flex; align-items:center; gap:6px; padding:0;">
+          <button onclick="window.pluginsPageInstance.showCatalog()" style="background:transparent; border:none; color:var(--text-2); font-size:13px; font-weight:400; cursor:pointer; display:flex; align-items:center; gap:6px; padding:0;">
             <i data-lucide="chevron-left" style="width:16px; height:16px;"></i> Plugins
           </button>
         </div>
@@ -366,11 +370,11 @@ export class PluginsPage {
                 ${getCompanyLogoSvg(item.id, 28)}
               </div>
               <div>
-                <h1 style="font-size:20px; font-weight:600; color:var(--text); margin:0;">${esc(item.name)}</h1>
-                <p style="font-size:12.5px; color:var(--text-3); margin-top:2px;">${esc(item.subtitle)}</p>
+                <h1 style="font-size:18px; font-weight:400; color:var(--text); margin:0;">${esc(item.name)}</h1>
+                <p style="font-size:12.5px; color:var(--text-3); margin-top:2px; font-weight:400;">${esc(item.subtitle)}</p>
               </div>
             </div>
-            <button onclick="window.pluginsPageInstance.toggleConnect('${item.id}')" style="padding:6px 18px; border-radius:20px; border:none !important; font-size:12.5px; font-weight:600; cursor:pointer; transition:all 0.15s ease; ${isConnected ? 'background:rgba(239,68,68,0.1); color:#ef4444;' : 'background:var(--text); color:var(--bg);'}">
+            <button onclick="window.pluginsPageInstance.toggleConnect('${item.id}')" style="padding:6px 18px; border-radius:20px; font-size:12.5px; font-weight:400; cursor:pointer; transition:all 0.15s ease; background:var(--input-bg) !important; border:1px solid var(--border) !important; color:var(--text) !important;" onmouseover="this.style.background='var(--hover)';" onmouseout="this.style.background='var(--input-bg)';">
               ${isConnected ? 'Disconnect' : '＋ Connect'}
             </button>
           </div>
@@ -379,8 +383,8 @@ export class PluginsPage {
 
           <!-- SKILL BADGE -->
           <div style="margin-bottom:28px;">
-            <div style="font-size:14px; font-weight:600; color:var(--text); margin-bottom:8px;">Skill Badge</div>
-            <div style="display:inline-flex; align-items:center; gap:8px; background:var(--input-bg); padding:6px 16px; border-radius:20px; font-size:13px; font-weight:500; color:var(--text);">
+            <div style="font-size:13.5px; font-weight:400; color:var(--text); margin-bottom:8px;">Skill Badge</div>
+            <div style="display:inline-flex; align-items:center; gap:8px; background:var(--input-bg); padding:6px 16px; border-radius:20px; font-size:13px; font-weight:400; color:var(--text);">
               ${getCompanyLogoSvg(item.id, 16)}
               <span>${esc(item.name)}</span>
             </div>
@@ -388,21 +392,21 @@ export class PluginsPage {
 
           <!-- TOOLS & COMMANDS TABLE -->
           <div style="margin-bottom:36px;">
-            <div style="font-size:14px; font-weight:600; color:var(--text); margin-bottom:4px;">Available Tools &amp; Commands</div>
-            <p style="font-size:13px; color:var(--text-3); margin-top:0; margin-bottom:16px;">Tools exposed to Hekki for direct invocation via natural language prompts.</p>
+            <div style="font-size:13.5px; font-weight:500; color:var(--text); margin-bottom:4px;">Available Tools &amp; Commands</div>
+            <p style="font-size:13px; color:var(--text-3); margin-top:0; margin-bottom:16px; font-weight:400;">Tools exposed to Hekki for direct invocation via natural language prompts.</p>
             
-            <div style="width:100%;">
-              <div style="display:grid; grid-template-columns:160px 1fr 1fr; gap:16px; padding:8px 0; border-bottom:1px solid var(--border); font-size:12.5px; font-weight:500; color:var(--text-3);">
+            <div style="width:100%; border-top:1px solid var(--border-subtle);">
+              <div style="display:grid; grid-template-columns:160px 1fr 1fr; gap:16px; padding:10px 12px; background:var(--input-bg); border-bottom:1px solid var(--border-subtle); font-size:12px; font-weight:600; color:var(--text-3); border-radius:6px 6px 0 0;">
                 <div>Tool Function</div>
                 <div>Description</div>
                 <div>How to Use (Prompt)</div>
               </div>
               
               ${tools.map(t => `
-                <div style="display:grid; grid-template-columns:160px 1fr 1fr; gap:16px; padding:12px 0; border-bottom:1px solid var(--border); font-size:13px; align-items:center;">
-                  <div style="font-family:var(--font-mono); font-weight:500; color:var(--text); font-size:13px;">${esc(t.name)}</div>
+                <div style="display:grid; grid-template-columns:160px 1fr 1fr; gap:16px; padding:12px; border-bottom:1px solid var(--border-subtle); font-size:13px; align-items:center; transition:background-color 0.12s ease;" onmouseover="this.style.background='var(--hover)'" onmouseout="this.style.background='transparent'">
+                  <div style="font-family:var(--font-mono); font-weight:500; color:var(--text); font-size:12.5px;">${esc(t.name)}</div>
                   <div style="color:var(--text-2); line-height:1.4; font-weight:400;">${esc(t.desc)}</div>
-                  <div style="font-family:var(--font-mono); color:var(--text-2); font-size:12.5px; font-weight:400;">${esc(t.example)}</div>
+                  <div style="font-family:var(--font-mono); color:var(--text-2); font-size:12px; font-weight:400;">${esc(t.example)}</div>
                 </div>
               `).join('')}
             </div>
@@ -410,31 +414,31 @@ export class PluginsPage {
 
           <!-- SYSTEM METADATA -->
           <div style="margin-bottom:28px;">
-            <div style="font-size:14px; font-weight:600; color:var(--text); margin-bottom:12px;">System Metadata</div>
-            <div style="width:100%;">
-              <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--border); font-size:12.5px;">
-                <span style="color:var(--text-3);">Capabilities</span>
-                <span style="color:var(--text); font-weight:400;">${(item.capabilities||[]).join(', ')}</span>
+            <div style="font-size:13.5px; font-weight:500; color:var(--text); margin-bottom:12px;">System Metadata</div>
+            <div style="width:100%; border-top:1px solid var(--border-subtle);">
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 12px; border-bottom:1px solid var(--border-subtle); font-size:12.5px; transition:background-color 0.12s ease;" onmouseover="this.style.background='var(--hover)'" onmouseout="this.style.background='transparent'">
+                <span style="color:var(--text-3); font-weight:400;">Capabilities</span>
+                <span style="color:var(--text); font-weight:500;">${(item.capabilities||[]).join(', ')}</span>
               </div>
-              <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--border); font-size:12.5px;">
-                <span style="color:var(--text-3);">Developer</span>
-                <span style="color:var(--text); font-weight:400;">${esc(item.developer)}</span>
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 12px; border-bottom:1px solid var(--border-subtle); font-size:12.5px; transition:background-color 0.12s ease;" onmouseover="this.style.background='var(--hover)'" onmouseout="this.style.background='transparent'">
+                <span style="color:var(--text-3); font-weight:400;">Developer</span>
+                <span style="color:var(--text); font-weight:500;">${esc(item.developer)}</span>
               </div>
-              <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--border); font-size:12.5px;">
-                <span style="color:var(--text-3);">Category</span>
-                <span style="color:var(--text); font-weight:400;">${esc(item.category)}</span>
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 12px; border-bottom:1px solid var(--border-subtle); font-size:12.5px; transition:background-color 0.12s ease;" onmouseover="this.style.background='var(--hover)'" onmouseout="this.style.background='transparent'">
+                <span style="color:var(--text-3); font-weight:400;">Category</span>
+                <span style="color:var(--text); font-weight:500;">${esc(item.category)}</span>
               </div>
-              <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--border); font-size:12.5px;">
-                <span style="color:var(--text-3);">Transport Protocol</span>
-                <span style="color:var(--text); font-weight:400;">${esc(item.transport)}</span>
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 12px; border-bottom:1px solid var(--border-subtle); font-size:12.5px; transition:background-color 0.12s ease;" onmouseover="this.style.background='var(--hover)'" onmouseout="this.style.background='transparent'">
+                <span style="color:var(--text-3); font-weight:400;">Transport Protocol</span>
+                <span style="color:var(--text); font-weight:500;">${esc(item.transport)}</span>
               </div>
-              <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--border); font-size:12.5px;">
-                <span style="color:var(--text-3);">Executable Command</span>
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 12px; border-bottom:1px solid var(--border-subtle); font-size:12.5px; transition:background-color 0.12s ease;" onmouseover="this.style.background='var(--hover)'" onmouseout="this.style.background='transparent'">
+                <span style="color:var(--text-3); font-weight:400;">Executable Command</span>
                 <span style="color:var(--text-2); font-family:var(--font-mono); font-size:11.5px; font-weight:400;">${esc(item.command)}</span>
               </div>
-              <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--border); font-size:12.5px;">
-                <span style="color:var(--text-3);">Status</span>
-                <span style="font-weight:500; color:${isConnected ? '#16a34a' : 'var(--text-3)'}">${isConnected ? 'Connected' : 'Not Connected'}</span>
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 12px; border-bottom:1px solid var(--border-subtle); font-size:12.5px; transition:background-color 0.12s ease;" onmouseover="this.style.background='var(--hover)'" onmouseout="this.style.background='transparent'">
+                <span style="color:var(--text-3); font-weight:400;">Status</span>
+                <span style="font-weight:600; color:${isConnected ? '#16a34a' : 'var(--text-3)'}">${isConnected ? 'Connected' : 'Not Connected'}</span>
               </div>
             </div>
           </div>

@@ -90,8 +90,10 @@
   display: flex;
 }
 
-/* Plugins, History & Settings panes fill the full #main area when visible */
+/* Plugins, Workflows, Graph, History & Settings panes fill the full #main area when visible */
 #plugins-pane,
+#workflows-pane,
+#graph-pane,
 #history-pane,
 #settings-pane {
   display: none;
@@ -104,6 +106,8 @@
   background: var(--bg);
 }
 #plugins-pane.visible,
+#workflows-pane.visible,
+#graph-pane.visible,
 #history-pane.visible,
 #settings-pane.visible {
   display: flex !important;
@@ -123,8 +127,9 @@
 
 /* VERTICAL RESIZER DRAG BAR */
 .pane-resizer {
-  width: 8px;
-  margin: 0 -2px;
+  width: 6px;
+  margin: 6px 0;
+  height: calc(100% - 12px);
   cursor: col-resize;
   background: transparent;
   z-index: 1000;
@@ -139,15 +144,15 @@
   display: none !important;
 }
 
-/* APP PANE (Right column workspace — Floating Claude Canvas Card Style) */
+/* APP PANE (Right column workspace — Matches #workspace height & topnav bounds) */
 #app-pane {
   width: 520px;
-  height: calc(100% - 54px);
+  height: calc(100% - 12px);
   display: flex;
   flex-direction: column;
   background: var(--bg);
   overflow: hidden;
-  margin: 40px 14px 14px 4px;
+  margin: 6px 6px 6px 0;
   border-radius: 12px;
   border: none !important;
   box-shadow: none !important;
@@ -270,15 +275,15 @@ body.oled .chat-dropdown-item,
   height: 14px;
   color: currentColor;
 }
-/* Permanent Red Delete Icon Rule across all components, themes, and states */
+/* Delete icons & dropdown items now follow standard neutral theme styling */
 [data-lucide="trash"],
 [data-lucide="trash-2"],
 .lucide-trash,
 .lucide-trash-2,
 svg.lucide-trash,
 svg.lucide-trash-2 {
-  color: #ef4444 !important;
-  stroke: #ef4444 !important;
+  color: inherit;
+  stroke: currentColor;
 }
 
 .chat-dropdown-item.delete,
@@ -287,18 +292,10 @@ svg.lucide-trash-2 {
 .chat-dropdown-item.delete svg,
 .chat-dropdown-item.delete i,
 .chat-dropdown-item.delete span {
-  color: #ef4444 !important;
-  stroke: #ef4444 !important;
+  color: inherit;
+  stroke: currentColor;
 }
-.chat-dropdown-item.delete:hover {
-  background: rgba(239, 68, 68, 0.1) !important;
-}
-body.dark .chat-dropdown-item.delete:hover,
-body.oled .chat-dropdown-item.delete:hover,
-[data-theme="dark"] .chat-dropdown-item.delete:hover,
-[data-theme="oled"] .chat-dropdown-item.delete:hover {
-  background: rgba(239, 68, 68, 0.15) !important;
-}
+
 
 /* Lucide Icons Styling — Crisp, Refined 1.6px Vector Stroke Weight matching Target UI */
 .lucide, svg.lucide {
@@ -398,6 +395,6 @@ body.dark .tab-btn.active {
 
 .tab-btn .close-x:hover {
   opacity: 1;
-  color: #ef4444;
+  color: var(--text);
 }
 

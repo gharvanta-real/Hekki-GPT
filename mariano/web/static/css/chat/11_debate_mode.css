@@ -1,7 +1,7 @@
 /* === 11_DEBATE_MODE.CSS — Dedicated Scoped Styles for Debate Mode (Protected against overrides) === */
 
-/* ─── Toggle Switch ─────────────────────────────────────────────────────── */
-.toggle-switch-wrap {
+/* ─── Debate Mode Toggle Switch ─────────────────────────────────────────── */
+#debate-pane .toggle-switch-wrap {
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
@@ -13,28 +13,31 @@
   border-radius: 8px !important;
   transition: background 0.15s !important;
 }
-.toggle-switch-wrap:hover { background: var(--hover) !important; }
-.toggle-switch {
+#debate-pane .toggle-switch-wrap:hover { background: var(--hover) !important; }
+#debate-pane .toggle-switch {
   position: relative !important;
   width: 36px !important;
   height: 20px !important;
-  background: var(--border, #e4e7eb) !important;
+  background: var(--input-bg) !important;
   border-radius: 12px !important;
   transition: background 0.2s ease !important;
   flex-shrink: 0 !important;
 }
-.toggle-switch.on { background: #2563eb !important; }
-.toggle-switch-handle {
+#debate-pane .toggle-switch.on { background: var(--accent-primary) !important; }
+#debate-pane .toggle-switch-handle {
   position: absolute !important;
   top: 2px !important;
   left: 2px !important;
   width: 16px !important;
   height: 16px !important;
-  background: #fff !important;
+  background: #FFFFFF !important;
   border-radius: 50% !important;
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s ease !important;
 }
-.toggle-switch.on .toggle-switch-handle { transform: translateX(16px) !important; }
+#debate-pane .toggle-switch.on .toggle-switch-handle {
+  transform: translateX(16px) !important;
+  background: #FFFFFF !important;
+}
 
 /* ─── Per-Round Card Inner (Structured Debater Stack) ────────────────────── */
 .debate-round-inner {

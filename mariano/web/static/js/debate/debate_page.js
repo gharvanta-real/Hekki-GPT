@@ -83,7 +83,7 @@ function _buildLayout() {
                 <div class="debate-participant-card" id="dp-alpha" style="display:flex; align-items:center; justify-content:space-between; padding:4px 6px 4px 2px; background:transparent; border:none;">
                   <div class="dp-avatar dp-alpha" style="width:24px; height:24px; border-radius:50%; background:var(--hover); color:var(--text); display:flex; align-items:center; justify-content:center; font-weight:500; font-size:11.5px;">T</div>
                   <div class="dp-info" style="flex-grow:1; min-width:0; margin-left:8px; display:flex; flex-direction:column; gap:1px;">
-                    <div class="dp-name" style="font-size:12px; font-weight:600; color:var(--text); line-height: 1.1;">Tony Stark</div>
+                    <div class="dp-name" style="font-size:12px; font-weight:400; color:var(--text); line-height: 1.1;">Tony Stark</div>
                     <select class="debate-model-select" id="select-alpha-model" style="width:100%; cursor:pointer; color:var(--text);">
                       <option value="gemini-3.1-flash-lite">Gemini 3.1 Flash</option>
                       <option value="qwen">Qwen (Optional)</option>
@@ -97,7 +97,7 @@ function _buildLayout() {
                 <div class="debate-participant-card" id="dp-beta" style="display:flex; align-items:center; justify-content:space-between; padding:4px 6px 4px 2px; background:transparent; border:none;">
                   <div class="dp-avatar dp-beta" style="width:24px; height:24px; border-radius:50%; background:var(--hover); color:var(--text); display:flex; align-items:center; justify-content:center; font-weight:500; font-size:11.5px;">B</div>
                   <div class="dp-info" style="flex-grow:1; min-width:0; margin-left:8px; display:flex; flex-direction:column; gap:1px;">
-                    <div class="dp-name" style="font-size:12px; font-weight:600; color:var(--text); line-height: 1.1;">Bruce Banner</div>
+                    <div class="dp-name" style="font-size:12px; font-weight:400; color:var(--text); line-height: 1.1;">Bruce Banner</div>
                     <select class="debate-model-select" id="select-beta-model" style="width:100%; cursor:pointer; color:var(--text);">
                       <option value="gemini-3.1-flash-lite">Gemini 3.1 Flash</option>
                       <option value="qwen">Qwen (Optional)</option>
@@ -111,7 +111,7 @@ function _buildLayout() {
                 <div class="debate-participant-card" id="dp-user" style="display:flex; align-items:center; justify-content:space-between; padding:4px 6px 4px 2px; background:transparent; border:none;">
                   <div class="dp-avatar dp-user" style="width:24px; height:24px; border-radius:50%; background:var(--hover); color:var(--text); display:flex; align-items:center; justify-content:center; font-weight:500; font-size:11.5px;">U</div>
                   <div class="dp-info" style="flex-grow:1; min-width:0; margin-left:8px; display:flex; flex-direction:column; gap:1px;">
-                    <div class="dp-name" style="font-size:12px; font-weight:600; color:var(--text); line-height: 1.1;">You</div>
+                    <div class="dp-name" style="font-size:12px; font-weight:400; color:var(--text); line-height: 1.1;">You</div>
                     <div class="dp-model" style="font-size:10px; color:var(--text); opacity:0.9; margin-top:1px; line-height: 1.1;">Observer</div>
                     <div class="dp-status" id="dp-user-status" style="font-size:10px; color:var(--text); opacity:0.9; line-height: 1.1; margin-top: 1px;">Active</div>
                   </div>
@@ -144,8 +144,8 @@ function _buildLayout() {
                       <span>Export All</span>
                     </button>
                     <div style="border-top: 1px solid var(--border); margin: 4px 0;"></div>
-                    <button class="dropdown-item btn-clear-docs" id="btn-debate-clear-docs" style="color: #ef4444 !important;">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 32 32" fill="#ef4444" style="width:15px;height:15px;margin-right:8px;display:inline-block;"><rect x="12" y="12" width="2" height="12"/><rect x="18" y="12" width="2" height="12"/><path d="M4,6V8H6V28a2,2,0,0,0,2,2H24a2,2,0,0,0,2-2V8h2V6ZM8,28V8H24V28Z"/><rect x="12" y="2" width="8" height="2"/></svg>
+                    <button class="dropdown-item btn-clear-docs" id="btn-debate-clear-docs">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 32 32" fill="currentColor" style="width:15px;height:15px;margin-right:8px;display:inline-block;"><rect x="12" y="12" width="2" height="12"/><rect x="18" y="12" width="2" height="12"/><path d="M4,6V8H6V28a2,2,0,0,0,2,2H24a2,2,0,0,0,2-2V8h2V6ZM8,28V8H24V28Z"/><rect x="12" y="2" width="8" height="2"/></svg>
                       <span>Clean All</span>
                     </button>
                   </div>

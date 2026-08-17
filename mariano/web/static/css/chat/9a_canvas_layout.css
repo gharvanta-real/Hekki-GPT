@@ -16,17 +16,18 @@
 }
 
 .canvas-header {
-  height: 38px;
+  height: 42px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 14px;
+  padding: 0 16px;
   border-bottom: 1px solid var(--border) !important;
   background: var(--bg);
   gap: 10px;
   user-select: none;
   border-top-left-radius: 12px;
   border-top-right-radius: 12px;
+  flex-shrink: 0;
 }
 
 .canvas-title-group {

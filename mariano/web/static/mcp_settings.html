@@ -16,13 +16,13 @@
     .btn-mcp-primary:hover { opacity: 0.9; }
     .btn-mcp-sec { padding: 6px 12px; background: var(--input-bg); color: var(--text-2); border: 1px solid var(--border) !important; border-radius: var(--radius-sm); font-size: var(--fs-xs); font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 5px; transition: background 0.15s ease, color 0.15s ease; }
     .btn-mcp-sec:hover { background: var(--hover); color: var(--text); }
-    .btn-mcp-danger { padding: 6px; background: transparent; color: #ef4444; border: none !important; border-radius: var(--radius-sm); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s ease; }
-    .btn-mcp-danger:hover { background: rgba(239, 68, 68, 0.1); }
+    .btn-mcp-danger { padding: 6px; background: transparent; color: var(--text-2); border: none !important; border-radius: var(--radius-sm); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s ease, color 0.15s ease; }
+    .btn-mcp-danger:hover { background: var(--hover); color: var(--text); }
     .server-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 16px; margin-bottom: 12px; display: flex; flex-direction: column; gap: 10px; transition: background 0.15s ease; }
     .server-card.disabled { opacity: 0.55; }
     .server-card-top { display: flex; align-items: center; justify-content: space-between; }
     .server-title { font-size: var(--fs-base); font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 8px; }
-    .transport-pill { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 12px; background: var(--hover); color: var(--text-2); text-transform: uppercase; }
+    .transport-pill { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 12px; background: var(--hover); color: var(--text-2); text-transform: none; }
     .server-status { display: flex; align-items: center; gap: 6px; font-size: var(--fs-xs); color: var(--text-3); }
     .dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
     .dot-green { background: #16a34a; }
@@ -67,7 +67,7 @@
   </div>
   <div id="server-list"></div>
   <div style="margin-top: 32px;">
-    <div style="font-size: var(--fs-xs); font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;">Popular Integrations</div>
+    <div style="font-size: var(--fs-xs); font-weight: 600; color: var(--text-3); text-transform: none; letter-spacing: 0.05em; margin-bottom: 8px;">Popular Integrations</div>
     <div class="presets-grid" id="presets-grid"></div>
   </div>
 </div>
@@ -123,7 +123,7 @@
   function render() {
     const el = document.getElementById('server-list');
     if (!servers.length) {
-      el.innerHTML = `<div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius-md);padding:36px;text-align:center;"><div style="font-size:var(--fs-base);font-weight:600;color:var(--text);margin-bottom:6px;">No MCP Servers Connected</div><div style="font-size:var(--fs-xs);color:var(--text-3);max-width:360px;margin:0 auto 16px;">Connect external MCP servers to give Hekki new capabilities automatically.</div><button class="btn-mcp-primary" style="margin:0 auto;" onclick="openModal()">＋ Add Server</button></div>`;
+      el.innerHTML = `<div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius-md);padding:36px;text-align:center;"><div style="font-size:var(--fs-base);font-weight:400;color:var(--text);margin-bottom:6px;">No MCP Servers Connected</div><div style="font-size:var(--fs-xs);color:var(--text-3);max-width:360px;margin:0 auto 16px;font-weight:400;">Connect external MCP servers to give Hekki new capabilities automatically.</div><button class="btn-mcp-primary" style="margin:0 auto;" onclick="openModal()">＋ Add Server</button></div>`;
       lucide.createIcons(); return;
     }
     el.innerHTML = servers.map(s => {

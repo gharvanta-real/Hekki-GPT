@@ -85,6 +85,8 @@ class Router {
       'images-pane',
       'hekkicad-pane',
       'plugins-pane',
+      'workflows-pane',
+      'graph-pane',
       'history-pane',
       'settings-pane',
     ];
@@ -294,6 +296,54 @@ class Router {
         } else if (window.pluginsPageInstance) {
           window.pluginsPageInstance.refresh();
         }
+        break;
+
+      case 'workflows':
+        this._showPane('workflows-pane', 'flex');
+        if (titlebarEl) titlebarEl.style.display = 'none';
+        document.getElementById('sidebar-nav')?.classList.remove('collapsed');
+        const toggleBtnWf = document.getElementById('btn-sidebar-toggle-main');
+        if (toggleBtnWf) toggleBtnWf.style.display = '';
+        if (innerChat) innerChat.style.display = 'flex';
+        if (innerCoder) {
+          innerCoder.style.display = 'none';
+          innerCoder.style.visibility = 'hidden';
+          innerCoder.style.pointerEvents = 'none';
+        }
+        if (window.updateTitleBreadcrumb) {
+          window.updateTitleBreadcrumb('Workflows Studio', '');
+        }
+        import('/static/js/pages/workflows_page.js?v=' + Date.now()).then(({ WorkflowsPage }) => {
+          const pane = document.getElementById('workflows-pane');
+          if (pane) {
+            window.workflowsPageInstance = new WorkflowsPage(window.showToast);
+            window.workflowsPageInstance.mount(pane);
+          }
+        }).catch(err => console.error('Failed to load WorkflowsPage:', err));
+        break;
+
+      case 'graph':
+        this._showPane('graph-pane', 'flex');
+        if (titlebarEl) titlebarEl.style.display = 'none';
+        document.getElementById('sidebar-nav')?.classList.remove('collapsed');
+        const toggleBtnGr = document.getElementById('btn-sidebar-toggle-main');
+        if (toggleBtnGr) toggleBtnGr.style.display = '';
+        if (innerChat) innerChat.style.display = 'flex';
+        if (innerCoder) {
+          innerCoder.style.display = 'none';
+          innerCoder.style.visibility = 'hidden';
+          innerCoder.style.pointerEvents = 'none';
+        }
+        if (window.updateTitleBreadcrumb) {
+          window.updateTitleBreadcrumb('Knowledge Graph', '');
+        }
+        import('/static/js/pages/graph_page.js?v=' + Date.now()).then(({ GraphPage }) => {
+          const pane = document.getElementById('graph-pane');
+          if (pane) {
+            window.graphPageInstance = new GraphPage(window.showToast);
+            window.graphPageInstance.mount(pane);
+          }
+        }).catch(err => console.error('Failed to load GraphPage:', err));
         break;
 
       case 'history':

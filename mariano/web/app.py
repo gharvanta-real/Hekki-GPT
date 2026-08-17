@@ -123,6 +123,12 @@ app.include_router(mcp_router)
 from mariano.web.routes.core_api import router as core_api_router
 app.include_router(core_api_router)
 
+from mariano.web.routes.workflows_routes import router as workflows_router
+app.include_router(workflows_router)
+
+from mariano.web.routes.graph_routes import router as graph_router
+app.include_router(graph_router)
+
 from mariano.web.routes.ws_routes import router as ws_router
 app.include_router(ws_router)
 

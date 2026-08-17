@@ -1,6 +1,6 @@
 /**
  * images_page.js — Generated Images Gallery
- * Rounded compact cards, floating text on page background, select-to-delete, delete-all, and custom confirmation popup.
+ * Date-wise categorization, category-level select, top library header action toolbar (Select, Download All, Delete All).
  */
 
 export class ImagesPage {
@@ -13,7 +13,7 @@ export class ImagesPage {
     this._root = null;
     this._mounted = false;
     this._search = '';
-    this._sort = 'date';   // 'date' | 'name' | 'size'
+    this._sort = 'date';
     this._lightboxIdx = -1;
     this._pendingConfirmCallback = null;
   }
@@ -23,7 +23,7 @@ export class ImagesPage {
       this.refresh();
       return;
     }
-    this.destroy(); // Fix: Clean up old event listeners if remounting
+    this.destroy();
     this._root = container;
     this._mounted = true;
     this._render();
@@ -31,11 +31,9 @@ export class ImagesPage {
   }
 
   refresh() {
-    if (!this._mounted) return;
-    this._load();
+    if (this._mounted) this._load();
   }
 
-  // ── Core load ──────────────────────────────────────────────────────────────
   async _load() {
     this._showLoading();
     try {
@@ -45,7 +43,7 @@ export class ImagesPage {
       this._images = data.images || [];
       this._applyFilter();
       this._renderGrid();
-    } catch (err) {
+    } catch {
       this._showError('Failed to load images. Is the server running?');
     }
   }
@@ -56,17 +54,12 @@ export class ImagesPage {
       const q = this._search.toLowerCase();
       list = list.filter(img => img.name.toLowerCase().includes(q));
     }
-    if (this._sort === 'name') {
-      list.sort((a, b) => a.name.localeCompare(b.name));
-    } else if (this._sort === 'size') {
-      list.sort((a, b) => b.size - a.size);
-    } else {
-      list.sort((a, b) => b.modified - a.modified);
-    }
+    if (this._sort === 'name') list.sort((a, b) => a.name.localeCompare(b.name));
+    else if (this._sort === 'size') list.sort((a, b) => b.size - a.size);
+    else list.sort((a, b) => b.modified - a.modified);
     this._filtered = list;
   }
 
-  // ── Scaffold ───────────────────────────────────────────────────────────────
   _render() {
     this._root.innerHTML = `
       <div class="img-gallery-wrap">
@@ -74,67 +67,57 @@ export class ImagesPage {
           <div class="img-gallery-loading" id="img-loading"><div class="img-gallery-spinner"></div><span>Loading images…</span></div>
         </div>
       </div>
-
-      <!-- Lightbox -->
+      <!-- Lightbox Modal -->
       <div class="img-lightbox-overlay hidden" id="img-lightbox">
         <div class="img-lightbox-backdrop" id="img-lightbox-backdrop"></div>
-        <div class="img-lightbox-modal" style="position: relative; max-width: min(92vw, 920px); max-height: 88vh; border-radius: 20px; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #09090b; border: none !important; box-shadow: none !important;">
-          
-          <!-- Floating Translucent Toolbar Overlaying Bottom-Center INSIDE Image Frame -->
-          <div class="img-lightbox-actions" style="position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); z-index: 100; display: flex; align-items: center; gap: 6px; background: rgba(24, 24, 27, 0.85) !important; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); padding: 5px 10px; border-radius: 30px; border: none !important; box-shadow: none !important;">
-            <button class="img-lightbox-btn" id="img-lb-download" title="Download Image" style="width:30px; height:30px; border-radius:50%; background:rgba(255,255,255,0.14) !important; border:none !important; box-shadow:none !important; color:#ffffff !important; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.15s ease;">
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 32 32" fill="#ffffff" style="width:14px;height:14px;display:inline-block;"><path d="M26 24v4H6v-4H4v4a2 2 0 0 0 2 2h20a2 2 0 0 0 2-2v-4zm-11 2.414l-6.707-6.707 1.414-1.414L15 23.586V2h2v21.586l5.293-5.293 1.414 1.414z"/></svg>
+        <div class="img-lightbox-modal" style="position:relative; max-width:min(92vw,920px); max-height:88vh; border-radius:20px; overflow:hidden; display:flex; align-items:center; justify-content:center; background:#09090b; border:none !important; box-shadow:none !important;">
+          <div class="img-lightbox-actions" style="position:absolute; bottom:18px; left:50%; transform:translateX(-50%); z-index:100; display:flex; align-items:center; gap:6px; background:rgba(24,24,27,0.85) !important; backdrop-filter:blur(16px); padding:5px 10px; border-radius:30px; border:none !important;">
+            <button class="img-lightbox-btn" id="img-lb-download" title="Download Image" style="width:30px; height:30px; border-radius:50%; background:rgba(255,255,255,0.14) !important; border:none !important; color:#ffffff !important; cursor:pointer; display:flex; align-items:center; justify-content:center;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 32 32" fill="currentColor" style="width:15px;height:15px;display:inline-block;"><path d="M23.5,22H23V20h.5a4.5,4.5,0,0,0,.36-9L23,11l-.1-.82a7,7,0,0,0-13.88,0L9,11,8.14,11a4.5,4.5,0,0,0,.36,9H9v2H8.5A6.5,6.5,0,0,1,7.2,9.14a9,9,0,0,1,17.6,0A6.5,6.5,0,0,1,23.5,22Z"/><polygon points="17 26.17 17 14 15 14 15 26.17 12.41 23.59 11 25 16 30 21 25 19.59 23.59 17 26.17"/></svg>
             </button>
-            <button class="img-lightbox-btn img-card-btn img-del-btn" id="img-lb-delete" title="Delete Image" style="width:30px; height:30px; border-radius:50%; background:rgba(255,255,255,0.14) !important; border:none !important; box-shadow:none !important; color:#ffffff !important; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.15s ease;">
+            <button class="img-lightbox-btn img-card-btn img-del-btn" id="img-lb-delete" title="Delete Image" style="width:30px; height:30px; border-radius:50%; background:rgba(255,255,255,0.14) !important; border:none !important; color:#ffffff !important; cursor:pointer; display:flex; align-items:center; justify-content:center;">
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 32 32" fill="#ffffff" style="width:14px;height:14px;display:inline-block;"><rect x="12" y="12" width="2" height="12"/><rect x="18" y="12" width="2" height="12"/><path d="M4,6V8H6V28a2,2,0,0,0,2,2H24a2,2,0,0,0,2-2V8h2V6ZM8,28V8H24V28Z"/><rect x="12" y="2" width="8" height="2"/></svg>
             </button>
-            <button class="img-lightbox-btn" id="img-lb-close" title="Close" style="width:30px; height:30px; border-radius:50%; background:rgba(255,255,255,0.14) !important; border:none !important; box-shadow:none !important; color:#ffffff !important; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.15s ease;">
+            <button class="img-lightbox-btn" id="img-lb-close" title="Close" style="width:30px; height:30px; border-radius:50%; background:rgba(255,255,255,0.14) !important; border:none !important; color:#ffffff !important; cursor:pointer; display:flex; align-items:center; justify-content:center;">
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 32 32" fill="#ffffff" style="width:14px;height:14px;display:inline-block;"><polygon points="17.4141 16 26 7.4141 24.5859 6 16 14.5859 7.4143 6 6 7.4141 14.5859 16 6 24.5859 7.4143 26 16 17.4141 24.5859 26 26 24.5859 17.4141 16"/></svg>
             </button>
           </div>
-
-          <!-- Image Display Frame -->
-          <div class="img-lightbox-body" style="position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #09090b; overflow: hidden; border-radius: 20px; border: none !important; box-shadow: none !important;">
-            <img class="img-lightbox-img" id="img-lightbox-img" src="" alt="" style="max-width: 100%; max-height: 88vh; object-fit: contain; display: block; border-radius: 20px; user-select: none;" />
+          <div class="img-lightbox-body" style="position:relative; width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:#09090b; overflow:hidden; border-radius:20px; border:none !important;">
+            <img class="img-lightbox-img" id="img-lightbox-img" src="" alt="" style="max-width:100%; max-height:88vh; object-fit:contain; display:block; border-radius:20px; user-select:none;" />
           </div>
-
         </div>
       </div>
-
       <!-- Custom Confirmation Modal -->
-      <div id="img-confirm-modal" class="modal-overlay hidden" style="z-index: 10005;">
-        <div class="modal-box compact img-confirm-box">
-          <div class="img-confirm-header">
-            <h3 class="img-confirm-title" id="img-confirm-title">Delete Images</h3>
-            <button class="img-confirm-close" id="img-confirm-close" title="Close"><i data-lucide="x" style="width:16px;height:16px;"></i></button>
+      <div id="img-confirm-modal" class="img-confirm-modal-overlay hidden" style="position:fixed; inset:0; z-index:10005; display:flex; align-items:center; justify-content:center;">
+        <div class="img-confirm-backdrop" id="img-confirm-backdrop" style="position:absolute; inset:0; background:rgba(0,0,0,0.55); backdrop-filter:blur(4px);"></div>
+        <div class="img-confirm-dialog" style="position:relative; z-index:2; width:100%; max-width:400px; background:var(--card); border:1px solid var(--border) !important; border-radius:16px; padding:22px 24px; box-shadow:none !important; display:flex; flex-direction:column; text-align:left; gap:14px;">
+          <div class="img-confirm-header" style="display:flex; align-items:center; justify-content:space-between; width:100%;">
+            <h3 class="img-confirm-title" id="img-confirm-title" style="margin:0; font-size:15px; font-weight:400; color:var(--text); font-family:var(--font);">Delete Image</h3>
+            <button class="img-confirm-close" id="img-confirm-close" title="Close" style="background:transparent; border:none; color:var(--text-3); cursor:pointer; display:flex; align-items:center; justify-content:center; padding:4px;"><i data-lucide="x" style="width:16px;height:16px;"></i></button>
           </div>
-          <div class="img-confirm-body"><p class="img-confirm-msg" id="img-confirm-msg">Are you sure?</p></div>
-          <div class="img-confirm-actions">
-            <button class="img-confirm-btn img-confirm-btn-cancel" id="img-confirm-btn-cancel">Cancel</button>
-            <button class="img-confirm-btn img-confirm-btn-action" id="img-confirm-btn-action">Confirm</button>
+          <div class="img-confirm-body" style="margin:0;">
+            <p class="img-confirm-msg" id="img-confirm-msg" style="margin:0; font-size:13px; color:var(--text-3); font-family:var(--font); line-height:1.5; font-weight:400; word-break:break-word;">Are you sure?</p>
+          </div>
+          <div class="img-confirm-actions" style="display:flex; align-items:center; justify-content:flex-end; gap:8px; width:100%; margin-top:6px;">
+            <button class="img-confirm-btn img-confirm-btn-cancel" id="img-confirm-btn-cancel" style="padding:6px 16px; font-size:12.5px; font-weight:400; border-radius:16px; border:1px solid var(--border) !important; background:var(--input-bg) !important; color:var(--text-2) !important; cursor:pointer;">Cancel</button>
+            <button class="img-confirm-btn img-confirm-btn-action" id="img-confirm-btn-action" style="padding:6px 16px; font-size:12.5px; font-weight:500; border-radius:16px; border:none !important; background:var(--btn-primary-bg) !important; color:var(--btn-primary-text) !important; cursor:pointer;">Delete Image</button>
           </div>
         </div>
+      </div>
     `;
-
     this._bindControls();
     if (window.lucide) lucide.createIcons({ parent: this._root });
   }
 
-  // ── Custom Confirmation Dialog Helper ────────────────────────────────────
-  _askConfirm({ title = 'Delete Confirmation', message = 'Are you sure?', confirmText = 'Confirm', danger = true, onConfirm }) {
+  _askConfirm({ title = 'Delete Confirmation', message = 'Are you sure?', confirmText = 'Confirm', onConfirm }) {
     const modal = this._root.querySelector('#img-confirm-modal');
     if (!modal) return;
-
     const titleEl = this._root.querySelector('#img-confirm-title');
     const msgEl = this._root.querySelector('#img-confirm-msg');
     const actionBtn = this._root.querySelector('#img-confirm-btn-action');
-
     if (titleEl) titleEl.textContent = title;
     if (msgEl) msgEl.textContent = message;
-    if (actionBtn) {
-      actionBtn.textContent = confirmText;
-    }
-
+    if (actionBtn) actionBtn.textContent = confirmText;
     this._pendingConfirmCallback = onConfirm;
     modal.classList.remove('hidden');
     if (window.lucide) lucide.createIcons({ parent: modal });
@@ -146,39 +129,8 @@ export class ImagesPage {
     this._pendingConfirmCallback = null;
   }
 
-  // ── Controls ───────────────────────────────────────────────────────────────
   _bindControls() {
     const $ = id => this._root.querySelector(`#${id}`);
-
-    // Search
-    const searchEl = $('img-search');
-    if (searchEl) {
-      searchEl.addEventListener('input', () => {
-        this._search = searchEl.value.trim();
-        this._applyFilter();
-        this._renderGrid();
-      });
-    }
-
-    // Sort
-    const sortEl = $('img-sort');
-    if (sortEl) {
-      sortEl.addEventListener('change', () => {
-        this._sort = sortEl.value;
-        this._applyFilter();
-        this._renderGrid();
-      });
-    }
-
-    // Select Mode Toggle
-    $('img-select-toggle')?.addEventListener('click', () => {
-      this._selectMode = !this._selectMode;
-      if (!this._selectMode) this._selectedPaths.clear();
-      this._updateSelectUI();
-      this._renderGrid();
-    });
-
-    // Custom Confirmation Modal Controls
     $('img-confirm-close')?.addEventListener('click', () => this._hideConfirmModal());
     $('img-confirm-btn-cancel')?.addEventListener('click', () => this._hideConfirmModal());
     $('img-confirm-backdrop')?.addEventListener('click', () => this._hideConfirmModal());
@@ -190,45 +142,11 @@ export class ImagesPage {
       }
     });
 
-    // Smart Single Delete Button
-    $('img-delete-btn')?.addEventListener('click', () => {
-      const count = this._selectedPaths.size;
-      if (count === 0) return;
-      const isAll = count === this._images.length;
-      if (isAll) {
-        this._askConfirm({
-          title: 'Delete All Images',
-          message: `Are you sure you want to delete ALL ${count} images? This action cannot be undone.`,
-          confirmText: 'Confirm',
-          danger: true,
-          onConfirm: () => this._deleteImages([], true)
-        });
-      } else {
-        this._askConfirm({
-          title: count === 1 ? 'Delete Image' : 'Delete Selected Images',
-          message: `Are you sure you want to delete ${count} selected image(s)? This action cannot be undone.`,
-          confirmText: 'Confirm',
-          danger: true,
-          onConfirm: () => this._deleteImages([...this._selectedPaths])
-        });
-      }
-    });
-
-    // Refresh
-    $('img-refresh')?.addEventListener('click', () => {
-      this._load();
-    });
-
-    // Lightbox actions
     $('img-lb-close')?.addEventListener('click', () => this._closeLightbox());
     $('img-lightbox-backdrop')?.addEventListener('click', () => this._closeLightbox());
-
     $('img-lb-download')?.addEventListener('click', () => {
-      if (this._lightboxIdx < 0) return;
-      const img = this._filtered[this._lightboxIdx];
-      if (img) this._downloadImage(img);
+      if (this._lightboxIdx >= 0 && this._filtered[this._lightboxIdx]) this._downloadImage(this._filtered[this._lightboxIdx]);
     });
-
     $('img-lb-delete')?.addEventListener('click', () => {
       if (this._lightboxIdx < 0) return;
       const img = this._filtered[this._lightboxIdx];
@@ -237,19 +155,12 @@ export class ImagesPage {
           title: 'Delete Image',
           message: `Are you sure you want to delete "${img.name}"?`,
           confirmText: 'Delete Image',
-          danger: true,
-          onConfirm: () => {
-            this._closeLightbox();
-            this._deleteImages([img.path]);
-          }
+          onConfirm: () => { this._closeLightbox(); this._deleteImages([img.path]); }
         });
       }
     });
 
-    // Keyboard nav
-    if (this._keyHandler) {
-      document.removeEventListener('keydown', this._keyHandler);
-    }
+    if (this._keyHandler) document.removeEventListener('keydown', this._keyHandler);
     document.addEventListener('keydown', this._keyHandler = (e) => {
       const modal = this._root.querySelector('#img-confirm-modal');
       if (modal && !modal.classList.contains('hidden')) {
@@ -264,160 +175,203 @@ export class ImagesPage {
     });
   }
 
-  _updateSelectUI() {
-    const $ = id => this._root.querySelector(`#${id}`);
-    const toggleBtn = $('img-select-toggle');
-    const toggleLabel = $('img-select-toggle-label');
-    const delBtn = $('img-delete-btn');
-    const delLabel = $('img-delete-btn-label');
-
-    const count = this._selectedPaths.size;
-    const isAll = count > 0 && count === this._images.length;
-
-    if (toggleBtn) {
-      toggleBtn.classList.toggle('img-gallery-btn-active', this._selectMode);
-      toggleBtn.title = this._selectMode ? 'Cancel Select' : 'Toggle Select Mode';
-    }
-    if (toggleLabel) {
-      toggleLabel.textContent = this._selectMode ? 'Cancel Select' : 'Select';
-    }
-    if (delBtn) {
-      if (count > 0) {
-        delBtn.classList.remove('hidden');
-        const titleText = isAll ? `Delete All (${count})` : `Delete Selected (${count})`;
-        delBtn.title = titleText;
-        if (delLabel) delLabel.textContent = titleText;
-      } else {
-        delBtn.classList.add('hidden');
-      }
-    }
+  _lightboxNav(dir) {
+    if (this._lightboxIdx < 0 || this._filtered.length === 0) return;
+    this._lightboxIdx = (this._lightboxIdx + dir + this._filtered.length) % this._filtered.length;
+    this._syncLightbox();
   }
 
   // ── Grid render ────────────────────────────────────────────────────────────
   _renderGrid() {
     const body = this._root.querySelector('#img-gallery-body');
-    const badge = this._root.querySelector('#img-count-badge');
     if (!body) return;
-    if (badge) badge.textContent = this._filtered.length;
 
-    this._updateSelectUI();
-
-    let mediaContent = '';
     if (this._filtered.length === 0) {
-      mediaContent = `
-        <div class="img-gallery-empty">
-          <div class="img-gallery-empty-icon">
-            <i data-lucide="image-off" style="width:36px;height:36px;opacity:0.3;"></i>
+      body.innerHTML = `
+        <div class="library-container">
+          <div class="library-header-row">
+            <h1 class="library-main-title">Library</h1>
           </div>
-          <p class="img-gallery-empty-title">${this._search ? 'No media matches your search' : 'No media yet'}</p>
-          <p class="img-gallery-empty-sub">${this._search ? 'Try a different keyword' : 'Generated images will appear here'}</p>
+          <div class="img-gallery-empty">
+            <div class="img-gallery-empty-icon"><i data-lucide="image-off" style="width:36px;height:36px;opacity:0.3;"></i></div>
+            <p class="img-gallery-empty-title">${this._search ? 'No media matches your search' : 'No media yet'}</p>
+            <p class="img-gallery-empty-sub">${this._search ? 'Try a different keyword' : 'Generated images will appear here'}</p>
+          </div>
         </div>`;
-    } else {
-      mediaContent = `<div class="img-gallery-grid" id="img-grid"></div>`;
-    }
-
-    body.innerHTML = `
-      <div class="library-container">
-        <h1 class="library-main-title">Library</h1>
-
-        <!-- Media Section -->
-        <div class="library-section">
-          <h2 class="library-section-title">Media</h2>
-          ${mediaContent}
-        </div>
-      </div>
-    `;
-
-    if (this._filtered.length === 0) {
       if (window.lucide) lucide.createIcons({ parent: body });
       return;
     }
 
-    const grid = body.querySelector('#img-grid');
-
+    // Group images by Date Category
+    const groups = new Map();
     this._filtered.forEach((img, idx) => {
-      const sizeStr = this._formatSize(img.size);
-      const dateStr = this._formatDate(img.modified_iso);
-      const isSelected = this._selectedPaths.has(img.path);
-
-      const card = document.createElement('div');
-      card.className = `img-gallery-card ${this._selectMode ? 'select-mode' : ''} ${isSelected ? 'selected' : ''}`;
-      card.dataset.idx = idx;
-      card.dataset.path = img.path;
-
-      card.innerHTML = `
-        <div class="img-gallery-thumb-wrap">
-          <img
-            class="img-gallery-thumb"
-            src="${img.render_url}"
-            alt="${this._escHtml(img.name)}"
-            loading="lazy"
-          />
-
-          <!-- Top Overlay: Select Checkbox + Action Buttons -->
-          <div class="img-gallery-top-overlay">
-            <div class="img-card-checkbox ${isSelected ? 'checked' : ''}" data-idx="${idx}">
-              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 32 32" fill="currentColor" style="width:13px;height:13px;display:inline-block;"><polygon points="13 24 4 15 5.414 13.586 13 21.171 26.586 7.586 28 9 13 24"/></svg>
-            </div>
-            <div class="img-card-actions">
-              <button class="img-card-btn img-dl-btn" data-idx="${idx}" title="Download">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 32 32" fill="currentColor" style="width:14px;height:14px;display:inline-block;"><path d="M26 24v4H6v-4H4v4a2 2 0 0 0 2 2h20a2 2 0 0 0 2-2v-4zm-11 2.414l-6.707-6.707 1.414-1.414L15 23.586V2h2v21.586l5.293-5.293 1.414 1.414z"/></svg>
-              </button>
-              <button class="img-card-btn img-del-btn" data-idx="${idx}" title="Delete">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 32 32" fill="currentColor" style="width:14px;height:14px;display:inline-block;"><rect x="12" y="12" width="2" height="12"/><rect x="18" y="12" width="2" height="12"/><path d="M4,6V8H6V28a2,2,0,0,0,2,2H24a2,2,0,0,0,2-2V8h2V6ZM8,28V8H24V28Z"/><rect x="12" y="2" width="8" height="2"/></svg>
-              </button>
-            </div>
-          </div>
-        </div>
-      `;
-
-      // Checkbox click
-      const cb = card.querySelector('.img-card-checkbox');
-      cb.addEventListener('click', (e) => {
-        e.stopPropagation();
-        this._toggleSelect(img.path);
-      });
-
-      // Download button
-      card.querySelector('.img-dl-btn').addEventListener('click', (e) => {
-        e.stopPropagation();
-        this._downloadImage(img);
-      });
-
-      // Single Delete button
-      card.querySelector('.img-del-btn').addEventListener('click', (e) => {
-        e.stopPropagation();
-        this._askConfirm({
-          title: 'Delete Image',
-          message: `Are you sure you want to delete "${img.name}"?`,
-          confirmText: 'Delete Image',
-          danger: true,
-          onConfirm: () => this._deleteImages([img.path])
-        });
-      });
-
-      // Card click
-      card.addEventListener('click', (e) => {
-        if (e.target.closest('.img-card-btn') || e.target.closest('.img-card-checkbox')) return;
-        if (this._selectMode) {
-          this._toggleSelect(img.path);
-        } else {
-          this._openLightbox(idx);
-        }
-      });
-
-      grid.appendChild(card);
+      const category = this._getDateCategory(img.modified_iso);
+      if (!groups.has(category)) groups.set(category, []);
+      groups.get(category).push({ img, idx });
     });
 
-    if (window.lucide) lucide.createIcons({ parent: grid });
+    const selCount = this._selectedPaths.size;
+    const dlText = selCount > 0 ? `Download (${selCount})` : 'Download All';
+    const delText = selCount > 0 ? `Delete (${selCount})` : 'Delete All';
+
+    let sectionsHtml = '';
+    for (const [category, items] of groups.entries()) {
+      const allCatSelected = items.length > 0 && items.every(({ img }) => this._selectedPaths.has(img.path));
+      sectionsHtml += `
+        <div class="img-gallery-date-group">
+          <div class="img-gallery-date-header">
+            <div class="img-gallery-date-info">
+              <h3 class="img-gallery-date-title">${category}</h3>
+              <span class="img-gallery-date-count">${items.length} ${items.length === 1 ? 'photo' : 'photos'}</span>
+            </div>
+            <div class="img-category-checkbox ${allCatSelected ? 'checked' : ''}" data-cat="${this._escHtml(category)}" title="Select all in ${this._escHtml(category)}">
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+          </div>
+          <div class="img-gallery-grid" data-group="${this._escHtml(category)}"></div>
+        </div>
+      `;
+    }
+
+    body.innerHTML = `
+      <div class="library-container">
+        <div class="library-header-row">
+          <h1 class="library-main-title">Library</h1>
+          <div class="library-actions">
+            <button class="library-action-btn" id="lib-download-all-btn" title="${dlText}">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 32 32" fill="currentColor"><path d="M23.5,22H23V20h.5a4.5,4.5,0,0,0,.36-9L23,11l-.1-.82a7,7,0,0,0-13.88,0L9,11,8.14,11a4.5,4.5,0,0,0,.36,9H9v2H8.5A6.5,6.5,0,0,1,7.2,9.14a9,9,0,0,1,17.6,0A6.5,6.5,0,0,1,23.5,22Z"/><polygon points="17 26.17 17 14 15 14 15 26.17 12.41 23.59 11 25 16 30 21 25 19.59 23.59 17 26.17"/></svg>
+              <span>${dlText}</span>
+            </button>
+            <button class="library-action-btn" id="lib-delete-all-btn" title="${delText}">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 32 32" fill="currentColor"><rect x="12" y="12" width="2" height="12"/><rect x="18" y="12" width="2" height="12"/><path d="M4,6V8H6V28a2,2,0,0,0,2,2H24a2,2,0,0,0,2-2V8h2V6ZM8,28V8H24V28Z"/><rect x="12" y="2" width="8" height="2"/></svg>
+              <span>${delText}</span>
+            </button>
+          </div>
+        </div>
+        ${sectionsHtml}
+      </div>
+    `;
+
+    body.querySelector('#lib-download-all-btn')?.addEventListener('click', () => {
+      const targets = this._selectedPaths.size > 0 
+        ? this._filtered.filter(img => this._selectedPaths.has(img.path))
+        : this._filtered;
+      this._downloadBatch(targets);
+    });
+
+    body.querySelector('#lib-delete-all-btn')?.addEventListener('click', () => {
+      const count = this._selectedPaths.size;
+      const isAll = count === 0 || count === this._filtered.length;
+      this._askConfirm({
+        title: isAll ? 'Delete All Images' : `Delete Selected (${count})`,
+        message: isAll ? `Are you sure you want to delete all ${this._filtered.length} images?` : `Are you sure you want to delete ${count} selected images?`,
+        confirmText: 'Delete Images',
+        onConfirm: () => this._deleteImages(isAll ? [] : [...this._selectedPaths], isAll)
+      });
+    });
+
+    // Bind category selection circular checkboxes
+    body.querySelectorAll('.img-category-checkbox').forEach(cb => {
+      cb.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const cat = cb.dataset.cat;
+        const items = groups.get(cat) || [];
+        const allSelected = items.length > 0 && items.every(({ img }) => this._selectedPaths.has(img.path));
+        items.forEach(({ img }) => {
+          if (allSelected) this._selectedPaths.delete(img.path);
+          else this._selectedPaths.add(img.path);
+        });
+        this._selectMode = this._selectedPaths.size > 0;
+        this._renderGrid();
+      });
+    });
+
+    // Render cards into respective date group grids
+    for (const [category, items] of groups.entries()) {
+      const grid = body.querySelector(`.img-gallery-grid[data-group="${CSS.escape(category)}"]`);
+      if (!grid) continue;
+
+      items.forEach(({ img, idx }) => {
+        const isSelected = this._selectedPaths.has(img.path);
+        const card = document.createElement('div');
+        card.className = `img-gallery-card ${this._selectMode ? 'select-mode' : ''} ${isSelected ? 'selected' : ''}`;
+        card.dataset.idx = idx;
+        card.dataset.path = img.path;
+
+        card.innerHTML = `
+          <div class="img-gallery-thumb-wrap">
+            <img class="img-gallery-thumb" src="${img.render_url}" alt="${this._escHtml(img.name)}" loading="lazy" />
+            <div class="img-gallery-top-overlay">
+              <div class="img-card-checkbox ${isSelected ? 'checked' : ''}" data-idx="${idx}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <div class="img-card-actions">
+                <button class="img-card-btn img-dl-btn" data-idx="${idx}" title="Download">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 32 32" fill="currentColor"><path d="M23.5,22H23V20h.5a4.5,4.5,0,0,0,.36-9L23,11l-.1-.82a7,7,0,0,0-13.88,0L9,11,8.14,11a4.5,4.5,0,0,0,.36,9H9v2H8.5A6.5,6.5,0,0,1,7.2,9.14a9,9,0,0,1,17.6,0A6.5,6.5,0,0,1,23.5,22Z"/><polygon points="17 26.17 17 14 15 14 15 26.17 12.41 23.59 11 25 16 30 21 25 19.59 23.59 17 26.17"/></svg>
+                </button>
+                <button class="img-card-btn img-del-btn" data-idx="${idx}" title="Delete">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 32 32" fill="currentColor"><rect x="12" y="12" width="2" height="12"/><rect x="18" y="12" width="2" height="12"/><path d="M4,6V8H6V28a2,2,0,0,0,2,2H24a2,2,0,0,0,2-2V8h2V6ZM8,28V8H24V28Z"/><rect x="12" y="2" width="8" height="2"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+
+        card.querySelector('.img-card-checkbox')?.addEventListener('click', (e) => {
+          e.stopPropagation();
+          this._toggleSelect(img.path);
+        });
+
+        card.querySelector('.img-dl-btn')?.addEventListener('click', (e) => {
+          e.stopPropagation();
+          this._downloadImage(img);
+        });
+
+        card.querySelector('.img-del-btn')?.addEventListener('click', (e) => {
+          e.stopPropagation();
+          this._askConfirm({
+            title: 'Delete Image',
+            message: `Are you sure you want to delete "${img.name}"?`,
+            confirmText: 'Delete Image',
+            onConfirm: () => this._deleteImages([img.path])
+          });
+        });
+
+        card.addEventListener('click', (e) => {
+          if (e.target.closest('.img-card-btn') || e.target.closest('.img-card-checkbox')) return;
+          if (this._selectMode) {
+            this._toggleSelect(img.path);
+          } else {
+            this._openLightbox(idx);
+          }
+        });
+
+        grid.appendChild(card);
+      });
+    }
+
+    if (window.lucide) lucide.createIcons({ parent: body });
+  }
+
+  _getDateCategory(iso) {
+    if (!iso) return 'Earlier';
+    try {
+      const d = new Date(iso);
+      const now = new Date();
+      const dDate = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+      const nowDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const diffDays = Math.round((nowDate - dDate) / 86400000);
+      if (diffDays === 0) return 'Today';
+      if (diffDays === 1) return 'Yesterday';
+      if (diffDays > 1 && diffDays < 7) return d.toLocaleDateString(undefined, { weekday: 'long' });
+      if (d.getFullYear() === now.getFullYear()) return d.toLocaleDateString(undefined, { month: 'long', day: 'numeric' });
+      return d.toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' });
+    } catch { return 'Earlier'; }
   }
 
   _toggleSelect(path) {
-    if (this._selectedPaths.has(path)) {
-      this._selectedPaths.delete(path);
-    } else {
-      this._selectedPaths.add(path);
-    }
+    if (this._selectedPaths.has(path)) this._selectedPaths.delete(path);
+    else this._selectedPaths.add(path);
     this._renderGrid();
   }
 
@@ -437,7 +391,7 @@ export class ImagesPage {
       } else {
         this._showError('Failed to delete image(s).');
       }
-    } catch (err) {
+    } catch {
       this._showError('Error executing delete operation.');
     }
   }
@@ -455,13 +409,11 @@ export class ImagesPage {
   _openLightbox(idx) {
     this._lightboxIdx = idx;
     this._syncLightbox();
-    const lb = this._root.querySelector('#img-lightbox');
-    if (lb) lb.classList.remove('hidden');
+    this._root.querySelector('#img-lightbox')?.classList.remove('hidden');
   }
 
   _closeLightbox() {
-    const lb = this._root.querySelector('#img-lightbox');
-    if (lb) lb.classList.add('hidden');
+    this._root.querySelector('#img-lightbox')?.classList.add('hidden');
     this._lightboxIdx = -1;
   }
 
@@ -476,26 +428,22 @@ export class ImagesPage {
     const a = document.createElement('a');
     a.href = img.render_url; a.download = img.name;
     document.body.appendChild(a); a.click(); document.body.removeChild(a);
-    this._showToast('Download', `Downloading ${img.name}`, 2000);
+    this._showToast('Download', `Downloading ${img.name}`, 1500);
   }
 
-  _formatSize(bytes) {
-    if (!bytes) return '0 B';
-    if (bytes < 1024) return `${bytes} B`;
-    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-  }
-
-  _formatDate(iso) {
-    if (!iso) return '';
-    try {
-      const d = new Date(iso), diffH = Math.floor((new Date() - d) / 3600000);
-      if (diffH < 1) return 'Just now';
-      if (diffH < 24) return `${diffH}h ago`;
-      const diffD = Math.floor(diffH / 24);
-      if (diffD < 7) return `${diffD}d ago`;
-      return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-    } catch { return ''; }
+  _downloadBatch(images) {
+    if (!images || images.length === 0) return;
+    this._showToast('Download', `Starting download for ${images.length} image(s)...`, 2000);
+    images.forEach((img, index) => {
+      setTimeout(() => {
+        const a = document.createElement('a');
+        a.href = img.render_url;
+        a.download = img.name;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      }, index * 200);
+    });
   }
 
   _escHtml(str) { return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }

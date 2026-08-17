@@ -174,124 +174,15 @@ export function updateTitleBreadcrumb(projectName, chatTitle) {
 }
 window.updateTitleBreadcrumb = updateTitleBreadcrumb;
 
+import { openImageLightbox } from '../chat/dialogs.js';
+
 export function bindImageLightbox() {
-  const $ = (id) => document.getElementById(id);
-  const lightbox = $('image-lightbox');
-  const imgEl = $('lightbox-img');
-  const filename = $('lightbox-filename');
-  const content = $('lightbox-content');
-
-  if (!lightbox || !imgEl || !content) return;
-
-  let zoom = 1.0;
-  let panX = 0;
-  let panY = 0;
-  let isDragging = false;
-  let startX = 0;
-  let startY = 0;
-
-  function updateTransform() {
-    imgEl.style.transform = `translate(${panX}px, ${panY}px) scale(${zoom})`;
-  }
-
-  function reset() {
-    zoom = 1.0;
-    panX = 0;
-    panY = 0;
-    updateTransform();
-  }
-
-  function openLightbox(src, name) {
-    imgEl.src = src;
-    filename.textContent = name || 'Image Preview';
-    reset();
-    lightbox.classList.remove('hidden');
-    // Re-create icons inside header
-    if (window.lucide) lucide.createIcons({ parent: lightbox });
-  }
-
-  function closeLightbox() {
-    lightbox.classList.add('hidden');
-    imgEl.src = '';
-  }
-
-  // Global event delegation for all images
+  // Global event delegation for all images to open the unified lightbox
   document.body.addEventListener('click', (e) => {
-    // Target any img inside chat scroll panel, message, debate message, or doc viewer
     const clickableImg = e.target.closest('.msg img, .debate-bubble img, .doc-viewer-content img, .chat-scroll-container img');
     if (clickableImg) {
       e.stopPropagation();
-      // Extract title from filename, alt text, or use fallback
-      let title = clickableImg.getAttribute('alt') || clickableImg.src.split('/').pop().split('?')[0];
-      if (title.length > 50) title = title.substring(0, 47) + '...';
-      openLightbox(clickableImg.src, title);
+      openImageLightbox(clickableImg.src, clickableImg.src);
     }
-  });
-
-  // Close bindings
-  $('btn-lightbox-close')?.addEventListener('click', closeLightbox);
-  $('lightbox-backdrop')?.addEventListener('click', closeLightbox);
-  
-  // Close on Escape key
-  const escapeListener = (e) => {
-    if (e.key === 'Escape' && lightbox && !lightbox.classList.contains('hidden')) {
-      closeLightbox();
-    }
-  };
-  document.addEventListener('keydown', escapeListener);
-
-  // Zoom controls
-  $('btn-lightbox-zoom-in')?.addEventListener('click', () => {
-    zoom = Math.min(zoom * 1.25, 8);
-    updateTransform();
-  });
-  $('btn-lightbox-zoom-out')?.addEventListener('click', () => {
-    zoom = Math.max(zoom / 1.25, 0.25);
-    updateTransform();
-  });
-  $('btn-lightbox-reset')?.addEventListener('click', reset);
-
-  // Download control
-  $('btn-lightbox-download')?.addEventListener('click', () => {
-    const a = document.createElement('a');
-    a.href = imgEl.src;
-    a.download = filename.textContent || 'image.png';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-  });
-
-  // Pan controls (mouse drag)
-  content.addEventListener('mousedown', (e) => {
-    if (e.button !== 0) return; // Left click only
-    e.preventDefault();
-    isDragging = true;
-    startX = e.clientX - panX;
-    startY = e.clientY - panY;
-    content.style.cursor = 'grabbing';
-  });
-
-  window.addEventListener('mousemove', (e) => {
-    if (!isDragging) return;
-    panX = e.clientX - startX;
-    panY = e.clientY - startY;
-    updateTransform();
-  });
-
-  window.addEventListener('mouseup', () => {
-    isDragging = false;
-    content.style.cursor = 'grab';
-  });
-
-  // Wheel zoom controls
-  content.addEventListener('wheel', (e) => {
-    e.preventDefault();
-    const zoomFactor = 1.15;
-    if (e.deltaY < 0) {
-      zoom = Math.min(zoom * zoomFactor, 8);
-    } else {
-      zoom = Math.max(zoom / zoomFactor, 0.25);
-    }
-    updateTransform();
   });
 }

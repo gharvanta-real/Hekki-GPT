@@ -848,10 +848,16 @@ function enterConversation() {
   inConversationState.val = true;
   
   // Show convo pane, hide welcome pane
-  document.getElementById('home-screen')?.classList.add('hidden');
+  const home = document.getElementById('home-screen');
+  if (home) {
+    home.style.display = 'none';
+    home.classList.add('hidden');
+  }
   document.getElementById('bottom-input-bar')?.classList.remove('hidden');
   document.getElementById('chat-input-conv')?.focus();
 }
+window.enterConversation = enterConversation;
+window.enterConversationState = enterConversation;
 
 //  LOG 
 function log(text, type = '') {

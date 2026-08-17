@@ -1,160 +1,314 @@
 /* ==========================================================================
-   base/1_variables_theme.css — Variables, Design Tokens & Theme Overrides
+   base/1_variables_theme.css — Central Master Design Tokens & Theme Engine
+   Single Source of Truth for all UI Surfaces, Cards, Panels, Buttons & Text
    ========================================================================== */
 
-@font-face {
-  font-family: 'anthropic-sans';
-  src: local('Plus Jakarta Sans'), local('Inter'), local('Segoe UI'), sans-serif;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'anthropic-serif';
-  src: local('Newsreader'), local('Instrument Serif'), local('Georgia'), serif;
-  font-display: swap;
-}
-
 :root {
-  --bg:          #F6F7F9; /* soft off-white canvas for main chat page */
-  --card:        #FFFFFF; /* pure clean white card box fill */
-  --input-bg:    #F1F3F6; /* soft slate inset box inside white cards */
-  --sidebar-bg:  #F0F2F5; /* soft light neutral slate grey for left sidebars */
-  --border:      transparent;
-  --hover:       #E4E7EB;
-
-  --text:        #141414;
-  --text-primary: var(--text);
-  --text-2:      #52525b;
-  --text-secondary: var(--text-2);
-  --text-3:      #8e8e93;
-  --link-hover:  #2563eb;
-
-  --orange:      #d97706;
-  --blue:        #18181b;
-  --green:       #16a34a;
-
-  --font:        "Segoe WPC", "Segoe UI", -apple-system-body, ui-sans-serif, -apple-system, "system-ui", "Google Sans", sans-serif;
-  --font-google-sans: "Google Sans", "Google Sans Flex", sans-serif;
-  --font-segoe-ui:    "Segoe WPC", "Segoe UI", sans-serif;
-  --font-inter:       "Inter", sans-serif;
-  --font-plus-jakarta: "Plus Jakarta Sans", sans-serif;
-  --font-outfit:      "Outfit", sans-serif;
-  --font-open-sans:   "Open Sans", sans-serif;
-  --font-roboto:      "Roboto", sans-serif;
+  /* --- 1. Typography & Font Family Tokens (Rule #5: Open Sans) --- */
+  --font-family-base:    'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font:                var(--font-family-base);
+  --font-open-sans:      'Open Sans', sans-serif;
+  --font-inter:          'Inter', sans-serif;
+  --font-plus-jakarta:   'Plus Jakarta Sans', sans-serif;
+  --font-google-sans:    'Google Sans', 'Google Sans Flex', sans-serif;
+  --font-mono:           ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
   --font-jetbrains-mono: "JetBrains Mono", monospace;
-  --font-fira-code:   "Fira Code", monospace;
-  --font-apple-system-body: var(--font);
-  --font-openai-sans:       var(--font);
-  --font-sans:   var(--font);
-  --font-serif:  var(--font);
-  --font-mono:   ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
-  --font-ai:     "Segoe WPC", "Segoe UI", sans-serif;
+  --font-fira-code:      "Fira Code", monospace;
 
-  /* CHATGPT PEEK TYPOGRAPHY RAW TOKENS */
-  --text-12: 13px;
-  --text-14: 15px;
-  --text-16: 17px;
-  --text-18: 19px;
-  --text-24: 26px;
-  --tracking-neg-0-27: -0.27px;
+  /* Typography Scale (Strict Rule #5: Headers max 19px mid-bold, Body 12-13px) */
+  --fs-2xs:  10px;
+  --fs-xs:   11px;
+  --fs-sm:   12px;
+  --fs-base: 13px;
+  --fs-md:   14px;
+  --fs-lg:   15px;
+  --fs-xl:   17px;
+  --fs-2xl:  19px;
+  --fs-3xl:  19px; /* Max header limit */
 
-  /* PEEK TYPOGRAPHY SCALE TOKENS */
-  --fs-xs:   13px;
-  --fs-sm:   16px;
-  --fs-base: 15px;
-  --fs-md:   16px;
-  --fs-lg:   19px;
-  --fs-xl:   20px;
-  --fs-2xl:  26px;
-  --fs-3xl:  28px;
+  /* Legacy Scale Token Compatibility */
+  --text-12: 12px;
+  --text-14: 13px;
+  --text-16: 14px;
+  --text-18: 15px;
+  --text-24: 19px;
+  --tracking-neg-0-27: -0.2px;
 
-  --radius-sm:   6px;
-  --radius-md:   8px;
-  --radius-card: 8px;
-  --radius-lg:   8px;
-  --radius-xl:   8px;
-  --radius-btn:  8px;
-  --radius-pill: 8px;
+  /* Font Weights */
+  --fw-regular:  400;
+  --fw-medium:   500;
+  --fw-semibold: 600;
+  --fw-bold:     700;
 
-  --shadow:      none;
-  --shadow-md:   none;
-  --shadow-sm:   none;
-  --shadow-lg:   none;
+  /* --- 2. Surface & Layout Tokens (Light Default) --- */
+  --bg:                 #F6F7F9; /* Canvas background */
+  --bg-app:             #F6F7F9;
+  --bg-primary:         #FFFFFF;
+  --bg-secondary:       #F6F7F9;
+  --bg-tertiary:        #F1F5F9;
+  --bg-surface:         #FFFFFF; /* Pure clean white surface fill */
+  --card:               #FFFFFF; /* Flat card background */
+  --bg-card:            #FFFFFF;
+  --bg-card-secondary:  #F8FAFC;
+  --input-bg:           #F1F3F6; /* Inset controls fill */
+  --bg-inset:           #F1F3F6;
+  --sidebar-bg:         #F0F2F5; /* Left sidebar rail fill */
+  --bg-sidebar:         #F0F2F5;
+  --hover:              #E4E7EB; /* Neutral subtle hover state */
+  --bg-hover:           #E4E7EB;
+  --bg-active:          #EFF6FF; /* Active selection background */
+
+  /* --- 3. Text & Content Tokens (Light Default) --- */
+  --text:               #141414;
+  --text-primary:       #141414;
+  --text-2:             #52525B;
+  --text-secondary:     #52525B;
+  --text-3:             #8E8E93;
+  --text-muted:         #8E8E93;
+  --text-inverse:       #FFFFFF;
+  --link-hover:         #2563EB;
+
+  /* --- 4. Brand & Accent Tokens --- */
+  --accent:             #2563EB; /* Vibrant clean blue */
+  --accent-primary:     #2563EB;
+  --accent-hover:       #1D4ED8;
+  --accent-light:       #DBEAFE;
+  --accent-tint:        rgba(37, 99, 235, 0.10);
+
+  --green:              #16A34A;
+  --orange:             #D97706;
+  --red:                #EF4444;
+
+  /* --- 5. Button & Action Control Tokens (Light Default) --- */
+  --btn-primary-bg:     #09090B;
+  --btn-primary-text:   #FFFFFF;
+  --btn-primary-hover:  #27272A;
+  --btn-secondary-bg:   #F1F3F6;
+  --btn-secondary-text: #141414;
+  --btn-secondary-hover:#E4E7EB;
+  --btn-danger-bg:      rgba(239, 68, 68, 0.10);
+  --btn-danger-text:    #EF4444;
+  --btn-danger-hover:   rgba(239, 68, 68, 0.18);
+
+  /* --- 6. Chips, Badges & Pills Tokens --- */
+  --chip-bg:            #F1F3F6;
+  --chip-text:          #52525B;
+  --chip-border:        transparent;
+  --chip-active-bg:     #FFFFFF;
+  --chip-active-text:   #141414;
+  --chip-accent-bg:     rgba(37, 99, 235, 0.10);
+  --chip-accent-text:   #2563EB;
+
+  /* --- 7. Flat Surface, Border & Shadow Tokens (Rule #3: Zero Shadows) --- */
+  --border:             transparent;
+  --border-subtle:      rgba(0, 0, 0, 0.08);
+  --border-focus:       rgba(37, 99, 235, 0.50);
+  --border-hover:       #CBD5E1;
+  --border-none:        none !important;
+  --box-shadow-none:    none !important;
+  --shadow:             none !important;
+  --shadow-sm:          none !important;
+  --shadow-md:          none !important;
+  --shadow-lg:          none !important;
+
+  /* Border Radii */
+  --radius-xs:          4px;
+  --radius-sm:          6px;
+  --radius-md:          8px;
+  --radius-card:        8px;
+  --radius-lg:          8px;
+  --radius-xl:          12px;
+  --radius-btn:         8px;
+  --radius-pill:        9999px;
+  --border-radius-sm:   4px;
+  --border-radius-md:   8px;
+  --border-radius-lg:   12px;
+  --border-radius-full: 9999px;
+
+  /* Spacing Scale */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
 }
 
 /* Global Soft Bold Rule */
 strong, b {
-  font-weight: 500 !important;
+  font-weight: 600 !important;
 }
 
-/* EXPLICIT LIGHT THEME OVERRIDES */
+/* ==========================================================================
+   THEME OVERRIDES — EXPLICIT LIGHT THEME
+   ========================================================================== */
 body.light,
 :root[data-theme="light"] {
-  --bg:          #F6F7F9 !important;
-  --card:        #FFFFFF !important;
-  --input-bg:    #F1F3F6 !important;
-  --sidebar-bg:  #F0F2F5 !important;
-  --border:      #E4E7EB !important;
-  --hover:       #E4E7EB !important;
+  --bg:                 #F6F7F9 !important;
+  --bg-app:             #F6F7F9 !important;
+  --bg-primary:         #FFFFFF !important;
+  --bg-secondary:       #F6F7F9 !important;
+  --bg-surface:         #FFFFFF !important;
+  --card:               #FFFFFF !important;
+  --bg-card:            #FFFFFF !important;
+  --bg-card-secondary:  #F8FAFC !important;
+  --input-bg:           #F1F3F6 !important;
+  --bg-inset:           #F1F3F6 !important;
+  --sidebar-bg:         #F0F2F5 !important;
+  --bg-sidebar:         #F0F2F5 !important;
+  --hover:              #E4E7EB !important;
+  --bg-hover:           #E4E7EB !important;
+  --bg-active:          #EFF6FF !important;
 
-  --text:        #141414 !important;
-  --text-primary: var(--text) !important;
-  --text-2:      #52525b !important;
-  --text-secondary: var(--text-2) !important;
-  --text-3:      #8e8e93 !important;
-  --link-hover:  #2563eb !important;
+  --text:               #141414 !important;
+  --text-primary:       #141414 !important;
+  --text-2:             #52525B !important;
+  --text-secondary:     #52525B !important;
+  --text-3:             #8E8E93 !important;
+  --text-muted:         #8E8E93 !important;
+  --text-inverse:       #FFFFFF !important;
+  --link-hover:         #2563EB !important;
+
+  --btn-primary-bg:     #09090B !important;
+  --btn-primary-text:   #FFFFFF !important;
+  --btn-primary-hover:  #27272A !important;
+  --btn-secondary-bg:   #F1F3F6 !important;
+  --btn-secondary-text: #141414 !important;
+  --btn-secondary-hover:#E4E7EB !important;
+
+  --border:             transparent !important;
+  --border-subtle:      rgba(0, 0, 0, 0.08) !important;
+  --border-hover:       #CBD5E1 !important;
 }
 
-/* System Dark Mode Auto-Detection */
-@media (prefers-color-scheme: dark) {
-  body:not(.light):not([data-theme="light"]):not(.dark):not(.oled) {
-    --bg:          #141414;
-    --card:        #1E1E1E;
-    --input-bg:    #222225;
-    --sidebar-bg:  #181818;
-    --border:      #2B2B30;
-    --hover:       #28282D;
-
-    --text:        #FFFFFF;
-    --text-primary: var(--text);
-    --text-2:      #a1a1aa;
-    --text-secondary: var(--text-2);
-    --text-3:      #71717a;
-    --link-hover:  #93c5fd;
-  }
-}
-
-/* Dark mode overrides (Cursor Dark Charcoal Theme) */
+/* ==========================================================================
+   THEME OVERRIDES — DARK MODE (Cursor Charcoal Aesthetic)
+   ========================================================================== */
 body.dark,
 :root[data-theme="dark"] {
-  --bg:          #141414 !important;
-  --card:        #1E1E1E !important;
-  --input-bg:    #222225 !important;
-  --sidebar-bg:  #181818 !important;
-  --border:      #2B2B30 !important;
-  --hover:       #28282D !important;
+  --bg:                 #141414 !important;
+  --bg-app:             #141414 !important;
+  --bg-primary:         #1E1E1E !important;
+  --bg-secondary:       #141414 !important;
+  --bg-surface:         #1E1E1E !important;
+  --card:               #1E1E1E !important;
+  --bg-card:            #1E1E1E !important;
+  --bg-card-secondary:  #242428 !important;
+  --input-bg:           #222225 !important;
+  --bg-inset:           #222225 !important;
+  --sidebar-bg:         #181818 !important;
+  --bg-sidebar:         #181818 !important;
+  --hover:              #28282D !important;
+  --bg-hover:           #28282D !important;
+  --bg-active:          #1E293B !important;
 
-  --text:        #F4F4F5 !important;
-  --text-primary: var(--text) !important;
-  --text-2:      #A1A1AA !important;
-  --text-secondary: var(--text-2) !important;
-  --text-3:      #71717A !important;
-  --link-hover:  #93c5fd !important;
+  --text:               #F4F4F5 !important;
+  --text-primary:       #F4F4F5 !important;
+  --text-2:             #A1A1AA !important;
+  --text-secondary:     #A1A1AA !important;
+  --text-3:             #71717A !important;
+  --text-muted:         #71717A !important;
+  --text-inverse:       #09090B !important;
+  --link-hover:         #93C5FD !important;
+
+  --btn-primary-bg:     #FFFFFF !important;
+  --btn-primary-text:   #09090B !important;
+  --btn-primary-hover:  #E4E4E7 !important;
+  --btn-secondary-bg:   #222225 !important;
+  --btn-secondary-text: #F4F4F5 !important;
+  --btn-secondary-hover:#28282D !important;
+
+  --chip-bg:            #222225 !important;
+  --chip-text:          #A1A1AA !important;
+  --chip-active-bg:     #1E1E1E !important;
+  --chip-active-text:   #F4F4F5 !important;
+
+  --border:             transparent !important;
+  --border-subtle:      rgba(255, 255, 255, 0.08) !important;
+  --border-hover:       #3F3F46 !important;
 }
 
-/* OLED true black overrides */
+/* ==========================================================================
+   THEME OVERRIDES — OLED TRUE BLACK MODE
+   ========================================================================== */
 body.oled,
 :root[data-theme="oled"] {
-  --bg:          #141414 !important;
-  --card:        #1E1E1E !important;
-  --input-bg:    #222225 !important;
-  --sidebar-bg:  #181818 !important;
-  --border:      #2B2B30 !important;
-  --hover:       #28282D !important;
+  --bg:                 #000000 !important;
+  --bg-app:             #000000 !important;
+  --bg-primary:         #121212 !important;
+  --bg-secondary:       #0A0A0A !important;
+  --bg-surface:         #121212 !important;
+  --card:               #121212 !important;
+  --bg-card:            #121212 !important;
+  --bg-card-secondary:  #181818 !important;
+  --input-bg:           #161616 !important;
+  --bg-inset:           #161616 !important;
+  --sidebar-bg:         #0A0A0A !important;
+  --bg-sidebar:         #0A0A0A !important;
+  --hover:              #202024 !important;
+  --bg-hover:           #202024 !important;
+  --bg-active:          #1A2234 !important;
 
-  --text:        #F4F4F5 !important;
-  --text-primary: var(--text) !important;
-  --text-2:      #A1A1AA !important;
-  --text-secondary: var(--text-2) !important;
-  --text-3:      #71717A !important;
-  --link-hover:  #93c5fd !important;
+  --text:               #F4F4F5 !important;
+  --text-primary:       #F4F4F5 !important;
+  --text-2:             #A1A1AA !important;
+  --text-secondary:     #A1A1AA !important;
+  --text-3:             #71717A !important;
+  --text-muted:         #71717A !important;
+  --text-inverse:       #000000 !important;
+  --link-hover:         #93C5FD !important;
+
+  --btn-primary-bg:     #FFFFFF !important;
+  --btn-primary-text:   #09090B !important;
+  --btn-primary-hover:  #E4E4E7 !important;
+  --btn-secondary-bg:   #161616 !important;
+  --btn-secondary-text: #F4F4F5 !important;
+  --btn-secondary-hover:#202024 !important;
+
+  --chip-bg:            #161616 !important;
+  --chip-text:          #A1A1AA !important;
+  --chip-active-bg:     #121212 !important;
+  --chip-active-text:   #F4F4F5 !important;
+
+  --border:             transparent !important;
+  --border-subtle:      rgba(255, 255, 255, 0.08) !important;
+  --border-hover:       #3F3F46 !important;
+}
+
+/* System Dark Mode Auto-Detection Fallback */
+@media (prefers-color-scheme: dark) {
+  body:not(.light):not([data-theme="light"]):not(.dark):not([data-theme="dark"]):not(.oled):not([data-theme="oled"]) {
+    --bg:                 #141414;
+    --bg-app:             #141414;
+    --bg-primary:         #1E1E1E;
+    --bg-secondary:       #141414;
+    --bg-surface:         #1E1E1E;
+    --card:               #1E1E1E;
+    --bg-card:            #1E1E1E;
+    --bg-card-secondary:  #242428;
+    --input-bg:           #222225;
+    --bg-inset:           #222225;
+    --sidebar-bg:         #181818;
+    --bg-sidebar:         #181818;
+    --hover:              #28282D;
+    --bg-hover:           #28282D;
+    --bg-active:          #1E293B;
+
+    --text:               #FFFFFF;
+    --text-primary:       #FFFFFF;
+    --text-2:             #A1A1AA;
+    --text-secondary:     #A1A1AA;
+    --text-3:             #71717A;
+    --text-muted:         #71717A;
+    --text-inverse:       #09090B;
+    --link-hover:         #93C5FD;
+
+    --btn-primary-bg:     #FFFFFF;
+    --btn-primary-text:   #09090B;
+    --btn-primary-hover:  #E4E4E7;
+
+    --border:             transparent;
+    --border-subtle:      rgba(255, 255, 255, 0.08);
+    --border-hover:       #3F3F46;
+  }
 }

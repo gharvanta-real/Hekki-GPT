@@ -38,7 +38,8 @@ export class SlashMenuManager {
       { cmd: '/image', label: 'Image Generation', icon: 'image', desc: 'High-res visual assets' },
       { cmd: '/debate', label: 'Expert AI Debate', icon: 'swords', desc: 'Dual-model AI debate' },
       { cmd: '/detective', label: 'Detective Intelligence', icon: 'radar', desc: 'Company news & hiring signals' },
-      { cmd: '/radar', label: 'Announcement Radar', icon: 'activity', desc: 'Real-time 4-tier impact' }
+      { cmd: '/radar', label: 'Announcement Radar', icon: 'activity', desc: 'Real-time 4-tier impact' },
+      { cmd: '/Images-U', label: 'Direct Image Gen', icon: 'image-u', desc: 'Direct prompt to image model (Zero AI trace)' }
     ];
 
     this.init();
@@ -336,6 +337,7 @@ export class SlashMenuManager {
     if (norm === '/debate') return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 32 32" fill="currentColor" style="width:${size}px;height:${size}px;flex-shrink:0;"><path d="M16,2A14,14,0,1,0,30,16,14.0158,14.0158,0,0,0,16,2Zm0,26A12,12,0,1,1,28,16,12.0137,12.0137,0,0,1,16,28Z"/><circle cx="11" cy="15" r="2"/><circle cx="21" cy="15" r="2"/><path d="M11,21a6,6,0,0,0,10,0Z"/></svg>`;
     if (norm === '/detective') return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 32 32" fill="currentColor" style="width:${size}px;height:${size}px;flex-shrink:0;"><path d="M26,24.5859l-5.1147-5.1147c.9407-1.3201,1.3683-3.0299.9602-4.8428-.4971-2.2083-2.2783-3.9913-4.4888-4.4786-4.3566-.9604-8.1675,2.8505-7.207,7.2071.4873,2.2105,2.2703,3.9918,4.4787,4.4888,1.8129.408,3.5228-.0197,4.8429-.9605l5.1147,5.1147,1.4141-1.4141h0ZM17.0848,19.8568c-3.0406.805-5.7481-1.9051-4.9404-4.9449.3548-1.3352,1.4352-2.4146,2.7707-2.7682,3.0406-.805,5.7481,1.9051,4.9404,4.9449-.3548,1.3352-1.4352,2.4146-2.7707,2.7682ZM29.0663,16.3569l-.0654-.1709c-1.9897-5.2383-7.5781-9.1865-13.0005-9.1865s-11.0107,3.9482-12.9995,9.1841l-.0664.1733c-.1978.5166-.7764.7739-1.2915.5767-.5161-.1978-.7739-.7759-.5767-1.2915l.0654-.1709c2.2671-5.9688,8.6597-10.4717,14.8687-10.4717s12.6016,4.5029,14.8696,10.4741l.0645.1685M16.0004,27c-6.2088-.0002-12.6006-4.5031-14.8691-10.4741l-.064-.166c-.1987-.5151.0581-1.0942.5732-1.293.5146-.1982,1.0938.0576,1.293.5732l.0659.1709c1.9907,5.2405,7.5788,9.1887,13.001,9.189v2Z"/></svg>`;
     if (norm === '/radar') return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 32 32" fill="currentColor" style="width:${size}px;height:${size}px;flex-shrink:0;"><path d="M16,2,2,13,8,30H24l6-17Zm2.5818,19.2651-5.9861,1.3306-1.4226-7.8252,4.91-4.209,5.4416,4.0816Zm.1977,2.0054L21.3264,28H10.6736l1.7912-3.3267ZM9.59,13.4937,5.74,12.605,15,5.3291V8.8569ZM17,8.75V5.3291l9.26,7.2759-3.15.727ZM4.6143,14.3979l4.6535,1.0738,1.4844,8.164-1.738,3.2281ZM22.9858,26.8638l-2.5766-4.7852,3.0063-6.7646,3.97-.9161Z"/></svg>`;
+    if (norm === '/images-u' || norm === 'image-u') return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 32 32" fill="currentColor" style="width:${size}px;height:${size}px;flex-shrink:0;"><polygon points="4 20 4 22 8.586 22 2 28.586 3.414 30 10 23.414 10 28 12 28 12 20 4 20"/><path d="M19,14a3,3,0,1,0-3-3A3,3,0,0,0,19,14Zm0-4a1,1,0,1,1-1,1A1,1,0,0,1,19,10Z"/><path d="M26,4H6A2,2,0,0,0,4,6V16H6V6H26V21.17l-3.59-3.59a2,2,0,0,0-2.82,0L18,19.17,11.8308,13l-1.4151,1.4155L14,18l2.59,2.59a2,2,0,0,0,2.82,0L21,19l5,5v2H16v2H26a2,2,0,0,0,2-2V6A2,2,0,0,0,26,4Z"/></svg>`;
 
     return `<i data-lucide="${icon || 'plug'}" style="width:${size}px;height:${size}px;"></i>`;
   }
@@ -414,85 +416,40 @@ export class SlashMenuManager {
   renderPaletteResults(query) {
     const listEl = document.getElementById('cmd-palette-list');
     if (!listEl) return;
-
     const q = query.toLowerCase().trim();
-    const items = [
-      ...this.commands.map(c => ({
-        type: 'slash',
-        title: `${c.cmd} ${c.label}`,
-        desc: c.desc,
-        icon: c.icon,
-        action: () => {
-          const targetInput = (document.getElementById('chat-input-conv') && document.getElementById('chat-input-conv').offsetParent !== null)
-            ? document.getElementById('chat-input-conv')
-            : document.getElementById('chat-input');
-          this.executeCommand(c, targetInput);
-        }
-      })),
-      {
-        type: 'action',
-        title: 'Search Chat History',
-        desc: 'Search past conversation threads & messages',
-        icon: 'search',
-        action: () => {
-          document.getElementById('btn-search-nav')?.click();
-        }
-      },
-      {
-        type: 'action',
-        title: 'Start New Conversation Thread',
-        desc: 'Clear active window & open fresh chat',
-        icon: 'plus',
-        action: () => {
-          document.getElementById('btn-new-chat')?.click();
-        }
-      },
-      {
-        type: 'action',
-        title: 'Open Coder IDE Workspace',
-        desc: 'Switch to code editor & project view',
-        icon: 'code',
-        action: () => {
-          if (window.router) window.router.navigate('coder');
-        }
-      }
+    const getInput = () => {
+      const c = document.getElementById('chat-input-conv');
+      return (c && c.offsetParent) ? c : document.getElementById('chat-input');
+    };
+    const staticActions = [
+      { title: 'Search Chat History', desc: 'Search past conversation threads & messages', icon: 'search', action: () => document.getElementById('btn-search-nav')?.click() },
+      { title: 'Start New Conversation Thread', desc: 'Clear active window & open fresh chat', icon: 'plus', action: () => document.getElementById('btn-new-chat')?.click() },
+      { title: 'Open Coder IDE Workspace', desc: 'Switch to code editor & project view', icon: 'code', action: () => window.router?.navigate('coder') }
     ];
-
+    const items = [
+      ...this.commands.map(c => ({ title: `${c.cmd} ${c.label}`, desc: c.desc, icon: c.icon, action: () => this.executeCommand(c, getInput()) })),
+      ...staticActions
+    ];
     const filtered = items.filter(it => !q || it.title.toLowerCase().includes(q) || it.desc.toLowerCase().includes(q));
     this.selectedIndex = 0;
-
     if (filtered.length === 0) {
-      listEl.innerHTML = `<div style="padding: 16px; font-size: 12px; color: var(--text-3); text-align: center;">No matching commands found.</div>`;
+      listEl.innerHTML = `<div style="padding:16px;font-size:12px;color:var(--text-3);text-align:center;">No matching commands found.</div>`;
       return;
     }
-
     listEl.innerHTML = filtered.map((it, i) => `
-      <button class="attach-dropdown-item ${i === 0 ? 'active-item' : ''}" style="font-weight: 400 !important; ${i === 0 ? 'background: var(--hover); color: var(--text);' : ''}">
+      <button class="attach-dropdown-item ${i === 0 ? 'active-item' : ''}" style="font-weight:400!important;${i === 0 ? 'background:var(--hover);color:var(--text);' : ''}">
         <i data-lucide="${it.icon}"></i>
-        <span style="font-weight: 400 !important; font-size: 14.5px;">${it.title}</span>
-        <span class="shortcut-hint" style="font-weight: 400 !important;">${it.desc}</span>
-      </button>
-    `).join('');
-
+        <span style="font-weight:400!important;font-size:14.5px;">${it.title}</span>
+        <span class="shortcut-hint" style="font-weight:400!important;">${it.desc}</span>
+      </button>`).join('');
     if (window.lucide) lucide.createIcons({ parent: listEl });
-
-    Array.from(listEl.children).forEach((el, i) => {
-      el.addEventListener('click', () => {
-        this.hideCommandPalette();
-        filtered[i].action();
-      });
-    });
+    Array.from(listEl.children).forEach((el, i) => el.addEventListener('click', () => { this.hideCommandPalette(); filtered[i].action(); }));
   }
 
   updatePaletteSelection(items) {
     items.forEach((el, i) => {
-      if (i === this.selectedIndex) {
-        el.style.background = 'var(--hover)';
-        el.style.color = 'var(--text)';
-      } else {
-        el.style.background = 'transparent';
-        el.style.color = 'var(--text-2)';
-      }
+      el.style.background = i === this.selectedIndex ? 'var(--hover)' : 'transparent';
+      el.style.color = i === this.selectedIndex ? 'var(--text)' : 'var(--text-2)';
     });
   }
 }

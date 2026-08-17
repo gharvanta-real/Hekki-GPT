@@ -554,19 +554,19 @@ export const ChatSessionManager = {
       <button class="chat-dropdown-item pin-opt"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 32 32" fill="currentColor" style="width:14px;height:14px;margin-right:8px;display:inline-block;vertical-align:middle;flex-shrink:0;"><path d="M28.59,13.31,30,11.9,20,2,18.69,3.42,19.87,4.6,8.38,14.32,6.66,12.61,5.25,14l5.66,5.68L2,28.58,3.41,30l8.91-8.91L18,26.75l1.39-1.42-1.71-1.71L27.4,12.13ZM16.26,22.2,9.8,15.74,21.29,6,26,10.71Z"/></svg> ${isPinned ? 'Unpin' : 'Pin'}</button>
       <button class="chat-dropdown-item rename-opt"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 32 32" fill="currentColor" style="width:14px;height:14px;margin-right:8px;display:inline-block;vertical-align:middle;flex-shrink:0;"><path d="M18,30H4A2,2,0,0,1,2,28V6A2,2,0,0,1,4,4H20a2,2,0,0,1,2,2v8H20V6H4V28H18Z"/><path d="M26.41,18.59,28,17,21,10H14v7l7,7,1.59-1.59L17.41,17H16V15.59l6.59-6.59L25.17,11Z"/></svg> Rename</button>
       <button class="chat-dropdown-item archive-opt"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 32 32" fill="currentColor" style="width:14px;height:14px;margin-right:8px;display:inline-block;vertical-align:middle;flex-shrink:0;"><path d="M20,21H12a2,2,0,0,1-2-2V17a2,2,0,0,1,2-2h8a2,2,0,0,1,2,2v2A2,2,0,0,1,20,21Zm-8-4v2h8V17Z"/><path d="M28,4H4A2,2,0,0,0,2,6v4a2,2,0,0,0,2,2V28a2,2,0,0,0,2,2H26a2,2,0,0,0,2-2V12a2,2,0,0,0,2-2V6A2,2,0,0,0,28,4ZM26,28H6V12H26Zm2-18H4V6H28v4Z"/></svg> Archive</button>
-      <button class="chat-dropdown-item delete-opt delete" style="color:#ef4444 !important;"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 32 32" fill="currentColor" style="width:14px;height:14px;margin-right:8px;display:inline-block;vertical-align:middle;flex-shrink:0;color:#ef4444;"><rect x="12" y="12" width="2" height="12"/><rect x="18" y="12" width="2" height="12"/><path d="M4,6V8H6V28a2,2,0,0,0,2,2H24a2,2,0,0,0,2-2V8h2V6ZM8,28V8H24V28Z"/><rect x="12" y="2" width="8" height="2"/></svg> <span style="color:#ef4444 !important;">Delete</span></button>
+      <button class="chat-dropdown-item delete-opt delete"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 32 32" fill="currentColor" style="width:14px;height:14px;margin-right:8px;display:inline-block;vertical-align:middle;flex-shrink:0;"><rect x="12" y="12" width="2" height="12"/><rect x="18" y="12" width="2" height="12"/><path d="M4,6V8H6V28a2,2,0,0,0,2,2H24a2,2,0,0,0,2-2V8h2V6ZM8,28V8H24V28Z"/><rect x="12" y="2" width="8" height="2"/></svg> <span>Delete</span></button>
     `;
     if (window.lucide) lucide.createIcons({ parent: dropdown });
-    dropdown.querySelector('.open-opt').addEventListener('click', () => { this.loadChat(chatId); this.closeAllDropdowns(); });
-    dropdown.querySelector('.pin-opt').addEventListener('click', () => { this.togglePinChat(chatId); this.closeAllDropdowns(); });
-    dropdown.querySelector('.rename-opt').addEventListener('click', async () => {
+    dropdown.querySelector('.open-opt')?.addEventListener('click', () => { this.loadChat(chatId); this.closeAllDropdowns(); });
+    dropdown.querySelector('.pin-opt')?.addEventListener('click', () => { this.togglePinChat(chatId); this.closeAllDropdowns(); });
+    dropdown.querySelector('.rename-opt')?.addEventListener('click', async () => {
       const currentTitle = parentItem ? parentItem.getAttribute('data-title') : (optBtn.parentNode.title || '');
       this.closeAllDropdowns();
       const newTitle = await showCustomPrompt('Rename Chat', 'Enter a new title for this conversation:', currentTitle);
       if (newTitle && newTitle.trim()) this.renameChat(chatId, newTitle.trim());
     });
-    dropdown.querySelector('.archive-opt').addEventListener('click', () => { this.archiveChat(chatId); this.closeAllDropdowns(); });
-    dropdown.querySelector('.delete-opt').addEventListener('click', (e) => {
+    dropdown.querySelector('.archive-opt')?.addEventListener('click', () => { this.archiveChat(chatId); this.closeAllDropdowns(); });
+    dropdown.querySelector('.delete-opt')?.addEventListener('click', (e) => {
       e.stopPropagation();
       this.closeAllDropdowns();
       this.deleteChat(chatId);

@@ -1,0 +1,119 @@
+[
+  {
+    "id": "morning_digest",
+    "name": "Autonomous Tech & Market Digest",
+    "description": "Scrapes latest tech news and stock trends, summarizes key points with Gemini, and saves a daily briefing note.",
+    "category": "Intelligence",
+    "icon": "globe",
+    "enabled": true,
+    "schedule": "0 8 * * *",
+    "nodes": [
+      {
+        "id": "n1",
+        "type": "trigger",
+        "label": "Schedule Trigger (Daily 8:00 AM)",
+        "config": {
+          "schedule": "0 8 * * *"
+        }
+      },
+      {
+        "id": "n2",
+        "type": "scraper",
+        "label": "Scrape Tech & Market News",
+        "config": {
+          "sources": [
+            "TechCrunch",
+            "HackerNews",
+            "NSE/BSE"
+          ]
+        }
+      },
+      {
+        "id": "n3",
+        "type": "agent",
+        "label": "Analyze & Synthesize Insights",
+        "config": {
+          "prompt": "Summarize top 3 breakthroughs and market movements into bullet points."
+        }
+      },
+      {
+        "id": "n4",
+        "type": "save",
+        "label": "Save to Knowledge Memory",
+        "config": {
+          "target": "memory_digest"
+        }
+      }
+    ]
+  },
+  {
+    "id": "code_review_pipeline",
+    "name": "Automated Codebase Sentinel",
+    "description": "Monitors local file changes, checks code style/security, and flags potential bugs.",
+    "category": "Development",
+    "icon": "code",
+    "enabled": true,
+    "schedule": "On File Change",
+    "nodes": [
+      {
+        "id": "n1",
+        "type": "trigger",
+        "label": "Watchdog File Trigger",
+        "config": {
+          "watch_dir": "./"
+        }
+      },
+      {
+        "id": "n2",
+        "type": "agent",
+        "label": "Static Code Inspection",
+        "config": {
+          "prompt": "Verify file line count <500 and check syntax integrity."
+        }
+      },
+      {
+        "id": "n3",
+        "type": "notify",
+        "label": "System Toast Alert",
+        "config": {
+          "severity": "info"
+        }
+      }
+    ]
+  },
+  {
+    "id": "knowledge_builder",
+    "name": "Concept Triples Extractor",
+    "description": "Extracts entities, concepts, and relationships from recent chats and builds the interactive Mind Map.",
+    "category": "Research",
+    "icon": "git-branch",
+    "enabled": true,
+    "schedule": "Hourly",
+    "nodes": [
+      {
+        "id": "n1",
+        "type": "trigger",
+        "label": "Hourly Sync Trigger",
+        "config": {
+          "interval_m": 60
+        }
+      },
+      {
+        "id": "n2",
+        "type": "agent",
+        "label": "Extract Entity Triples",
+        "config": {
+          "prompt": "Extract subject-predicate-object semantic triples."
+        }
+      },
+      {
+        "id": "n3",
+        "type": "save",
+        "label": "Sync with Knowledge Graph",
+        "config": {
+          "target": "knowledge_graph.json"
+        }
+      }
+    ]
+  }
+]

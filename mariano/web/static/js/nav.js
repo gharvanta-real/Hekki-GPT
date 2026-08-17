@@ -126,6 +126,16 @@ export function bindNavigation(tabs, showToast, inConversationStateRef) {
     router.navigateTo('images');
   });
 
+  //  Workflows Studio
+  $('btn-nav-workflows')?.addEventListener('click', () => {
+    router.navigateTo('workflows');
+  });
+
+  //  Knowledge Graph Studio
+  $('btn-nav-graph')?.addEventListener('click', () => {
+    router.navigateTo('graph');
+  });
+
   //  Chat History — navigate to center Chat History page
   $('btn-nav-chat-history')?.addEventListener('click', () => {
     router.navigateTo('history');
@@ -214,4 +224,7 @@ export function bindNavigation(tabs, showToast, inConversationStateRef) {
       });
     });
   }
+
+  // Ensure sidebar items visibility state is applied
+  window.applyNavVisibility?.();
 }

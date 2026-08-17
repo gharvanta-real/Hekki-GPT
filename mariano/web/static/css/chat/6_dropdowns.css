@@ -309,8 +309,8 @@
   opacity: 1;
 }
 .search-result-delete-btn:hover {
-  background: rgba(239, 68, 68, 0.1);
-  color: #ef4444;
+  background: var(--hover);
+  color: var(--text);
 }
 .search-result-delete-btn svg, .search-result-delete-btn i {
   width: 15px !important;

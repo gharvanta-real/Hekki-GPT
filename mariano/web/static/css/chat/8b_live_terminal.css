@@ -296,31 +296,27 @@ body.dark .markdown-body table tr:nth-child(even) {
 
 @keyframes navy-glow-beat {
   0% {
-    box-shadow: 
-      0 4px 14px rgba(30, 58, 138, 0.14),
-      0 0 calc(14px + 24px * var(--voice-level, 0.4)) rgba(37, 99, 235, calc(0.20 + 0.32 * var(--voice-level, 0.4))),
-      0 0 calc(28px + 42px * var(--voice-level, 0.4)) rgba(30, 27, 75, calc(0.15 + 0.28 * var(--voice-level, 0.4)));
+    box-shadow: none !important;
+    opacity: 0.85;
     transform: scale(calc(1 + 0.003 * var(--voice-level, 0.4)));
   }
   50% {
-    box-shadow: 
-      0 4px 20px rgba(30, 58, 138, 0.24),
-      0 0 calc(22px + 34px * var(--voice-level, 0.4)) rgba(37, 99, 235, calc(0.32 + 0.42 * var(--voice-level, 0.4))),
-      0 0 calc(42px + 58px * var(--voice-level, 0.4)) rgba(30, 27, 75, calc(0.24 + 0.35 * var(--voice-level, 0.4)));
+    box-shadow: none !important;
+    opacity: 1;
     transform: scale(calc(1 + 0.009 * var(--voice-level, 0.4)));
   }
   100% {
-    box-shadow: 
-      0 4px 14px rgba(30, 58, 138, 0.14),
-      0 0 calc(14px + 24px * var(--voice-level, 0.4)) rgba(37, 99, 235, calc(0.20 + 0.32 * var(--voice-level, 0.4))),
-      0 0 calc(28px + 42px * var(--voice-level, 0.4)) rgba(30, 27, 75, calc(0.15 + 0.28 * var(--voice-level, 0.4)));
+    box-shadow: none !important;
+    opacity: 0.85;
     transform: scale(calc(1 + 0.003 * var(--voice-level, 0.4)));
   }
 }
 
 .capsule-listening-active {
-  border-color: var(--border-color, rgba(255, 255, 255, 0.12)) !important;
-  transition: border-color 0.2s ease !important;
+  border: none !important;
+  box-shadow: none !important;
+  background: var(--bg-active) !important;
+  transition: background-color 0.2s ease !important;
 }
 
 body.dark .capsule-listening-active {

@@ -1,13 +1,23 @@
 """Image gallery, proxy, and search routes."""
 from __future__ import annotations
-import os, re, urllib.parse
+import os, re, urllib.parse, shutil
 from datetime import datetime
 from pathlib import Path
-from fastapi import APIRouter
+from fastapi import APIRouter, UploadFile, File
 from fastapi.responses import Response
 from pydantic import BaseModel
 
 router = APIRouter()
+
+ALLOWED_EXTENSIONS = {".png", ".jpg", ".jpeg", ".webp", ".gif"}
+MAX_UPLOAD_MB = 20
+
+
+class DirectGeneratePayload(BaseModel):
+    prompt: str
+    width: int = 1024
+    height: int = 1024
+    model: str = "flux"
 
 
 class DeleteImagesPayload(BaseModel):
@@ -40,28 +50,126 @@ async def list_images():
     return {"images": images, "count": len(images)}
 
 
+@router.post("/api/images/upload")
+async def upload_images(files: list[UploadFile] = File(...)):
+    """Directly upload images to the generated_images library — zero AI interference."""
+    base_dir = Path(__file__).resolve().parent.parent.parent.parent
+    gen_dir = base_dir / "data" / "generated_images"
+    gen_dir.mkdir(parents=True, exist_ok=True)
+
+    saved, errors = [], []
+    for file in files:
+        suffix = Path(file.filename or "").suffix.lower()
+        if suffix not in ALLOWED_EXTENSIONS:
+            errors.append(f"{file.filename}: Unsupported format (allowed: png, jpg, jpeg, webp, gif)")
+            continue
+        content = await file.read()
+        size_mb = len(content) / (1024 * 1024)
+        if size_mb > MAX_UPLOAD_MB:
+            errors.append(f"{file.filename}: Too large ({size_mb:.1f} MB, max {MAX_UPLOAD_MB} MB)")
+            continue
+
+        # Build a safe unique filename using timestamp
+        ts = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
+        safe_stem = re.sub(r"[^\w\-.]", "_", Path(file.filename or "upload").stem)[:48]
+        dest = gen_dir / f"upload_{ts}_{safe_stem}{suffix}"
+        try:
+            dest.write_bytes(content)
+            abs_path = str(dest).replace("\\", "/")
+            stat = dest.stat()
+            saved.append({
+                "path": abs_path, "name": dest.name, "size": stat.st_size,
+                "modified": stat.st_mtime,
+                "modified_iso": datetime.fromtimestamp(stat.st_mtime).isoformat(),
+                "render_url": f"/api/workspace/render?path={urllib.parse.quote(abs_path)}",
+            })
+        except Exception as exc:
+            errors.append(f"{file.filename}: {exc}")
+
+    return {"success": len(saved) > 0, "saved": saved, "errors": errors, "count": len(saved)}
+
+
+@router.post("/api/images/direct-generate")
+async def direct_generate_image(payload: DirectGeneratePayload):
+    """Direct image generation bypassing AI chat assistant completely (zero trace)."""
+    import httpx
+    prompt = (payload.prompt or "").strip()
+    if not prompt:
+        return {"success": False, "error": "Prompt cannot be empty"}
+
+    base_dir = Path(__file__).resolve().parent.parent.parent.parent
+    gen_dir = base_dir / "data" / "generated_images"
+    gen_dir.mkdir(parents=True, exist_ok=True)
+
+    ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+    safe_stem = re.sub(r"[^\w\-]", "_", prompt)[:40].strip("_") or "image"
+    dest = gen_dir / f"direct_{ts}_{safe_stem}.png"
+
+    encoded_prompt = urllib.parse.quote(prompt)
+    url = f"https://image.pollinations.ai/prompt/{encoded_prompt}?width={payload.width}&height={payload.height}&nologo=true&model={payload.model}"
+
+    try:
+        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
+        async with httpx.AsyncClient(timeout=90.0, follow_redirects=True) as client:
+            resp = await client.get(url, headers=headers)
+            if resp.status_code != 200 or len(resp.content) < 1000:
+                return {"success": False, "error": f"Image server returned status {resp.status_code}"}
+
+            dest.write_bytes(resp.content)
+            abs_path = str(dest).replace("\\", "/")
+            stat = dest.stat()
+
+            return {
+                "success": True,
+                "image": {
+                    "path": abs_path,
+                    "name": dest.name,
+                    "size": stat.st_size,
+                    "modified": stat.st_mtime,
+                    "modified_iso": datetime.fromtimestamp(stat.st_mtime).isoformat(),
+                    "render_url": f"/api/workspace/render?path={urllib.parse.quote(abs_path)}",
+                    "prompt": prompt
+                }
+            }
+    except Exception as exc:
+        return {"success": False, "error": str(exc)}
+
+
 @router.post("/api/images/delete")
 async def delete_images(payload: DeleteImagesPayload):
     """Deletes selected or all image files from data/generated_images folder."""
     deleted_count = 0
     errors = []
     base_dir = Path(__file__).resolve().parent.parent.parent.parent
-    gen_dir = base_dir / "data" / "generated_images"
+    gen_dir = (base_dir / "data" / "generated_images").resolve()
     image_extensions = {".png", ".jpg", ".jpeg", ".webp", ".gif"}
     if payload.delete_all:
         for img_path in gen_dir.rglob("*"):
             if img_path.suffix.lower() in image_extensions and img_path.is_file():
-                try: os.remove(img_path); deleted_count += 1
-                except Exception as e: errors.append(f"{img_path.name}: {str(e)}")
+                try:
+                    os.remove(img_path)
+                    deleted_count += 1
+                except Exception as e:
+                    errors.append(f"{img_path.name}: {str(e)}")
     else:
         for path_str in payload.paths:
             try:
                 p = Path(path_str).resolve()
-                if not p.is_relative_to(gen_dir):
-                    errors.append(f"{path_str}: Access denied")
-                    continue
+                # If path isn't directly relative to gen_dir, try resolving via filename inside gen_dir
+                try:
+                    is_rel = p.is_relative_to(gen_dir)
+                except Exception:
+                    is_rel = False
+                if not is_rel:
+                    candidate = (gen_dir / Path(path_str).name).resolve()
+                    if candidate.exists() and candidate.is_file():
+                        p = candidate
+                    else:
+                        errors.append(f"{path_str}: Access denied")
+                        continue
                 if p.exists() and p.is_file():
-                    os.remove(p); deleted_count += 1
+                    os.remove(p)
+                    deleted_count += 1
             except Exception as e:
                 errors.append(f"{path_str}: {str(e)}")
     return {"success": True, "deleted_count": deleted_count, "errors": errors}

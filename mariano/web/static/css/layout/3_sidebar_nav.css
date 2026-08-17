@@ -1,4 +1,7 @@
-/* === SIDEBAR NAV (Second left sub-navigation sidebar panel) === */
+/* ==========================================================================
+   layout/3_sidebar_nav.css — Sidebar Navigation Rail Base & Responsive Collapsing
+   ========================================================================== */
+
 #sidebar-nav {
   width: 260px;
   background: var(--sidebar-bg);
@@ -6,7 +9,7 @@
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
-  transition: width 0.22s cubic-bezier(0.4,0,0.2,1);
+  transition: width 0.22s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
   height: 100%;
 }
@@ -26,6 +29,7 @@
 .sidebar-action-btn.active .fluent-icon {
   color: var(--text-primary);
 }
+
 /* Claude-style: collapse to icon rail (52px), not zero */
 #sidebar-nav.collapsed {
   width: 52px;
@@ -33,6 +37,7 @@
 #sidebar-nav.hide-sidebar {
   display: none !important;
 }
+
 /* When icon-only: hide labels, section headers, recent chats, extra sections */
 #sidebar-nav.collapsed .nav-header-title,
 #sidebar-nav.collapsed .section-hdr,
@@ -90,7 +95,8 @@
   height: 18px !important;
   display: block !important;
 }
-/* Center the header in collapsed mode, show logo AND collapse button stacked cleanly */
+
+/* Center the header in collapsed mode */
 #sidebar-nav.collapsed .nav-header {
   display: flex !important;
   flex-direction: column !important;
@@ -142,6 +148,7 @@
 #sidebar-nav.collapsed .sidebar-user-profile > i {
   display: none !important;
 }
+
 /* Icon-only action buttons */
 #sidebar-nav.collapsed .nav-inner {
   padding: 4px 6px;
@@ -240,9 +247,9 @@
   box-shadow: none !important;
 }
 .nav-header-title {
-  font-family: var(--font-serif, var(--font));
-  font-size: 15px;
-  font-weight: 500;
+  font-family: var(--font);
+  font-size: var(--fs-md);
+  font-weight: 600;
   color: var(--text-primary);
   white-space: nowrap;
   overflow: hidden;
@@ -258,297 +265,3 @@
   flex-direction: column;
   overflow-y: auto;
 }
-
-/* New Chat Link Style */
-.btn-new-chat-dock {
-  width: 100%;
-  height: 32px;
-  background: transparent;
-  color: var(--text-2);
-  border: none;
-  border-radius: 8px;
-  font-family: var(--font);
-  font-size: var(--fs-base);
-  font-weight: 400;
-  line-height: 20px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 0 8px;
-  transition: all 0.12s ease;
-  margin-bottom: 8px;
-  box-shadow: none;
-}
-.btn-new-chat-dock:hover {
-  background: var(--hover);
-  color: var(--text);
-  box-shadow: none;
-}
-body.dark .btn-new-chat-dock {
-  background: transparent;
-  border-color: transparent;
-  box-shadow: none;
-}
-body.dark .btn-new-chat-dock:hover {
-  background: var(--hover);
-}
-.btn-new-chat-dock .sparkle {
-  color: #f59e0b;
-  color: #f59e0b;
-}
-
-/* Nav Sections */
-.nav-section {
-  margin-top: 6px;
-}
-.nav-section:first-of-type {
-  margin-top: 0 !important;
-  padding-top: 0 !important;
-}
-
-.section-hdr {
-  margin-bottom: 2px;
-  padding: 0 8px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.section-hdr span {
-  display: inline-flex;
-  align-items: center;
-  width: fit-content;
-  font-size: var(--fs-xs) !important;
-  font-weight: 400 !important;
-  line-height: 16px !important;
-  color: var(--text-3, #8e8e93) !important;
-  background-color: transparent;
-  border-radius: 0;
-  box-shadow: none;
-  padding: 0;
-  margin: 0;
-  letter-spacing: 0.02em;
-}
-.section-list,
-.nav-section-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 2px !important;
-}
-#sidebar-nav:not(.collapsed) .sidebar-action-btn,
-#sidebar-nav:not(.collapsed) .btn-new-chat-dock {
-  height: 32px !important;
-  min-height: 32px !important;
-  max-height: 32px !important;
-  margin: 1px 0 !important;
-  border-radius: 6px !important;
-  padding: 0 8px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: flex-start !important;
-  text-align: left !important;
-  gap: 8px !important;
-  cursor: pointer;
-  transition: background 0.12s ease, color 0.12s ease !important;
-  position: relative;
-  box-shadow: none !important;
-  border: none !important;
-}
-
-.section-item,
-.recent-item {
-  height: 32px !important;
-  min-height: 32px !important;
-  max-height: 32px !important;
-  margin: 1px 0 !important;
-  border-radius: 6px !important;
-  padding: 0 6px 0 8px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  gap: 6px !important;
-  cursor: pointer;
-  transition: background 0.12s ease, color 0.12s ease !important;
-  position: relative;
-  box-shadow: none !important;
-  border: none !important;
-}
-
-.section-item:hover,
-.recent-item:hover,
-.sidebar-action-btn:hover,
-.btn-new-chat-dock:hover {
-  background: var(--hover) !important;
-  color: var(--text) !important;
-}
-
-.section-item.active,
-.recent-item.active,
-.sidebar-action-btn.active,
-body.light .section-item.active,
-:root[data-theme="light"] .section-item.active {
-  background: var(--hover) !important;
-  color: var(--text) !important;
-  box-shadow: none !important;
-}
-
-#sidebar-nav .sidebar-action-btn,
-#sidebar-nav .sidebar-action-btn span,
-#sidebar-nav .btn-new-chat-dock,
-#sidebar-nav .btn-new-chat-dock span {
-  text-align: left !important;
-  margin-left: 0 !important;
-}
-
-#sidebar-nav .section-item .lbl,
-#sidebar-nav .recent-item .lbl,
-#sidebar-nav .recent-item span,
-#sidebar-nav .sidebar-action-btn span,
-#sidebar-nav .btn-new-chat-dock span,
-#sidebar-nav .sidebar-user-name,
-#recent-list .section-item .lbl,
-#playground-list .section-item .lbl {
-  font-size: 15px !important;
-  font-weight: 400;
-  line-height: 22px;
-  color: var(--text-2);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-#sidebar-nav .section-item .lbl,
-#sidebar-nav .recent-item .lbl {
-  flex: 1 !important;
-  min-width: 0 !important;
-}
-
-#sidebar-nav .section-item .opt,
-#sidebar-nav .recent-item .opt {
-  margin-left: auto !important;
-  flex-shrink: 0 !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  width: 22px !important;
-  height: 22px !important;
-  border-radius: 4px !important;
-}
-.section-item:hover .lbl, .section-item.active .lbl {
-  color: var(--text);
-}
-.section-item.active .lbl {
-  /* removed font-weight 500 */
-}
-.section-item .badge {
-  display: none !important;
-}
-
-.section-item .badge svg, .section-item .badge i {
-  width: 13.5px !important;
-  height: 13.5px !important;
-  stroke-width: 2.2px !important;
-}
-.section-item:hover .badge {
-  border-color: var(--text-3);
-  color: var(--text);
-}
-
-.section-item .opt {
-  color: var(--text-3);
-  opacity: 0.6;
-  width: 24px;
-  height: 24px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 6px;
-  flex-shrink: 0;
-  cursor: pointer;
-  transition: all 0.12s ease;
-  pointer-events: auto;
-}
-.section-item:hover .opt,
-.section-item.active .opt,
-.section-item.dropdown-open .opt {
-  opacity: 1;
-  color: var(--text);
-}
-.section-item .opt:hover {
-  background: var(--input-bg);
-  color: var(--text);
-}
-
-.upgrade-btn {
-  margin-top: auto;
-  width: 100%;
-  height: 32px;
-  border: none !important;
-  background: transparent;
-  color: var(--text-2);
-  border-radius: 16px;
-  cursor: pointer;
-  font-family: var(--font);
-  font-size: var(--fs-sm);     /* 12px */
-  font-weight: 500;
-  transition: all 0.12s;
-  flex-shrink: 0;
-}
-.upgrade-btn:hover {
-  background: var(--hover);
-  color: var(--text);
-}
-
-/* === LEFT SIDEBAR REFINED ICON WEIGHT & SIZE (1.6px stroke matching target UI) === */
-#sidebar-nav i,
-#sidebar-nav svg,
-#sidebar-nav .lucide,
-#sidebar-dock i,
-#sidebar-dock svg,
-#sidebar-dock .lucide,
-#sidebar-dock svg,
-#sidebar-dock i,
-.debate-sidebar i,
-.debate-sidebar svg,
-.debate-sidebar .lucide,
-.sidebar-action-btn i,
-.sidebar-action-btn svg,
-.sidebar-action-btn .lucide,
-.debate-list-btn i,
-.debate-list-btn svg,
-.debate-list-btn .lucide,
-.section-item i,
-.section-item svg,
-.section-item .lucide {
-  stroke-width: 1.6px !important;
-}
-
-.sidebar-action-btn svg,
-.sidebar-action-btn i,
-.sidebar-action-btn .lucide,
-.debate-list-btn svg,
-.debate-list-btn i,
-.debate-list-btn .lucide,
-#sidebar-nav .section-item svg,
-#sidebar-nav .section-item i,
-#sidebar-nav .section-item .lucide,
-.debate-sidebar .icon-btn svg,
-.debate-sidebar .icon-btn i,
-.debate-sidebar .icon-btn .lucide {
-  width: 16px !important;
-  height: 16px !important;
-  display: inline-block !important;
-  vertical-align: middle !important;
-  flex-shrink: 0 !important;
-}
-
-.sidebar-action-btn > svg,
-.sidebar-action-btn > i,
-.sidebar-action-btn > .lucide,
-.debate-list-btn > svg,
-.debate-list-btn > i,
-.debate-list-btn > .lucide {
-  margin-right: 0 !important;
-}
-
-

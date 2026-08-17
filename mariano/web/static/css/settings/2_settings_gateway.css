@@ -82,39 +82,46 @@
 .toggle-switch {
   position: relative;
   display: inline-block;
-  width: 38px;
+  width: 40px;
   height: 22px;
+  flex-shrink: 0;
+  cursor: pointer;
 }
 .toggle-switch input {
   opacity: 0;
   width: 0;
   height: 0;
+  position: absolute;
 }
 .toggle-track {
   position: absolute;
   cursor: pointer;
   inset: 0;
-  background-color: var(--border);
-  border-radius: 34px;
-  transition: background-color 0.15s;
+  background-color: var(--input-bg);
+  border-radius: var(--radius-pill);
+  transition: background-color 0.18s ease, border-color 0.18s ease;
+  border: 1px solid var(--border-subtle);
+  box-sizing: border-box;
 }
 .toggle-track::before {
   position: absolute;
   content: "";
   height: 16px;
   width: 16px;
-  left: 3px;
-  bottom: 3px;
-  background-color: white;
+  left: 2px;
+  top: 2px;
+  background-color: #FFFFFF;
   border-radius: 50%;
-  transition: transform 0.15s;
-  box-shadow: none !important;
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
 }
 .toggle-switch input:checked + .toggle-track {
-  background-color: var(--blue);
+  background-color: var(--accent-primary) !important;
+  border-color: var(--accent-primary) !important;
 }
 .toggle-switch input:checked + .toggle-track::before {
-  transform: translateX(16px);
+  transform: translateX(18px);
+  background-color: #FFFFFF !important;
 }
 
 /* Danger Button */
@@ -144,17 +151,17 @@
 }
 .skill-card {
   border: none !important;
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   padding: 12px;
   background: var(--sidebar-bg);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 4px;
-  transition: border-color 0.12s, box-shadow 0.12s;
+  transition: background-color 0.12s ease;
 }
 .skill-card:hover {
-  border-color: var(--text-3);
+  background-color: var(--hover);
   box-shadow: none !important;
 }
 .skill-icon {
@@ -163,7 +170,7 @@
 }
 .skill-name {
   font-size: var(--fs-sm);     /* 12px */
-  font-weight: 600;
+  font-weight: 400;
   color: var(--text);
 }
 .skill-ver {
@@ -173,7 +180,7 @@
 }
 .skill-badge {
   font-size: var(--fs-xs);     /* 11px */
-  font-weight: 600;
+  font-weight: 400;
   padding: 1px 6px;
   border-radius: 12px;
   margin-top: 2px;
@@ -223,8 +230,8 @@ body.dark .active-badge {
 }
 .modal-box.compact .modal-header h3 {
   margin: 0;
-  font-size: var(--fs-xl);     /* 16px */
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 400;
   color: var(--text);
 }
 .modal-box.compact .modal-body {
@@ -242,6 +249,24 @@ body.dark .active-badge {
   gap: 8px;
   margin-top: 20px;
 }
+.modal-box.compact .modal-footer .btn-cancel {
+  background: var(--input-bg) !important;
+  color: var(--text-2) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 16px;
+  font-weight: 400;
+  padding: 6px 16px;
+  font-size: 12.5px;
+}
+.modal-box.compact .modal-footer .btn-save {
+  background: var(--hover) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 16px;
+  font-weight: 400;
+  padding: 6px 16px;
+  font-size: 12.5px;
+}
 
 /* Rounded Avatar Badge */
 .avatar {
@@ -250,12 +275,12 @@ body.dark .active-badge {
   border-radius: 50%;
   background: var(--hover);
   color: var(--text-primary);
-  font-size: 13px;
-  font-weight: normal;
+  font-size: var(--fs-sm);
+  font-weight: 500;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  text-transform: uppercase;
+  text-transform: none;
   flex-shrink: 0;
   border: none !important;
 }

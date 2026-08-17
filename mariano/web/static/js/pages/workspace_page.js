@@ -264,9 +264,9 @@ export class WorkspacePage {
         <div class="list-view">
           <div class="file-row" style="background:var(--bg);cursor:default;padding:6px 14px">
             <div class="file-row-icon"></div>
-            <div class="file-row-name" style="color:var(--text-3);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em">Name</div>
-            <div class="file-row-size" style="color:var(--text-3);font-size:11px;font-weight:600;text-transform:uppercase">Size</div>
-            <div class="file-row-date" style="color:var(--text-3);font-size:11px;font-weight:600;text-transform:uppercase">Modified</div>
+            <div class="file-row-name" style="color:var(--text-3);font-size:12px;font-weight:400;letter-spacing:.02em">Name</div>
+            <div class="file-row-size" style="color:var(--text-3);font-size:12px;font-weight:400">Size</div>
+            <div class="file-row-date" style="color:var(--text-3);font-size:12px;font-weight:400">Modified</div>
           </div>
           ${items.map(item => this._listRow(item)).join('')}
         </div>`;

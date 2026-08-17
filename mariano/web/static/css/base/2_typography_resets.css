@@ -1,24 +1,26 @@
 /* ==========================================================================
    base/2_typography_resets.css — Typography Scale, Input Field Tokens & Resets
+   Layer 2 of 5-Layer CSS Modular Architecture
    ========================================================================== */
 
-/* PEEK SEMANTIC TYPOGRAPHY STYLES */
-.type-heading { font-family: var(--font); font-size: var(--text-24); font-weight: 500; line-height: 1.50; }
-.type-h2 { font-family: var(--font); font-size: var(--text-24); font-weight: 500; line-height: 1.33; }
-.type-h1 { font-family: var(--font); font-size: var(--text-24); font-weight: 400; line-height: 1.17; }
-.type-large-body { font-family: var(--font); font-size: var(--text-18); font-weight: 500; line-height: 1.44; letter-spacing: var(--tracking-neg-0-27); }
-.type-body, .type-body-16, .type-body-16-400 { font-family: var(--font); font-size: var(--text-16); font-weight: 400; line-height: 1.50; }
-.type-button { font-family: var(--font); font-size: var(--text-16); font-weight: 400; line-height: 1.50; }
-.type-button-16 { font-family: var(--font); font-size: var(--text-16); font-weight: 400; line-height: 1.63; }
-.type-h2-14 { font-family: var(--font); font-size: var(--text-14); font-weight: 500; line-height: 1.43; }
-.type-small-body, .type-button-14 { font-family: var(--font); font-size: var(--text-14); font-weight: 500; line-height: 1.43; }
-.type-small-body-14, .type-small-body-14-400, .type-button-14-400, .type-link { font-family: var(--font); font-size: var(--text-14); font-weight: 400; line-height: 1.43; }
-.type-caption { font-family: var(--font); font-size: var(--text-12); font-weight: 500; line-height: 1.33; }
-.type-caption-12, .type-caption-12-400 { font-family: var(--font); font-size: var(--text-12); font-weight: 400; line-height: 1.43; }
+/* SEMANTIC TYPOGRAPHY STYLES — Open Sans Scale (Rule #5) */
+.type-heading { font-family: var(--font); font-size: var(--fs-2xl); font-weight: 600; line-height: 1.35; }
+.type-h1      { font-family: var(--font); font-size: var(--fs-2xl); font-weight: 600; line-height: 1.25; }
+.type-h2      { font-family: var(--font); font-size: var(--fs-xl);  font-weight: 600; line-height: 1.30; }
+.type-h3      { font-family: var(--font); font-size: var(--fs-lg);  font-weight: 600; line-height: 1.35; }
+.type-large-body { font-family: var(--font); font-size: var(--fs-md); font-weight: 400; line-height: 1.45; letter-spacing: var(--tracking-neg-0-27); }
+.type-body, .type-body-16, .type-body-16-400 { font-family: var(--font); font-size: var(--fs-base); font-weight: 400; line-height: 1.50; }
+.type-button  { font-family: var(--font); font-size: var(--fs-base); font-weight: 500; line-height: 1.50; }
+.type-button-16 { font-family: var(--font); font-size: var(--fs-base); font-weight: 500; line-height: 1.50; }
+.type-h2-14   { font-family: var(--font); font-size: var(--fs-md); font-weight: 600; line-height: 1.40; }
+.type-small-body, .type-button-14 { font-family: var(--font); font-size: var(--fs-sm); font-weight: 400; line-height: 1.40; }
+.type-small-body-14, .type-small-body-14-400, .type-button-14-400, .type-link { font-family: var(--font); font-size: var(--fs-sm); font-weight: 400; line-height: 1.40; }
+.type-caption { font-family: var(--font); font-size: var(--fs-xs); font-weight: 500; line-height: 1.30; }
+.type-caption-12, .type-caption-12-400 { font-family: var(--font); font-size: var(--fs-xs); font-weight: 500; line-height: 1.30; }
 
 /* ACCESSIBILITY & FOCUS VISIBLE */
 :focus-visible {
-  outline: 2px solid var(--text-primary, #0D0D0D) !important;
+  outline: 2px solid var(--accent-primary, #2563EB) !important;
   outline-offset: 2px !important;
 }
 
@@ -35,7 +37,7 @@ button:not(.canvas-btn):not(.canvas-btn-icon):not(.cap-icon-btn):not(.submit-btn
 }
 
 button:not(.cap-icon-btn):not(.circle-btn):not(.img-lightbox-btn):not(.img-card-btn):not(.img-card-checkbox):not(.icon-btn):not(.modal-close):not(.btn-icon-circle):not(.submit-btn):not(#btn-submit-home):not(#btn-submit-conv):not(#btn-debate-start):not(#btn-debate-intervene):not(#coder-btn-send):not(.action-btn):not(.msg-expand-btn) {
-  min-height: 36px;
+  min-height: 34px;
   box-sizing: border-box;
 }
 
@@ -87,7 +89,7 @@ button, .btn, .button-pill, .badge, .pill, .chip, .tag, .badge-pill, .status-bad
   outline: none !important;
   box-shadow: none !important;
   border-radius: 8px !important;
-  font-weight: 400 !important;
+  font-weight: 500 !important;
 }
 
 /* UNIFIED INPUT FIELD TOKEN */
@@ -102,17 +104,17 @@ select,
 #skills-search-input,
 .skills-search-wrapper input {
   font-family: var(--font) !important;
-  font-size: var(--fs-md) !important;
+  font-size: var(--fs-base) !important;
   line-height: 20px !important;
   font-weight: 400 !important;
   height: 36px !important;
   padding: 8px 12px !important;
   border-radius: 8px !important;
-  background: var(--input-bg, #F4F4F6) !important;
+  background: var(--input-bg) !important;
   border: none !important;
   outline: none !important;
   box-shadow: none !important;
-  color: var(--text) !important;
+  color: var(--text-primary) !important;
   box-sizing: border-box !important;
 }
 
@@ -161,21 +163,30 @@ input[class*="search"],
 }
 
 html, body { height: 100%; width: 100%; }
-html { font-size: 16px; }
+html { font-size: 14px; }
 body {
   background: var(--bg);
-  color: var(--text);
+  color: var(--text-primary);
   font-family: var(--font);
   font-size: var(--fs-base);
-  line-height: 1.75;
+  line-height: 1.6;
   overflow: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  letter-spacing: 0.018em;
-  word-spacing: 0.04em;
+  letter-spacing: 0.01em;
 }
 
 h1, h2, h3, h4, .heading { letter-spacing: 0.01em !important; }
 code, pre, .mono, .timestamp, .action-time { letter-spacing: 0.03em !important; }
 a { color: inherit; text-decoration: none; }
+
+/* PLACEHOLDER RESETS — UNBOLD & CRISP */
+input::placeholder,
+textarea::placeholder,
+select::placeholder {
+  font-family: inherit !important;
+  font-weight: 400 !important;
+  color: var(--text-3) !important;
+  opacity: 0.8 !important;
+}

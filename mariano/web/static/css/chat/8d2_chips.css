@@ -35,8 +35,8 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  background: var(--card, rgba(255, 255, 255, 0.05));
-  border: none !important;
+  background: var(--card);
+  border: 1px solid var(--border) !important;
   border-radius: 10px;
   padding: 4px 12px 4px 4px;
   max-width: 220px;
@@ -45,8 +45,8 @@
 }
 
 .attachment-chip:hover {
-  border-color: rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--text-3) !important;
+  background: var(--hover);
 }
 
 .chip-thumb {
@@ -56,15 +56,15 @@
   object-fit: cover;
   background: rgba(0, 0, 0, 0.4);
   flex-shrink: 0;
-  border: none !important;
+  border: 1px solid var(--border) !important;
 }
 
 .chip-doc-icon {
   width: 42px;
   height: 42px;
   border-radius: 7px;
-  background: rgba(255, 255, 255, 0.08);
-  border: none !important;
+  background: var(--input-bg);
+  border: 1px solid var(--border) !important;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -127,8 +127,8 @@
 }
 
 .chip-remove-btn:hover {
-  background: #ef4444 !important;
-  border-color: #ef4444 !important;
-  color: #ffffff !important;
+  background: var(--hover) !important;
+  border-color: var(--border) !important;
+  color: var(--text) !important;
   transform: scale(1.15) !important;
 }

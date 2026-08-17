@@ -9,7 +9,7 @@
   padding: 14px 0 !important;
   min-height: 48px !important;
   gap: 20px !important;
-  border-bottom: 1px solid var(--border, rgba(0, 0, 0, 0.08));
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 .settings-row:last-child {
@@ -28,50 +28,36 @@
 
 .row-label {
   display: block !important;
-  font-size: var(--fs-base, 14px) !important;
+  font-size: var(--fs-base) !important;
   font-weight: 500 !important;
-  color: var(--text-primary, #09090b) !important;
+  color: var(--text-primary) !important;
   line-height: 1.4 !important;
-}
-
-body.dark .row-label,
-body.oled .row-label,
-:root[data-theme="dark"] .row-label,
-:root[data-theme="oled"] .row-label {
-  color: #F4F4F5 !important;
 }
 
 .row-desc {
   display: block !important;
-  font-size: var(--fs-xs, 12px) !important;
-  color: var(--text-3, #71717a) !important;
+  font-size: var(--fs-xs) !important;
+  color: var(--text-3) !important;
   line-height: 1.4 !important;
   margin-top: 1px !important;
 }
 
-body.dark .row-desc,
-body.oled .row-desc,
-:root[data-theme="dark"] .row-desc,
-:root[data-theme="oled"] .row-desc {
-  color: #A1A1AA !important;
-}
-
 .settings-select {
-  border: 1px solid var(--border-subtle, rgba(0, 0, 0, 0.08)) !important;
+  border: none !important;
   outline: none !important;
   box-shadow: none !important;
-  background: var(--input-bg, #F1F3F6);
+  background: var(--input-bg);
   color: var(--text-primary);
   font-family: var(--font);
-  font-size: 13px !important;
-  font-weight: 500;
+  font-size: var(--fs-base) !important;
+  font-weight: 400;
   padding: 6px 28px 6px 12px;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
   min-width: 140px;
   pointer-events: auto !important;
   user-select: none;
-  transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+  transition: background-color 0.15s ease, color 0.15s ease;
   appearance: none;
   -webkit-appearance: none;
   background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2371717a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
@@ -81,80 +67,42 @@ body.oled .row-desc,
 }
 
 .settings-select:hover {
-  border-color: var(--accent-primary, #2563EB) !important;
+  background-color: var(--hover) !important;
 }
 
 .settings-select:focus {
-  border-color: var(--accent-primary, #2563EB) !important;
-  outline: 2px solid var(--accent-primary, #2563EB) !important;
+  outline: 2px solid var(--accent-primary) !important;
   outline-offset: 1px !important;
 }
 
 .settings-select option {
-  background-color: var(--card, #ffffff);
-  color: var(--text-primary, #09090b);
+  background-color: var(--bg-card);
+  color: var(--text-primary);
   padding: 8px 12px;
 }
 
-body.dark .settings-select,
-body.oled .settings-select {
-  background-color: #27272a !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  color: #ffffff !important;
-}
-
-body.dark .settings-select option,
-body.oled .settings-select option,
-:root[data-theme="dark"] .settings-select option,
-:root[data-theme="oled"] .settings-select option {
-  background-color: #1E1E1E !important;
-  color: #FFFFFF !important;
-}
-
-body.light .settings-select,
-:root[data-theme="light"] .settings-select {
-  background-color: #F1F3F6 !important;
-  border: 1px solid rgba(0, 0, 0, 0.08) !important;
-  color: #141414 !important;
-}
-
 .settings-input {
-  border: 1px solid var(--border-subtle, rgba(0, 0, 0, 0.08)) !important;
+  border: none !important;
   outline: none !important;
   box-shadow: none !important;
-  background: var(--input-bg, #F1F3F6);
+  background: var(--input-bg);
   color: var(--text-primary);
   font-family: var(--font);
-  font-size: 13px !important;
+  font-size: var(--fs-base) !important;
   padding: 7px 12px;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   min-width: 200px;
   text-align: left !important;
-  transition: border-color 0.15s ease, background-color 0.15s ease;
+  transition: background-color 0.15s ease;
 }
 
 .settings-input:hover {
-  border-color: var(--accent-primary, #2563EB) !important;
+  background-color: var(--hover) !important;
 }
 
 .settings-input:focus {
-  border-color: var(--accent-primary, #2563EB) !important;
-  outline: 2px solid var(--accent-primary, #2563EB) !important;
+  outline: 2px solid var(--accent-primary) !important;
   outline-offset: 1px !important;
-}
-
-body.dark .settings-input,
-body.oled .settings-input {
-  background-color: #27272a;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  color: #ffffff;
-}
-
-body.light .settings-input,
-:root[data-theme="light"] .settings-input {
-  background-color: #F1F3F6 !important;
-  border: 1px solid rgba(0, 0, 0, 0.08) !important;
-  color: #141414 !important;
 }
 
 .settings-textarea {
@@ -162,52 +110,88 @@ body.light .settings-input,
   height: 90px;
   border: none !important;
   outline: none !important;
-  background: var(--input-bg, #F1F3F6);
+  box-shadow: none !important;
+  background: var(--input-bg);
   color: var(--text-primary);
   font-family: var(--font);
-  font-size: 13px !important;
+  font-size: var(--fs-base) !important;
   padding: 10px 12px;
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   resize: vertical;
   line-height: 1.5;
-  transition: border-color 0.15s ease;
-}
-
-body.dark .settings-textarea,
-body.oled .settings-textarea {
-  background-color: #27272a;
-  border-color: rgba(255, 255, 255, 0.12) !important;
-  color: #ffffff;
-}
-
-body.light .settings-textarea,
-:root[data-theme="light"] .settings-textarea {
-  background-color: #F1F3F6 !important;
-  color: #141414 !important;
+  transition: background-color 0.15s ease;
 }
 
 .settings-textarea:focus {
-  border-color: var(--accent, #2563eb) !important;
+  outline: 2px solid var(--accent-primary) !important;
+  outline-offset: 1px !important;
 }
 
 .btn-pill-save {
-  padding: 7px 20px;
-  background: var(--text-primary, #09090b);
-  color: var(--bg, #ffffff);
-  border: none;
-  border-radius: 9999px;
-  font-size: 14px;
-  font-weight: 600;
+  padding: 6px 18px;
+  background: var(--btn-secondary-bg) !important;
+  color: var(--btn-secondary-text) !important;
+  border: none !important;
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-base);
+  font-weight: 500;
   cursor: pointer;
-  transition: opacity 0.15s ease;
-}
-
-body.dark .btn-pill-save,
-body.oled .btn-pill-save {
-  background: #ffffff;
-  color: #09090b;
+  box-shadow: none !important;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 .btn-pill-save:hover {
-  opacity: 0.9;
+  background: var(--hover) !important;
+  color: var(--text-primary) !important;
+}
+
+/* ── Toggle Switch Controls ────────────────────────────────────────────── */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 22px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.toggle-track {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background-color: var(--input-bg);
+  border-radius: var(--radius-pill);
+  transition: background-color 0.18s ease, border-color 0.18s ease;
+  border: 1px solid var(--border-subtle);
+  box-sizing: border-box;
+}
+
+.toggle-track::before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 2px;
+  top: 2px;
+  background-color: #FFFFFF;
+  border-radius: 50%;
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+}
+
+.toggle-switch input:checked + .toggle-track {
+  background-color: var(--accent-primary) !important;
+  border-color: var(--accent-primary) !important;
+}
+
+.toggle-switch input:checked + .toggle-track::before {
+  transform: translateX(18px);
+  background-color: #FFFFFF !important;
 }

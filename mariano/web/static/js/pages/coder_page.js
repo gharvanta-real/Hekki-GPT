@@ -95,7 +95,7 @@ function renderFsmBadge(msg) {
   const c = colors[msg.state] || '#6b7280';
   badge.innerHTML = `
     <span style="display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;
-      background:${c}20;color:${c};font-size:11px;font-weight:600;border:1px solid ${c}40;">
+      background:${c}20;color:${c};font-size:11px;font-weight:400;border:1px solid ${c}40;">
       <span style="width:6px;height:6px;border-radius:50%;background:${c};flex-shrink:0;"></span>
       ${msg.state} · ${msg.tokens_consumed ?? 0} tkns
     </span>`;
@@ -377,7 +377,7 @@ function renderConversationList() {
     if (grpKey !== '') {
       const grpHeader = document.createElement('div');
       grpHeader.className = 'coder-conv-group-label';
-      grpHeader.style.cssText = 'font-size:10px; color:var(--text-3); font-weight:700; text-transform:uppercase; margin:10px 4px 6px; letter-spacing:0.04em;';
+      grpHeader.style.cssText = 'font-size:11.5px; color:var(--text-3); font-weight:400; margin:10px 4px 6px; letter-spacing:0.02em;';
       grpHeader.textContent = grpKey;
       container.appendChild(grpHeader);
     }

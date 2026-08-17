@@ -142,21 +142,21 @@ export class SkillsPage {
     gridContainer.innerHTML = `
       <!-- ACTIVE SKILLS PILLS (COLLAPSIBLE, DEFAULT COLLAPSED) -->
       <div style="margin-bottom:24px;">
-        <div onclick="window.skillsPageInstance.toggleActiveCollapsible()" style="font-size:13px; font-weight:500; color:var(--text-3); margin-bottom:8px; display:inline-flex; align-items:center; gap:6px; cursor:pointer; user-select:none; padding:4px 10px; border-radius:20px; transition:all 0.15s ease;" onmouseover="this.style.background='var(--hover)';" onmouseout="this.style.background='transparent';">
+        <div onclick="window.skillsPageInstance.toggleActiveCollapsible()" style="font-size:13px; font-weight:400; color:var(--text-3); margin-bottom:8px; display:inline-flex; align-items:center; gap:6px; cursor:pointer; user-select:none; padding:4px 10px; border-radius:20px; transition:all 0.15s ease;" onmouseover="this.style.background='var(--hover)';" onmouseout="this.style.background='transparent';">
           <i data-lucide="${this._activeCollapsibleOpen ? 'chevron-down' : 'chevron-right'}" style="width:15px; height:15px;"></i>
           <span>Active Capabilities</span>
-          <span style="font-size:12px; background:var(--input-bg); padding:1px 8px; border-radius:20px; color:var(--text-2);">${activeList.length}</span>
+          <span style="font-size:12px; background:var(--input-bg); padding:1px 8px; border-radius:20px; color:var(--text-2); font-weight:400;">${activeList.length}</span>
           <span style="font-size:11px; color:var(--text-3); font-weight:400; margin-left:2px;">(${this._activeCollapsibleOpen ? 'collapse' : 'expand'})</span>
         </div>
         <div style="display:${this._activeCollapsibleOpen ? 'flex' : 'none'}; gap:8px; flex-wrap:wrap; align-items:center; margin-top:6px;">
           ${activeList.length === 0 ? `
-            <div style="font-size:13px; color:var(--text-3); background:var(--card); border:none !important; padding:8px 14px; border-radius:20px; width:100%; box-sizing:border-box;">
+            <div style="font-size:13px; color:var(--text-3); background:var(--card); border:none !important; padding:8px 14px; border-radius:20px; width:100%; box-sizing:border-box; font-weight:400;">
               No active capabilities. Click the <strong>＋ icon</strong> on any skill below to enable.
             </div>
           ` : activeList.map(s => `
             <div onclick="window.skillsPageInstance.showDetail('${s.name}')" style="display:flex; align-items:center; gap:8px; background:var(--card); border:none !important; padding:6px 14px; border-radius:20px; cursor:pointer; transition:background 0.15s ease;" onmouseover="this.style.background='var(--hover)';" onmouseout="this.style.background='var(--card)';">
               ${getSkillRealLogoSvg(s.name, 16)}
-              <span style="font-size:13.5px; font-weight:500; color:var(--text);">${esc(formatSkillName(s.name))}</span>
+              <span style="font-size:13.5px; font-weight:400; color:var(--text);">${esc(formatSkillName(s.name))}</span>
               <span style="width:6px; height:6px; border-radius:50%; background:#16a34a; margin-left:2px;"></span>
             </div>
           `).join('')}
@@ -169,7 +169,7 @@ export class SkillsPage {
         if (items.length === 0) return '';
         return `
           <div style="margin-bottom:28px;">
-            <h3 style="font-size:14px; font-weight:600; color:var(--text); margin-bottom:10px;">${cat}</h3>
+            <h3 style="font-size:13.5px; font-weight:400; color:var(--text); margin-bottom:10px;">${cat}</h3>
             <div style="display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:10px;">
               ${items.map(item => this._renderSkillCard(item)).join('')}
             </div>
@@ -194,15 +194,19 @@ export class SkillsPage {
         <div style="max-width:780px; margin:0 auto; width:100%;">
           <div style="display:flex; align-items:center; justify-content:space-between; margin-top:8px; margin-bottom:24px; width:100%;">
             <div>
-              <h1 style="font-size:19px; font-weight:600; color:var(--text); margin:0;">Capabilities &amp; Skills</h1>
-              <p style="font-size:13px; color:var(--text-3); margin-top:2px;">Manage autonomous tool capabilities powering Hekki.</p>
+              <h1 style="font-size:18px; font-weight:400; color:var(--text); margin:0;">Capabilities &amp; Skills</h1>
+              <p style="font-size:13px; color:var(--text-3); margin-top:2px; font-weight:400;">Manage autonomous tool capabilities powering Hekki.</p>
             </div>
             <div style="display:flex; align-items:center; gap:10px;">
+              <style>
+                #skills-search-input::placeholder { font-weight: 400 !important; color: var(--text-3) !important; opacity: 0.75; font-size: 13px; font-family: var(--font) !important; }
+                #skills-search-input { font-weight: 400 !important; font-family: var(--font) !important; }
+              </style>
               <div style="position:relative; width:220px;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 32 32" fill="currentColor" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); width:14px; height:14px; color:var(--text-3); pointer-events:none;"><path d="M29,27.5859l-7.5521-7.5521a11.0177,11.0177,0,1,0-1.4141,1.4141L27.5859,29ZM4,13a9,9,0,1,1,9,9A9.01,9.01,0,0,1,4,13Z"/></svg>
-                <input type="text" id="skills-search-input" placeholder="Search skills..." style="width:100%; height:34px; padding:0 12px 0 34px; background:var(--input-bg); border:1px solid var(--border, rgba(255,255,255,0.08)) !important; border-radius:17px; color:var(--text); font-size:13px; outline:none !important; box-shadow:none !important;" />
+                <input type="text" id="skills-search-input" placeholder="Search skills..." style="width:100%; height:34px; padding:0 12px 0 34px; background:var(--input-bg); border:1px solid var(--border, rgba(255,255,255,0.08)) !important; border-radius:17px; color:var(--text); font-size:13px; font-weight:400; outline:none !important; box-shadow:none !important;" />
               </div>
-              <button onclick="window.skillsPageInstance.cleanStats()" title="Reset call statistics" style="height:34px; padding:0 14px; background:var(--input-bg); border:1px solid var(--border, rgba(255,255,255,0.08)) !important; border-radius:17px; color:var(--text-2); font-size:12.5px; font-weight:500; cursor:pointer; display:flex; align-items:center; gap:5px; transition:background 0.15s ease;" onmouseover="this.style.background='var(--hover)';" onmouseout="this.style.background='var(--input-bg)';">
+              <button onclick="window.skillsPageInstance.cleanStats()" title="Reset call statistics" style="height:34px; padding:0 14px; background:var(--input-bg); border:1px solid var(--border, rgba(255,255,255,0.08)) !important; border-radius:17px; color:var(--text-2); font-size:12.5px; font-weight:400; cursor:pointer; display:flex; align-items:center; gap:5px; transition:background 0.15s ease;" onmouseover="this.style.background='var(--hover)';" onmouseout="this.style.background='var(--input-bg)';">
                 <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 32 32" fill="currentColor" style="width:13px;height:13px;display:block;"><path d="M26,16A10,10,0,1,1,16,6v4l5-5L16,0V4A12,12,0,1,0,28,16Z"/></svg>
                 <span>Clean Stats</span>
               </button>
@@ -235,17 +239,17 @@ export class SkillsPage {
     const examplePrompt = getSkillExamplePrompt(item.name);
 
     return `
-      <div onclick="window.skillsPageInstance.showDetail('${item.name}')" style="background:var(--card); border:1px solid var(--border, rgba(255,255,255,0.06)) !important; outline:none !important; border-radius:12px; padding:12px 14px; display:flex; align-items:center; justify-content:space-between; gap:10px; cursor:pointer; transition:background 0.15s ease;" onmouseover="this.style.background='var(--hover)';" onmouseout="this.style.background='var(--card)';">
+      <div onclick="window.skillsPageInstance.showDetail('${item.name}')" style="background:var(--card); border:1px solid var(--border, rgba(255,255,255,0.06)) !important; outline:none !important; border-radius:17px; padding:12px 14px; display:flex; align-items:center; justify-content:space-between; gap:10px; cursor:pointer; transition:background 0.15s ease;" onmouseover="this.style.background='var(--hover)';" onmouseout="this.style.background='var(--card)';">
         <div style="display:flex; gap:12px; align-items:center; flex:1; min-width:0;">
-          <div style="width:38px; height:38px; border-radius:10px; background:var(--input-bg); display:flex; align-items:center; justify-content:center; flex-shrink:0; color:var(--text);">
+          <div style="width:38px; height:38px; border-radius:12px; background:var(--input-bg); display:flex; align-items:center; justify-content:center; flex-shrink:0; color:var(--text);">
             ${getSkillRealLogoSvg(item.name, 20)}
           </div>
           <div style="display:flex; flex-direction:column; gap:2px; min-width:0;">
-            <div style="font-size:15px; font-weight:500; color:var(--text); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${esc(friendlyName)}</div>
-            <div style="font-size:13.5px; color:var(--text-3); line-height:1.3; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${esc(examplePrompt)}</div>
+            <div style="font-size:14px; font-weight:400; color:var(--text); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${esc(friendlyName)}</div>
+            <div style="font-size:13px; color:var(--text-3); line-height:1.3; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:400;">${esc(examplePrompt)}</div>
           </div>
         </div>
-        <button onclick="event.stopPropagation(); window.skillsPageInstance.toggleSkill('${item.name}')" title="${isEnabled ? 'Disable' : 'Enable'} ${esc(friendlyName)}" style="width:34px; height:34px; min-width:34px; min-height:34px; border-radius:8px; background:${isEnabled ? 'rgba(22,163,74,0.12)' : 'var(--input-bg)'}; border:none !important; outline:none !important; cursor:pointer; flex-shrink:0; display:flex; align-items:center; justify-content:center; transition:all 0.15s ease; color:${isEnabled ? '#16a34a' : 'var(--text)'};">
+        <button onclick="event.stopPropagation(); window.skillsPageInstance.toggleSkill('${item.name}')" title="${isEnabled ? 'Disable' : 'Enable'} ${esc(friendlyName)}" style="width:34px; height:34px; min-width:34px; min-height:34px; border-radius:10px; background:${isEnabled ? 'rgba(22,163,74,0.12)' : 'var(--input-bg)'}; border:none !important; outline:none !important; cursor:pointer; flex-shrink:0; display:flex; align-items:center; justify-content:center; transition:all 0.15s ease; color:${isEnabled ? '#16a34a' : 'var(--text)'};">
           ${isEnabled ? '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 32 32" fill="#16a34a" style="width:14px;height:14px;display:block;flex-shrink:0;"><polygon points="13 24 4 15 5.414 13.586 13 21.171 26.586 7.586 28 9 13 24"/></svg>' : '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;display:block;flex-shrink:0;"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>'}
         </button>
       </div>
@@ -276,7 +280,7 @@ export class SkillsPage {
         
         <!-- BACK BUTTON -->
         <div style="max-width:780px; margin:0 auto 20px; width:100%;">
-          <button onclick="window.skillsPageInstance.showCatalog()" style="background:transparent; border:none; color:var(--text-2); font-size:13px; font-weight:500; cursor:pointer; display:flex; align-items:center; gap:6px; padding:0;">
+          <button onclick="window.skillsPageInstance.showCatalog()" style="background:transparent; border:none; color:var(--text-2); font-size:13px; font-weight:400; cursor:pointer; display:flex; align-items:center; gap:6px; padding:0;">
             <i data-lucide="chevron-left" style="width:16px; height:16px;"></i> Skills
           </button>
         </div>
@@ -290,22 +294,22 @@ export class SkillsPage {
                 ${getSkillRealLogoSvg(item.name, 28)}
               </div>
               <div>
-                <h1 style="font-size:20px; font-weight:600; color:var(--text); margin:0;">${esc(friendlyName)}</h1>
-                <p style="font-size:12.5px; color:var(--text-3); margin-top:2px;">v${esc(item.version || '1.0.0')} &bull; ${esc(category)}</p>
+                <h1 style="font-size:18px; font-weight:400; color:var(--text); margin:0;">${esc(friendlyName)}</h1>
+                <p style="font-size:12.5px; color:var(--text-3); margin-top:2px; font-weight:400;">v${esc(item.version || '1.0.0')} &bull; ${esc(category)}</p>
               </div>
             </div>
-            <button onclick="window.skillsPageInstance.toggleSkill('${item.name}')" style="padding:6px 18px; border-radius:20px; border:none !important; font-size:12.5px; font-weight:600; cursor:pointer; transition:all 0.15s ease; ${isEnabled ? 'background:rgba(239,68,68,0.1); color:#ef4444;' : 'background:var(--text); color:var(--bg);'}">
+            <button onclick="window.skillsPageInstance.toggleSkill('${item.name}')" style="padding:6px 18px; border-radius:20px; font-size:12.5px; font-weight:400; cursor:pointer; transition:all 0.15s ease; background:var(--input-bg) !important; border:1px solid var(--border) !important; color:var(--text) !important;" onmouseover="this.style.background='var(--hover)';" onmouseout="this.style.background='var(--input-bg)';">
               ${isEnabled ? 'Disable Capability' : '＋ Enable Capability'}
             </button>
           </div>
 
           <!-- DESCRIPTION -->
-          <div style="font-size:13px; color:var(--text-2); line-height:1.6; margin-bottom:28px;">${esc(item.description || 'No detailed description provided for this capability module.')}</div>
+          <div style="font-size:13px; color:var(--text-2); line-height:1.6; margin-bottom:28px; font-weight:400;">${esc(item.description || 'No detailed description provided for this capability module.')}</div>
 
           <!-- SKILL BADGE -->
           <div style="margin-bottom:28px;">
-            <div style="font-size:14px; font-weight:600; color:var(--text); margin-bottom:8px;">Skill Badge</div>
-            <div style="display:inline-flex; align-items:center; gap:8px; background:var(--input-bg); padding:6px 16px; border-radius:20px; font-size:13px; font-weight:500; color:var(--text);">
+            <div style="font-size:13.5px; font-weight:400; color:var(--text); margin-bottom:8px;">Skill Badge</div>
+            <div style="display:inline-flex; align-items:center; gap:8px; background:var(--input-bg); padding:6px 16px; border-radius:20px; font-size:13px; font-weight:400; color:var(--text);">
               ${getSkillRealLogoSvg(item.name, 16)}
               <span>${esc(friendlyName)}</span>
             </div>
@@ -313,21 +317,21 @@ export class SkillsPage {
 
           <!-- PARAMETERS & METHODS TABLE -->
           <div style="margin-bottom:36px;">
-            <div style="font-size:14px; font-weight:600; color:var(--text); margin-bottom:4px;">Available Parameters &amp; Methods</div>
-            <p style="font-size:13px; color:var(--text-3); margin-top:0; margin-bottom:16px;">Function parameters registered for Gemini and Ollama tool invocation.</p>
+            <div style="font-size:13.5px; font-weight:500; color:var(--text); margin-bottom:4px;">Available Parameters &amp; Methods</div>
+            <p style="font-size:13px; color:var(--text-3); margin-top:0; margin-bottom:16px; font-weight:400;">Function parameters registered for Gemini and Ollama tool invocation.</p>
             
-            <div style="width:100%;">
-              <div style="display:grid; grid-template-columns:160px 1fr 1fr; gap:16px; padding:8px 0; border-bottom:1px solid var(--border); font-size:12.5px; font-weight:500; color:var(--text-3);">
+            <div style="width:100%; border-top:1px solid var(--border-subtle);">
+              <div style="display:grid; grid-template-columns:160px 1fr 1fr; gap:16px; padding:10px 12px; background:var(--input-bg); border-bottom:1px solid var(--border-subtle); font-size:12px; font-weight:600; color:var(--text-3); border-radius:6px 6px 0 0;">
                 <div>Parameter / Argument</div>
                 <div>Description &amp; Type</div>
                 <div>How to Use (Prompt)</div>
               </div>
               
               ${paramKeys.length === 0 ? `
-                <div style="display:grid; grid-template-columns:160px 1fr 1fr; gap:16px; padding:12px 0; border-bottom:1px solid var(--border); font-size:13px; align-items:center;">
-                  <div style="font-family:var(--font-mono); font-weight:500; color:var(--text); font-size:13px;">execute()</div>
+                <div style="display:grid; grid-template-columns:160px 1fr 1fr; gap:16px; padding:12px; border-bottom:1px solid var(--border-subtle); font-size:13px; align-items:center; transition:background-color 0.12s ease;" onmouseover="this.style.background='var(--hover)'" onmouseout="this.style.background='transparent'">
+                  <div style="font-family:var(--font-mono); font-weight:500; color:var(--text); font-size:12.5px;">execute()</div>
                   <div style="color:var(--text-2); line-height:1.4; font-weight:400;">No input arguments required.</div>
-                  <div style="font-family:var(--font-mono); color:var(--text-2); font-size:12.5px; font-weight:400;">${esc(examplePrompt)}</div>
+                  <div style="font-family:var(--font-mono); color:var(--text-2); font-size:12px; font-weight:400;">${esc(examplePrompt)}</div>
                 </div>
               ` : paramKeys.map(pk => {
                 const pinfo = paramsObj[pk] || {};
@@ -335,14 +339,14 @@ export class SkillsPage {
                 const isReq = reqList.includes(pk);
                 const pdesc = pinfo.description || pk;
                 return `
-                  <div style="display:grid; grid-template-columns:160px 1fr 1fr; gap:16px; padding:12px 0; border-bottom:1px solid var(--border); font-size:13px; align-items:center;">
-                    <div style="font-family:var(--font-mono); font-weight:500; color:var(--text); font-size:13px;">
+                  <div style="display:grid; grid-template-columns:160px 1fr 1fr; gap:16px; padding:12px; border-bottom:1px solid var(--border-subtle); font-size:13px; align-items:center; transition:background-color 0.12s ease;" onmouseover="this.style.background='var(--hover)'" onmouseout="this.style.background='transparent'">
+                    <div style="font-family:var(--font-mono); font-weight:500; color:var(--text); font-size:12.5px;">
                       ${esc(pk)} ${isReq ? '<span style="color:#ef4444; font-size:10px;">*</span>' : ''}
                     </div>
                     <div style="color:var(--text-2); line-height:1.4; font-weight:400;">
-                      ${esc(pdesc)} <span style="font-size:12px; color:var(--text-3); font-family:var(--font-mono);">(${esc(ptype)})</span>
+                      ${esc(pdesc)} <span style="font-size:11.5px; color:var(--text-3); font-family:var(--font-mono);">(${esc(ptype)})</span>
                     </div>
-                    <div style="font-family:var(--font-mono); color:var(--text-2); font-size:12.5px; font-weight:400;">${esc(examplePrompt)}</div>
+                    <div style="font-family:var(--font-mono); color:var(--text-2); font-size:12px; font-weight:400;">${esc(examplePrompt)}</div>
                   </div>
                 `;
               }).join('')}
@@ -351,31 +355,31 @@ export class SkillsPage {
 
           <!-- SYSTEM METADATA & TELEMETRY TABLE -->
           <div style="margin-bottom:28px;">
-            <div style="font-size:14px; font-weight:600; color:var(--text); margin-bottom:12px;">System Metadata &amp; Telemetry</div>
-            <div style="width:100%;">
-              <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--border); font-size:12.5px;">
-                <span style="color:var(--text-3);">Category</span>
-                <span style="color:var(--text); font-weight:400;">${esc(category)}</span>
+            <div style="font-size:13.5px; font-weight:500; color:var(--text); margin-bottom:12px;">System Metadata &amp; Telemetry</div>
+            <div style="width:100%; border-top:1px solid var(--border-subtle);">
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 12px; border-bottom:1px solid var(--border-subtle); font-size:12.5px; transition:background-color 0.12s ease;" onmouseover="this.style.background='var(--hover)'" onmouseout="this.style.background='transparent'">
+                <span style="color:var(--text-3); font-weight:400;">Category</span>
+                <span style="color:var(--text); font-weight:500;">${esc(category)}</span>
               </div>
-              <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--border); font-size:12.5px;">
-                <span style="color:var(--text-3);">Version</span>
-                <span style="color:var(--text); font-weight:400;">v${esc(item.version || '1.0.0')}</span>
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 12px; border-bottom:1px solid var(--border-subtle); font-size:12.5px; transition:background-color 0.12s ease;" onmouseover="this.style.background='var(--hover)'" onmouseout="this.style.background='transparent'">
+                <span style="color:var(--text-3); font-weight:400;">Version</span>
+                <span style="color:var(--text); font-weight:500;">v${esc(item.version || '1.0.0')}</span>
               </div>
-              <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--border); font-size:12.5px;">
-                <span style="color:var(--text-3);">Total Call Invocations</span>
-                <span style="color:var(--text); font-family:var(--font-mono); font-size:11.5px; font-weight:400;">${stats.call_count || 0} calls</span>
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 12px; border-bottom:1px solid var(--border-subtle); font-size:12.5px; transition:background-color 0.12s ease;" onmouseover="this.style.background='var(--hover)'" onmouseout="this.style.background='transparent'">
+                <span style="color:var(--text-3); font-weight:400;">Total Call Invocations</span>
+                <span style="color:var(--text); font-family:var(--font-mono); font-size:11.5px; font-weight:500;">${stats.call_count || 0} calls</span>
               </div>
-              <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--border); font-size:12.5px;">
-                <span style="color:var(--text-3);">Average Execution Latency</span>
-                <span style="color:var(--text); font-family:var(--font-mono); font-size:11.5px; font-weight:400;">${stats.avg_latency_ms || 0} ms</span>
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 12px; border-bottom:1px solid var(--border-subtle); font-size:12.5px; transition:background-color 0.12s ease;" onmouseover="this.style.background='var(--hover)'" onmouseout="this.style.background='transparent'">
+                <span style="color:var(--text-3); font-weight:400;">Average Execution Latency</span>
+                <span style="color:var(--text); font-family:var(--font-mono); font-size:11.5px; font-weight:500;">${stats.avg_latency_ms || 0} ms</span>
               </div>
-              <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--border); font-size:12.5px;">
-                <span style="color:var(--text-3);">Success Rate</span>
-                <span style="color:var(--text); font-family:var(--font-mono); font-size:11.5px; font-weight:400;">${successPct}%</span>
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 12px; border-bottom:1px solid var(--border-subtle); font-size:12.5px; transition:background-color 0.12s ease;" onmouseover="this.style.background='var(--hover)'" onmouseout="this.style.background='transparent'">
+                <span style="color:var(--text-3); font-weight:400;">Success Rate</span>
+                <span style="color:var(--text); font-family:var(--font-mono); font-size:11.5px; font-weight:500;">${successPct}%</span>
               </div>
-              <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--border); font-size:12.5px;">
-                <span style="color:var(--text-3);">Execution Status</span>
-                <span style="font-weight:500; color:${isEnabled ? '#16a34a' : 'var(--text-3)'}">${isEnabled ? 'Active' : 'Disabled'}</span>
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 12px; border-bottom:1px solid var(--border-subtle); font-size:12.5px; transition:background-color 0.12s ease;" onmouseover="this.style.background='var(--hover)'" onmouseout="this.style.background='transparent'">
+                <span style="color:var(--text-3); font-weight:400;">Execution Status</span>
+                <span style="font-weight:600; color:${isEnabled ? '#16a34a' : 'var(--text-3)'}">${isEnabled ? 'Active' : 'Disabled'}</span>
               </div>
             </div>
           </div>

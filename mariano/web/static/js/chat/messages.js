@@ -3,7 +3,6 @@ import { escapeHtml, formatTime, scrollChat, clearChatLogs } from './input.js';
 import { enhanceMarkdownContent } from './markdown.js';
 import { enhanceImagePreviews } from './media.js';
 
-/** [C-1] Lightweight HTML sanitizer — strips dangerous tags & on* handlers from AI output */
 function sanitizeHtml(html) {
   if (!html) return '';
   return html
@@ -73,7 +72,7 @@ export function createMessageElement(type, text, timestamp, index, ChatSessionMa
       const bubble = document.createElement('div');
       bubble.className = 'msg user';
       
-      const slashMatch = cleanText.match(/^(\/(?:web|code|pdf|image|debate))\b([\s\S]*)/i);
+      const slashMatch = cleanText.match(/^(\/(?:web|code|pdf|image|images-u|debate))\b([\s\S]*)/i);
       if (slashMatch) {
         const cmdTag = escapeHtml(slashMatch[1]);
         const restText = escapeHtml(slashMatch[2]);
@@ -498,4 +497,3 @@ function triggerRetry(index, ChatSessionManager, globalSendCallbackRef) {
   const cb = globalSendCallbackRef();
   if (cb) cb(retryText);
 }
-

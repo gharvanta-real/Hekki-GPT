@@ -1,6 +1,11 @@
-@import url('/static/css/base.css?v=156');
-@import url('/static/css/layout.css?v=161');
-@import url('/static/css/chat.css?v=159');
-@import url('/static/css/settings.css?v=156');
-@import url('/static/css/skills_page.css?v=141');
-@import url('/static/css/system_panels.css?v=200');
+/* ==========================================================================
+   theme.css — Master Hub for Hekki 5-Layer CSS Architecture
+   ========================================================================== */
+
+@import url('/static/css/base.css?v=220');
+@import url('/static/css/layout.css?v=220');
+@import url('/static/css/chat.css?v=220');
+@import url('/static/css/coder.css?v=220');
+@import url('/static/css/settings.css?v=220');
+@import url('/static/css/skills_page.css?v=220');
+@import url('/static/css/system_panels.css?v=220');

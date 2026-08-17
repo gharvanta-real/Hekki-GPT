@@ -90,17 +90,22 @@ export class HistoryPage {
     });
 
     this._root.innerHTML = `
-      <div class="history-wrapper" style="display:flex; flex-direction:column; width:100%; height:100%; flex:1; min-width:0; overflow-y:auto; padding:40px 24px 48px; background:var(--bg, #f6f7f9); color:var(--text); font-family: 'Open Sans', sans-serif; box-sizing:border-box;">
+      <div class="history-wrapper" style="display:flex; flex-direction:column; width:100%; height:100%; flex:1; min-width:0; overflow-y:auto; padding:40px 24px 48px; background:var(--bg, #f6f7f9); color:var(--text); font-family: var(--font, 'Open Sans', sans-serif); box-sizing:border-box;">
         <div style="max-width:680px; margin:0 auto; width:100%;">
           
           <!-- CENTERED SEARCH INPUT BAR -->
-          <div style="margin-bottom:20px; display:flex; justify-content:center;">
-            <div style="position:relative; width:100%; max-width:560px;">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="position:absolute; left:16px; top:50%; transform:translateY(-50%); width:16px; height:16px; color:var(--text-3); pointer-events:none;"><path d="M29,27.5859l-7.5521-7.5521a11.0177,11.0177,0,1,0-1.4141,1.4141L27.5859,29ZM4,13a9,9,0,1,1,9,9A9.01,9.01,0,0,1,4,13Z"/></svg>
-              <input type="text" id="history-search-input" value="${esc(this._searchQuery)}" placeholder="Search chats..." style="width:100%; height:44px; padding:0 40px 0 44px; background:var(--input-bg, #ffffff); border:1px solid var(--border, rgba(255,255,255,0.08)) !important; border-radius:22px; color:var(--text); font-size:15px; font-family:inherit; outline:none !important; box-shadow:none !important; box-sizing:border-box;" autocomplete="off" />
+          <style>
+            #history-search-input::placeholder { font-weight: 400 !important; color: var(--text-3) !important; opacity: 0.75; font-size: 13.5px !important; font-family: var(--font, inherit) !important; }
+            #history-search-input { font-weight: 400 !important; font-family: var(--font, inherit) !important; }
+            .history-chip { font-weight: 400 !important; font-family: var(--font, inherit) !important; }
+          </style>
+          <div style="margin-bottom:16px; display:flex; justify-content:center;">
+            <div style="position:relative; width:100%; max-width:520px;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 32 32" fill="currentColor" style="position:absolute; left:14px; top:50%; transform:translateY(-50%); width:15px; height:15px; color:var(--text-3); pointer-events:none;"><path d="M29,27.5859l-7.5521-7.5521a11.0177,11.0177,0,1,0-1.4141,1.4141L27.5859,29ZM4,13a9,9,0,1,1,9,9A9.01,9.01,0,0,1,4,13Z"/></svg>
+              <input type="text" id="history-search-input" value="${esc(this._searchQuery)}" placeholder="Search chats..." style="width:100%; height:38px; padding:0 36px 0 38px; background:var(--input-bg); border:1px solid var(--border) !important; border-radius:19px; color:var(--text); font-size:13.5px; font-weight:400; outline:none !important; box-shadow:none !important; box-sizing:border-box;" autocomplete="off" />
               ${this._searchQuery ? `
-                <button id="history-search-clear" style="position:absolute; right:14px; top:50%; transform:translateY(-50%); background:transparent; border:none; color:var(--text-3); cursor:pointer; display:flex; align-items:center; justify-content:center; padding:4px;">
-                  <i data-lucide="x" style="width:15px; height:15px;"></i>
+                <button id="history-search-clear" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); background:transparent; border:none; color:var(--text-3); cursor:pointer; display:flex; align-items:center; justify-content:center; padding:4px;">
+                  <i data-lucide="x" style="width:14px; height:14px;"></i>
                 </button>
               ` : ''}
             </div>
@@ -108,26 +113,26 @@ export class HistoryPage {
 
           <!-- FILTER CHIPS BAR -->
           <div style="display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:24px;">
-            <button class="history-chip ${this._activeFilter === 'all' ? 'active' : ''}" data-filter="all" style="padding:8px 20px; border-radius:9999px !important; font-size:14.5px; font-weight:500 !important; border:1px solid var(--border, rgba(255,255,255,0.08)) !important; box-shadow:none !important; cursor:pointer; transition:all 0.15s ease; ${this._activeFilter === 'all' ? 'background:var(--hover, #e4e7eb) !important; color:var(--text-primary) !important;' : 'background:var(--input-bg, #ffffff) !important; color:var(--text-2) !important;'}">
+            <button class="history-chip ${this._activeFilter === 'all' ? 'active' : ''}" data-filter="all" style="padding:5px 16px; border-radius:20px !important; font-size:13px; font-weight:400 !important; border:1px solid var(--border) !important; box-shadow:none !important; cursor:pointer; transition:all 0.15s ease; ${this._activeFilter === 'all' ? 'background:var(--hover) !important; color:var(--text) !important;' : 'background:var(--input-bg) !important; color:var(--text-2) !important;'}">
               All (${allChats.length})
             </button>
-            <button class="history-chip ${this._activeFilter === 'general' ? 'active' : ''}" data-filter="general" style="padding:8px 20px; border-radius:9999px !important; font-size:14.5px; font-weight:500 !important; border:1px solid var(--border, rgba(255,255,255,0.08)) !important; box-shadow:none !important; cursor:pointer; transition:all 0.15s ease; ${this._activeFilter === 'general' ? 'background:var(--hover, #e4e7eb) !important; color:var(--text-primary) !important;' : 'background:var(--input-bg, #ffffff) !important; color:var(--text-2) !important;'}">
+            <button class="history-chip ${this._activeFilter === 'general' ? 'active' : ''}" data-filter="general" style="padding:5px 16px; border-radius:20px !important; font-size:13px; font-weight:400 !important; border:1px solid var(--border) !important; box-shadow:none !important; cursor:pointer; transition:all 0.15s ease; ${this._activeFilter === 'general' ? 'background:var(--hover) !important; color:var(--text) !important;' : 'background:var(--input-bg) !important; color:var(--text-2) !important;'}">
               General Chat (${generalChats.length})
             </button>
-            <button class="history-chip ${this._activeFilter === 'playground' ? 'active' : ''}" data-filter="playground" style="padding:8px 20px; border-radius:9999px !important; font-size:14.5px; font-weight:500 !important; border:1px solid var(--border, rgba(255,255,255,0.08)) !important; box-shadow:none !important; cursor:pointer; transition:all 0.15s ease; ${this._activeFilter === 'playground' ? 'background:var(--hover, #e4e7eb) !important; color:var(--text-primary) !important;' : 'background:var(--input-bg, #ffffff) !important; color:var(--text-2) !important;'}">
+            <button class="history-chip ${this._activeFilter === 'playground' ? 'active' : ''}" data-filter="playground" style="padding:5px 16px; border-radius:20px !important; font-size:13px; font-weight:400 !important; border:1px solid var(--border) !important; box-shadow:none !important; cursor:pointer; transition:all 0.15s ease; ${this._activeFilter === 'playground' ? 'background:var(--hover) !important; color:var(--text) !important;' : 'background:var(--input-bg) !important; color:var(--text-2) !important;'}">
               Playground (${playgroundChats.length})
             </button>
           </div>
 
           <!-- RECENT SECTION HEADER -->
-          <div style="margin-bottom:12px; font-size:13.5px; font-weight:600; color:var(--text-3); letter-spacing:0.01em;">
+          <div style="margin-bottom:10px; font-size:13px; font-weight:400; color:var(--text-3); letter-spacing:0.01em;">
             ${q ? `Search Results (${filtered.length})` : 'Recent'}
           </div>
 
           <!-- CHAT HISTORY LIST ROWS (Flat list format with timestamps & message counts) -->
           <div style="display:flex; flex-direction:column; gap:0; width:100%; border-top:1px solid var(--border);">
             ${filtered.length === 0 ? `
-              <div style="padding:28px 0; text-align:center; color:var(--text-3); font-size:14px; background:transparent;">
+              <div style="padding:28px 0; text-align:center; color:var(--text-3); font-size:13.5px; background:transparent; font-weight:400;">
                 ${q ? `No chats matching "${esc(q)}"` : 'No conversations found.'}
               </div>
             ` : filtered.map(chat => {
@@ -143,26 +148,26 @@ export class HistoryPage {
                   <!-- LEFT: ALPHABET AVATAR & TITLE WITH TIMESTAMP -->
                   <div style="display:flex; align-items:center; flex:1; min-width:0; overflow:hidden; padding-right:16px;">
                     <!-- Alphabet Avatar -->
-                    <div style="width:32px; height:32px; border-radius:50%; background:var(--hover); color:var(--text-2); display:flex; align-items:center; justify-content:center; font-size:13.5px; font-weight:500 !important; flex-shrink:0; margin-right:12px; user-select:none;">
+                    <div style="width:32px; height:32px; border-radius:50%; background:var(--hover); color:var(--text-2); display:flex; align-items:center; justify-content:center; font-size:12.5px; font-weight:400 !important; flex-shrink:0; margin-right:12px; user-select:none;">
                       ${initialLetter}
                     </div>
 
                     <!-- Title & Meta Subtitle -->
                     <div style="display:flex; flex-direction:column; flex:1; min-width:0; overflow:hidden;">
-                      <div style="font-size:15px; font-weight:500; color:var(--text-primary); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+                      <div style="font-size:13.5px; font-weight:400; color:var(--text); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
                         ${esc(displayTitle)}
                       </div>
                       ${metaInfo ? `
-                        <div style="font-size:12px; color:var(--text-3); margin-top:2px; opacity:0.85; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                        <div style="font-size:12px; color:var(--text-3); margin-top:2px; opacity:0.85; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-weight:400;">
                           ${esc(metaInfo)}
                         </div>
                       ` : ''}
                     </div>
                   </div>
 
-                  <!-- PERMANENT RED TRASH ICON (RIGHT) — Instant delete on click -->
+                  <!-- Trash icon (Right) — Instant delete on click -->
                   <div style="display:flex; align-items:center; flex-shrink:0;">
-                    <button class="history-del-btn" data-id="${chat.id}" title="Delete immediately" style="background:transparent; border:none !important; box-shadow:none !important; color:#ef4444 !important; opacity:0.6; cursor:pointer; padding:6px 8px; display:flex; align-items:center; justify-content:center; border-radius:6px; transition:all 0.15s ease;" onmouseover="this.style.opacity='1'; this.style.background='rgba(239,68,68,0.1)';" onmouseout="this.style.opacity='0.6'; this.style.background='transparent';">
+                    <button class="history-del-btn" data-id="${chat.id}" title="Delete immediately" style="background:transparent; border:none !important; box-shadow:none !important; color:var(--text-3) !important; opacity:0.6; cursor:pointer; padding:6px 8px; display:flex; align-items:center; justify-content:center; border-radius:6px; transition:all 0.15s ease;" onmouseover="this.style.opacity='1'; this.style.background='var(--hover)';" onmouseout="this.style.opacity='0.6'; this.style.background='transparent';">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;display:block;flex-shrink:0;pointer-events:none;"><rect x="12" y="12" width="2" height="12"/><rect x="18" y="12" width="2" height="12"/><path d="M4,6V8H6V28a2,2,0,0,0,2,2H24a2,2,0,0,0,2-2V8h2V6ZM8,28V8H24V28Z"/><rect x="12" y="2" width="8" height="2"/></svg>
                     </button>
                   </div>

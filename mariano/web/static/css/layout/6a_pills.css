@@ -4,11 +4,11 @@
   align-items: center;
   gap: 6px;
   padding: 4px 12px;
-  background-color: var(--sidebar-bg);
-  border: none !important;
+  background-color: var(--input-bg);
+  border: 1px solid var(--border) !important;
   border-radius: 20px;
   box-shadow: none !important;
-  color: var(--text-secondary);
+  color: var(--text-2);
   font-size: 11px;
   font-weight: 500;
   font-family: var(--font);
@@ -18,23 +18,25 @@
 }
 .modal-nav-pill:hover {
   background-color: var(--hover);
-  color: var(--text-primary);
+  color: var(--text);
 }
 .modal-nav-pill.active {
-  background-color: var(--text-primary) !important;
-  color: var(--bg) !important;
+  background-color: var(--card) !important;
+  border-color: var(--text) !important;
+  color: var(--text) !important;
 }
 body.dark .modal-nav-pill {
-  background-color: #1c1c1c;
-  border: none !important;
+  background-color: var(--input-bg);
+  border: 1px solid var(--border) !important;
   box-shadow: none !important;
 }
 body.dark .modal-nav-pill:hover {
-  background-color: #252525;
+  background-color: var(--hover);
 }
 body.dark .modal-nav-pill.active {
-  background-color: #ffffff !important;
-  color: #101010 !important;
+  background-color: var(--card) !important;
+  border-color: var(--text) !important;
+  color: var(--text) !important;
 }
 
 /* Outlined Cancel Pill for Modals */
@@ -43,10 +45,10 @@ body.dark .modal-nav-pill.active {
   align-items: center;
   justify-content: center;
   padding: 4px 16px;
-  background: transparent !important;
-  border: none !important;
+  background: var(--input-bg) !important;
+  border: 1px solid var(--border) !important;
   border-radius: 20px !important;
-  color: var(--text-secondary) !important;
+  color: var(--text-2) !important;
   font-size: 11px;
   font-weight: 500;
   font-family: var(--font);
@@ -55,7 +57,8 @@ body.dark .modal-nav-pill.active {
   height: 28px;
 }
 .btn-cancel-outline:hover {
-  border-color: var(--text-secondary) !important;
+  background: var(--hover) !important;
+  color: var(--text) !important;
 }
 
 /* Modal header fade-out blur overlay below the top nav line */
@@ -287,5 +290,5 @@ body.oled img.sidebar-user-avatar,
 }
 .slash-tag-chip .slash-tag-close:hover {
   opacity: 1;
-  color: #ef4444;
+  color: var(--text);
 }

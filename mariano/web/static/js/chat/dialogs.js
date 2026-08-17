@@ -113,7 +113,7 @@ export function openImageLightbox(src, redirectUrl = '') {
   imgEl.src = src;
   imgEl.style.transform = 'scale(1)';
   imgEl.style.cursor = 'zoom-in';
-  btnExternal.href = finalRedirect;
+  if (btnExternal) btnExternal.href = finalRedirect;
 
   let isZoomed = false;
 

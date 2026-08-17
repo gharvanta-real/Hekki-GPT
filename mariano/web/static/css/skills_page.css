@@ -121,28 +121,31 @@
 }
 
 .skills-btn.primary {
-  background: var(--text);
-  color: var(--bg);
-  border-color: var(--text);
+  background: var(--input-bg);
+  color: var(--text);
+  border: 1px solid var(--border) !important;
 }
 
 .skills-btn.primary:hover {
-  opacity: 0.9;
+  background: var(--hover) !important;
+  color: var(--text) !important;
 }
 
 .skills-btn.danger {
-  color: #dc2626;
+  color: var(--text-2);
   border-color: var(--border);
 }
 
 .skills-btn.danger:hover {
-  background: #fef2f2;
-  border-color: #fca5a5;
+  background: var(--hover);
+  border-color: var(--border);
+  color: var(--text);
 }
 
 body.dark .skills-btn.danger:hover {
-  background: rgba(220, 38, 38, 0.1);
-  border-color: rgba(220, 38, 38, 0.3);
+  background: var(--hover);
+  border-color: var(--border);
+  color: var(--text);
 }
 
 .skills-btn .lucide {

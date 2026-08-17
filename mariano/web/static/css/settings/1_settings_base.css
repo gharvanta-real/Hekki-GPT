@@ -9,7 +9,7 @@
   flex: 1;
   display: none;
   background: var(--bg);
-  color: var(--text);
+  color: var(--text-primary);
   overflow: hidden;
   box-sizing: border-box;
 }
@@ -29,7 +29,7 @@ body[data-page="settings"] #sidebar-nav .nav-header {
   width: 240px;
   flex-shrink: 0;
   background: var(--sidebar-bg) !important;
-  border-right: 1px solid var(--border, rgba(0, 0, 0, 0.08));
+  border-right: none !important;
   display: flex;
   flex-direction: column;
   padding: 10px 14px 20px 14px;
@@ -39,7 +39,7 @@ body[data-page="settings"] #sidebar-nav .nav-header {
   box-sizing: border-box;
 }
 
-/* Settings Back Button (Cursor IDE Style Top Navigation) */
+/* Settings Back Button */
 .settings-back-btn {
   display: flex !important;
   align-items: center !important;
@@ -48,22 +48,22 @@ body[data-page="settings"] #sidebar-nav .nav-header {
   width: 100% !important;
   padding: 0 10px !important;
   margin-bottom: 6px !important;
-  border-radius: 8px !important;
+  border-radius: var(--radius-md) !important;
   border: none !important;
   outline: none !important;
   box-shadow: none !important;
   background: transparent !important;
-  color: var(--text-2, #94a3b8) !important;
-  font-family: var(--font, sans-serif) !important;
-  font-size: 13.5px !important;
+  color: var(--text-2) !important;
+  font-family: var(--font) !important;
+  font-size: var(--fs-base) !important;
   font-weight: 500 !important;
   cursor: pointer !important;
-  transition: all 0.12s ease !important;
+  transition: background-color 0.12s ease, color 0.12s ease !important;
 }
 
 .settings-back-btn:hover {
-  background: var(--hover, rgba(255, 255, 255, 0.08)) !important;
-  color: var(--text, #ffffff) !important;
+  background: var(--hover) !important;
+  color: var(--text-primary) !important;
 }
 
 /* Settings Search Bar */
@@ -73,28 +73,22 @@ body[data-page="settings"] #sidebar-nav .nav-header {
   gap: 8px !important;
   padding: 6px 10px !important;
   margin-bottom: 10px !important;
-  background: var(--card, #1e1e1e) !important;
-  border: 1px solid var(--border-subtle, rgba(0, 0, 0, 0.08)) !important;
-  border-radius: 8px !important;
+  background: var(--bg-card) !important;
+  border: none !important;
+  border-radius: var(--radius-md) !important;
   box-shadow: none !important;
-  transition: border-color 0.15s ease !important;
+  transition: background-color 0.15s ease !important;
 }
 
 .settings-search-wrap:focus-within {
-  border-color: var(--accent-primary, #2563EB) !important;
-  outline: 2px solid var(--accent-primary, #2563EB) !important;
+  outline: 2px solid var(--accent-primary) !important;
   outline-offset: 1px !important;
-}
-
-body.dark .settings-search-wrap,
-body.oled .settings-search-wrap {
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
 
 .settings-search-icon {
   width: 14px !important;
   height: 14px !important;
-  color: var(--text-3, #64748b) !important;
+  color: var(--text-3) !important;
   flex-shrink: 0 !important;
 }
 
@@ -103,36 +97,24 @@ body.oled .settings-search-wrap {
   background: transparent !important;
   border: none !important;
   outline: none !important;
-  color: var(--text, #ffffff) !important;
+  color: var(--text-primary) !important;
   font-family: var(--font) !important;
-  font-size: 13px !important;
+  font-size: var(--fs-base) !important;
 }
 
-/* Container Cards (Cursor IDE Card Boxes) */
+/* Container Cards */
 .settings-card-box {
-  background: var(--card, #FFFFFF) !important;
-  border: 1px solid var(--border-subtle, rgba(0, 0, 0, 0.06)) !important;
-  border-radius: 12px !important;
+  background: var(--bg-card) !important;
+  border: none !important;
+  border-radius: var(--radius-lg) !important;
   margin-bottom: 20px !important;
   overflow: hidden !important;
   box-shadow: none !important;
 }
 
-body.dark .settings-card-box,
-body.oled .settings-card-box {
-  background: #1E1E1E !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-}
-
-body.light .settings-card-box,
-:root[data-theme="light"] .settings-card-box {
-  background: #FFFFFF !important;
-  border: 1px solid rgba(0, 0, 0, 0.08) !important;
-}
-
 .settings-card-box .settings-row {
   padding: 14px 18px !important;
-  border-bottom: 1px solid var(--border, rgba(255, 255, 255, 0.08)) !important;
+  border-bottom: 1px solid var(--border-subtle) !important;
 }
 
 .settings-card-box .settings-row:last-child {
@@ -140,16 +122,15 @@ body.light .settings-card-box,
 }
 
 .settings-card-title {
-  font-size: 12.5px !important;
-  font-weight: 400 !important;
-  color: var(--text-3, #71717a) !important;
-  text-transform: uppercase !important;
-  letter-spacing: 0.04em !important;
+  font-size: var(--fs-sm) !important;
+  font-weight: 600 !important;
+  color: var(--text-3) !important;
+  text-transform: none !important;
+  letter-spacing: 0.01em !important;
   margin-top: 18px !important;
   margin-bottom: 8px !important;
   padding-left: 2px !important;
 }
-
 
 .modal-nav-header {
   height: 48px;
@@ -158,7 +139,7 @@ body.light .settings-card-box,
   padding: 0 8px;
   margin: 0 0 4px 0;
   font-weight: 600;
-  font-size: 16px;
+  font-size: var(--fs-lg);
   color: var(--text-primary);
   flex-shrink: 0;
 }
@@ -171,18 +152,18 @@ body.light .settings-card-box,
   outline: none !important;
   box-shadow: none !important;
   background: transparent !important;
-  color: var(--text-2, #94a3b8);
+  color: var(--text-2);
   cursor: pointer;
-  font-family: var(--font, sans-serif);
-  font-size: 14px;
+  font-family: var(--font);
+  font-size: var(--fs-base);
   font-weight: 400;
-  border-radius: 8px !important;
+  border-radius: var(--radius-md) !important;
   display: flex !important;
   align-items: center !important;
   gap: 8px;
   padding: 0 8px !important;
   text-align: left;
-  transition: all 0.12s ease;
+  transition: background-color 0.12s ease, color 0.12s ease;
   position: relative;
 }
 
@@ -191,57 +172,35 @@ body.light .settings-card-box,
 .modal-nav-item .lucide {
   width: 16px;
   height: 16px;
-  color: var(--text-3, #64748b);
+  color: var(--text-3);
   flex-shrink: 0;
   transition: color 0.12s ease;
 }
 
 .modal-nav-item:hover {
-  background: var(--hover, rgba(255, 255, 255, 0.08)) !important;
-  color: var(--text, #ffffff) !important;
-  border: none !important;
-  box-shadow: none !important;
-  border-radius: 8px !important;
+  background: var(--hover) !important;
+  color: var(--text-primary) !important;
 }
 
 .modal-nav-item:hover i,
 .modal-nav-item:hover svg,
 .modal-nav-item:hover .lucide {
-  color: var(--text, #ffffff) !important;
+  color: var(--text-primary) !important;
 }
 
 .modal-nav-item.active {
-  background: var(--hover, rgba(255, 255, 255, 0.12)) !important;
-  color: var(--text, #ffffff) !important;
+  background: var(--bg-active) !important;
+  color: var(--accent-primary) !important;
   font-weight: 500;
-  border: none !important;
-  box-shadow: none !important;
-  border-radius: 8px !important;
 }
 
 .modal-nav-item.active i,
 .modal-nav-item.active svg,
 .modal-nav-item.active .lucide {
-  color: var(--text, #ffffff) !important;
+  color: var(--accent-primary) !important;
 }
 
-body.light .modal-nav-item:hover,
-:root[data-theme="light"] .modal-nav-item:hover {
-  background: var(--hover, #f1f5f9) !important;
-  color: var(--text, #0f172a) !important;
-}
-
-body.light .modal-nav-item.active,
-:root[data-theme="light"] .modal-nav-item.active {
-  background: #FFFFFF !important;
-  color: var(--text, #0f172a) !important;
-  font-weight: 600;
-  border: none !important;
-  box-shadow: none !important;
-  box-shadow: none !important;
-}
-
-/* === RIGHT CONTENT PANEL (Main Page BG) === */
+/* === RIGHT CONTENT PANEL === */
 .modal-content {
   flex: 1;
   height: 100%;
@@ -267,24 +226,18 @@ body.light .modal-nav-item.active,
   height: 30px;
   border: none;
   background: transparent;
-  color: var(--text-3, #71717a);
+  color: var(--text-3);
   cursor: pointer;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.15s ease;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 .modal-close:hover {
-  background: rgba(0, 0, 0, 0.05);
+  background: var(--hover);
   color: var(--text-primary);
-}
-
-body.dark .modal-close:hover,
-body.oled .modal-close:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: #ffffff;
 }
 
 /* Settings Sections */
@@ -298,10 +251,10 @@ body.oled .modal-close:hover {
 
 /* Header & Subtitle Typography */
 .section-title {
-  font-family: var(--font, sans-serif);
-  font-size: var(--fs-xl);
-  font-weight: 500;
-  color: var(--text-primary, #09090b);
+  font-family: var(--font);
+  font-size: var(--fs-2xl);
+  font-weight: 600;
+  color: var(--text-primary);
   height: 48px;
   display: flex;
   align-items: center;
@@ -309,44 +262,25 @@ body.oled .modal-close:hover {
   letter-spacing: -0.01em;
 }
 
-body.dark .section-title,
-body.oled .section-title,
-:root[data-theme="dark"] .section-title,
-:root[data-theme="oled"] .section-title {
-  color: #FFFFFF !important;
-}
-
 .section-sub {
   font-size: var(--fs-sm);
-  color: var(--text-3, #71717a);
+  color: var(--text-3);
   margin-bottom: 20px;
   line-height: 1.5;
 }
 
-body.dark .section-sub,
-body.oled .section-sub,
-:root[data-theme="dark"] .section-sub,
-:root[data-theme="oled"] .section-sub {
-  color: #A1A1AA !important;
-}
-
-/* PROMO HERO CARD (ChatGPT Style Top Callout) */
+/* PROMO HERO CARD */
 .settings-promo-card {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 14px 18px;
-  border-radius: 12px;
-  background: var(--input-bg, #f6f7f9);
+  border-radius: var(--radius-lg);
+  background: var(--bg-card);
   border: none !important;
+  box-shadow: none !important;
   margin-bottom: 24px;
   gap: 16px;
-}
-
-body.dark .settings-promo-card,
-body.oled .settings-promo-card {
-  background: #27272a;
-  border-color: rgba(255, 255, 255, 0.08);
 }
 
 .settings-promo-left {
@@ -359,8 +293,8 @@ body.oled .settings-promo-card {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: var(--accent, #2563eb);
-  color: #ffffff;
+  background: var(--accent-tint);
+  color: var(--accent-primary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -368,14 +302,13 @@ body.oled .settings-promo-card {
 }
 
 .settings-promo-title {
-  font-size: 13.5px;
-  font-weight: 400;
+  font-size: var(--fs-base);
+  font-weight: 600;
   color: var(--text-primary);
 }
 
 .settings-promo-desc {
-  font-size: 11.5px;
+  font-size: var(--fs-xs);
   color: var(--text-3);
   margin-top: 1px;
 }
-
