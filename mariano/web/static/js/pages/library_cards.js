@@ -99,3 +99,72 @@ export function renderCardContent(it, isSelected, idx, escHtml, isPlaying = fals
     </div>
   `;
 }
+
+export function renderLightboxHtml() {
+  return `
+    <div class="img-lightbox-overlay hidden" id="lib-lightbox">
+      <div class="img-lightbox-backdrop" id="lib-lightbox-backdrop"></div>
+      <div class="img-lightbox-modal" style="position:relative; max-width:min(92vw,920px); max-height:88vh; border-radius:20px; overflow:hidden; display:flex; align-items:center; justify-content:center; background:var(--card); border:none !important;">
+        <div class="img-lightbox-actions" style="position:absolute; bottom:18px; left:50%; transform:translateX(-50%); z-index:100; display:flex; align-items:center; gap:6px; background:var(--input-bg) !important; backdrop-filter:blur(16px); padding:5px 10px; border-radius:30px; border:none !important;">
+          <button class="img-lightbox-btn" id="lib-lb-download" title="Download" style="width:30px; height:30px; border-radius:50%; background:var(--card) !important; border:none !important; color:var(--text-primary) !important; cursor:pointer; display:flex; align-items:center; justify-content:center;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 32 32" fill="currentColor"><path d="M23.5,22H23V20h.5a4.5,4.5,0,0,0,.36-9L23,11l-.1-.82a7,7,0,0,0-13.88,0L9,11,8.14,11a4.5,4.5,0,0,0,.36,9H9v2H8.5A6.5,6.5,0,0,1,7.2,9.14a9,9,0,0,1,17.6,0A6.5,6.5,0,0,1,23.5,22Z"/><polygon points="17 26.17 17 14 15 14 15 26.17 12.41 23.59 11 25 16 30 21 25 19.59 23.59 17 26.17"/></svg>
+          </button>
+          <button class="img-lightbox-btn" id="lib-lb-delete" title="Delete" style="width:30px; height:30px; border-radius:50%; background:var(--card) !important; border:none !important; color:var(--red, #ef4444) !important; cursor:pointer; display:flex; align-items:center; justify-content:center;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 32 32" fill="currentColor"><rect x="12" y="12" width="2" height="12"/><rect x="18" y="12" width="2" height="12"/><path d="M4,6V8H6V28a2,2,0,0,0,2,2H24a2,2,0,0,0,2-2V8h2V6ZM8,28V8H24V28Z"/><rect x="12" y="2" width="8" height="2"/></svg>
+          </button>
+          <button class="img-lightbox-btn" id="lib-lb-close" title="Close" style="width:30px; height:30px; border-radius:50%; background:var(--card) !important; border:none !important; color:var(--text-primary) !important; cursor:pointer; display:flex; align-items:center; justify-content:center;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 32 32" fill="currentColor"><polygon points="17.4141 16 26 7.4141 24.5859 6 16 14.5859 7.4143 6 6 7.4141 14.5859 16 6 24.5859 7.4143 26 16 17.4141 24.5859 26 26 24.5859 17.4141 16"/></svg>
+          </button>
+        </div>
+        <div class="img-lightbox-body" style="position:relative; width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:var(--card); overflow:hidden; border-radius:20px; border:none !important;">
+          <img class="img-lightbox-img" id="lib-lightbox-img" src="" alt="" style="max-width:100%; max-height:88vh; object-fit:contain; display:block; border-radius:20px; user-select:none;" />
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+export function renderConfirmModalHtml() {
+  return `
+    <div id="lib-confirm-modal" class="img-confirm-modal-overlay hidden" style="position:fixed; inset:0; z-index:10005; display:flex; align-items:center; justify-content:center;">
+      <div class="img-confirm-backdrop" id="lib-confirm-backdrop" style="position:absolute; inset:0; background:rgba(0,0,0,0.45); backdrop-filter:blur(4px);"></div>
+      <div class="img-confirm-dialog" style="position:relative; z-index:2; width:100%; max-width:400px; background:var(--card); border:1px solid var(--border) !important; border-radius:16px; padding:22px 24px; display:flex; flex-direction:column; gap:14px;">
+        <div class="img-confirm-header" style="display:flex; align-items:center; justify-content:space-between; width:100%;">
+          <h3 class="img-confirm-title" id="lib-confirm-title" style="margin:0; font-size:14px; font-weight:500; color:var(--text-primary);">Delete Confirmation</h3>
+          <button class="img-confirm-close" id="lib-confirm-close" style="background:transparent; border:none; color:var(--text-3); cursor:pointer;"><i data-lucide="x" style="width:16px;height:16px;"></i></button>
+        </div>
+        <p class="img-confirm-msg" id="lib-confirm-msg" style="margin:0; font-size:13px; color:var(--text-2); line-height:1.5;">Are you sure?</p>
+        <div class="img-confirm-actions" style="display:flex; align-items:center; justify-content:flex-end; gap:8px; width:100%; margin-top:6px;">
+          <button class="img-confirm-btn" id="lib-confirm-btn-cancel" style="padding:5px 16px; font-size:12.5px; border-radius:16px; border:1px solid var(--border); background:var(--input-bg); color:var(--text-2); cursor:pointer;">Cancel</button>
+          <button class="img-confirm-btn" id="lib-confirm-btn-action" style="padding:5px 16px; font-size:12.5px; font-weight:500; border-radius:16px; border:none; background:var(--btn-danger-bg, #ef4444); color:var(--btn-danger-text, #ffffff); cursor:pointer;">Delete</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+export function renderCategoryTabsHtml(categories, currentCategory) {
+  return `
+    <div class="lib-category-tabs">
+      ${categories.map(c => `
+        <button class="lib-cat-tab ${currentCategory === c.id ? 'active' : ''}" data-cat="${c.id}">
+          ${c.label}
+        </button>
+      `).join('')}
+    </div>
+  `;
+}
+
+export function renderEmptyStateHtml(categoryTabsHtml) {
+  return `
+    <div class="library-container">
+      <div class="library-header-row"><h1 class="library-main-title">Library</h1></div>
+      ${categoryTabsHtml}
+      <div class="img-gallery-empty">
+        <div class="img-gallery-empty-icon"><i data-lucide="folder-open" style="width:36px;height:36px;opacity:0.3;"></i></div>
+        <p class="img-gallery-empty-title">No assets found</p>
+        <p class="img-gallery-empty-sub">Generated images, voice overviews, documents, and data artifacts will appear here</p>
+      </div>
+    </div>
+  `;
+}
