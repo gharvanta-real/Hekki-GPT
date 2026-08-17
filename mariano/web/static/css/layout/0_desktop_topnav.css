@@ -183,19 +183,27 @@ body.oled .topnav-item:hover {
 }
 
 .topnav-audio-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 26px !important;
+  height: 26px !important;
+  min-width: 26px !important;
+  min-height: 26px !important;
+  border-radius: 6px !important;
   background: transparent;
   border: none !important;
   color: var(--text-2);
   cursor: pointer;
   box-shadow: none !important;
-  transition: all 0.15s ease;
+  padding: 0 !important;
+  margin: 0 !important;
+  line-height: 1 !important;
+  overflow: visible !important;
+  transition: background 0.12s, color 0.12s;
   user-select: none;
+  flex-shrink: 0;
+  -webkit-app-region: no-drag;
 }
 
 .topnav-audio-btn.hidden {
