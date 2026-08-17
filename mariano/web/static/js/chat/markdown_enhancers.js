@@ -239,3 +239,48 @@ export function enhanceStorytellingLayout(container) {
     }
   });
 }
+
+/** Converts [AUDIO_PLAYER:url] tags into full interactive studio audio player widgets */
+export function enhanceAudioPlayers(container) {
+  if (!container) return;
+  const walkers = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, null, false);
+  const textNodes = [];
+  let node;
+  while ((node = walkers.nextNode())) {
+    if (node.nodeValue && node.nodeValue.includes('[AUDIO_PLAYER:')) {
+      textNodes.push(node);
+    }
+  }
+
+  textNodes.forEach(textNode => {
+    const parent = textNode.parentNode;
+    if (!parent) return;
+    const regex = /\[AUDIO_PLAYER:\s*([^\]|]+)(?:\|([^\]]+))?\]/g;
+    const text = textNode.nodeValue;
+    const frag = document.createDocumentFragment();
+    let lastIndex = 0;
+    let match;
+
+    while ((match = regex.exec(text)) !== null) {
+      if (match.index > lastIndex) {
+        frag.appendChild(document.createTextNode(text.substring(lastIndex, match.index)));
+      }
+      const audioUrl = match[1].trim();
+      const title = (match[2] || 'Audio Overview').trim();
+
+      const playerWrapper = document.createElement('div');
+      playerWrapper.className = 'inline-audio-player-wrapper';
+      playerWrapper.style.cssText = 'margin: 8px 0; max-width: 100%;';
+      if (window.audioOverviewManager) {
+        window.audioOverviewManager.mountAudioPlayer(playerWrapper, audioUrl, title);
+      }
+      frag.appendChild(playerWrapper);
+      lastIndex = regex.lastIndex;
+    }
+
+    if (lastIndex < text.length) {
+      frag.appendChild(document.createTextNode(text.substring(lastIndex)));
+    }
+    parent.replaceChild(frag, textNode);
+  });
+}

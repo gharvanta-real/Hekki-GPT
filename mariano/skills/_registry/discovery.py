@@ -43,6 +43,7 @@ CORE_SKILL_MODULES = [
     "mariano.skills.core_skills.red_team_ops.skill",
     "mariano.skills.core_skills.expert_debate.skill",
     "mariano.skills.core_skills.safe_recycler.skill",
+    "mariano.skills.core_skills.audio_summary.skill",
 ]
 
 

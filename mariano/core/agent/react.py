@@ -346,10 +346,15 @@ async def run_react_loop(
                     except Exception:
                         pass
                     
+                    # Build merged metadata including skill result metadata
+                    event_meta = {"tool": name, "success": result.success, "time_ms": result.execution_time_ms}
+                    if result.metadata and isinstance(result.metadata, dict):
+                        event_meta.update(result.metadata)
+
                     yield AgentEvent(
                         "tool_result",
                         result_text,
-                        metadata={"tool": name, "success": result.success, "time_ms": result.execution_time_ms},
+                        metadata=event_meta,
                     )
 
                     # Post-tool reasoning: only for substantive results (saves API quota)
@@ -364,13 +369,26 @@ async def run_react_loop(
                             yield r_event
 
                     if result.success:
-                        # Task succeeded — check if more steps genuinely needed or can conclude
-                        user_input = (
-                            f"Tool '{name}' returned the result above. "
-                            "Now autonomously decide: Is the user's original task FULLY complete? "
-                            "If YES → write the final answer now. "
-                            "If NO → immediately run the next required tool without asking the user — keep going until done."
-                        )
+                        if name == "audio_summary":
+                            audio_url = (result.metadata or {}).get("audio_url", "")
+                            audio_title = (result.metadata or {}).get("title", "Voice Audio Summary")
+                            script_content = (result.metadata or {}).get("script", "")
+                            user_input = (
+                                f"The audio summary has been successfully generated!\n"
+                                f"Audio URL: {audio_url}\n"
+                                f"In your final response to the user, you MUST include:\n"
+                                f"1. The embedded player tag: `[AUDIO_PLAYER:{audio_url}|{audio_title}]`\n"
+                                f"2. The complete spoken Hindi narration transcript below it:\n\n{script_content}\n\n"
+                                f"Present this warmly and completely in your response so the user can both listen and read."
+                            )
+                        else:
+                            # Task succeeded — check if more steps genuinely needed or can conclude
+                            user_input = (
+                                f"Tool '{name}' returned the result above. "
+                                "Now autonomously decide: Is the user's original task FULLY complete? "
+                                "If YES → write the final answer now, presenting all generated findings directly to the user. "
+                                "If NO → immediately run the next required tool without asking the user — keep going until done."
+                            )
                     else:
                         # Tool failed — try a different approach autonomously, don't ask user
                         user_input = (

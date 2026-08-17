@@ -4,34 +4,47 @@ API Limits Configuration — Single source of truth for Chat, Coder, and Debate 
 from __future__ import annotations
 
 # ==========================================
-# 1. GLOBAL RATE LIMITER (Gemini API Limits with Buffer Guard)
+# 1. GLOBAL & MODEL-SPECIFIC RATE LIMITS (Exact Google Quota Dashboard)
 # ==========================================
-GLOBAL_MAX_RPM = 14       # Buffer guard: 14 RPM (Google limit is 15 RPM)
-GLOBAL_MAX_TPM = 250000   # Buffer guard: 250K TPM
-GLOBAL_MAX_RPD = 480      # Buffer guard: 480 RPD (Google limit is 500 RPD)
-MIN_REQUEST_INTERVAL = 4.0 # 4.0s pacing buffer between requests (ensures max 15 RPM)
+# Gemini 3.5 Flash / 3.6 Flash / 3.7 Flash: 5 RPM, 250K TPM, 20 RPD
+FLASH_MAX_RPM = 5
+FLASH_MAX_TPM = 250000
+FLASH_MAX_RPD = 20
+FLASH_MIN_INTERVAL = 12.0  # 60s / 5 requests
 
-LIVE_AUDIO_MAX_TPM = 250000 # 1M TPM for Gemini 2.5 Flash Native Audio Dialog
+# Gemini 3.5 Flash Lite / 3.1 Flash Lite: 15 RPM, 250K TPM, 500 RPD
+FLASH_LITE_MAX_RPM = 15
+FLASH_LITE_MAX_TPM = 250000
+FLASH_LITE_MAX_RPD = 500
+FLASH_LITE_MIN_INTERVAL = 4.0  # 60s / 15 requests
+
+# Active Default Buffer Fallbacks
+GLOBAL_MAX_RPM = 15
+GLOBAL_MAX_TPM = 250000
+GLOBAL_MAX_RPD = 500
+MIN_REQUEST_INTERVAL = 4.0
+
+LIVE_AUDIO_MAX_TPM = 250000
 
 
 # ==========================================
 # 2. CHAT SESSION LIMITS
 # ==========================================
-CHAT_MAX_OUTPUT_TOKENS = 8192
+CHAT_MAX_OUTPUT_TOKENS = 32768
 CHAT_TEMPERATURE = 0.70
 
 # ==========================================
 # 3. CODER SESSION LIMITS
 # ==========================================
-CODER_MAX_OUTPUT_TOKENS = 8192
+CODER_MAX_OUTPUT_TOKENS = 32768
 CODER_TEMPERATURE = 0.40  # More deterministic for code generation
 
 # ==========================================
 # 4. DEBATE PLAYGROUND LIMITS
 # ==========================================
-DEBATE_ALPHA_MAX_TOKENS = 8000
-DEBATE_BETA_MAX_TOKENS = 8000
-DEBATE_SUMMARY_MAX_TOKENS = 8192
+DEBATE_ALPHA_MAX_TOKENS = 16384
+DEBATE_BETA_MAX_TOKENS = 16384
+DEBATE_SUMMARY_MAX_TOKENS = 32768
 
 DEBATE_ALPHA_TEMPERATURE = 0.80
 DEBATE_BETA_TEMPERATURE = 0.82

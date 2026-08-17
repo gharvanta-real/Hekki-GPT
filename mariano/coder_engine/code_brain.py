@@ -19,9 +19,10 @@ GEMINI_BASE = "https://generativelanguage.googleapis.com/v1beta"
 # Model routing table
 MODEL_MAP = {
     # Hekki Gemini modes
-    "gemini-3.1-flash-lite":   ("gemini", "gemini-3.1-flash-lite"),
-    "gemini-3.1-flash":        ("gemini", "gemini-3.1-flash"),
-    "gemini-3.1-pro":          ("gemini", "gemini-3.1-pro"),
+    "gemini-3.5-flash":        ("gemini", "gemini-3.5-flash"),
+    "gemini-3.5-flash-lite":   ("gemini", "gemini-3.5-flash-lite"),
+    "gemini-3.6-flash":        ("gemini", "gemini-3.6-flash"),
+    "gemini-3.7-flash":        ("gemini", "gemini-3.7-flash"),
 }
 
 SYSTEM_PROMPT = (

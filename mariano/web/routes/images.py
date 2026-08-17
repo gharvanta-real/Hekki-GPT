@@ -25,6 +25,186 @@ class DeleteImagesPayload(BaseModel):
     delete_all: bool = False
 
 
+def _format_size(size_bytes: int) -> str:
+    if size_bytes < 1024:
+        return f"{size_bytes} B"
+    elif size_bytes < 1024 * 1024:
+        return f"{size_bytes / 1024:.1f} KB"
+    return f"{size_bytes / (1024 * 1024):.1f} MB"
+
+
+class DeleteLibraryPayload(BaseModel):
+    items: list[dict] = []
+    delete_all: bool = False
+    category: str = "all"
+
+
+@router.get("/api/library")
+async def list_library_items(category: str = "all"):
+    """Scan workspace and data directories for category-wise assets (images, voice, pdf, data)."""
+    base_dir = Path(__file__).resolve().parent.parent.parent.parent
+    data_dir = base_dir / "data"
+    items = []
+
+    # 1. Images
+    img_exts = {".png", ".jpg", ".jpeg", ".webp", ".gif"}
+    img_dirs = [data_dir / "generated_images", data_dir / "screenshots"]
+    for d in img_dirs:
+        if d.exists():
+            for p in d.rglob("*"):
+                if p.is_file() and p.suffix.lower() in img_exts:
+                    try:
+                        stat = p.stat()
+                        abs_p = str(p).replace("\\", "/")
+                        items.append({
+                            "id": f"img_{p.name}_{int(stat.st_mtime)}",
+                            "name": p.name,
+                            "path": abs_p,
+                            "type": "image",
+                            "ext": p.suffix.lower().lstrip("."),
+                            "size": stat.st_size,
+                            "size_formatted": _format_size(stat.st_size),
+                            "modified": stat.st_mtime,
+                            "modified_iso": datetime.fromtimestamp(stat.st_mtime).isoformat(),
+                            "render_url": f"/api/workspace/render?path={urllib.parse.quote(abs_p)}",
+                            "download_url": f"/api/workspace/render?path={urllib.parse.quote(abs_p)}",
+                        })
+                    except Exception:
+                        pass
+
+    # 2. Voice / Audio
+    audio_exts = {".mp3", ".wav", ".ogg", ".m4a"}
+    audio_dirs = [data_dir / "audio_cache", data_dir / "audio_summary"]
+    for d in audio_dirs:
+        if d.exists():
+            for p in d.rglob("*"):
+                if p.is_file() and p.suffix.lower() in audio_exts:
+                    try:
+                        stat = p.stat()
+                        abs_p = str(p).replace("\\", "/")
+                        audio_url = f"/api/audio-summary/file/{p.name}"
+                        items.append({
+                            "id": f"voice_{p.name}_{int(stat.st_mtime)}",
+                            "name": p.name,
+                            "path": abs_p,
+                            "type": "voice",
+                            "ext": p.suffix.lower().lstrip("."),
+                            "size": stat.st_size,
+                            "size_formatted": _format_size(stat.st_size),
+                            "modified": stat.st_mtime,
+                            "modified_iso": datetime.fromtimestamp(stat.st_mtime).isoformat(),
+                            "render_url": audio_url,
+                            "download_url": audio_url,
+                        })
+                    except Exception:
+                        pass
+
+    # 3. PDFs & Docs
+    doc_exts = {".pdf", ".docx", ".epub"}
+    doc_dirs = [data_dir / "pdf_cache", data_dir / "uploads", data_dir / "workspace", data_dir]
+    seen_doc_paths = set()
+    for d in doc_dirs:
+        if d.exists():
+            for p in (d.glob("*") if d == data_dir else d.rglob("*")):
+                if p.is_file() and p.suffix.lower() in doc_exts and str(p) not in seen_doc_paths:
+                    try:
+                        seen_doc_paths.add(str(p))
+                        stat = p.stat()
+                        abs_p = str(p).replace("\\", "/")
+                        items.append({
+                            "id": f"doc_{p.name}_{int(stat.st_mtime)}",
+                            "name": p.name,
+                            "path": abs_p,
+                            "type": "pdf",
+                            "ext": p.suffix.lower().lstrip("."),
+                            "size": stat.st_size,
+                            "size_formatted": _format_size(stat.st_size),
+                            "modified": stat.st_mtime,
+                            "modified_iso": datetime.fromtimestamp(stat.st_mtime).isoformat(),
+                            "render_url": f"/api/workspace/render?path={urllib.parse.quote(abs_p)}",
+                            "download_url": f"/api/workspace/render?path={urllib.parse.quote(abs_p)}",
+                        })
+                    except Exception:
+                        pass
+
+    # 4. Data / Code / Datasets
+    data_exts = {".json", ".csv", ".py", ".sql", ".txt", ".md", ".rs", ".js", ".html"}
+    skip_files = {"evolution_log.json", "hekki.db", "dynamic_settings.json", "disabled_skills.json", "mcp_servers.json", "memory_ledger.json"}
+    data_dirs = [data_dir / "workspace", data_dir / "simulations", data_dir]
+    seen_data_paths = set()
+    for d in data_dirs:
+        if d.exists():
+            for p in (d.glob("*") if d == data_dir else d.rglob("*")):
+                if p.is_file() and p.suffix.lower() in data_exts and p.name not in skip_files and str(p) not in seen_data_paths:
+                    try:
+                        seen_data_paths.add(str(p))
+                        stat = p.stat()
+                        abs_p = str(p).replace("\\", "/")
+                        items.append({
+                            "id": f"data_{p.name}_{int(stat.st_mtime)}",
+                            "name": p.name,
+                            "path": abs_p,
+                            "type": "data",
+                            "ext": p.suffix.lower().lstrip("."),
+                            "size": stat.st_size,
+                            "size_formatted": _format_size(stat.st_size),
+                            "modified": stat.st_mtime,
+                            "modified_iso": datetime.fromtimestamp(stat.st_mtime).isoformat(),
+                            "render_url": f"/api/workspace/render?path={urllib.parse.quote(abs_p)}",
+                            "download_url": f"/api/workspace/render?path={urllib.parse.quote(abs_p)}",
+                        })
+                    except Exception:
+                        pass
+
+    items.sort(key=lambda x: x["modified"], reverse=True)
+
+    counts = {
+        "all": len(items),
+        "image": sum(1 for it in items if it["type"] == "image"),
+        "voice": sum(1 for it in items if it["type"] == "voice"),
+        "pdf": sum(1 for it in items if it["type"] == "pdf"),
+        "data": sum(1 for it in items if it["type"] == "data"),
+    }
+
+    if category != "all":
+        items = [it for it in items if it["type"] == category]
+
+    return {"items": items, "counts": counts, "count": len(items)}
+
+
+@router.post("/api/library/delete")
+async def delete_library_items(payload: DeleteLibraryPayload):
+    """Deletes selected or all items across categories."""
+    deleted_count = 0
+    errors = []
+    base_dir = Path(__file__).resolve().parent.parent.parent.parent
+    data_dir = (base_dir / "data").resolve()
+
+    if payload.delete_all:
+        cat = payload.category or "all"
+        res = await list_library_items(category=cat)
+        for it in res.get("items", []):
+            try:
+                p = Path(it["path"]).resolve()
+                if p.exists() and p.is_file() and str(p).startswith(str(data_dir)):
+                    os.remove(p)
+                    deleted_count += 1
+            except Exception as e:
+                errors.append(f"{it.get('name')}: {str(e)}")
+    else:
+        for it in payload.items:
+            path_str = it.get("path") if isinstance(it, dict) else str(it)
+            try:
+                p = Path(path_str).resolve()
+                if p.exists() and p.is_file() and str(p).startswith(str(data_dir)):
+                    os.remove(p)
+                    deleted_count += 1
+            except Exception as e:
+                errors.append(f"{path_str}: {str(e)}")
+
+    return {"success": True, "deleted_count": deleted_count, "errors": errors}
+
+
 @router.get("/api/images")
 async def list_images():
     """Scan workspace and data directories for all generated image files."""

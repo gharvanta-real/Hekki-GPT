@@ -541,6 +541,17 @@ class GeminiClient:
             "temperature": current_temp,
             "max_output_tokens": MAX_OUTPUT_TOKENS,
         }
+        if hasattr(types, "ThinkingConfig"):
+            try:
+                if reasoning_mode == "fast":
+                    config_kwargs["thinking_config"] = types.ThinkingConfig(thinking_budget=1024)
+                elif reasoning_mode == "pro":
+                    config_kwargs["thinking_config"] = types.ThinkingConfig(thinking_budget=8192)
+                elif reasoning_mode == "thinking":
+                    config_kwargs["thinking_config"] = types.ThinkingConfig(thinking_budget=32768)
+            except Exception as _tc_err:
+                log.debug("gemini.thinking_config_note", error=str(_tc_err))
+
         if tools:
             config_kwargs["tools"] = tools
             config_kwargs["tool_config"] = types.ToolConfig(

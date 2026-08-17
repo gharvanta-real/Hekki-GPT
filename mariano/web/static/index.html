@@ -35,7 +35,7 @@
   <meta name="theme-color" content="#FCFCFC">
   <link rel="manifest" href="/manifest.json">
   <link rel="icon" type="image/png" href="/static/hekki.png">
-  <link class="cache-bust" rel="stylesheet" href="/static/theme.css?v=420">
+  <link class="cache-bust" rel="stylesheet" href="/static/theme.css?v=431">
 
 
 
@@ -289,9 +289,9 @@
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;margin-right:8px;display:inline-block;vertical-align:middle;flex-shrink:0;"><circle cx="4" cy="22" r="2"/><path d="m13.5,30c-3.0586,0-5.9485-1.4867-7.7305-3.9771l1.6265-1.1638c1.4075,1.9667,3.6892,3.1409,6.104,3.1409,3.969,0,7.2578-3.1002,7.4873-7.0579l1.9966.1157c-.2908,5.0143-4.4565,8.9421-9.4839,8.9421Z"/><circle cx="28" cy="23" r="2"/><path d="m30.6411,19.0948l-1.9243-.5449c.188-.6638.2832-1.3535.2832-2.0499,0-4.1355-3.3645-7.5-7.5-7.5-1.0769,0-2.1157.223-3.0876.6628l-.8247-1.822c1.2329-.558,2.5491-.8408,3.9124-.8408,5.2383,0,9.5,4.2617,9.5,9.5,0,.8807-.1208,1.7537-.3589,2.5948Z"/><path d="m20.4141,14.5859l-3-3c-.3774-.3779-.8799-.5859-1.4141-.5859s-1.0366.208-1.4143.5859l-2.9998,3c-.3899.3896-.5859.9019-.5859,1.4141s.196,1.0244.5859,1.4141l2.9998,3c.3777.3779.8801.5859,1.4143.5859s1.0366-.208,1.4141-.5859l3-3c.3899-.3896.5859-.9019.5859-1.4141s-.196-1.0244-.5859-1.4141Zm-4.4141,4.4141l-3-3,3-3,2.9998,3-2.9998,3Z"/><circle cx="16" cy="3" r="2"/><path d="m8.0254,19.8821c-3.0999-1.6578-5.0254-4.8696-5.0254-8.3821C3,6.4729,6.9277,2.307,11.9421,2.0161l.1157,1.9966c-3.9578.2297-7.0579,3.5186-7.0579,7.4873,0,2.7732,1.5208,5.3092,3.9688,6.6184l-.9434,1.7637Z"/></svg>
               <span>Skills</span>
             </button>
-            <button class="sidebar-action-btn" id="btn-nav-images">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;margin-right:8px;display:inline-block;vertical-align:middle;flex-shrink:0;"><path d="M19,14a3,3,0,1,0-3-3A3,3,0,0,0,19,14Zm0-4a1,1,0,1,1-1,1A1,1,0,0,1,19,10Z"/><path d="M26,4H6A2,2,0,0,0,4,6V26a2,2,0,0,0,2,2H26a2,2,0,0,0,2-2V6A2,2,0,0,0,26,4Zm0,22H6V20l5-5,5.59,5.59a2,2,0,0,0,2.82,0L21,19l5,5Zm0-4.83-3.59-3.59a2,2,0,0,0-2.82,0L18,19.17l-5.59-5.59a2,2,0,0,0-2.82,0L6,17.17V6H26Z"/></svg>
-              <span>Images</span>
+            <button class="sidebar-action-btn" id="btn-nav-images" title="Universal Library">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;margin-right:8px;display:inline-block;vertical-align:middle;flex-shrink:0;"><path d="M26 4H6a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h20a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 22H6V6h20v20z"/><path d="M8 10h16v2H8zm0 5h16v2H8zm0 5h10v2H8z"/></svg>
+              <span>Library</span>
             </button>
             <button class="sidebar-action-btn" id="btn-nav-workflows">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;margin-right:8px;display:inline-block;vertical-align:middle;flex-shrink:0;"><path d="M12,4H6A2,2,0,0,0,4,6V12a2,2,0,0,0,2,2h6a2,2,0,0,0,2-2V6A2,2,0,0,0,12,4ZM12,12H6V6h6Z"/><path d="M26,4H20a2,2,0,0,0-2,2V12a2,2,0,0,0,2,2h6a2,2,0,0,0,2-2V6A2,2,0,0,0,26,4Zm0,8H20V6h6Z"/><path d="M26,18H20a2,2,0,0,0-2,2v6a2,2,0,0,0,2,2h6a2,2,0,0,0,2-2V20A2,2,0,0,0,26,18Zm0,8H20V20h6Z"/><path d="M14,24a2,2,0,1,0-2,2A2,2,0,0,0,14,24Z"/></svg>
@@ -390,6 +390,59 @@
     </div>
 
 
+
+    <!-- Persistent Sidebar Audio Mini Player Card (Spotify-Style Now Playing Card) -->
+    <div class="sidebar-audio-card hidden" id="sidebar-audio-card">
+      <div class="sidebar-audio-header">
+        <div class="sidebar-audio-badge">
+          <span class="lib-eq-dot"></span>
+          <span>NOW PLAYING</span>
+        </div>
+        <button class="sidebar-audio-close-btn" id="sidebar-audio-close" title="Close player">
+          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="sidebar-audio-cover" id="sidebar-audio-thumb">
+        <div class="sidebar-audio-cover-art" id="sidebar-audio-cover-inner">
+          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 32 32" fill="currentColor"><path d="M26 4H6a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h20a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 22H6V6h20v20z"/><circle cx="16" cy="16" r="4"/></svg>
+        </div>
+        <div class="sidebar-audio-eq-overlay">
+          <div class="lib-equalizer">
+            <span class="lib-eq-bar"></span>
+            <span class="lib-eq-bar"></span>
+            <span class="lib-eq-bar"></span>
+            <span class="lib-eq-bar"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-audio-details">
+        <span class="sidebar-audio-title" id="sidebar-audio-title">Voice Overview</span>
+        <span class="sidebar-audio-subtitle" id="sidebar-audio-subtitle">Hekki Audio Overview</span>
+      </div>
+
+      <div class="sidebar-audio-scrubber-box">
+        <input type="range" class="spotify-scrubber" id="sidebar-audio-scrubber" min="0" max="100" value="0" />
+        <div class="sidebar-audio-time-row">
+          <span id="sidebar-audio-cur-time">0:00</span>
+          <span id="sidebar-audio-dur-time">0:00</span>
+        </div>
+      </div>
+
+      <div class="sidebar-audio-controls-row">
+        <button class="sidebar-ctrl-btn" id="sidebar-audio-speed" title="Playback speed">1x</button>
+        <button class="sidebar-ctrl-btn" id="sidebar-audio-rewind" title="Rewind 10s">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+        </button>
+        <button class="sidebar-ctrl-play" id="sidebar-audio-toggle" title="Play/Pause">
+          <svg id="sidebar-audio-toggle-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        </button>
+        <button class="sidebar-ctrl-btn" id="sidebar-audio-forward" title="Forward 10s">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+        </button>
+      </div>
+    </div>
 
     <!-- Global User Profile (Anchored to bottom of sidebar) -->
     <div style="position: relative; margin-top: auto; border-top: none;">
@@ -714,10 +767,10 @@
                     <span class="row-desc">Primary AI model used for generating chat responses.</span>
                   </div>
                   <select class="settings-select" id="settings-hekki-model">
-                    <option value="gemini-3.1-flash-lite">Gemini 3.1 Flash Lite (Fast)</option>
-                    <option value="gemini-3.1-flash">Gemini 3.1 Flash (Pro)</option>
-                    <option value="gemini-3.1-pro">Gemini 3.1 Pro (Deep)</option>
-                    <option value="openrouter_nemotron">Nemotron 3 Ultra (OpenRouter)</option>
+                    <option value="gemini-3.5-flash">Gemini 3.5 Flash</option>
+                    <option value="gemini-3.5-flash-lite" selected>Gemini 3.5 Flash Lite</option>
+                    <option value="gemini-3.6-flash">Gemini 3.6 Flash</option>
+                    <option value="gemini-3.7-flash">Gemini 3.7 Flash</option>
                   </select>
                 </div>
               </div>
@@ -979,8 +1032,8 @@
 
                 <div class="settings-row">
                   <div class="row-info">
-                    <span class="row-label">Images Gallery</span>
-                    <span class="row-desc">Show Image Generator and Gallery link.</span>
+                    <span class="row-label">Universal Library</span>
+                    <span class="row-desc">Show Library link (Images, Voice, PDFs, Data).</span>
                   </div>
                   <label class="toggle-switch">
                     <input type="checkbox" id="toggle-nav-images" checked>
@@ -1541,11 +1594,29 @@
       </div>
     </div>
 
+  <!-- Global Persistent Interactive Audio Player Bar (Plays Across All Pages) -->
+  <div class="global-audio-bar hidden" id="global-audio-player-bar">
+    <div class="lib-equalizer">
+      <span class="lib-eq-bar"></span>
+      <span class="lib-eq-bar"></span>
+      <span class="lib-eq-bar"></span>
+      <span class="lib-eq-bar"></span>
+    </div>
+    <button id="global-player-toggle" title="Play/Pause" style="width:32px; height:32px; min-width:32px; border-radius:50%; background:var(--input-bg); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--text-primary); transition:background 0.15s ease;">
+      <svg id="global-player-toggle-icon" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+    </button>
+    <div style="display:flex; flex-direction:column; min-width:120px; max-width:240px; overflow:hidden;">
+      <span id="global-player-title" style="font-size:12.5px; font-weight:500; color:var(--text-primary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-family:var(--font);">Voice Overview</span>
+      <span id="global-player-time" style="font-size:11px; color:var(--text-3); font-family:var(--font-mono);">0:00 / 0:00</span>
+    </div>
+    <input type="range" class="global-audio-scrubber" id="global-player-scrubber" min="0" max="100" value="0" />
+    <button id="global-player-speed" title="Playback speed" style="padding:3px 8px; border-radius:12px; background:var(--input-bg); border:none; font-size:11px; color:var(--text-2); cursor:pointer; font-family:var(--font-mono); font-weight:500;">1x</button>
+    <button id="global-player-close" title="Stop & Close" style="background:transparent; border:none; color:var(--text-3); cursor:pointer; padding:4px; display:flex; align-items:center; justify-content:center;">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
   </div>
-</div>
 
-
-  <script src="/static/main.js?v=480" type="module"></script>
+  <script src="/static/main.js?v=493" type="module"></script>
 
 
 

@@ -47,6 +47,24 @@ class GeminiRateLimiter:
             current_time = time.time()
             nc = NotificationCenter.get_instance()
 
+            # 0. Dynamically resolve limits for active model
+            from mariano.config import get_settings
+            from mariano.config.api_limits import (
+                FLASH_MAX_RPM, FLASH_MAX_TPM, FLASH_MAX_RPD, FLASH_MIN_INTERVAL,
+                FLASH_LITE_MAX_RPM, FLASH_LITE_MAX_TPM, FLASH_LITE_MAX_RPD, FLASH_LITE_MIN_INTERVAL
+            )
+            active_m = get_settings().active_model or ""
+            if "lite" in active_m.lower():
+                self.max_rpm = FLASH_LITE_MAX_RPM
+                self.max_tpm = FLASH_LITE_MAX_TPM
+                self.max_rpd = FLASH_LITE_MAX_RPD
+                self.min_interval = FLASH_LITE_MIN_INTERVAL
+            else:
+                self.max_rpm = FLASH_MAX_RPM
+                self.max_tpm = FLASH_MAX_TPM
+                self.max_rpd = FLASH_MAX_RPD
+                self.min_interval = FLASH_MIN_INTERVAL
+
             # 1. Housekeeping: Remove old timestamps
             while self._timestamps and self._timestamps[0] < current_time - 60.0:
                 self._timestamps.popleft()

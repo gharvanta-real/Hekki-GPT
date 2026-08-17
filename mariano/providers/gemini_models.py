@@ -62,43 +62,76 @@ class GeminiModelDef:
 # ════════════════════════════════════════════════════════════════════════════
 GEMINI_MODELS: dict[str, GeminiModelDef] = {
 
-    # ── Fast Mode → Gemini 3.1 Flash-Lite ──
+    "gemini-3.5-flash": GeminiModelDef(
+        model_id  = "gemini-3.5-flash",
+        display   = "Gemini 3.5 Flash",
+        rpm_limit = 5,
+        rpd_limit = 20,
+        tpm_limit = 250_000,
+        paid_tier = False,
+    ),
+
+    "gemini-3.5-flash-lite": GeminiModelDef(
+        model_id  = "gemini-3.5-flash-lite",
+        display   = "Gemini 3.5 Flash Lite",
+        rpm_limit = 15,
+        rpd_limit = 500,
+        tpm_limit = 250_000,
+        paid_tier = False,
+    ),
+
+    "gemini-3.6-flash": GeminiModelDef(
+        model_id  = "gemini-3.6-flash",
+        display   = "Gemini 3.6 Flash",
+        rpm_limit = 5,
+        rpd_limit = 20,
+        tpm_limit = 250_000,
+        paid_tier = False,
+    ),
+
+    "gemini-3.7-flash": GeminiModelDef(
+        model_id  = "gemini-3.7-flash",
+        display   = "Gemini 3.7 Flash",
+        rpm_limit = 5,
+        rpd_limit = 20,
+        tpm_limit = 250_000,
+        paid_tier = False,
+    ),
+
+    # Legacy reasoning mode aliases mapped to the 4 models
     "fast": GeminiModelDef(
-        model_id  = "gemini-3.1-flash-lite",
-        display   = "Gemini 3.1 Flash Lite",
-        rpm_limit = 13,
-        rpd_limit = 1500,
-        tpm_limit = 1_000_000,
+        model_id  = "gemini-3.5-flash-lite",
+        display   = "Gemini 3.5 Flash Lite",
+        rpm_limit = 15,
+        rpd_limit = 500,
+        tpm_limit = 250_000,
         paid_tier = False,
     ),
 
-    # ── Pro Mode → Gemini 3.1 Flash Lite ───────────────────────────────────
     "pro": GeminiModelDef(
-        model_id  = "gemini-3.1-flash-lite",
-        display   = "Gemini 3.1 Flash Lite",
-        rpm_limit = 13,
-        rpd_limit = 1500,
-        tpm_limit = 1_000_000,
+        model_id  = "gemini-3.5-flash",
+        display   = "Gemini 3.5 Flash",
+        rpm_limit = 5,
+        rpd_limit = 20,
+        tpm_limit = 250_000,
         paid_tier = False,
     ),
 
-    # ── Deep Thinking Mode → Gemini 3.1 Flash Lite ─────────────────────────
     "thinking": GeminiModelDef(
-        model_id  = "gemini-3.1-flash-lite",
-        display   = "Gemini 3.1 Flash Lite",
-        rpm_limit = 13,
-        rpd_limit = 1500,
-        tpm_limit = 1_000_000,
+        model_id  = "gemini-3.7-flash",
+        display   = "Gemini 3.7 Flash",
+        rpm_limit = 5,
+        rpd_limit = 20,
+        tpm_limit = 250_000,
         paid_tier = False,
     ),
 
-    # ── Normal Mode → Gemini 3.1 Flash Lite ────────────────────────────────
     "normal": GeminiModelDef(
-        model_id  = "gemini-3.1-flash-lite",
-        display   = "Gemini 3.1 Flash Lite",
-        rpm_limit = 13,
-        rpd_limit = 1500,
-        tpm_limit = 1_000_000,
+        model_id  = "gemini-3.5-flash-lite",
+        display   = "Gemini 3.5 Flash Lite",
+        rpm_limit = 15,
+        rpd_limit = 500,
+        tpm_limit = 250_000,
         paid_tier = False,
     ),
 }

@@ -121,9 +121,12 @@ export function bindNavigation(tabs, showToast, inConversationStateRef) {
     router.navigateTo('plugins');
   });
 
-  //  Images Gallery 
+  //  Universal Library (Images, Voice, PDFs, Data)
   $('btn-nav-images')?.addEventListener('click', () => {
-    router.navigateTo('images');
+    router.navigateTo('library');
+  });
+  $('btn-nav-library')?.addEventListener('click', () => {
+    router.navigateTo('library');
   });
 
   //  Workflows Studio

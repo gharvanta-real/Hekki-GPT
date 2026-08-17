@@ -230,21 +230,12 @@ class Router {
         const toggleBtnSkills = document.getElementById('btn-sidebar-toggle-main');
         if (toggleBtnSkills) toggleBtnSkills.style.display = '';
         if (innerChat) innerChat.style.display = 'flex';
-        // Ensure coder subpanel is fully gone
-        if (innerCoder) {
-          innerCoder.style.display = 'none';
-          innerCoder.style.visibility = 'hidden';
-          innerCoder.style.pointerEvents = 'none';
-        }
-        if (window.updateTitleBreadcrumb) {
-          window.updateTitleBreadcrumb('Skills', '');
-        }
+        if (innerCoder) { innerCoder.style.display = 'none'; innerCoder.style.visibility = 'hidden'; }
+        if (window.updateTitleBreadcrumb) window.updateTitleBreadcrumb('Skills', '');
         break;
 
-
-
-
       case 'images':
+      case 'library':
         this._showPane('images-pane', 'flex');
         if (titlebarEl) titlebarEl.style.display = 'none';
         document.getElementById('sidebar-nav')?.classList.remove('collapsed');
@@ -257,17 +248,17 @@ class Router {
           innerCoder.style.pointerEvents = 'none';
         }
         if (window.updateTitleBreadcrumb) {
-          window.updateTitleBreadcrumb('Images', '');
+          window.updateTitleBreadcrumb('Library', '');
         }
-        if (!window.imagesPageInstance && !window._loadingImagesPage) {
-          window._loadingImagesPage = true;
-          import('/static/js/pages/images_page.js?v=207').then(({ ImagesPage }) => {
-            window.imagesPageInstance = new ImagesPage(window.showToast);
-            window.imagesPageInstance.mount(document.getElementById('images-pane'));
-          }).catch(err => console.error('Failed to load ImagesPage:', err))
-            .finally(() => window._loadingImagesPage = false);
-        } else if (window.imagesPageInstance) {
-          window.imagesPageInstance.refresh();
+        if (!window.libraryPageInstance && !window._loadingLibraryPage) {
+          window._loadingLibraryPage = true;
+          import('/static/js/pages/library_page.js?v=210').then(({ LibraryPage }) => {
+            window.libraryPageInstance = new LibraryPage(window.showToast);
+            window.libraryPageInstance.mount(document.getElementById('images-pane'));
+          }).catch(err => console.error('Failed to load LibraryPage:', err))
+            .finally(() => window._loadingLibraryPage = false);
+        } else if (window.libraryPageInstance) {
+          window.libraryPageInstance.refresh();
         }
         break;
 
@@ -278,17 +269,11 @@ class Router {
         const toggleBtnPlugins = document.getElementById('btn-sidebar-toggle-main');
         if (toggleBtnPlugins) toggleBtnPlugins.style.display = '';
         if (innerChat) innerChat.style.display = 'flex';
-        if (innerCoder) {
-          innerCoder.style.display = 'none';
-          innerCoder.style.visibility = 'hidden';
-          innerCoder.style.pointerEvents = 'none';
-        }
-        if (window.updateTitleBreadcrumb) {
-          window.updateTitleBreadcrumb('Plugins & Connectors', '');
-        }
+        if (innerCoder) { innerCoder.style.display = 'none'; innerCoder.style.visibility = 'hidden'; }
+        if (window.updateTitleBreadcrumb) window.updateTitleBreadcrumb('Plugins', '');
         if (!window.pluginsPageInstance && !window._loadingPluginsPage) {
           window._loadingPluginsPage = true;
-          import('/static/js/pages/plugins_page.js?v=205').then(({ PluginsPage }) => {
+          import('/static/js/pages/plugins_page.js?v=207').then(({ PluginsPage }) => {
             window.pluginsPageInstance = new PluginsPage(window.showToast);
             window.pluginsPageInstance.mount(document.getElementById('plugins-pane'));
           }).catch(err => console.error('Failed to load PluginsPage:', err))
@@ -305,14 +290,8 @@ class Router {
         const toggleBtnWf = document.getElementById('btn-sidebar-toggle-main');
         if (toggleBtnWf) toggleBtnWf.style.display = '';
         if (innerChat) innerChat.style.display = 'flex';
-        if (innerCoder) {
-          innerCoder.style.display = 'none';
-          innerCoder.style.visibility = 'hidden';
-          innerCoder.style.pointerEvents = 'none';
-        }
-        if (window.updateTitleBreadcrumb) {
-          window.updateTitleBreadcrumb('Workflows Studio', '');
-        }
+        if (innerCoder) { innerCoder.style.display = 'none'; innerCoder.style.visibility = 'hidden'; }
+        if (window.updateTitleBreadcrumb) window.updateTitleBreadcrumb('Workflows Studio', '');
         import('/static/js/pages/workflows_page.js?v=' + Date.now()).then(({ WorkflowsPage }) => {
           const pane = document.getElementById('workflows-pane');
           if (pane) {
@@ -329,11 +308,7 @@ class Router {
         const toggleBtnGr = document.getElementById('btn-sidebar-toggle-main');
         if (toggleBtnGr) toggleBtnGr.style.display = '';
         if (innerChat) innerChat.style.display = 'flex';
-        if (innerCoder) {
-          innerCoder.style.display = 'none';
-          innerCoder.style.visibility = 'hidden';
-          innerCoder.style.pointerEvents = 'none';
-        }
+        if (innerCoder) { innerCoder.style.display = 'none'; innerCoder.style.visibility = 'hidden'; }
         if (window.updateTitleBreadcrumb) {
           window.updateTitleBreadcrumb('Knowledge Graph', '');
         }

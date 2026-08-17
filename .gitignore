@@ -41,6 +41,8 @@ data/evolution_log.json
 # Scratch & Temporary data
 scratch/
 data/generated_images/
+data/audio_cache/
+data_sample*.txt
 
 # Logs and Binaries
 *.log

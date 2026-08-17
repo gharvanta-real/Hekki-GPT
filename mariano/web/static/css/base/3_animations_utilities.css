@@ -226,3 +226,52 @@ body.hekki-focus-mode #main {
 #sidebar-nav .sidebar-action-btn.nav-item-hidden {
   display: none !important;
 }
+
+/* GLOBAL PERSISTENT AUDIO PLAYER BAR (Plays across all routes) */
+.global-audio-bar {
+  position: fixed !important;
+  bottom: 22px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: min(720px, calc(100% - 48px)) !important;
+  background: var(--card) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 16px !important;
+  padding: 8px 16px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  z-index: 10005 !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15) !important;
+  box-sizing: border-box !important;
+  animation: global-audio-slide-up 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.global-audio-bar.hidden {
+  display: none !important;
+}
+
+@keyframes global-audio-slide-up {
+  from { opacity: 0; transform: translate(-50%, 18px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+.global-audio-scrubber {
+  flex: 1;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--input-bg);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+.global-audio-scrubber::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--text-primary);
+  cursor: pointer;
+}

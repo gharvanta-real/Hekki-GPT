@@ -6,7 +6,8 @@ import {
   enhanceCitationsAndFootnotes,
   enhanceLinks,
   autoLinkTextNodes,
-  enhanceStorytellingLayout
+  enhanceStorytellingLayout,
+  enhanceAudioPlayers
 } from './markdown_enhancers.js';
 
 export {
@@ -15,7 +16,8 @@ export {
   enhanceCitationsAndFootnotes,
   enhanceLinks,
   autoLinkTextNodes,
-  enhanceStorytellingLayout
+  enhanceStorytellingLayout,
+  enhanceAudioPlayers
 };
 
 // Configure marked parser options and custom link renderer
@@ -348,6 +350,7 @@ export function enhanceMarkdownContent(container) {
   try { enhanceCitationsAndFootnotes(container); } catch (e) { console.error(e); }
   try { moveTipsToBottom(container); } catch (e) { console.error(e); }
   try { enhanceTaskLists(container); } catch (e) { console.error(e); }
+  try { enhanceAudioPlayers(container); } catch (e) { console.error(e); }
   if (window.renderMathInElement) {
     try {
       renderMathInElement(container, {

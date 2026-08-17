@@ -1,0 +1,243 @@
+/* ==========================================================================
+   13_AUDIO_OVERVIEW.CSS — Flat Modern Audio Overview & Chapter Player Widget
+   Strict Rules: Zero box-shadows, zero card borders, pure background separation.
+   ========================================================================== */
+
+/* Outer container for PDF Chapter Breakdown */
+.pdf-audio-overview-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  margin: 8px 0;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.pdf-overview-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.pdf-meta-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--accent-tint);
+  color: var(--accent-primary);
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.pdf-overview-title {
+  font-size: var(--fs-base);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Chapter Chips Selector */
+.pdf-chapters-scroll {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: thin;
+}
+
+.chapter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--input-bg);
+  color: var(--text-2);
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-xs);
+  font-family: var(--font);
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease, color 0.15s ease;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.chapter-chip:hover {
+  background: var(--hover);
+  color: var(--text-primary);
+}
+
+.chapter-chip.active {
+  background: var(--accent-primary);
+  color: #FFFFFF;
+}
+
+/* Active Chapter Details & Script Card */
+.chapter-active-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--bg-surface);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.chapter-active-title {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.chapter-hindi-script {
+  font-size: var(--fs-sm);
+  line-height: 1.6;
+  color: var(--text-2);
+  max-height: 180px;
+  overflow-y: auto;
+  white-space: pre-line;
+  scrollbar-width: thin;
+}
+
+/* Flat Audio Player Bar */
+.audio-player-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--input-bg);
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.audio-play-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-pill);
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  border: none !important;
+  box-shadow: none !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: opacity 0.15s ease;
+}
+
+.audio-play-btn:hover {
+  opacity: 0.9;
+}
+
+.audio-track-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.audio-track-title {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.audio-progress-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.audio-scrubber {
+  flex: 1;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--hover);
+  border-radius: var(--radius-pill);
+  outline: none;
+  cursor: pointer;
+}
+
+.audio-scrubber::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent-primary);
+  cursor: pointer;
+}
+
+.audio-time-label {
+  font-size: 10px;
+  color: var(--text-3);
+  font-family: var(--font-mono);
+  min-width: 55px;
+}
+
+/* Speed / Fidelity Controls */
+.audio-controls-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-audio-rate {
+  background: var(--hover);
+  color: var(--text-2);
+  padding: 3px 7px;
+  border-radius: var(--radius-pill);
+  font-size: 10px;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  cursor: pointer;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.btn-audio-rate:hover {
+  color: var(--text-primary);
+}
+
+/* Standalone Research Voice Card */
+.research-voice-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  margin: 6px 0;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.research-voice-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-primary);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}

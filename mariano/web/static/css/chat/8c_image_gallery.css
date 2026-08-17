@@ -1,5 +1,6 @@
 /* ═══════════════════════════════════════════════════════════════
-   IMAGES GALLERY PAGE (Clean Flat Borderless & Modular)
+   UNIVERSAL MEDIA & ASSET LIBRARY PAGE (Flat Borderless Modular)
+   Card & Chip styling matches exact Skills & History pages aesthetics.
    ═══════════════════════════════════════════════════════════════ */
 
 #images-pane {
@@ -12,6 +13,7 @@
 }
 
 .img-gallery-wrap {
+  position: relative;
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -36,9 +38,10 @@
 
 /* ── Library Container & Header Actions ── */
 .library-container {
-  padding: 24px 36px 48px;
+  padding: 24px 28px 80px;
   width: 100%;
-  max-width: 1200px;
+  max-width: 880px;
+  margin: 0 auto;
   box-sizing: border-box;
 }
 
@@ -47,7 +50,7 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  margin-bottom: 24px;
+  margin-bottom: 18px;
   gap: 12px;
 }
 
@@ -71,46 +74,71 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 5px 14px;
-  border-radius: 16px;
-  font-size: 12px;
-  font-weight: 400;
-  font-family: var(--font);
-  background: var(--input-bg);
-  color: var(--text);
-  border: 1px solid var(--border);
+  padding: 4px 14px;
+  border-radius: 20px !important;
+  font-size: 12.5px;
+  font-weight: 400 !important;
+  font-family: var(--font, inherit) !important;
+  background: var(--input-bg) !important;
+  color: var(--text-2) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: none !important;
   cursor: pointer;
-  transition: background 0.15s ease, opacity 0.15s ease;
+  transition: all 0.15s ease;
 }
 
 .library-action-btn:hover {
-  background: var(--hover);
-}
-
-.library-action-btn.active {
-  background: var(--text);
-  color: var(--bg);
-}
-
-.library-action-btn.danger {
-  background: var(--input-bg);
-  color: var(--text);
-  border-color: var(--border);
-}
-
-.library-action-btn.danger:hover {
-  background: var(--hover);
+  background: var(--hover) !important;
+  color: var(--text) !important;
 }
 
 .library-action-btn svg {
-  width: 14px;
-  height: 14px;
-  stroke-width: 2.2px;
+  width: 13px;
+  height: 13px;
+  stroke-width: 2px;
 }
 
-/* ── Date Category Sections (Apple/Google Photos Style Timeline) ── */
+/* ── Category Filter Chips (Identical to History Page Chips) ── */
+.lib-category-tabs {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.lib-cat-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 14px;
+  border-radius: 20px !important;
+  font-size: 12.5px;
+  font-weight: 400 !important;
+  font-family: var(--font, inherit) !important;
+  background: var(--input-bg) !important;
+  color: var(--text-2) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: none !important;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.lib-cat-tab:hover {
+  background: var(--hover) !important;
+  color: var(--text) !important;
+}
+
+.lib-cat-tab.active {
+  background: var(--hover) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
+  font-weight: 400 !important;
+}
+
+/* ── Date Groups Timeline ── */
 .img-gallery-date-group {
-  margin-bottom: 28px;
+  margin-bottom: 24px;
 }
 
 .img-gallery-date-header {
@@ -118,7 +146,7 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
   padding-left: 2px;
 }
 
@@ -130,11 +158,10 @@
 
 .img-gallery-date-title {
   margin: 0;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 400;
   color: var(--text);
   font-family: var(--font);
-  letter-spacing: -0.01em;
 }
 
 .img-gallery-date-count {
@@ -144,337 +171,183 @@
   font-family: var(--font);
 }
 
-.img-category-checkbox {
-  position: relative;
-  width: 22px;
-  height: 22px;
-  min-width: 22px;
-  min-height: 22px;
-  border-radius: 50%;
-  border: 1.5px solid var(--border);
-  background: var(--input-bg);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  padding: 0;
-  user-select: none;
-  color: #ffffff;
-}
-
-.img-category-checkbox:hover {
-  border-color: var(--text-3);
-  background: var(--hover);
+/* ── Circular Select Checkbox with Distinct Outline ── */
+.img-category-checkbox,
+.img-card-checkbox {
+  width: 18px !important;
+  height: 18px !important;
+  min-width: 18px !important;
+  min-height: 18px !important;
+  border-radius: 50% !important;
+  border: 1.5px solid rgba(0, 0, 0, 0.25) !important;
+  background: transparent !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  flex-shrink: 0 !important;
+  color: #ffffff !important;
+  transition: all 0.15s ease !important;
 }
 
 body.dark .img-category-checkbox,
+body.dark .img-card-checkbox,
 body.oled .img-category-checkbox,
-:root[data-theme="dark"] .img-category-checkbox {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1.5px solid rgba(255, 255, 255, 0.28);
+body.oled .img-card-checkbox,
+:root[data-theme="dark"] .img-category-checkbox,
+:root[data-theme="dark"] .img-card-checkbox {
+  border: 1.5px solid rgba(255, 255, 255, 0.32) !important;
+  background: rgba(255, 255, 255, 0.04) !important;
 }
 
-body.dark .img-category-checkbox:hover,
-body.oled .img-category-checkbox:hover,
-:root[data-theme="dark"] .img-category-checkbox:hover {
-  border-color: rgba(255, 255, 255, 0.5);
-  background: rgba(255, 255, 255, 0.16);
+.img-category-checkbox:hover,
+.img-card-checkbox:hover {
+  border-color: var(--text-2) !important;
 }
 
-.img-category-checkbox svg {
-  width: 12px;
-  height: 12px;
-  opacity: 0;
-  stroke: currentColor !important;
-  fill: none !important;
-  stroke-width: 3.2px !important;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  transition: opacity 0.15s ease;
-}
-
-.img-category-checkbox.checked {
-  background: #18181b !important;
-  color: #ffffff !important;
-  border: none !important;
+.img-category-checkbox.checked,
+.img-card-checkbox.checked {
+  background: var(--text-primary) !important;
+  border-color: var(--text-primary) !important;
+  color: var(--bg-surface, #ffffff) !important;
 }
 
 body.dark .img-category-checkbox.checked,
-body.oled .img-category-checkbox.checked,
-:root[data-theme="dark"] .img-category-checkbox.checked {
+body.dark .img-card-checkbox.checked,
+:root[data-theme="dark"] .img-category-checkbox.checked,
+:root[data-theme="dark"] .img-card-checkbox.checked {
   background: #ffffff !important;
+  border-color: #ffffff !important;
   color: #000000 !important;
-  border: none !important;
 }
 
-.img-category-checkbox.checked svg {
+.img-category-checkbox svg,
+.img-card-checkbox svg {
+  width: 10px !important;
+  height: 10px !important;
+  opacity: 0;
+  stroke: currentColor;
+  stroke-width: 3px;
+}
+
+.img-category-checkbox.checked svg,
+.img-card-checkbox.checked svg {
   opacity: 1 !important;
 }
 
-/* ── Empty & Loading States ── */
-.img-gallery-loading,
-.img-gallery-empty {
-  width: 100%;
-  max-width: 100%;
-  padding: 44px 24px;
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
+/* ── Live Equalizer Animation inside Card ── */
+.lib-equalizer {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 16px;
+}
+.lib-eq-bar {
+  width: 2.5px;
+  background: var(--text-primary);
+  border-radius: 1px;
+  animation: lib-eq-bounce 0.55s ease-in-out infinite alternate;
+}
+.lib-eq-bar:nth-child(1) { height: 5px; animation-delay: 0.1s; }
+.lib-eq-bar:nth-child(2) { height: 13px; animation-delay: 0.25s; }
+.lib-eq-bar:nth-child(3) { height: 8px; animation-delay: 0.15s; }
+.lib-eq-bar:nth-child(4) { height: 15px; animation-delay: 0.35s; }
+
+@keyframes lib-eq-bounce {
+  0% { height: 3px; }
+  100% { height: 15px; }
 }
 
-.img-gallery-spinner {
-  width: 28px;
-  height: 28px;
-  border: 2px solid var(--border);
-  border-top-color: var(--text-primary);
-  border-radius: 50%;
-  animation: img-spin 0.8s linear infinite;
-  margin-bottom: 12px;
-}
-
-@keyframes img-spin {
-  to { transform: rotate(360deg); }
-}
-
-.img-gallery-empty-icon {
-  width: 48px;
-  height: 48px;
-  color: var(--text-3);
-  margin-bottom: 12px;
-}
-
-.img-gallery-empty-title {
-  font-size: 14px;
-  font-weight: 400;
-  color: var(--text-primary);
-  margin-bottom: 4px;
-  font-family: var(--font);
-}
-
-.img-gallery-empty-sub {
-  font-size: 12px;
-  color: var(--text-3);
-  font-family: var(--font);
-}
-
-/* ── Grid (Square Photo Tiles with Subtle 8px Gap) ── */
-.img-gallery-grid {
-  width: 100%;
-  max-width: 100%;
-  margin: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 8px;
-}
-
-/* ── Card (Rounded Photo Tile) ── */
-.img-gallery-card {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  background: #0d0d0d;
-  border: none;
-  border-radius: 8px !important;
-  overflow: hidden;
-  cursor: pointer;
-  user-select: none;
-  transition: transform 0.15s ease, opacity 0.15s ease;
-}
-
-.img-gallery-thumb-wrap {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  border-radius: 8px !important;
-  overflow: hidden;
-  border: none;
-  background: var(--card, rgba(255,255,255,0.03));
-  transition: opacity 0.15s, padding 0.15s, background 0.15s;
-}
-
-.img-gallery-card:hover .img-gallery-thumb-wrap {
-  opacity: 0.94;
-}
-
-.img-gallery-thumb {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  border-radius: 8px;
-}
-
-.img-gallery-card.selected .img-gallery-thumb {
-  border-radius: 6px;
-  transform: scale(0.95);
-  transition: transform 0.15s ease, border-radius 0.15s ease;
-}
-
-/* ── Top Bar Overlay on Photo ── */
-.img-gallery-top-overlay {
+/* ── Floating Audio Player Bar at Bottom of Library ── */
+.lib-audio-bar {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(720px, calc(100% - 40px));
+  background: var(--card);
+  border: 1px solid var(--border) !important;
+  border-radius: 16px;
+  padding: 10px 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 100;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12) !important;
+  box-sizing: border-box;
+  animation: lib-slide-up 0.2s ease-out;
+}
+
+@keyframes lib-slide-up {
+  from { opacity: 0; transform: translate(-50%, 15px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+.lib-audio-bar.hidden {
+  display: none !important;
+}
+
+.lib-audio-scrubber {
+  flex: 1;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--input-bg);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+.lib-audio-scrubber::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--text-primary);
+  cursor: pointer;
+}
+
+/* ── 2-Column Compact Grid ── */
+.img-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  width: 100%;
+}
+
+@media (max-width: 640px) {
+  .img-gallery-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Compact Refined Card ── */
+.img-gallery-card {
+  background: var(--card);
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.06)) !important;
+  outline: none !important;
+  border-radius: 13px !important;
+  padding: 8px 12px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 8px;
-  z-index: 10;
-  pointer-events: none;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0) 100%);
-  opacity: 0;
-  transition: opacity 0.15s ease;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+  box-shadow: none !important;
+  transition: background 0.15s ease;
+  box-sizing: border-box;
 }
 
-.img-gallery-card .img-card-actions {
-  display: none !important;
+.img-gallery-card:hover {
+  background: var(--hover) !important;
 }
 
-.img-gallery-card:hover:not(.select-mode) .img-gallery-top-overlay {
-  opacity: 1;
-}
-
-.img-gallery-card:hover:not(.select-mode) .img-card-actions {
-  display: flex !important;
-}
-
-.img-gallery-card:not(.select-mode):not(.selected) .img-card-checkbox {
-  display: none !important;
-}
-
-.img-gallery-card.select-mode .img-gallery-top-overlay,
-.img-gallery-card.selected .img-gallery-top-overlay {
-  opacity: 1 !important;
-}
-
-.img-gallery-card.select-mode .img-card-actions {
-  display: none !important;
-}
-
-.img-card-checkbox,
-.img-card-btn {
-  pointer-events: auto;
-}
-
-/* Circular Checkbox */
-.img-card-checkbox {
-  position: relative !important;
-  width: 26px !important;
-  height: 26px !important;
-  min-width: 26px !important;
-  min-height: 26px !important;
-  border-radius: 50% !important;
-  border: 1.5px solid rgba(255, 255, 255, 0.75) !important;
-  background: rgba(0, 0, 0, 0.45) !important;
-  backdrop-filter: blur(4px) !important;
-  -webkit-backdrop-filter: blur(4px) !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  color: #ffffff !important;
-  transition: background 0.15s ease, transform 0.15s ease !important;
-  cursor: pointer !important;
-  padding: 0 !important;
-  flex-shrink: 0 !important;
-}
-
-.img-card-checkbox svg {
-  width: 13px !important;
-  height: 13px !important;
-  opacity: 0;
-  stroke: currentColor !important;
-  fill: none !important;
-  stroke-width: 3.2px !important;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  transition: opacity 0.15s ease;
-}
-
-.img-card-checkbox.checked,
-.img-gallery-card.selected .img-card-checkbox {
-  background: #18181b !important;
-  border: 1.5px solid rgba(255, 255, 255, 0.9) !important;
-  color: #ffffff !important;
-}
-
-body.dark .img-card-checkbox.checked,
-body.oled .img-card-checkbox.checked,
-:root[data-theme="dark"] .img-card-checkbox.checked,
-body.dark .img-gallery-card.selected .img-card-checkbox,
-body.oled .img-gallery-card.selected .img-card-checkbox,
-:root[data-theme="dark"] .img-gallery-card.selected .img-card-checkbox {
-  background: #ffffff !important;
-  color: #000000 !important;
-  border: none !important;
-}
-
-.img-card-checkbox.checked svg,
-.img-gallery-card.selected .img-card-checkbox svg {
-  opacity: 1 !important;
-}
-
-/* Action Buttons (Download / Delete) */
-.img-card-actions {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-left: auto;
-}
-
-.img-card-btn {
-  width: 28px !important;
-  height: 28px !important;
-  min-width: 28px !important;
-  min-height: 28px !important;
-  border-radius: 50% !important;
-  background: rgba(255, 255, 255, 0.90) !important;
-  backdrop-filter: blur(4px) !important;
-  -webkit-backdrop-filter: blur(4px) !important;
-  border: 1px solid rgba(0, 0, 0, 0.08) !important;
-  color: #18181b !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  cursor: pointer !important;
-  padding: 0 !important;
-  flex-shrink: 0 !important;
-  transition: background 0.15s ease, color 0.15s ease !important;
-}
-
-body.dark .img-card-btn,
-body.oled .img-card-btn,
-:root[data-theme="dark"] .img-card-btn {
-  background: rgba(28, 28, 32, 0.90) !important;
-  color: #f4f4f5 !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+.img-gallery-card.selected {
+  background: var(--hover) !important;
 }
 
 .img-card-btn:hover {
-  background: #ffffff !important;
-  color: #000000 !important;
-}
-
-body.dark .img-card-btn:hover,
-body.oled .img-card-btn:hover,
-:root[data-theme="dark"] .img-card-btn:hover {
-  background: rgba(45, 45, 52, 0.98) !important;
-  color: #ffffff !important;
-}
-
-.img-card-btn.img-del-btn:hover {
   background: var(--hover) !important;
   color: var(--text-primary) !important;
-}
-
-.img-card-btn svg {
-  width: 14px !important;
-  height: 14px !important;
-  stroke-width: 2.3px !important;
 }

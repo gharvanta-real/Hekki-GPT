@@ -25,6 +25,7 @@ import mariano.skills.core_skills.web_search.skill
 import mariano.skills.core_skills.wikipedia_search.skill
 import mariano.skills.core_skills.physics_solver.skill
 import mariano.skills.core_skills.data_analyzer.skill
+import mariano.skills.core_skills.audio_summary.skill
 
 import multiprocessing
 import threading

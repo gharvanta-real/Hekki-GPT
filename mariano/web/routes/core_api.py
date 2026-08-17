@@ -152,3 +152,53 @@ async def screen_capture():
     except Exception as e:
         log.error("web.screen_capture_failed", error=str(e))
         return {"success": False, "analysis": f"Vision analysis failed: {str(e)[:300]}"}
+
+
+@router.get("/api/rate-limits/usage")
+async def get_rate_limits_usage():
+    """Returns real-time usage metrics and remaining quota percentages for active Gemini models."""
+    import time
+    from mariano.core.rate_limiter import GeminiRateLimiter
+    from mariano.config import get_settings
+    settings = get_settings()
+    limiter = GeminiRateLimiter.get_instance()
+    
+    current_time = time.time()
+    active_m = settings.active_model or "gemini-3.5-flash-lite"
+    
+    is_lite = "lite" in active_m.lower()
+    rpm_cap = 15 if is_lite else 5
+    rpd_cap = 500 if is_lite else 20
+    tpm_cap = 250000
+    
+    recent_reqs_60s = len([t for t in limiter._timestamps if t >= current_time - 60.0])
+    recent_tokens_60s = sum(tok for t, tok in limiter._token_timestamps if t >= current_time - 60.0)
+    day_reqs_24h = len([t for t in limiter._day_timestamps if t >= current_time - 86400.0])
+    
+    daily_rem_pct = max(0, min(100, int((rpd_cap - day_reqs_24h) / rpd_cap * 100)))
+    minute_rem_pct = max(0, min(100, int((rpm_cap - recent_reqs_60s) / rpm_cap * 100)))
+    
+    return {
+        "model": active_m,
+        "is_lite": is_lite,
+        "daily": {
+            "used": day_reqs_24h,
+            "limit": rpd_cap,
+            "remaining": max(0, rpd_cap - day_reqs_24h),
+            "remaining_pct": daily_rem_pct,
+            "desc": f"You have {max(0, rpd_cap - day_reqs_24h)} of {rpd_cap} daily requests remaining"
+        },
+        "minute": {
+            "used": recent_reqs_60s,
+            "limit": rpm_cap,
+            "remaining": max(0, rpm_cap - recent_reqs_60s),
+            "remaining_pct": minute_rem_pct,
+            "desc": f"Active sliding window: {max(0, rpm_cap - recent_reqs_60s)}/{rpm_cap} RPM remaining"
+        },
+        "tokens": {
+            "used": recent_tokens_60s,
+            "limit": tpm_cap,
+            "remaining": max(0, tpm_cap - recent_tokens_60s),
+            "remaining_pct": max(0, min(100, int((tpm_cap - recent_tokens_60s) / tpm_cap * 100)))
+        }
+    }

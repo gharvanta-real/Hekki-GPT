@@ -973,6 +973,55 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
           }
         }
 
+        if (toolName === 'audio_summary') {
+          const isSuccess = e.metadata?.success !== false;
+          if (isSuccess && e.data) {
+            let audioUrl = '';
+            let hindiScript = '';
+            let title = 'Voice Audio Summary';
+
+            if (e.metadata?.audio_url) {
+              audioUrl = e.metadata.audio_url;
+              hindiScript = e.metadata.script || '';
+              title = e.metadata.title || title;
+            } else {
+              const audioMatch = (typeof e.data === 'string') ? (e.data.match(/\[AUDIO_PLAYER:\s*([^\]|]+)(?:\|([^\]]+))?\]/i) || e.data.match(/(\/api\/audio-summary\/file\/[^\s\)\"\'\]]+)/i)) : null;
+              if (audioMatch) {
+                audioUrl = audioMatch[1].trim();
+                if (audioMatch[2]) title = audioMatch[2].trim();
+              }
+              const scriptMatch = (typeof e.data === 'string') ? e.data.match(/\*\*🔊 Spoken Hindi Voice Overview Script:\*\*\s*\n\n([\s\S]+?)(?=\n\n\*\(|$)/i) : null;
+              if (scriptMatch) {
+                hindiScript = scriptMatch[1].trim();
+              } else if (typeof e.data === 'string') {
+                hindiScript = e.data.replace(/\[AUDIO_PLAYER:[^\]]+\]/gi, '').replace(/\*\(.*?\)\*/gi, '').replace(/^#+.*$/gm, '').trim();
+              }
+            }
+
+            if (audioUrl && window.audioOverviewManager) {
+              const audioCard = document.createElement('div');
+              audioCard.className = 'research-voice-card';
+              audioCard.style.cssText = 'margin: 12px 0; width: 100%;';
+              audioCard.innerHTML = `
+                <div class="research-voice-header">
+                  <span class="pdf-meta-pill">Voice Audio Summary</span>
+                  <span>${title}</span>
+                </div>
+                ${hindiScript ? `<div class="chapter-hindi-script" style="max-height:140px; font-size:var(--fs-sm);">${hindiScript}</div>` : ''}
+                <div class="audio-player-mount-point" style="margin-top:8px;"></div>
+              `;
+
+              const targetMount = _currentContentDiv || (_lastToolBlock ? _lastToolBlock.parentNode : null);
+              if (targetMount) {
+                targetMount.appendChild(audioCard);
+                const mountPoint = audioCard.querySelector('.audio-player-mount-point');
+                window.audioOverviewManager.mountAudioPlayer(mountPoint, audioUrl, title);
+                scrollChat();
+              }
+            }
+          }
+        }
+
         // ── Track written files for canvas preview links ──
         if ((toolName === 'write_to_file' || toolName === 'replace_file_content' || toolName === 'multi_replace_file_content') && isSuccess && e.data) {
           // Extract file path from result output, e.g. "Successfully wrote ... to C:\path\file.md"

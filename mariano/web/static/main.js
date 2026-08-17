@@ -24,19 +24,22 @@ import { socket, setupSocketEvents, send } from '/static/js/components/socket_ma
 import { initDebatePage, handleDebateEvent } from '/static/js/debate/debate_page.js?v=136';
 // Coder IDE page
 import { initCoderPage, teardownCoderPage } from '/static/js/pages/coder_page.js';
-// Images Gallery page
-import { ImagesPage } from '/static/js/pages/images_page.js';
+// Universal Library page (Images, Voice, PDFs, Data)
+import { LibraryPage } from '/static/js/pages/library_page.js';
 // Interactive Live Canvas Engine (Claude Canvas style)
 import { LiveCanvasEngine } from '/static/js/components/live_canvas.js';
 import { SlashMenuManager } from '/static/js/components/slash_menu.js';
 import { ChatMinimapManager } from '/static/js/components/chat_minimap.js';
-// Autonomous Computer Vision Floating HUD Widget
-import '/static/js/chat/computer_vision_hud.js?v=216';
+// Audio Overview & Lossless Hindi Chapter Voice Engine
+import { audioOverviewManager } from '/static/js/chat/audio_overview.js';
+// Global Persistent Audio Player (Plays uninterrupted across all pages)
+import { globalAudioPlayer } from '/static/js/audio_player.js';
 
 window.updateModelPills = updateModelPills;
 window.showToast = showToast;
 window.handleDebateEvent = handleDebateEvent;
 window.ChatMinimapManager = ChatMinimapManager;
+window.audioOverviewManager = audioOverviewManager;
 
 /* === PWA Service Worker & Installability Engine === */
 if ('serviceWorker' in navigator) {
@@ -553,11 +556,20 @@ function boot() {
     if (pane) skillsPage.mount(pane);
   });
 
-  // Images Gallery
-  const imagesPage = new ImagesPage(showToast);
+  // Global Persistent Audio Player
+  globalAudioPlayer.init();
+  window.globalAudioPlayer = globalAudioPlayer;
+
+  // Universal Library (Images, Voice, PDFs, Data)
+  const libraryPage = new LibraryPage(showToast);
+  window.libraryPageInstance = libraryPage;
+  router.onNavigate('library', () => {
+    const pane = $('images-pane');
+    if (pane) libraryPage.mount(pane);
+  });
   router.onNavigate('images', () => {
     const pane = $('images-pane');
-    if (pane) imagesPage.mount(pane);
+    if (pane) libraryPage.mount(pane);
   });
 
   router.onNavigate('chat', () => {
