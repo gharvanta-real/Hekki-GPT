@@ -4,6 +4,7 @@ import {
   renderConfirmModalHtml,
   renderCategoryTabsHtml,
   renderEmptyStateHtml,
+  getDateCategory,
   SVG_ICONS
 } from './library_cards.js';
 
@@ -53,16 +54,25 @@ export class LibraryPage {
 
   async _load() {
     this._showLoading();
+    let data;
     try {
       const res = await fetch(`/api/library?category=${encodeURIComponent(this._currentCategory)}`);
-      if (!res.ok) throw new Error(`HTTP error ${res.status}`);
-      const data = await res.json();
+      if (!res.ok) throw new Error(`Server returned HTTP ${res.status}`);
+      data = await res.json();
+    } catch (err) {
+      console.error('Library fetch error:', err);
+      this._showError('Failed to load library items. Is the server running?');
+      return;
+    }
+
+    try {
       this._items = data.items || [];
       this._counts = data.counts || this._counts;
       this._applyFilter();
       this._renderGrid();
-    } catch {
-      this._showError('Failed to load library items. Is the server running?');
+    } catch (renderErr) {
+      console.error('Library render error:', renderErr);
+      this._showError(`Error displaying library: ${renderErr.message}`);
     }
   }
 
@@ -179,7 +189,7 @@ export class LibraryPage {
 
     const groups = new Map();
     this._filtered.forEach((it, idx) => {
-      const category = this._getDateCategory(it.modified_iso);
+      const category = getDateCategory(it.modified_iso);
       if (!groups.has(category)) groups.set(category, []);
       groups.get(category).push({ it, idx });
     });
@@ -328,22 +338,6 @@ export class LibraryPage {
     });
   }
 
-  _getDateCategory(iso) {
-    if (!iso) return 'Earlier';
-    try {
-      const d = new Date(iso);
-      const now = new Date();
-      const dDate = new Date(d.getFullYear(), d.getMonth(), d.getDate());
-      const nowDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-      const diffDays = Math.round((nowDate - dDate) / 86400000);
-      if (diffDays === 0) return 'Today';
-      if (diffDays === 1) return 'Yesterday';
-      if (diffDays > 1 && diffDays < 7) return d.toLocaleDateString(undefined, { weekday: 'long' });
-      if (d.getFullYear() === now.getFullYear()) return d.toLocaleDateString(undefined, { month: 'long', day: 'numeric' });
-      return d.toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' });
-    } catch { return 'Earlier'; }
-  }
-
   _toggleSelect(path) {
     if (this._selectedPaths.has(path)) this._selectedPaths.delete(path);
     else this._selectedPaths.add(path);
@@ -402,7 +396,15 @@ export class LibraryPage {
   _showError(msg) {
     if (!this._root) return;
     const body = this._root.querySelector('#lib-gallery-body');
-    if (body) body.innerHTML = `<div class="img-gallery-empty"><p class="img-gallery-empty-title" style="color:var(--red, #ef4444);">⚠ ${msg}</p></div>`;
+    if (body) {
+      body.innerHTML = `
+        <div class="img-gallery-empty">
+          <p class="img-gallery-empty-title" style="color:var(--red, #ef4444);">⚠ ${this._escHtml(msg)}</p>
+          <button id="lib-retry-load-btn" style="margin-top:12px; padding:6px 18px; border-radius:14px; background:var(--input-bg); border:1px solid var(--border); color:var(--text); cursor:pointer; font-size:12.5px;">Retry</button>
+        </div>
+      `;
+      body.querySelector('#lib-retry-load-btn')?.addEventListener('click', () => this._load());
+    }
   }
 
   _openLightbox(idx) {

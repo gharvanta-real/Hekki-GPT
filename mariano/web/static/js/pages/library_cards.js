@@ -168,3 +168,19 @@ export function renderEmptyStateHtml(categoryTabsHtml) {
     </div>
   `;
 }
+
+export function getDateCategory(iso) {
+  if (!iso) return 'Earlier';
+  try {
+    const d = new Date(iso);
+    const now = new Date();
+    const dDate = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    const nowDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const diffDays = Math.round((nowDate - dDate) / 86400000);
+    if (diffDays === 0) return 'Today';
+    if (diffDays === 1) return 'Yesterday';
+    if (diffDays > 1 && diffDays < 7) return d.toLocaleDateString(undefined, { weekday: 'long' });
+    if (d.getFullYear() === now.getFullYear()) return d.toLocaleDateString(undefined, { month: 'long', day: 'numeric' });
+    return d.toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' });
+  } catch { return 'Earlier'; }
+}
