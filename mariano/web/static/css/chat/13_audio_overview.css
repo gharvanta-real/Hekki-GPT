@@ -206,18 +206,6 @@
   background: var(--text-primary) !important;
 }
 
-.voice-waveform-thumb {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--text-primary);
-  position: absolute;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-  transition: left 0.1s linear;
-}
-
 .voice-pill-time {
   font-size: 12px;
   font-family: var(--font-mono);

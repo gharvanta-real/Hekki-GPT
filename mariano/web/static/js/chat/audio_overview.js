@@ -192,7 +192,6 @@ class AudioOverviewManager {
           <div class="voice-waveform-bars">
             ${barsHtml}
           </div>
-          <div class="voice-waveform-thumb" style="left: 0%;"></div>
         </div>
 
         <span class="voice-pill-time">0:00</span>
@@ -209,7 +208,6 @@ class AudioOverviewManager {
     const playBtn = playerWrapper.querySelector('.voice-pill-play-btn');
     const waveformWrap = playerWrapper.querySelector('.voice-waveform-wrap');
     const bars = playerWrapper.querySelectorAll('.vw-bar');
-    const thumb = playerWrapper.querySelector('.voice-waveform-thumb');
     const timeLabel = playerWrapper.querySelector('.voice-pill-time');
 
     const formatTime = (secs) => {
@@ -228,7 +226,6 @@ class AudioOverviewManager {
           b.classList.remove('active');
         }
       });
-      if (thumb) thumb.style.left = `${pct}%`;
     };
 
     // Preload metadata to display duration immediately if not playing
