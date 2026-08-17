@@ -214,17 +214,17 @@ body.oled .topnav-item:hover {
   position: absolute;
   top: calc(100% + 8px);
   right: 0;
-  width: 330px;
-  height: 82px;
+  width: 350px;
+  height: 86px;
   background: #E8EDF5;
   color: #0F1E36;
-  border-radius: 18px;
-  padding: 8px 14px;
+  border-radius: 20px;
+  padding: 10px 18px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   z-index: 10005;
-  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.2) !important;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.22) !important;
   animation: topnav-audio-pop 0.18s cubic-bezier(0.16, 1, 0.3, 1);
   box-sizing: border-box;
   overflow: hidden;
@@ -249,16 +249,16 @@ body.dark .topnav-audio-dropdown,
   z-index: 2;
   flex: 1;
   min-width: 0;
-  gap: 4px;
+  gap: 5px;
 }
 
 .sw-source-row {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 10.5px;
+  font-size: 11px;
   color: #4A5B78;
-  font-weight: 500;
+  font-weight: 450;
   letter-spacing: -0.01em;
 }
 
@@ -290,20 +290,20 @@ body.dark .sw-source-row,
 .sw-meta-row {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 18px;
 }
 
 .sw-text-block {
   display: flex;
   flex-direction: column;
-  min-width: 80px;
-  max-width: 110px;
+  min-width: 90px;
+  max-width: 145px;
   overflow: hidden;
 }
 
 .sw-title {
-  font-size: 13.5px;
-  font-weight: 700;
+  font-size: 14.5px;
+  font-weight: 500;
   color: #0E1E38;
   white-space: nowrap;
   overflow: hidden;
@@ -317,12 +317,14 @@ body.dark .sw-title,
 }
 
 .sw-artist {
-  font-size: 11px;
+  font-size: 12px;
+  font-weight: 400;
   color: #5A6E94;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   line-height: 1.2;
+  margin-top: 2px;
 }
 
 body.dark .sw-artist,
@@ -333,7 +335,7 @@ body.dark .sw-artist,
 .sw-controls {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
 }
 
 .sw-btn {

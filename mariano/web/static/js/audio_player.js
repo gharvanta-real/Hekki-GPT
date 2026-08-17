@@ -293,7 +293,7 @@ export class GlobalAudioPlayer {
   _cleanTitle(title) {
     if (!title) return 'Voice Overview';
     let clean = title.replace(/\.mp3$/i, '').replace(/\.wav$/i, '').replace(/_/g, ' ');
-    if (clean.length > 22) clean = clean.substring(0, 20) + '…';
+    if (clean.length > 28) clean = clean.substring(0, 26) + '…';
     return clean;
   }
 

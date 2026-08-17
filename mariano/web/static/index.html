@@ -35,7 +35,7 @@
   <meta name="theme-color" content="#FCFCFC">
   <link rel="manifest" href="/manifest.json">
   <link rel="icon" type="image/png" href="/static/hekki.png">
-  <link class="cache-bust" rel="stylesheet" href="/static/theme.css?v=434">
+  <link class="cache-bust" rel="stylesheet" href="/static/theme.css?v=435">
 
 
 
@@ -221,22 +221,22 @@
   <!-- RIGHT TOPNAV CONTROLS -->
   <div class="topnav-right" style="-webkit-app-region: no-drag; display: flex; align-items: center; gap: 8px;">
     <div class="topnav-audio-wrapper" id="topnav-audio-wrapper" style="position: relative;">
-      <button class="topnav-audio-btn hidden" id="topnav-audio-btn" title="Now Playing Audio Overview">
+      <button class="topnav-audio-btn hidden" id="topnav-audio-btn">
         <div class="lib-equalizer" style="height:12px;">
           <span class="lib-eq-bar"></span>
           <span class="lib-eq-bar"></span>
           <span class="lib-eq-bar"></span>
           <span class="lib-eq-bar"></span>
         </div>
-        <span id="topnav-audio-label" style="font-size:12px; font-weight:500; max-width:130px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Voice Overview</span>
+        <span id="topnav-audio-label" style="font-size:12px; font-weight:500; max-width:140px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Voice Overview</span>
       </button>
 
       <!-- Spotify-Style Now Playing Dropdown Card (Exact Matching Reference) -->
       <div class="topnav-audio-dropdown hidden" id="topnav-audio-dropdown">
         <div class="sw-content">
           <div class="sw-source-row">
-            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm4.586 14.424c-.18.295-.563.387-.857.207-2.35-1.435-5.308-1.76-8.793-.963-.335.077-.67-.133-.746-.468-.077-.334.132-.67.467-.746 3.808-.87 7.076-.496 9.722 1.115.294.18.386.562.207.855zm1.226-2.723c-.226.367-.708.482-1.075.257-2.69-1.653-6.79-2.132-9.97-1.167-.413.125-.85-.106-.975-.519-.125-.413.106-.85.519-.975 3.632-1.102 8.147-.568 11.244 1.329.367.226.482.708.257 1.075zm.105-2.835C14.692 8.95 9.375 8.775 6.297 9.71c-.494.15-1.018-.129-1.168-.623-.15-.494.129-1.018.623-1.168 3.532-1.072 9.404-.87 13.116 1.332.443.263.588.837.325 1.28-.262.443-.837.588-1.28.325z"/></svg>
-            <span class="sw-source-text">Spotify • Hekki</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 32 32" fill="currentColor"><path d="M26 4H6a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h20a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 22H6V6h20v20z"/><circle cx="16" cy="16" r="4"/></svg>
+            <span class="sw-source-text">Hekki • Audio Overview</span>
             <button class="sw-chevron-btn" id="sidebar-audio-close" title="Close player">
               <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
@@ -1615,7 +1615,7 @@
     </button>
   </div>
 
-  <script src="/static/main.js?v=496" type="module"></script>
+  <script src="/static/main.js?v=497" type="module"></script>
 
 
 
