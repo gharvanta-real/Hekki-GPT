@@ -165,3 +165,256 @@ body.oled .topnav-item:hover {
   margin: 4px 2px;
   opacity: 0.7;
 }
+
+/* TOPNAV AUDIO PLAYER BUTTON & SPOTIFY-STYLE FLYOUT */
+.topnav-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  -webkit-app-region: no-drag;
+  position: relative;
+  z-index: 10001;
+}
+
+.topnav-audio-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.topnav-audio-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 10px;
+  height: 28px;
+  border-radius: 16px;
+  background: var(--input-bg);
+  border: 1px solid var(--border) !important;
+  color: var(--text-primary);
+  font-family: var(--font);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: none !important;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.topnav-audio-btn.hidden {
+  display: none !important;
+}
+
+.topnav-audio-btn:hover {
+  background: var(--hover);
+}
+
+/* SPOTIFY / NEWJEANS AESTHETIC FLYOUT CARD */
+.topnav-audio-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 330px;
+  height: 82px;
+  background: #E8EDF5;
+  color: #0F1E36;
+  border-radius: 18px;
+  padding: 8px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 10005;
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.2) !important;
+  animation: topnav-audio-pop 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
+  overflow: hidden;
+  user-select: none;
+}
+
+body.dark .topnav-audio-dropdown,
+:root[data-theme="dark"] .topnav-audio-dropdown {
+  background: #181B22;
+  color: #E2E8F0;
+}
+
+.topnav-audio-dropdown.hidden {
+  display: none !important;
+}
+
+.sw-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  z-index: 2;
+  flex: 1;
+  min-width: 0;
+  gap: 4px;
+}
+
+.sw-source-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10.5px;
+  color: #4A5B78;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+body.dark .sw-source-row,
+:root[data-theme="dark"] .sw-source-row {
+  color: #94A3B8;
+}
+
+.sw-source-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sw-chevron-btn {
+  background: transparent;
+  border: none !important;
+  color: inherit;
+  cursor: pointer;
+  padding: 0 2px;
+  display: flex;
+  align-items: center;
+  opacity: 0.7;
+}
+.sw-chevron-btn:hover {
+  opacity: 1;
+}
+
+.sw-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.sw-text-block {
+  display: flex;
+  flex-direction: column;
+  min-width: 80px;
+  max-width: 110px;
+  overflow: hidden;
+}
+
+.sw-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #0E1E38;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.25;
+}
+
+body.dark .sw-title,
+:root[data-theme="dark"] .sw-title {
+  color: #FFFFFF;
+}
+
+.sw-artist {
+  font-size: 11px;
+  color: #5A6E94;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+}
+
+body.dark .sw-artist,
+:root[data-theme="dark"] .sw-artist {
+  color: #94A3B8;
+}
+
+.sw-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sw-btn {
+  background: transparent;
+  border: none !important;
+  color: #0E1E38;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: transform 0.1s ease;
+}
+
+body.dark .sw-btn,
+:root[data-theme="dark"] .sw-btn {
+  color: #FFFFFF;
+}
+
+.sw-btn:hover {
+  transform: scale(1.12);
+}
+
+.sw-btn-play {
+  background: transparent;
+  border: none !important;
+  color: #0E1E38;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: transform 0.1s ease;
+}
+
+body.dark .sw-btn-play,
+:root[data-theme="dark"] .sw-btn-play {
+  color: #FFFFFF;
+}
+
+.sw-btn-play:hover {
+  transform: scale(1.15);
+}
+
+/* Right faded artwork image */
+.sw-art-wrap {
+  position: absolute;
+  right: -5px;
+  top: 0;
+  bottom: 0;
+  width: 110px;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  overflow: hidden;
+}
+
+.sw-art-fade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, #E8EDF5 0%, rgba(232, 237, 245, 0.5) 35%, transparent 100%);
+  z-index: 2;
+}
+
+body.dark .sw-art-fade,
+:root[data-theme="dark"] .sw-art-fade {
+  background: linear-gradient(to right, #181B22 0%, rgba(24, 27, 34, 0.5) 35%, transparent 100%);
+}
+
+.sw-art-img {
+  height: 100%;
+  width: auto;
+  object-fit: cover;
+  opacity: 0.9;
+  filter: contrast(1.05);
+}
+
+@keyframes topnav-audio-pop {
+  from { opacity: 0; transform: translateY(-6px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}

@@ -2,7 +2,7 @@
  * audio_player.js — Spotify-Style Global Persistent Audio Engine (<500 lines)
  * Uninterrupted audio playback across all pages with dual synchronization:
  * 1. Global Viewport Floating Bar (#global-audio-player-bar)
- * 2. Left Sidebar Spotify-Style Now Playing Card (#sidebar-audio-card)
+ * 2. Top Nav Right Player Button & Spotify-Style Hover Flyout (#topnav-audio-wrapper)
  */
 
 export class GlobalAudioPlayer {
@@ -18,6 +18,12 @@ export class GlobalAudioPlayer {
     this._scrubberEl = null;
     this._toggleIconEl = null;
     this._speedBtnEl = null;
+
+    this._topnavWrapperEl = null;
+    this._topnavBtnEl = null;
+    this._topnavLabelEl = null;
+    this._topnavDropdownEl = null;
+    this._hoverTimer = null;
 
     this._sidebarCardEl = null;
     this._sidebarTitleEl = null;
@@ -41,7 +47,12 @@ export class GlobalAudioPlayer {
     this._toggleIconEl = document.getElementById('global-player-toggle-icon');
     this._speedBtnEl = document.getElementById('global-player-speed');
 
-    this._sidebarCardEl = document.getElementById('sidebar-audio-card');
+    this._topnavWrapperEl = document.getElementById('topnav-audio-wrapper');
+    this._topnavBtnEl = document.getElementById('topnav-audio-btn');
+    this._topnavLabelEl = document.getElementById('topnav-audio-label');
+    this._topnavDropdownEl = document.getElementById('topnav-audio-dropdown');
+
+    this._sidebarCardEl = document.getElementById('sidebar-audio-card') || this._topnavDropdownEl;
     this._sidebarTitleEl = document.getElementById('sidebar-audio-title');
     this._sidebarSubtitleEl = document.getElementById('sidebar-audio-subtitle');
     this._sidebarCurTimeEl = document.getElementById('sidebar-audio-cur-time');
@@ -60,6 +71,7 @@ export class GlobalAudioPlayer {
     });
     document.getElementById('sidebar-audio-close')?.addEventListener('click', (e) => {
       e.stopPropagation();
+      if (this._topnavDropdownEl) this._topnavDropdownEl.classList.add('hidden');
       this.stop();
     });
 
@@ -71,6 +83,39 @@ export class GlobalAudioPlayer {
     document.getElementById('sidebar-audio-forward')?.addEventListener('click', (e) => {
       e.stopPropagation();
       this.seekBy(10);
+    });
+
+    // Top Nav Hover & Click Flyout Handlers
+    if (this._topnavWrapperEl) {
+      this._topnavWrapperEl.addEventListener('mouseenter', () => {
+        if (this._hoverTimer) clearTimeout(this._hoverTimer);
+        if (this._currentUrl && this._topnavDropdownEl) {
+          this._topnavDropdownEl.classList.remove('hidden');
+        }
+      });
+
+      this._topnavWrapperEl.addEventListener('mouseleave', () => {
+        if (this._hoverTimer) clearTimeout(this._hoverTimer);
+        this._hoverTimer = setTimeout(() => {
+          if (this._topnavDropdownEl) this._topnavDropdownEl.classList.add('hidden');
+        }, 300);
+      });
+    }
+
+    if (this._topnavBtnEl) {
+      this._topnavBtnEl.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (this._topnavDropdownEl) {
+          this._topnavDropdownEl.classList.toggle('hidden');
+        }
+      });
+    }
+
+    // Close flyout on outside click
+    document.addEventListener('click', (e) => {
+      if (this._topnavWrapperEl && !this._topnavWrapperEl.contains(e.target)) {
+        if (this._topnavDropdownEl) this._topnavDropdownEl.classList.add('hidden');
+      }
     });
 
     const bindScrub = (el) => {
@@ -113,6 +158,8 @@ export class GlobalAudioPlayer {
       this._updateUI(false);
       this._notify('ended');
       if (this._barEl) this._barEl.classList.add('hidden');
+      if (this._topnavBtnEl) this._topnavBtnEl.classList.add('hidden');
+      if (this._topnavDropdownEl) this._topnavDropdownEl.classList.add('hidden');
       if (this._sidebarCardEl) this._sidebarCardEl.classList.add('hidden');
     });
 
@@ -164,7 +211,9 @@ export class GlobalAudioPlayer {
     if (this._timeEl) this._timeEl.textContent = '0:00 / 0:00';
     if (this._scrubberEl) this._scrubberEl.value = 0;
 
-    if (this._sidebarCardEl) this._sidebarCardEl.classList.remove('hidden');
+    if (this._topnavBtnEl) this._topnavBtnEl.classList.remove('hidden');
+    if (this._topnavLabelEl) this._topnavLabelEl.textContent = displayTitle;
+
     if (this._sidebarTitleEl) this._sidebarTitleEl.textContent = displayTitle;
     if (this._sidebarCurTimeEl) this._sidebarCurTimeEl.textContent = '0:00';
     if (this._sidebarDurTimeEl) this._sidebarDurTimeEl.textContent = '0:00';
@@ -205,6 +254,8 @@ export class GlobalAudioPlayer {
     this._currentUrl = null;
     this._currentTitle = '';
     if (this._barEl) this._barEl.classList.add('hidden');
+    if (this._topnavBtnEl) this._topnavBtnEl.classList.add('hidden');
+    if (this._topnavDropdownEl) this._topnavDropdownEl.classList.add('hidden');
     if (this._sidebarCardEl) this._sidebarCardEl.classList.add('hidden');
     this._notify('stop');
   }
@@ -242,13 +293,13 @@ export class GlobalAudioPlayer {
   _cleanTitle(title) {
     if (!title) return 'Voice Overview';
     let clean = title.replace(/\.mp3$/i, '').replace(/\.wav$/i, '').replace(/_/g, ' ');
-    if (clean.length > 28) clean = clean.substring(0, 26) + '…';
+    if (clean.length > 22) clean = clean.substring(0, 20) + '…';
     return clean;
   }
 
   _updateUI(isPlaying) {
-    const playSvg = `<polygon points="5 3 19 12 5 21 5 3"/>`;
-    const pauseSvg = `<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>`;
+    const playSvg = `<polygon points="6 4 18 12 6 20 6 4"/>`;
+    const pauseSvg = `<rect x="6" y="4" width="4" height="16" rx="1.5"/><rect x="14" y="4" width="4" height="16" rx="1.5"/>`;
 
     if (this._toggleIconEl) {
       this._toggleIconEl.innerHTML = isPlaying ? pauseSvg : playSvg;
@@ -260,11 +311,9 @@ export class GlobalAudioPlayer {
       const eqEl = this._barEl.querySelector('.lib-equalizer');
       if (eqEl) eqEl.style.opacity = isPlaying ? '1' : '0.4';
     }
-    if (this._sidebarCardEl) {
-      const eqEl = this._sidebarCardEl.querySelector('.lib-equalizer');
+    if (this._topnavBtnEl) {
+      const eqEl = this._topnavBtnEl.querySelector('.lib-equalizer');
       if (eqEl) eqEl.style.opacity = isPlaying ? '1' : '0.4';
-      const dotEl = this._sidebarCardEl.querySelector('.lib-eq-dot');
-      if (dotEl) dotEl.style.animationPlayState = isPlaying ? 'running' : 'paused';
     }
   }
 
