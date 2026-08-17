@@ -15,23 +15,22 @@
   --font-jetbrains-mono: "JetBrains Mono", monospace;
   --font-fira-code:      "Fira Code", monospace;
 
-  /* Typography Scale (Strict Rule #5: Headers max 19px mid-bold, Body 12-13px) */
-  --fs-2xs:  10px;
-  --fs-xs:   11px;
-  --fs-sm:   12px;
-  --fs-base: 13px;
-  --fs-md:   14px;
-  --fs-lg:   15px;
-  --fs-xl:   17px;
-  --fs-2xl:  19px;
-  --fs-3xl:  19px; /* Max header limit */
+  /* Modern Font Size Scale (+2-3px enhanced legibility) */
+  --fs-xs:   13.5px;
+  --fs-sm:   14.5px;
+  --fs-base: 16px;
+  --fs-md:   17px;
+  --fs-lg:   18px;
+  --fs-xl:   19.5px;
+  --fs-2xl:  21px;
+  --fs-3xl:  22px;
 
   /* Legacy Scale Token Compatibility */
-  --text-12: 12px;
-  --text-14: 13px;
-  --text-16: 14px;
-  --text-18: 15px;
-  --text-24: 19px;
+  --text-12: 13.5px;
+  --text-14: 15px;
+  --text-16: 17px;
+  --text-18: 18.5px;
+  --text-24: 21px;
   --tracking-neg-0-27: -0.2px;
 
   /* Font Weights */

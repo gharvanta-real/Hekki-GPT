@@ -280,7 +280,7 @@ export class PluginsPage {
         <div style="max-width:780px; margin:0 auto; width:100%;">
           <div style="display:flex; align-items:center; justify-content:space-between; margin-top:8px; margin-bottom:24px; width:100%;">
             <div>
-              <h1 style="font-size:18px; font-weight:400; color:var(--text); margin:0;">Plugins &amp; Connectors</h1>
+              <h1 style="font-size:19px; font-weight:600; color:var(--text-primary); margin:0;">Plugins &amp; Connectors</h1>
               <p style="font-size:13px; color:var(--text-3); margin-top:2px; font-weight:400;">Work with Hekki across your favorite tools, services, and databases.</p>
             </div>
             <div style="position:relative; width:220px;">
@@ -370,7 +370,7 @@ export class PluginsPage {
                 ${getCompanyLogoSvg(item.id, 28)}
               </div>
               <div>
-                <h1 style="font-size:18px; font-weight:400; color:var(--text); margin:0;">${esc(item.name)}</h1>
+                <h1 style="font-size:19px; font-weight:600; color:var(--text-primary); margin:0;">${esc(item.name)}</h1>
                 <p style="font-size:12.5px; color:var(--text-3); margin-top:2px; font-weight:400;">${esc(item.subtitle)}</p>
               </div>
             </div>

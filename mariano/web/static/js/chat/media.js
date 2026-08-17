@@ -239,26 +239,14 @@ export function groupPreviewCardsIntoGrid(container) {
 }
 
 
-/** Post-pass: Move Tip callouts to the VERY LAST/BOTTOM of the message bubble */
+/** Post-pass: Move Tip footers to the VERY LAST/BOTTOM of the message bubble */
 export function moveTipsToBottom(container) {
   if (!container) return;
 
-  const callouts = Array.from(container.querySelectorAll('.chat-callout, blockquote'));
-  callouts.forEach(card => {
-    const text = card.textContent.trim();
-    if (text.includes('Tip:') || card.classList.contains('callout-tip')) {
-      const msgEl = card.closest('.msg') || card.closest('.chat-col') || container;
-      msgEl.appendChild(card);
-    }
-  });
-
-  const ps = Array.from(container.querySelectorAll('p')).filter(p => !p.closest('.chat-callout'));
-  ps.forEach(p => {
-    const text = p.textContent.trim();
-    if (text.startsWith('💡 Tip:') || text.startsWith('Tip:')) {
-      const msgEl = p.closest('.msg') || p.closest('.chat-col') || container;
-      msgEl.appendChild(p);
-    }
+  const tipElements = Array.from(container.querySelectorAll('.chat-tip-footer, .chat-callout.callout-tip'));
+  tipElements.forEach(el => {
+    const msgEl = el.closest('.msg') || el.closest('.chat-col') || container;
+    if (msgEl) msgEl.appendChild(el);
   });
 }
 

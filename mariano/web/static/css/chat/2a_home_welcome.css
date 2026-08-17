@@ -49,7 +49,7 @@
   position: relative;
   width: 100%;
   background: var(--input-bg, #F4F4F6);
-  border: 1px solid var(--border, #E4E7EB) !important;
+  border: 1px solid var(--border-subtle, #CBD5E1) !important;
   outline: none !important;
   box-shadow: none !important;
   transition: border-color 0.18s ease, border-radius 0.22s cubic-bezier(0.4, 0, 0.2, 1), padding 0.22s cubic-bezier(0.4, 0, 0.2, 1), min-height 0.22s cubic-bezier(0.4, 0, 0.2, 1);
@@ -59,7 +59,7 @@ body.light #input-capsule,
 body.light #input-capsule-conv,
 :root[data-theme="light"] #input-capsule,
 :root[data-theme="light"] #input-capsule-conv {
-  border: 1px solid var(--border, #E2E8F0) !important;
+  border: 1px solid #CBD5E1 !important;
   outline: none !important;
   box-shadow: none !important;
 }
@@ -67,32 +67,26 @@ body.light #input-capsule-conv,
 body.dark #input-capsule,
 body.dark #input-capsule-conv,
 :root[data-theme="dark"] #input-capsule,
-:root[data-theme="dark"] #input-capsule-conv,
+:root[data-theme="dark"] #input-capsule-conv {
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
 body.oled #input-capsule,
-body.oled #input-capsule-conv {
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+body.oled #input-capsule-conv,
+:root[data-theme="oled"] #input-capsule,
+:root[data-theme="oled"] #input-capsule-conv {
+  border: 1px solid rgba(255, 255, 255, 0.22) !important;
   outline: none !important;
   box-shadow: none !important;
 }
 
-#input-capsule:hover,
-#input-capsule-conv:hover,
 #input-capsule:focus-within,
-#input-capsule-conv:focus-within {
-  border: 1px solid var(--border-hover, #CBD5E1) !important;
-  outline: none !important;
-  box-shadow: none !important;
-}
-
-body.dark #input-capsule:hover,
-body.dark #input-capsule-conv:hover,
-body.dark #input-capsule:focus-within,
-body.dark #input-capsule-conv:focus-within,
-body.oled #input-capsule:hover,
-body.oled #input-capsule-conv:hover,
-body.oled #input-capsule:focus-within,
-body.oled #input-capsule-conv:focus-within {
-  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+#input-capsule-conv:focus-within,
+#input-capsule:hover,
+#input-capsule-conv:hover {
+  border-color: var(--accent-primary, #2563eb) !important;
 }
 
 #input-capsule {
@@ -306,15 +300,23 @@ body.oled #input-capsule-conv:focus-within {
   background: var(--hover) !important;
   color: var(--text) !important;
 }
-.cap-icon-btn i, .cap-icon-btn svg, .cap-icon-btn .lucide {
-  width: 16px !important;
-  height: 16px !important;
+.cap-icon-btn i, .cap-icon-btn svg, .cap-icon-btn .lucide,
+.submit-btn i, .submit-btn svg, .submit-btn .lucide,
+#btn-voice i, #btn-voice svg, #btn-voice-home i, #btn-voice-home svg, #btn-voice-conv i, #btn-voice-conv svg,
+#btn-submit-home i, #btn-submit-home svg, #btn-submit-conv i, #btn-submit-conv svg {
+  width: 17.5px !important;
+  height: 17.5px !important;
   color: var(--text-2) !important;
+  stroke: currentColor !important;
   stroke-width: 2.2px !important;
-  transition: color 0.15s ease !important;
+  stroke-linecap: round !important;
+  stroke-linejoin: round !important;
+  transition: color 0.15s ease, stroke-width 0.15s ease !important;
 }
-.cap-icon-btn:hover i, .cap-icon-btn:hover svg, .cap-icon-btn:hover .lucide {
-  color: var(--text) !important;
+.cap-icon-btn:hover i, .cap-icon-btn:hover svg, .cap-icon-btn:hover .lucide,
+.submit-btn:hover i, .submit-btn:hover svg, .submit-btn:hover .lucide,
+#btn-submit-home:hover svg, #btn-submit-conv:hover svg {
+  color: var(--text-primary) !important;
 }
 .cap-icon-btn.active {
   color: #dc2626 !important;

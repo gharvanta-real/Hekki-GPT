@@ -118,11 +118,7 @@
   color: var(--text-primary) !important;
 }
 
-/* Bars, Toolbars & Input Capsules */
-.input-capsule,
-.chat-input-bar,
-.search-bar,
-.search-input-wrap,
+/* Bars, Toolbars & Waveforms */
 .toolbar-bar,
 .hud-bar,
 .drawer-bar,
@@ -380,4 +376,21 @@ pre:has(code) {
 .toggle-switch input:checked + .toggle-track::before {
   transform: translateX(18px);
   background-color: #FFFFFF !important;
+}
+
+/* === UNIVERSAL FULL-PAGE TITLE STYLES (Matching Settings Page Standard) === */
+.modal-nav-header,
+.skills-wrapper h1,
+.plugins-wrapper h1,
+.workflows-wrapper h1,
+.library-main-title,
+.page-main-header h1,
+.main-view-title {
+  font-family: var(--font) !important;
+  font-size: 19px !important;
+  font-weight: 600 !important;
+  color: var(--text-primary) !important;
+  letter-spacing: -0.01em !important;
+  margin: 0 !important;
+  line-height: 1.4 !important;
 }

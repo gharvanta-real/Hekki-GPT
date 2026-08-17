@@ -194,7 +194,7 @@ export class SkillsPage {
         <div style="max-width:780px; margin:0 auto; width:100%;">
           <div style="display:flex; align-items:center; justify-content:space-between; margin-top:8px; margin-bottom:24px; width:100%;">
             <div>
-              <h1 style="font-size:18px; font-weight:400; color:var(--text); margin:0;">Capabilities &amp; Skills</h1>
+              <h1 style="font-size:19px; font-weight:600; color:var(--text-primary); margin:0;">Capabilities &amp; Skills</h1>
               <p style="font-size:13px; color:var(--text-3); margin-top:2px; font-weight:400;">Manage autonomous tool capabilities powering Hekki.</p>
             </div>
             <div style="display:flex; align-items:center; gap:10px;">
@@ -294,7 +294,7 @@ export class SkillsPage {
                 ${getSkillRealLogoSvg(item.name, 28)}
               </div>
               <div>
-                <h1 style="font-size:18px; font-weight:400; color:var(--text); margin:0;">${esc(friendlyName)}</h1>
+                <h1 style="font-size:19px; font-weight:600; color:var(--text-primary); margin:0;">${esc(friendlyName)}</h1>
                 <p style="font-size:12.5px; color:var(--text-3); margin-top:2px; font-weight:400;">v${esc(item.version || '1.0.0')} &bull; ${esc(category)}</p>
               </div>
             </div>

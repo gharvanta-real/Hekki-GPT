@@ -82,17 +82,17 @@ body.oled .btn-new-chat-dock:hover {
 }
 #sidebar-nav:not(.collapsed) .sidebar-action-btn,
 #sidebar-nav:not(.collapsed) .btn-new-chat-dock {
-  height: 32px !important;
-  min-height: 32px !important;
-  max-height: 32px !important;
+  height: 34px !important;
+  min-height: 34px !important;
+  max-height: 34px !important;
   margin: 1px 0 !important;
-  border-radius: 6px !important;
-  padding: 0 8px !important;
+  border-radius: 8px !important;
+  padding: 0 10px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: flex-start !important;
   text-align: left !important;
-  gap: 8px !important;
+  gap: 10px !important;
   cursor: pointer;
   transition: background 0.12s ease, color 0.12s ease !important;
   position: relative;
@@ -102,16 +102,16 @@ body.oled .btn-new-chat-dock:hover {
 
 .section-item,
 .recent-item {
-  height: 32px !important;
-  min-height: 32px !important;
-  max-height: 32px !important;
+  height: 34px !important;
+  min-height: 34px !important;
+  max-height: 34px !important;
   margin: 1px 0 !important;
-  border-radius: 6px !important;
-  padding: 0 6px 0 8px !important;
+  border-radius: 8px !important;
+  padding: 0 8px 0 10px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
-  gap: 6px !important;
+  gap: 8px !important;
   cursor: pointer;
   transition: background 0.12s ease, color 0.12s ease !important;
   position: relative;
@@ -153,8 +153,8 @@ body.light .section-item.active,
 #sidebar-nav .sidebar-user-name,
 #recent-list .section-item .lbl,
 #playground-list .section-item .lbl {
-  font-size: var(--fs-base) !important;
-  font-weight: 400;
+  font-size: 14px !important;
+  font-weight: 500 !important;
   line-height: 22px;
   color: var(--text-2);
   white-space: nowrap;

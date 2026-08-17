@@ -1,5 +1,22 @@
 /* === chat/markdown.js — Markdown Enhancement Pipeline === */
 import { enhanceImagePreviews, moveTipsToBottom } from './media.js';
+import {
+  escapeHtmlLocal,
+  enhanceTaskLists,
+  enhanceCitationsAndFootnotes,
+  enhanceLinks,
+  autoLinkTextNodes,
+  enhanceStorytellingLayout
+} from './markdown_enhancers.js';
+
+export {
+  escapeHtmlLocal,
+  enhanceTaskLists,
+  enhanceCitationsAndFootnotes,
+  enhanceLinks,
+  autoLinkTextNodes,
+  enhanceStorytellingLayout
+};
 
 // Configure marked parser options and custom link renderer
 if (window.marked) {
@@ -41,12 +58,7 @@ if (window.marked) {
   }
 }
 
-// Local helper to avoid circular dep with input.js
-function escapeHtmlLocal(str) {
-  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-
-/** Wraps all pre blocks with copy & wrap-text icons */
+/** Wraps all pre blocks with copy, line-wrap, and live canvas action controls */
 export function enhanceCodeBlocks(container) {
   const preElements = container.querySelectorAll('pre');
   preElements.forEach((pre) => {
@@ -63,55 +75,45 @@ export function enhanceCodeBlocks(container) {
     }
 
     // Mermaid Flowchart Rendering
-    if (lang === 'mermaid') {
-      if (window.mermaid) {
-        const mDiv = document.createElement('div');
-        mDiv.className = 'mermaid';
-        mDiv.textContent = rawCodeText;
+    if (lang === 'mermaid' && window.mermaid) {
+      const mDiv = document.createElement('div');
+      mDiv.className = 'mermaid';
+      mDiv.textContent = rawCodeText;
 
-        const wrapper = document.createElement('div');
-        wrapper.className = 'mermaid-block-wrapper';
-        wrapper.style.cssText = 'margin:12px 0; background:var(--card); border:1px solid var(--border); border-radius:8px; padding:12px; display:flex; flex-direction:column; gap:8px; overflow-x:auto;';
+      const wrapper = document.createElement('div');
+      wrapper.className = 'mermaid-block-wrapper';
+      wrapper.style.cssText = 'margin:12px 0; background:var(--bg-card); border-radius:var(--radius-lg); padding:14px; display:flex; flex-direction:column; gap:8px; overflow-x:auto; border:none;';
 
-        const mHeader = document.createElement('div');
-        mHeader.style.cssText = 'display:flex; align-items:center; justify-content:space-between; width:100%; border-bottom:1px solid var(--border); padding-bottom:6px;';
-        mHeader.innerHTML = `
-          <span style="font-size:13px; font-weight:500; color:var(--text-3);">Mermaid Diagram</span>
-          <button class="code-action-btn btn-canvas" title="Open in Live Canvas" style="display:flex; align-items:center; gap:5px; font-size:13px; padding:4px 10px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text-2); cursor:pointer;">
-            <i data-lucide="layout" style="width:14px;height:14px"></i> Open in Canvas
-          </button>
-        `;
+      const mHeader = document.createElement('div');
+      mHeader.style.cssText = 'display:flex; align-items:center; justify-content:space-between; width:100%; border-bottom:1px solid var(--border-subtle); padding-bottom:6px;';
+      mHeader.innerHTML = `
+        <span style="font-size:12.5px; font-weight:600; color:var(--text-3);">Mermaid Diagram</span>
+        <button class="code-action-btn btn-canvas" title="Open in Live Canvas" style="display:flex; align-items:center; gap:5px; font-size:12px; padding:4px 10px; border-radius:6px; border:none; background:var(--input-bg); color:var(--text-2); cursor:pointer;">
+          <i data-lucide="layout" style="width:14px;height:14px"></i> Open in Canvas
+        </button>
+      `;
 
-        mHeader.querySelector('.btn-canvas').addEventListener('click', () => {
-          if (window.liveCanvas) {
-            window.liveCanvas.openArtifact({
-              type: 'diagram',
-              title: 'Architecture Diagram',
-              code: rawCodeText,
-              language: 'mermaid'
-            });
-          }
-        });
+      mHeader.querySelector('.btn-canvas').addEventListener('click', () => {
+        if (window.liveCanvas) {
+          window.liveCanvas.openArtifact({ type: 'diagram', title: 'Architecture Diagram', code: rawCodeText, language: 'mermaid' });
+        }
+      });
 
-        wrapper.appendChild(mHeader);
-        wrapper.appendChild(mDiv);
+      wrapper.appendChild(mHeader);
+      wrapper.appendChild(mDiv);
+      pre.parentNode.insertBefore(wrapper, pre);
+      pre.style.display = 'none';
 
-        pre.parentNode.insertBefore(wrapper, pre);
-        pre.style.display = 'none';
-
-        try {
-          window.mermaid.run({ nodes: [mDiv] }).catch(err => {
-            console.error('[Mermaid] async render failed', err);
-            pre.style.display = 'block';
-            if (wrapper.parentNode) wrapper.parentNode.removeChild(wrapper);
-          });
-        } catch (e) {
-          console.error('[Mermaid] render failed', e);
+      try {
+        window.mermaid.run({ nodes: [mDiv] }).catch(err => {
           pre.style.display = 'block';
           if (wrapper.parentNode) wrapper.parentNode.removeChild(wrapper);
-        }
-        return;
+        });
+      } catch (e) {
+        pre.style.display = 'block';
+        if (wrapper.parentNode) wrapper.parentNode.removeChild(wrapper);
       }
+      return;
     }
 
     const wrapper = document.createElement('div');
@@ -134,60 +136,12 @@ export function enhanceCodeBlocks(container) {
     canvasBtn.innerHTML = '<i data-lucide="layout" style="width:13px;height:13px"></i> Canvas';
     canvasBtn.addEventListener('click', () => {
       if (window.liveCanvas) {
-        const msgParent = pre.closest('.msg') || pre.closest('.msg-group');
-        let bundledHtml = '';
-        let bundledCss = '';
-        let bundledJs = '';
-
-        if (msgParent) {
-          const allPreBlocks = msgParent.querySelectorAll('pre');
-          allPreBlocks.forEach(p => {
-            const c = p.querySelector('code');
-            if (!c) return;
-            const codeText = c.innerText;
-            const classNames = c.className.split(' ');
-            let codeLang = 'code';
-            for (const cls of classNames) {
-              if (cls.startsWith('language-')) { codeLang = cls.replace('language-', ''); break; }
-            }
-
-            if (codeLang === 'html' || codeText.includes('<html') || codeText.includes('<!DOCTYPE')) {
-              bundledHtml += (bundledHtml ? '\n' : '') + codeText;
-            } else if (codeLang === 'css' || (codeText.includes('{') && codeText.includes('}'))) {
-              bundledCss += (bundledCss ? '\n' : '') + codeText;
-            } else if (codeLang === 'js' || codeLang === 'javascript') {
-              bundledJs += (bundledJs ? '\n' : '') + codeText;
-            }
-          });
-        }
-
-        const isWebApp = lang === 'html' || rawCodeText.includes('<html') || bundledHtml.length > 0 || (bundledCss && bundledJs);
-
-        if (isWebApp) {
-          const mainHtml = bundledHtml || (lang === 'html' ? rawCodeText : `<div id="app"></div>`);
-          window.liveCanvas.openArtifact({
-            type: 'web_app',
-            title: 'Interactive Web Application',
-            code: mainHtml,
-            html: mainHtml,
-            css: bundledCss || (lang === 'css' ? rawCodeText : ''),
-            js: bundledJs || (lang === 'js' || lang === 'javascript' ? rawCodeText : ''),
-            language: 'html'
-          });
-        } else {
-          const isDoc = ['text', 'txt', 'plaintext', 'markdown', 'md', 'pdf', 'doc', 'docx'].includes(lang) || 
-                        rawCodeText.includes('[Professional Summary]') || 
-                        rawCodeText.includes('[Skills]') || 
-                        rawCodeText.includes('[Experience]') || 
-                        rawCodeText.includes('Resume');
-
-          window.liveCanvas.openArtifact({
-            type: lang === 'mermaid' ? 'diagram' : (isDoc ? 'document' : 'code'),
-            title: isDoc ? 'Document Preview' : `${lang.toUpperCase()} Artifact`,
-            code: rawCodeText,
-            language: isDoc ? 'pdf' : lang
-          });
-        }
+        window.liveCanvas.openArtifact({
+          type: ['html', 'css', 'js', 'javascript'].includes(lang) ? 'web_app' : 'code',
+          title: `${capLang.toUpperCase()} Snippet`,
+          code: rawCodeText,
+          language: lang
+        });
       }
     });
 
@@ -199,56 +153,9 @@ export function enhanceCodeBlocks(container) {
     const copyBtn = document.createElement('button');
     copyBtn.className = 'code-action-btn btn-copy';
     copyBtn.title = 'Copy Code';
-    copyBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 32 32" fill="currentColor" style="width:14px;height:14px;display:block;"><path d="M27.4,14.7l-6.1-6.1C21,8.2,20.5,8,20,8h-8c-1.1,0-2,0.9-2,2v18c0,1.1,0.9,2,2,2h14c1.1,0,2-0.9,2-2V16.1C28,15.6,27.8,15.1,27.4,14.7z M20,10l5.9,6H20V10z M12,28V10h6v6c0,1.1,0.9,2,2,2h6l0,10H12z"/><path d="M6,18H4V4c0-1.1,0.9-2,2-2h14v2H6V18z"/></svg>';
+    copyBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 32 32" fill="currentColor"><path d="M27.4,14.7l-6.1-6.1C21,8.2,20.5,8,20,8h-8c-1.1,0-2,0.9-2,2v18c0,1.1,0.9,2,2,2h14c1.1,0,2-0.9,2-2V16.1C28,15.6,27.8,15.1,27.4,14.7z M20,10l5.9,6H20V10z M12,28V10h6v6c0,1.1,0.9,2,2,2h6l0,10H12z"/><path d="M6,18H4V4c0-1.1,0.9-2,2-2h14v2H6V18z"/></svg>';
 
     actions.appendChild(canvasBtn);
-
-    let iframeContainer = null;
-    let iframe = null;
-    if (lang === 'html' || lang === 'svg' || lang === 'xml') {
-      iframeContainer = document.createElement('div');
-      iframeContainer.className = 'inline-preview-container';
-      iframeContainer.style.cssText = 'display:none; width:100%; height:350px; background:#ffffff; border-top:1px solid var(--border); overflow:hidden; border-bottom-left-radius:12px; border-bottom-right-radius:12px;';
-
-      iframe = document.createElement('iframe');
-      iframe.style.cssText = 'width:100%; height:100%; border:none; background:#ffffff;';
-      iframe.sandbox = 'allow-scripts allow-modals';
-      iframeContainer.appendChild(iframe);
-
-      const previewBtn = document.createElement('button');
-      previewBtn.className = 'code-action-btn btn-preview';
-      previewBtn.title = 'Toggle Inline Preview';
-      previewBtn.innerHTML = '<i data-lucide="eye" style="width:14px;height:14px"></i>';
-      actions.appendChild(previewBtn);
-
-      let isPreviewing = false;
-      previewBtn.addEventListener('click', () => {
-        isPreviewing = !isPreviewing;
-        if (isPreviewing) {
-          pre.style.display = 'none';
-          iframeContainer.style.display = 'block';
-          iframe.srcdoc = rawCodeText;
-          previewBtn.classList.add('active');
-          previewBtn.style.color = '#3b82f6';
-          wrapBtn.style.display = 'none';
-          langSpan.innerText = `${capLang} Preview`;
-          langSpan.style.fontWeight = '400';
-          langSpan.style.fontSize = '11px';
-          langSpan.style.textTransform = 'none';
-        } else {
-          pre.style.display = 'block';
-          iframeContainer.style.display = 'none';
-          previewBtn.classList.remove('active');
-          previewBtn.style.color = '';
-          wrapBtn.style.display = 'inline-block';
-          langSpan.innerText = capLang;
-          langSpan.style.fontWeight = '';
-          langSpan.style.fontSize = '';
-          langSpan.style.textTransform = '';
-        }
-      });
-    }
-
     actions.appendChild(wrapBtn);
     actions.appendChild(copyBtn);
     header.appendChild(langSpan);
@@ -257,7 +164,6 @@ export function enhanceCodeBlocks(container) {
     pre.parentNode.insertBefore(wrapper, pre);
     wrapper.appendChild(header);
     wrapper.appendChild(pre);
-    if (iframeContainer) wrapper.appendChild(iframeContainer);
 
     wrapBtn.addEventListener('click', () => {
       pre.classList.toggle('wrap-lines');
@@ -267,9 +173,9 @@ export function enhanceCodeBlocks(container) {
     copyBtn.addEventListener('click', async () => {
       try {
         await navigator.clipboard.writeText(rawCodeText);
-        copyBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 32 32" fill="#16a34a" style="width:14px;height:14px;display:block;"><polygon points="13 24 4 15 5.414 13.586 13 21.171 26.586 7.586 28 9 13 24"/></svg>';
+        copyBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 32 32" fill="#16a34a"><polygon points="13 24 4 15 5.414 13.586 13 21.171 26.586 7.586 28 9 13 24"/></svg>';
         setTimeout(() => {
-          copyBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 32 32" fill="currentColor" style="width:14px;height:14px;display:block;"><path d="M27.4,14.7l-6.1-6.1C21,8.2,20.5,8,20,8h-8c-1.1,0-2,0.9-2,2v18c0,1.1,0.9,2,2,2h14c1.1,0,2-0.9,2-2V16.1C28,15.6,27.8,15.1,27.4,14.7z M20,10l5.9,6H20V10z M12,28V10h6v6c0,1.1,0.9,2,2,2h6l0,10H12z"/><path d="M6,18H4V4c0-1.1,0.9-2,2-2h14v2H6V18z"/></svg>';
+          copyBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 32 32" fill="currentColor"><path d="M27.4,14.7l-6.1-6.1C21,8.2,20.5,8,20,8h-8c-1.1,0-2,0.9-2,2v18c0,1.1,0.9,2,2,2h14c1.1,0,2-0.9,2-2V16.1C28,15.6,27.8,15.1,27.4,14.7z M20,10l5.9,6H20V10z M12,28V10h6v6c0,1.1,0.9,2,2,2h6l0,10H12z"/><path d="M6,18H4V4c0-1.1,0.9-2,2-2h14v2H6V18z"/></svg>';
         }, 3000);
       } catch (err) { console.error('Failed to copy code', err); }
     });
@@ -278,7 +184,7 @@ export function enhanceCodeBlocks(container) {
   });
 }
 
-/** Wraps all table elements in a clean container and adds a top-right floating copy button */
+/** Wraps all table elements in a clean container with copy as CSV functionality */
 export function enhanceTables(container) {
   const tables = container.querySelectorAll('table');
   tables.forEach((table) => {
@@ -290,7 +196,7 @@ export function enhanceTables(container) {
     const copyBtn = document.createElement('button');
     copyBtn.className = 'table-copy-btn';
     copyBtn.title = 'Copy Table as CSV';
-    copyBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="13.5" height="13.5" viewBox="0 0 32 32" fill="currentColor" style="width:13.5px;height:13.5px;display:block;"><path d="M27.4,14.7l-6.1-6.1C21,8.2,20.5,8,20,8h-8c-1.1,0-2,0.9-2,2v18c0,1.1,0.9,2,2,2h14c1.1,0,2-0.9,2-2V16.1C28,15.6,27.8,15.1,27.4,14.7z M20,10l5.9,6H20V10z M12,28V10h6v6c0,1.1,0.9,2,2,2h6l0,10H12z"/><path d="M6,18H4V4c0-1.1,0.9-2,2-2h14v2H6V18z"/></svg>';
+    copyBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="13.5" height="13.5" viewBox="0 0 32 32" fill="currentColor"><path d="M27.4,14.7l-6.1-6.1C21,8.2,20.5,8,20,8h-8c-1.1,0-2,0.9-2,2v18c0,1.1,0.9,2,2,2h14c1.1,0,2-0.9,2-2V16.1C28,15.6,27.8,15.1,27.4,14.7z M20,10l5.9,6H20V10z M12,28V10h6v6c0,1.1,0.9,2,2,2h6l0,10H12z"/><path d="M6,18H4V4c0-1.1,0.9-2,2-2h14v2H6V18z"/></svg>';
 
     const scrollContainer = document.createElement('div');
     scrollContainer.className = 'table-scroll-container';
@@ -299,8 +205,6 @@ export function enhanceTables(container) {
     wrapper.appendChild(copyBtn);
     wrapper.appendChild(scrollContainer);
     scrollContainer.appendChild(table);
-
-    if (window.lucide) lucide.createIcons({ parent: copyBtn });
 
     copyBtn.addEventListener('click', async () => {
       const rows = Array.from(table.querySelectorAll('tr'));
@@ -315,239 +219,119 @@ export function enhanceTables(container) {
 
       try {
         await navigator.clipboard.writeText(csvContent);
-        copyBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 32 32" fill="#16a34a" style="width:14px;height:14px;display:block;"><polygon points="13 24 4 15 5.414 13.586 13 21.171 26.586 7.586 28 9 13 24"/></svg>';
+        copyBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 32 32" fill="#16a34a"><polygon points="13 24 4 15 5.414 13.586 13 21.171 26.586 7.586 28 9 13 24"/></svg>';
         setTimeout(() => {
-          copyBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="13.5" height="13.5" viewBox="0 0 32 32" fill="currentColor" style="width:13.5px;height:13.5px;display:block;"><path d="M27.4,14.7l-6.1-6.1C21,8.2,20.5,8,20,8h-8c-1.1,0-2,0.9-2,2v18c0,1.1,0.9,2,2,2h14c1.1,0,2-0.9,2-2V16.1C28,15.6,27.8,15.1,27.4,14.7z M20,10l5.9,6H20V10z M12,28V10h6v6c0,1.1,0.9,2,2,2h6l0,10H12z"/><path d="M6,18H4V4c0-1.1,0.9-2,2-2h14v2H6V18z"/></svg>';
+          copyBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="13.5" height="13.5" viewBox="0 0 32 32" fill="currentColor"><path d="M27.4,14.7l-6.1-6.1C21,8.2,20.5,8,20,8h-8c-1.1,0-2,0.9-2,2v18c0,1.1,0.9,2,2,2h14c1.1,0,2-0.9,2-2V16.1C28,15.6,27.8,15.1,27.4,14.7z M20,10l5.9,6H20V10z M12,28V10h6v6c0,1.1,0.9,2,2,2h6l0,10H12z"/><path d="M6,18H4V4c0-1.1,0.9-2,2-2h14v2H6V18z"/></svg>';
         }, 3000);
       } catch (err) { console.error('Failed to copy table', err); }
     });
   });
 }
 
-/** Enhances all <a> tags and auto-links raw URLs with icons and Desktop handlers */
-export function autoLinkTextNodes(container) {
+/** 
+ * Enhances list items to remove ugly double bullets when emojis/symbols start a line (e.g. • ✅ -> ✅)
+ */
+export function enhanceLists(container) {
   if (!container) return;
-  const urlRegex = /(https?:\/\/[^\s<]+[^<.,:;"')\]\s]|www\.[^\s<]+[^<.,:;"')\]\s])/gi;
+  const listItems = container.querySelectorAll('li');
+  const emojiPrefixRegex = /^([\u{1F300}-\u{1F9FF}]|[\u{2600}-\u{27BF}]|[\u{1F600}-\u{1F64F}]|[\u{1F680}-\u{1F6FF}]|[\u{2300}-\u{23FF}]|[\u{2B50}]|✅|❌|✨|🔥|🚀|📦|🛠️|💡|📌|⚡|🔍|🎉|📋|⚠️)\s*/u;
 
-  function walk(node) {
-    if (!node) return;
-    const tag = node.nodeName ? node.nodeName.toLowerCase() : '';
-    if (['pre', 'code', 'a', 'script', 'style', 'textarea', 'input', 'iframe', 'svg'].includes(tag)) return;
-    if (node.classList && (node.classList.contains('thought-header') || node.classList.contains('code-block-wrapper') || node.classList.contains('mermaid'))) return;
+  listItems.forEach(li => {
+    if (li.classList.contains('chat-task-item')) return;
+    const directText = (li.childNodes[0]?.nodeValue || '').trim();
+    const firstSpan = li.querySelector(':scope > span, :scope > strong');
+    const combinedText = directText || (firstSpan ? firstSpan.innerText : '');
 
-    if (node.nodeType === 3) {
-      const text = node.nodeValue;
-      if (!text || !urlRegex.test(text)) return;
-      urlRegex.lastIndex = 0;
-
-      const fragment = document.createDocumentFragment();
-      let lastIdx = 0;
-      let match;
-
-      while ((match = urlRegex.exec(text)) !== null) {
-        const urlText = match[0];
-        const matchIdx = match.index;
-        if (matchIdx > lastIdx) fragment.appendChild(document.createTextNode(text.substring(lastIdx, matchIdx)));
-
-        const fullHref = urlText.toLowerCase().startsWith('www.') ? `https://${urlText}` : urlText;
-        const a = document.createElement('a');
-        a.href = fullHref;
-        a.target = '_blank';
-        a.rel = 'noopener noreferrer';
-        a.className = 'chat-link external-link';
-        a.textContent = urlText;
-        const icon = document.createElement('i');
-        icon.setAttribute('data-lucide', 'external-link');
-        icon.className = 'chat-link-icon';
-        a.appendChild(icon);
-        fragment.appendChild(a);
-        lastIdx = matchIdx + urlText.length;
-      }
-
-      if (lastIdx < text.length) fragment.appendChild(document.createTextNode(text.substring(lastIdx)));
-      if (node.parentNode) node.parentNode.replaceChild(fragment, node);
-    } else if (node.nodeType === 1) {
-      const children = Array.from(node.childNodes);
-      for (const child of children) walk(child);
-    }
-  }
-
-  walk(container);
-}
-
-export function enhanceLinks(container) {
-  if (!container) return;
-  const links = container.querySelectorAll('a');
-  links.forEach((a) => {
-    const href = a.getAttribute('href') || '';
-    if (!href) return;
-    const isExternal = /^https?:\/\//i.test(href) || /^www\./i.test(href);
-    const isFile = /^file:\/\/\//i.test(href);
-    if (isExternal || isFile) {
-      a.setAttribute('target', '_blank');
-      a.setAttribute('rel', 'noopener noreferrer');
-      if (!a.classList.contains('chat-link')) a.classList.add('chat-link');
-      if (isExternal && !a.classList.contains('external-link')) a.classList.add('external-link');
-      else if (isFile && !a.classList.contains('file-link')) a.classList.add('file-link');
-      if (!a.querySelector('.chat-link-icon') && !a.querySelector('i[data-lucide]')) {
-        const icon = document.createElement('i');
-        icon.setAttribute('data-lucide', isFile ? 'file-text' : 'external-link');
-        icon.className = 'chat-link-icon';
-        a.appendChild(icon);
-      }
-      a.onclick = (e) => {
-        if (window.electronAPI?.openExternal) { e.preventDefault(); window.electronAPI.openExternal(a.href); }
-        else if (window.overlayAPI?.openExternal) { e.preventDefault(); window.overlayAPI.openExternal(a.href); }
-      };
+    const match = combinedText.match(emojiPrefixRegex);
+    if (match) {
+      li.classList.add('emoji-list-item');
+      li.style.listStyleType = 'none';
     }
   });
-  autoLinkTextNodes(container);
 }
 
-/** Transforms GitHub GFM callouts and "Tip:" paragraphs/blockquotes into styled callout cards */
+/** Transforms GitHub GFM callouts and blockquotes into modern styled cards */
 export function enhanceCallouts(container) {
   if (!container) return;
 
-  const blockquotes = container.querySelectorAll('blockquote');
-  blockquotes.forEach((bq) => {
-    if (bq.classList.contains('chat-callout')) return;
-    let text = bq.innerText.trim();
+  function processElement(el) {
+    if (el.classList.contains('chat-callout')) return;
+    let text = el.innerText.trim();
     let type = null;
-    const gfmMatch = text.match(/^\[\!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]/i);
-    if (gfmMatch) { type = gfmMatch[1].toUpperCase(); }
-    else if (text.startsWith('💡') || text.toLowerCase().includes('tip:')) { type = 'TIP'; }
-    else if (text.toLowerCase().includes('bottom line:')) { type = 'BOTTOMLINE'; }
-    else if (text.toLowerCase().startsWith('note:')) { type = 'NOTE'; }
-    else if (text.toLowerCase().startsWith('warning:')) { type = 'WARNING'; }
+    let icon = 'info';
+
+    const gfmMatch = text.match(/^\[\!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*/i);
+    if (gfmMatch) {
+      type = gfmMatch[1].toUpperCase();
+    } else if (text.startsWith('💡') || text.toLowerCase().startsWith('tip:') || text.toLowerCase().startsWith('tip :') || text.startsWith('टिप:') || text.startsWith('टिप :')) {
+      type = 'TIP';
+    } else if (text.toLowerCase().startsWith('warning:')) {
+      type = 'WARNING';
+    } else if (text.toLowerCase().startsWith('important:')) {
+      type = 'IMPORTANT';
+    } else if (text.toLowerCase().startsWith('caution:')) {
+      type = 'CAUTION';
+    } else if (text.toLowerCase().startsWith('note:')) {
+      type = 'NOTE';
+    } else if (el.tagName === 'BLOCKQUOTE' && text.length > 0) {
+      return; // Keep generic blockquotes clean
+    }
+
+    if (!type) return;
+
+    if (type === 'WARNING') icon = 'alert-triangle';
+    else if (type === 'IMPORTANT') icon = 'star';
+    else if (type === 'CAUTION') icon = 'alert-octagon';
+
+    let cleanHtml = el.innerHTML;
+    cleanHtml = cleanHtml.replace(/^<p>\s*\[\!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*(<br\/?>)?\s*/i, '<p>');
+    cleanHtml = cleanHtml.replace(/^\[\!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*/i, '');
+    cleanHtml = cleanHtml.replace(/<p>[\s\u{1F300}-\u{1F9FF}\u{2600}-\u{27BF}💡ℹ️⚠️🛑⭐]*(?:<strong>|<b>)?[\s\u{1F300}-\u{1F9FF}\u{2600}-\u{27BF}💡ℹ️⚠️🛑⭐]*(?:Tip|Note|Warning|Caution|Important|Bottom Line|टिप|सलाह)[\s:]*(?:<\/strong>|<\/b>)?[\s:]*/iu, '<p>');
+    cleanHtml = cleanHtml.replace(/^[\s\u{1F300}-\u{1F9FF}\u{2600}-\u{27BF}💡ℹ️⚠️🛑⭐]*(?:<strong>|<b>)?[\s\u{1F300}-\u{1F9FF}\u{2600}-\u{27BF}💡ℹ️⚠️🛑⭐]*(?:Tip|Note|Warning|Caution|Important|Bottom Line|टिप|सलाह)[\s:]*(?:<\/strong>|<\/b>)?[\s:]*/iu, '');
+    cleanHtml = cleanHtml.replace(/<p>[\s\u{1F300}-\u{1F9FF}\u{2600}-\u{27BF}💡ℹ️⚠️🛑⭐]+/iu, '<p>');
+    cleanHtml = cleanHtml.replace(/^[\s\u{1F300}-\u{1F9FF}\u{2600}-\u{27BF}💡ℹ️⚠️🛑⭐]+/iu, '');
+
+    // Tips render with a sleek thin horizontal line and clean text (NO bulky card container)
+    if (type === 'TIP') {
+      const tipWrapper = document.createElement('div');
+      tipWrapper.className = 'chat-tip-footer';
+      tipWrapper.innerHTML = `
+        <hr class="tip-divider" />
+        <div class="tip-row">
+          <span class="tip-icon">💡</span>
+          <div class="tip-text">${cleanHtml}</div>
+        </div>
+      `;
+      if (el.parentNode) el.parentNode.replaceChild(tipWrapper, el);
+      return;
+    }
 
     const callout = document.createElement('div');
-    callout.className = 'chat-callout';
+    callout.className = `chat-callout callout-${type.toLowerCase()}`;
 
-    const hr = document.createElement('hr');
-    hr.className = 'callout-pagebreak';
-    callout.appendChild(hr);
+    callout.innerHTML = `
+      <div class="callout-header">
+        <i data-lucide="${icon}" style="width:14px;height:14px;"></i>
+        <span>${type.charAt(0) + type.slice(1).toLowerCase()}</span>
+      </div>
+      <div class="callout-body">${cleanHtml}</div>
+    `;
 
-    const body = document.createElement('div');
-    body.className = 'callout-body';
-    body.innerHTML = bq.innerHTML;
-    callout.appendChild(body);
+    if (el.parentNode) el.parentNode.replaceChild(callout, el);
+    if (window.lucide) { try { lucide.createIcons({ parent: callout }); } catch (e) {} }
+  }
 
-    if (bq.parentNode) bq.parentNode.replaceChild(callout, bq);
-  });
+  // 1. Process blockquotes
+  const blockquotes = Array.from(container.querySelectorAll('blockquote'));
+  blockquotes.forEach(processElement);
 
-  const standalonePs = Array.from(container.querySelectorAll('p')).filter(p => !p.closest('.chat-callout') && !p.closest('blockquote'));
-  standalonePs.forEach(p => {
+  // 2. Process standalone paragraphs with callout prefixes
+  const paragraphs = Array.from(container.querySelectorAll('p')).filter(p => !p.closest('.chat-callout') && !p.closest('.chat-tip-footer') && !p.closest('blockquote'));
+  paragraphs.forEach(p => {
     const text = p.innerText.trim();
-    if (text.startsWith('💡') || text.toLowerCase().startsWith('bottom line:') || text.toLowerCase().startsWith('tip:') || text.toLowerCase().startsWith('note:')) {
-      const callout = document.createElement('div');
-      callout.className = 'chat-callout';
-
-      const hr = document.createElement('hr');
-      hr.className = 'callout-pagebreak';
-      callout.appendChild(hr);
-
-      const body = document.createElement('div');
-      body.className = 'callout-body';
-      body.innerHTML = p.innerHTML;
-      callout.appendChild(body);
-
-      p.parentNode.replaceChild(callout, p);
+    if (text.startsWith('💡') || text.toLowerCase().startsWith('tip:') || text.startsWith('टिप:') || text.toLowerCase().startsWith('note:') || text.toLowerCase().startsWith('warning:') || text.match(/^\[\!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]/i)) {
+      processElement(p);
     }
-  });
-}
-
-/** Enhances GFM task checkboxes with custom styling */
-export function enhanceTaskLists(container) {
-  if (!container) return;
-  const checkboxes = container.querySelectorAll('li > input[type="checkbox"]');
-  checkboxes.forEach((cb) => {
-    const li = cb.parentElement;
-    if (li) {
-      li.classList.add('chat-task-item');
-      if (cb.checked) li.classList.add('task-completed');
-    }
-  });
-}
-
-export function getDomainCategoryBadge(domain) {
-  if (!domain) return { icon: '', label: '' };
-  const d = domain.toLowerCase();
-  if (d.includes('.gov') || d.includes('.edu') || d.includes('official') || d.includes('nseindia.com') || d.includes('bseindia.com') || d.includes('sebi.gov.in') || d.includes('rbi.org.in')) {
-    return { icon: '🏛️', label: 'Official' };
-  }
-  if (d.includes('news') || d.includes('reuters.com') || d.includes('bloomberg.com') || d.includes('economictimes') || d.includes('moneycontrol') || d.includes('ndtv') || d.includes('bbc') || d.includes('cnn') || d.includes('thehindu') || d.includes('livemint')) {
-    return { icon: '📰', label: 'News' };
-  }
-  if (d.includes('wikipedia') || d.includes('arxiv') || d.includes('github') || d.includes('quora') || d.includes('stackoverflow') || d.includes('medium')) {
-    return { icon: '📚', label: 'Reference' };
-  }
-  return { icon: '', label: '' };
-}
-
-/** Enhances inline markdown citations & links with hover snippet tooltips (Legacy Flat Monochromatic Style) */
-export function enhanceCitationsAndFootnotes(container) {
-  if (!container) return;
-  const externalLinks = container.querySelectorAll('a.external-link');
-
-  externalLinks.forEach(link => {
-    if (link.dataset.hasCitation) return;
-    link.dataset.hasCitation = 'true';
-
-    const href = link.getAttribute('href') || '';
-    let domain = '';
-    try {
-      const cleanHref = href.replace(/[`'"><\)]+$/, '').replace(/\.$/, '');
-      const parsed = new URL(cleanHref);
-      const host = parsed.hostname.toLowerCase().replace(/^www\./, '').trim();
-      if (/^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?(\.[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)*\.[a-z]{2,}$/i.test(host)) {
-        domain = host;
-      }
-    } catch (e) {}
-
-    if (!domain) return;
-
-    const category = getDomainCategoryBadge(domain);
-    const rootDom = (domain || '').split('.').slice(-2).join('.');
-    const faviconUrl = `https://www.google.com/s2/favicons?domain=${encodeURIComponent(rootDom)}&sz=32`;
-    const linkText = link.textContent.trim();
-
-    let tooltipEl = null;
-
-    link.addEventListener('mouseenter', () => {
-      if (tooltipEl) tooltipEl.remove();
-      document.querySelectorAll('.ref-hover-tooltip').forEach(el => el.remove());
-
-      tooltipEl = document.createElement('div');
-      tooltipEl.className = 'ref-hover-tooltip';
-      tooltipEl.style.cssText = 'position: fixed; background: var(--card); color: var(--text); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; max-width: 280px; z-index: 10005; font-family: var(--font); pointer-events: none; opacity: 0; transition: opacity 0.12s ease-out; box-shadow: none; font-weight: 400;';
-
-      const catBadge = category.label ? `<span style="font-size: 11.5px; opacity: 0.75; background: var(--hover); padding: 2px 6px; border-radius: 4px; color: var(--text-3); font-weight: 500; margin-left: auto;">${category.icon} ${category.label}</span>` : '';
-
-      tooltipEl.innerHTML = `
-        <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
-          <img src="${faviconUrl}" style="width: 14px; height: 14px; border-radius: 3px;" onerror="this.onerror=null; this.removeAttribute('src'); this.style.display='none';" />
-          <span style="font-size: 13.5px; font-weight: 500; color: var(--text);">${domain}</span>
-          ${catBadge}
-        </div>
-        <div style="font-size: 13px; color: var(--text-3); font-weight: 400; line-height: 1.4; max-height: 52px; overflow: hidden; text-overflow: ellipsis;">${escapeHtmlLocal(linkText || domain)}</div>
-      `;
-
-      document.body.appendChild(tooltipEl);
-
-      const rect = link.getBoundingClientRect();
-      tooltipEl.style.left = `${Math.max(10, rect.left)}px`;
-      tooltipEl.style.top = `${Math.max(10, rect.top - tooltipEl.offsetHeight - 6)}px`;
-      requestAnimationFrame(() => {
-        if (tooltipEl) tooltipEl.style.opacity = '1';
-      });
-    });
-
-    link.addEventListener('mouseleave', () => {
-      if (tooltipEl) {
-        tooltipEl.style.opacity = '0';
-        setTimeout(() => { if (tooltipEl) tooltipEl.remove(); tooltipEl = null; }, 120);
-      }
-    });
   });
 }
 
@@ -558,6 +342,8 @@ export function enhanceMarkdownContent(container) {
   try { enhanceCallouts(container); } catch (e) { console.error(e); }
   try { enhanceCodeBlocks(container); } catch (e) { console.error(e); }
   try { enhanceTables(container); } catch (e) { console.error(e); }
+  try { enhanceLists(container); } catch (e) { console.error(e); }
+  try { enhanceStorytellingLayout(container); } catch (e) { console.error(e); }
   try { enhanceImagePreviews(container); } catch (e) { console.error(e); }
   try { enhanceCitationsAndFootnotes(container); } catch (e) { console.error(e); }
   try { moveTipsToBottom(container); } catch (e) { console.error(e); }

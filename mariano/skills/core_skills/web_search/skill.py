@@ -1,22 +1,32 @@
-"""MARIANO Core Skill — Web Search via DuckDuckGo with anonymized headers."""
+"""MARIANO Core Skill — Resilient Multi-Engine Web Search (Google News, DuckDuckGo & Wikipedia)."""
 from __future__ import annotations
 import asyncio
+import html
 import re
 import urllib.parse
 from typing import Any
 import httpx
-from duckduckgo_search import DDGS
+import xml.etree.ElementTree as ET
 from mariano.skills._base import BaseSkill, SkillResult
-from mariano.core.anonymizer import NetworkAnonymizer
 import structlog
 
 log = structlog.get_logger(__name__)
 
+
+def _clean_text(text: str) -> str:
+    """Safely strip HTML markup and unescape HTML/XML entities."""
+    if not text:
+        return ""
+    clean = re.sub(r"<[^>]+>", " ", text)
+    clean = html.unescape(clean)
+    return re.sub(r"\s+", " ", clean).strip()
+
+
 class WebSearchSkill(BaseSkill):
     name = "web_search"
-    description = "Search the internet using DuckDuckGo. Returns top results with titles, URLs, and snippets."
-    version = "1.2.0"
-    tags = ["web", "search", "research", "internet"]
+    description = "Search the internet for live real-time information, news, websites, jobs, and facts. Returns top search results with titles, URLs, and snippets."
+    version = "2.0.0"
+    tags = ["web", "search", "research", "internet", "live-data", "google", "ddg"]
 
     def get_parameters_schema(self) -> dict:
         return {
@@ -26,113 +36,144 @@ class WebSearchSkill(BaseSkill):
         }
 
     async def execute(self, query: str, max_results: int = 5, region: str = "in-en") -> SkillResult:
-        # Step 1: Attempt standard DDGS package search
-        try:
-            results = await asyncio.to_thread(self._search, query, max_results, region)
-            if results:
-                return self._format_results(results, query)
-        except Exception as exc:
-            log.warning("web_search.ddgs_failed", error=str(exc))
+        if not query or not query.strip():
+            return SkillResult(success=False, data=None, error="Search query cannot be empty.")
 
-        # Step 2: Fallback to direct HTML-scraping of DuckDuckGo Lite / HTML page
-        try:
-            log.info("web_search.trying_html_fallback", query=query)
-            results = await self._html_fallback_search(query, max_results)
-            if results:
-                return self._format_results(results, query)
-        except Exception as exc:
-            log.warning("web_search.html_fallback_failed", error=str(exc))
+        q_clean = query.strip()
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+            "Accept": "*/*"
+        }
 
-        # Step 3: Fallback to Wikipedia API Search
-        try:
-            log.info("web_search.trying_wikipedia_fallback", query=query)
-            results = await self._wikipedia_fallback_search(query, max_results)
-            if results:
-                return self._format_results(results, query)
-        except Exception as exc:
-            log.error("web_search.all_search_fallbacks_failed", error=str(exc))
+        results: list[dict] = []
 
-        return SkillResult(success=False, data=None, error="Search failed: All primary and fallback search engines were unreachable.")
+        async with httpx.AsyncClient(timeout=7, follow_redirects=True, headers=headers) as client:
+            # 1. Primary Provider: Google Live Web Search / News RSS (Fast, High Uptime, Fresh 2026 data)
+            try:
+                g_results = await self._search_google_rss(client, q_clean, max_results)
+                if g_results:
+                    results.extend(g_results)
+            except Exception as exc:
+                log.warning("web_search.google_rss_failed", error=str(exc))
 
-    def _search(self, query: str, max_results: int, region: str) -> list[dict]:
-        headers = NetworkAnonymizer.get_headers()
-        with DDGS(headers=headers) as ddgs:
-            return list(ddgs.text(query, region=region, max_results=max_results))
+            # 2. Secondary Provider: DuckDuckGo Instant Knowledge API (Definitions, Facts, Deep Links)
+            if len(results) < max_results:
+                try:
+                    ddg_results = await self._search_ddg_api(client, q_clean, max_results - len(results))
+                    if ddg_results:
+                        results.extend(ddg_results)
+                except Exception as exc:
+                    log.warning("web_search.ddg_api_failed", error=str(exc))
 
-    async def _html_fallback_search(self, query: str, max_results: int) -> list[dict]:
-        """Queries the raw DuckDuckGo HTML endpoint as a scraping fallback."""
-        url = "https://html.duckduckgo.com/html/"
-        headers = NetworkAnonymizer.get_headers()
-        headers["Content-Type"] = "application/x-www-form-urlencoded"
-        data = {"q": query}
+            # 3. Tertiary Provider: Wikipedia Knowledge API
+            if len(results) < max_results:
+                try:
+                    wiki_results = await self._search_wikipedia(client, q_clean, max_results - len(results))
+                    if wiki_results:
+                        results.extend(wiki_results)
+                except Exception as exc:
+                    log.warning("web_search.wikipedia_failed", error=str(exc))
+
+        if not results:
+            return SkillResult(
+                success=False,
+                data=None,
+                error=f"No search results found for query: '{q_clean}'"
+            )
+
+        return self._format_results(results[:max_results], q_clean)
+
+    async def _search_google_rss(self, client: httpx.AsyncClient, query: str, max_results: int) -> list[dict]:
+        encoded = urllib.parse.quote(query)
+        url = f"https://news.google.com/rss/search?q={encoded}&hl=en-IN&gl=IN&ceid=IN:en"
+        resp = await client.get(url)
+        if resp.status_code != 200:
+            return []
+
+        xml_text = resp.text
+        sanitized_xml = re.sub(r"&(?!(?:amp|lt|gt|quot|apos|#\d+|#x[a-fA-F0-9]+);)", "&amp;", xml_text)
         
-        async with httpx.AsyncClient(timeout=8) as client:
-            resp = await client.post(url, data=data, headers=headers)
-            if resp.status_code != 200:
-                return []
-            
-            html = resp.text
-            # Order-independent anchor matching
-            pattern_anchor = re.compile(r'<a\s+([^>]+)>(.*?)</a>', re.DOTALL)
-            pattern_snippet = re.compile(r'<a class="result__snippet"[^>]*>(.*?)</a>', re.DOTALL)
-            
-            anchors = pattern_anchor.findall(html)
-            matches_snippet = pattern_snippet.findall(html)
-            
-            matches_a = []
-            for attrs, content in anchors:
-                if 'class="result__a"' in attrs:
-                    href_match = re.search(r'href="([^"]+)"', attrs)
-                    if href_match:
-                        matches_a.append((href_match.group(1), content))
-            
-            results = []
-            for idx, (href, title) in enumerate(matches_a[:max_results]):
-                clean_title = re.sub(r'<[^>]+>', '', title).strip()
-                clean_href = href
-                if "uddg=" in href:
-                    parsed = urllib.parse.urlparse(href)
-                    qs = urllib.parse.parse_qs(parsed.query)
-                    if qs.get("uddg"):
-                        clean_href = qs["uddg"][0]
-                
-                snippet = ""
-                if idx < len(matches_snippet):
-                    snippet = re.sub(r'<[^>]+>', '', matches_snippet[idx]).strip()
-                
-                results.append({
-                    "title": clean_title,
-                    "href": clean_href,
-                    "body": snippet
-                })
-            return results
+        items: list[dict] = []
+        try:
+            root = ET.fromstring(sanitized_xml)
+            for item in root.iter("item"):
+                title = _clean_text(item.findtext("title", ""))
+                link = (item.findtext("link") or "").strip()
+                desc = _clean_text(item.findtext("description", ""))
+                if title:
+                    items.append({"title": title, "href": link, "body": desc[:250]})
+                if len(items) >= max_results:
+                    break
+        except Exception:
+            item_blocks = re.findall(r"<item\b[^>]*>([\s\S]*?)</item>", xml_text, re.IGNORECASE)
+            for block in item_blocks:
+                t_match = re.search(r"<title\b[^>]*>([\s\S]*?)</title>", block, re.IGNORECASE)
+                l_match = re.search(r"<link\b[^>]*>([\s\S]*?)</link>", block, re.IGNORECASE)
+                d_match = re.search(r"<description\b[^>]*>([\s\S]*?)</description>", block, re.IGNORECASE)
+                title = _clean_text(t_match.group(1)) if t_match else ""
+                link = (l_match.group(1).strip() if l_match else "")
+                desc = _clean_text(d_match.group(1)) if d_match else ""
+                if title:
+                    items.append({"title": title, "href": link, "body": desc[:250]})
+                if len(items) >= max_results:
+                    break
 
-    async def _wikipedia_fallback_search(self, query: str, max_results: int) -> list[dict]:
-        """Queries Wikipedia Search API as a high-reliability fallback."""
+        return items
+
+    async def _search_ddg_api(self, client: httpx.AsyncClient, query: str, max_results: int) -> list[dict]:
+        encoded = urllib.parse.quote(query)
+        url = f"https://api.duckduckgo.com/?q={encoded}&format=json&no_html=1&skip_disambig=1"
+        resp = await client.get(url)
+        if resp.status_code != 200:
+            return []
+
+        data = resp.json()
+        items: list[dict] = []
+
+        if data.get("AbstractText") and data.get("AbstractURL"):
+            items.append({
+                "title": data.get("Heading") or query,
+                "href": data.get("AbstractURL"),
+                "body": _clean_text(data.get("AbstractText"))[:250]
+            })
+
+        for topic in data.get("RelatedTopics", []):
+            if isinstance(topic, dict) and topic.get("Text") and topic.get("FirstURL"):
+                text = _clean_text(topic.get("Text"))
+                items.append({
+                    "title": text[:60] + "...",
+                    "href": topic.get("FirstURL"),
+                    "body": text[:250]
+                })
+            if len(items) >= max_results:
+                break
+
+        return items
+
+    async def _search_wikipedia(self, client: httpx.AsyncClient, query: str, max_results: int) -> list[dict]:
         encoded = urllib.parse.quote(query)
         url = f"https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch={encoded}&format=json"
-        headers = {
-            "User-Agent": "HekkiSearchAgent/1.0 (https://hekki.ai; contact@hekki.ai)"
-        }
-        
-        async with httpx.AsyncClient(timeout=8) as client:
-            resp = await client.get(url, headers=headers)
-            if resp.status_code != 200:
-                return []
-                
-            data = resp.json()
-            search_items = data.get("query", {}).get("search", [])
-            results = []
-            for item in search_items[:max_results]:
-                title = item.get("title", "")
-                pageid = item.get("pageid", "")
-                snippet = re.sub(r'<[^>]+>', '', item.get("snippet", "")).strip()
-                results.append({
-                    "title": f"Wikipedia: {title}",
-                    "href": f"https://en.wikipedia.org/?curid={pageid}",
-                    "body": snippet
-                })
-            return results
+        resp = await client.get(url)
+        if resp.status_code != 200:
+            return []
+
+        data = resp.json()
+        search_items = data.get("query", {}).get("search", [])
+        items: list[dict] = []
+
+        for it in search_items:
+            title = it.get("title", "")
+            pageid = it.get("pageid", "")
+            snippet = _clean_text(it.get("snippet", ""))
+            items.append({
+                "title": f"Wikipedia: {title}",
+                "href": f"https://en.wikipedia.org/?curid={pageid}",
+                "body": snippet[:250]
+            })
+            if len(items) >= max_results:
+                break
+
+        return items
 
     def _format_results(self, results: list[dict], query: str) -> SkillResult:
         formatted = []

@@ -57,11 +57,11 @@ export function attachAiActions(msgEl, text, toolRuns = []) {
           const rootDom = (dom || '').split('.').slice(-2).join('.');
           const faviconUrl = `https://www.google.com/s2/favicons?domain=${encodeURIComponent(rootDom)}&sz=32`;
           const cat = getCat(dom);
-          const catSpan = cat ? `<span style="font-size:10px; opacity:0.75; margin-left:2px; font-weight:400;">${cat}</span>` : '';
+          const catSpan = cat ? `<span style="font-size:11.5px; opacity:0.8; margin-left:2px; font-weight:400;">${cat}</span>` : '';
           return `
-            <a href="https://${dom}" target="_blank" rel="noopener noreferrer" title="Verified Source: ${dom}" style="display:inline-flex; align-items:center; gap:4px; padding:2px 7px; border-radius:4px; background:rgba(255,255,255,0.05); font-size:11px; color:var(--text-secondary); font-family:var(--font); text-decoration:none; transition:background 0.15s;">
-              <img src="${faviconUrl}" style="width:12px; height:12px; border-radius:2px;" onerror="this.onerror=null; this.removeAttribute('src'); this.style.display='none';">
-              <span style="max-width:110px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:500;">${dom}</span>
+            <a href="https://${dom}" target="_blank" rel="noopener noreferrer" title="Verified Source: ${dom}" style="display:inline-flex; align-items:center; gap:5px; padding:3px 8px; border-radius:5px; background:rgba(255,255,255,0.06); font-size:13px; color:var(--text-secondary); font-family:var(--font); text-decoration:none; transition:background 0.15s; font-weight:400;">
+              <img src="${faviconUrl}" style="width:14px; height:14px; border-radius:3px;" onerror="this.onerror=null; this.removeAttribute('src'); this.style.display='none';">
+              <span style="max-width:130px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:400;">${dom}</span>
               ${catSpan}
             </a>
           `;

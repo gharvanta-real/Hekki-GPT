@@ -106,7 +106,7 @@ export class WorkflowsPage {
           <!-- Header -->
           <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; width:100%; gap:12px; flex-wrap:wrap;">
             <div>
-              <h1 style="font-size:18px; font-weight:400; color:var(--text); margin:0;">Autonomous Workflow Studio</h1>
+              <h1 style="font-size:19px; font-weight:600; color:var(--text-primary); margin:0;">Autonomous Workflow Studio</h1>
               <p style="font-size:13px; color:var(--text-3); margin-top:2px; font-weight:400;">Build, schedule, and execute multi-step automated agent pipelines.</p>
             </div>
             <div style="display:flex; align-items:center; gap:8px;">
