@@ -246,10 +246,6 @@ export function initSettings(setGreetingCallback) {
         }
       }
 
-      // Quick Voice Overlay toggle
-      const quickVoice = $('settings-quick-voice');
-      if (quickVoice) quickVoice.checked = cfg.quick_voice_enabled !== false;
-
       // Computer Vision Floating HUD toggle
       const visionHudToggle = $('settings-vision-hud');
       if (visionHudToggle) {
@@ -423,8 +419,6 @@ export function initSettings(setGreetingCallback) {
       window.showToast('Startup', isChecked ? 'Start with Windows enabled' : 'Start with Windows disabled', 2500);
     }
   });
-
-  $('settings-quick-voice')?.addEventListener('change', e => save({ quick_voice_enabled: e.target.checked }));
 
   $('settings-vision-hud')?.addEventListener('change', e => {
     const isChecked = e.target.checked;

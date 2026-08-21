@@ -187,18 +187,15 @@ function _ensureAiBubble() {
   header.style.marginTop = '16px';
   header.id = 'coder-active-stream-header';
   header.innerHTML = `
-    <canvas class="cad-ai-orb-avatar" id="coder-active-orb-canvas" width="28" height="28"></canvas>
+    <div class="cad-ai-dot-grid" aria-hidden="true">
+      <span style="--d:0"></span><span style="--d:1"></span><span style="--d:2"></span><span style="--d:3"></span>
+      <span style="--d:1"></span><span style="--d:2"></span><span style="--d:3"></span><span style="--d:4"></span>
+      <span style="--d:2"></span><span style="--d:3"></span><span style="--d:4"></span><span style="--d:5"></span>
+      <span style="--d:3"></span><span style="--d:4"></span><span style="--d:5"></span><span style="--d:6"></span>
+    </div>
     <span class="cad-ai-header-title">Thinking...</span>
   `;
   col.appendChild(header);
-
-  // Initialize the ribbon gradient orb animation
-  setTimeout(() => {
-    const canvas = header.querySelector('#coder-active-orb-canvas');
-    if (canvas && window.RibbonGradientOrb) {
-      new window.RibbonGradientOrb(canvas).start();
-    }
-  }, 50);
 
   _streamBubble = document.createElement('div');
   _streamBubble.className = 'coder-msg coder-msg-assistant';

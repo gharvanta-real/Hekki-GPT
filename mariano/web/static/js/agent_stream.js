@@ -238,14 +238,15 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
         headerEl.style.marginTop = '16px';
         headerEl.style.marginBottom = '6px';
         headerEl.innerHTML = `
-          <canvas class="cad-ai-orb-avatar" id="chat-active-orb-canvas" width="26" height="26"></canvas>
+          <div class="cad-ai-dot-grid" aria-hidden="true">
+            <span style="--d:0"></span><span style="--d:1"></span><span style="--d:2"></span><span style="--d:3"></span>
+            <span style="--d:1"></span><span style="--d:2"></span><span style="--d:3"></span><span style="--d:4"></span>
+            <span style="--d:2"></span><span style="--d:3"></span><span style="--d:4"></span><span style="--d:5"></span>
+            <span style="--d:3"></span><span style="--d:4"></span><span style="--d:5"></span><span style="--d:6"></span>
+          </div>
           <span class="cad-ai-header-title">Thinking...</span>
         `;
         col.appendChild(headerEl);
-        setTimeout(() => {
-          const canvas = headerEl.querySelector('#chat-active-orb-canvas');
-          if (canvas && window.RibbonGradientOrb) new window.RibbonGradientOrb(canvas).start();
-        }, 40);
         scrollChat();
       }
       break;

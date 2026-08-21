@@ -102,16 +102,16 @@ function _appendThinkingHeader() {
   el.style.marginTop = '20px';
   el.style.marginBottom = '8px';
   el.innerHTML = `
-    <canvas class="cad-ai-orb-avatar" id="debate-active-orb-canvas" width="24" height="24"></canvas>
+    <div class="cad-ai-dot-grid" aria-hidden="true">
+      <span style="--d:0"></span><span style="--d:1"></span><span style="--d:2"></span><span style="--d:3"></span>
+      <span style="--d:1"></span><span style="--d:2"></span><span style="--d:3"></span><span style="--d:4"></span>
+      <span style="--d:2"></span><span style="--d:3"></span><span style="--d:4"></span><span style="--d:5"></span>
+      <span style="--d:3"></span><span style="--d:4"></span><span style="--d:5"></span><span style="--d:6"></span>
+    </div>
     <span class="cad-ai-header-title debate-thinking-txt-unbold" id="debate-thinking-txt" style="font-weight:400 !important; font-size:16px !important; color:var(--text-2); background:none !important; -webkit-text-fill-color:var(--text-2) !important;">${THINKING_MSGS[0]}</span>
   `;
   col.appendChild(el);
   _thinkingHeaderEl = el;
-
-  setTimeout(() => {
-    const canvas = el.querySelector('#debate-active-orb-canvas');
-    if (canvas && window.RibbonGradientOrb) new window.RibbonGradientOrb(canvas).start();
-  }, 60);
 
   let idx = 0;
   _rotateTimer = setInterval(() => {
