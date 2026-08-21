@@ -108,10 +108,10 @@ body.dark button.btn-canvas-launch:hover,
   background: var(--hover) !important;
 }
 
-/* KEYFRAMES */
 @keyframes spin    { to { transform: rotate(360deg); } }
 @keyframes fadeIn  { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 @keyframes pulse   { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
+@keyframes sidebar-pulse { 0%,100% { opacity: 0.3; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.15); } }
 
 /* SCROLLBAR */
 ::-webkit-scrollbar       { width: 5px; height: 5px; }
@@ -198,13 +198,13 @@ body.hekki-reduce-motion *::after {
 /* AI Message Tint */
 body.hekki-msg-tint .ai-message,
 body.hekki-msg-tint [data-role="assistant"] .msg-content {
-  background: rgba(37, 99, 235, 0.05) !important;
+  background: var(--hover) !important;
   border-radius: 10px !important;
   padding: 10px 14px !important;
 }
 body.light.hekki-msg-tint .ai-message,
 body.light.hekki-msg-tint [data-role="assistant"] .msg-content {
-  background: rgba(37, 99, 235, 0.06) !important;
+  background: var(--hover) !important;
 }
 
 /* Focus Mode — hide sidebar and nav */

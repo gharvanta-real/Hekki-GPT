@@ -16,13 +16,10 @@ logger = logging.getLogger("Hekki.CodeBrain")
 
 GEMINI_BASE = "https://generativelanguage.googleapis.com/v1beta"
 
-# Model routing table
+# Model routing table — Strictly 3.5 Flash Lite and 3.1 Flash Lite
 MODEL_MAP = {
-    # Hekki Gemini modes
-    "gemini-3.5-flash":        ("gemini", "gemini-3.5-flash"),
     "gemini-3.5-flash-lite":   ("gemini", "gemini-3.5-flash-lite"),
-    "gemini-3.6-flash":        ("gemini", "gemini-3.6-flash"),
-    "gemini-3.7-flash":        ("gemini", "gemini-3.7-flash"),
+    "gemini-3.1-flash-lite":   ("gemini", "gemini-3.1-flash-lite"),
 }
 
 SYSTEM_PROMPT = (

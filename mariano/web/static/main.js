@@ -19,7 +19,7 @@ import { bindModelPills, updateModelPills, registerModelPillRefresh } from '/sta
 import { initAttachDropdowns } from '/static/js/components/attach_dropdown.js';
 import { bindSidebarToggle, bindTitlebarActions, bindThemeToggle, bindImageLightbox } from '/static/js/components/layout_controls.js';
 import { bindVoice, resetVoiceUIInstance } from '/static/js/components/voice_controller.js';
-import { socket, setupSocketEvents, send } from '/static/js/components/socket_manager.js';
+import { socket, setupSocketEvents, send } from '/static/js/components/socket_manager.js?v=201';
 // Debate playground  isolated module
 import { initDebatePage, handleDebateEvent } from '/static/js/debate/debate_page.js?v=136';
 // Coder IDE page
@@ -350,12 +350,12 @@ window.HudLogger = {
           word-break: break-all;
           color: var(--text);
         }
-        .log-text.exec { color: var(--blue, #2563eb); }
+        .log-text.exec { color: var(--text-primary); }
         .log-text.success { color: var(--green, #16a34a); }
         .log-text.failed { color: #dc2626; }
         .log-text.info { color: var(--text-3); }
 
-        :host-context(body.dark) .log-text.exec { color: #60a5fa; }
+        :host-context(body.dark) .log-text.exec { color: var(--text-primary); }
         :host-context(body.dark) .log-text.success { color: #34d399; }
         :host-context(body.dark) .log-text.failed { color: #f87171; }
       `;
@@ -640,23 +640,65 @@ function boot() {
     }
   }
 
-  // Global click interceptor for file:/// links
-  document.addEventListener('click', (e) => {
+  // Global click interceptor for local files -> Open in Live Canvas
+  document.addEventListener('click', async (e) => {
     const link = e.target.closest('a');
     if (!link) return;
-    const href = link.getAttribute('href');
-    if (!href) return;
+    const href = link.getAttribute('href') || '';
+    const hasDataPath = link.hasAttribute('data-filepath');
+    const isFileLink = link.classList.contains('file-link') ||
+                       hasDataPath ||
+                       href.startsWith('file:///') ||
+                       href.startsWith('file://') ||
+                       href.includes('/api/workspace/render?path=') ||
+                       href.includes('/api/workspace/file?path=');
     
-    if (href.startsWith('file:///')) {
+    if (isFileLink) {
       e.preventDefault();
+      e.stopPropagation();
       
-      // Parse file path
-      let decodedPath = decodeURIComponent(href.replace('file:///', ''));
-      decodedPath = decodedPath.replace(/\\/g, '/');
+      let targetPath = link.dataset.filepath || '';
+      if (!targetPath) {
+        if (href.includes('path=')) {
+          targetPath = decodeURIComponent(href.split('path=')[1].split('&')[0]);
+        } else {
+          targetPath = decodeURIComponent(href.replace(/^file:\/\/\//i, '').replace(/^file:\/\//i, ''));
+        }
+      }
+      targetPath = targetPath.replace(/\\/g, '/');
+      const fileName = targetPath.split('/').pop() || 'File';
+      const ext = fileName.includes('.') ? fileName.split('.').pop().toLowerCase() : 'text';
 
-      // Copy path to clipboard
-      navigator.clipboard.writeText(href).then(() => {
-        showToast('Link Copied', 'Browser blocked loading local file. Path copied to clipboard.', 3000);
+      // Images open in lightbox
+      if (['png', 'jpg', 'jpeg', 'webp', 'gif', 'svg'].includes(ext)) {
+        if (window.openImageLightbox) {
+          window.openImageLightbox(`/api/workspace/render?path=${encodeURIComponent(targetPath)}`);
+          return;
+        }
+      }
+
+      // Open in Live Canvas
+      try {
+        const res = await fetch(`/api/workspace/render?path=${encodeURIComponent(targetPath)}`);
+        if (res.ok) {
+          const content = await res.text();
+          if (window.liveCanvas) {
+            window.liveCanvas.openArtifact({
+              title: fileName,
+              code: content,
+              language: ext === 'py' ? 'python' : (ext === 'js' ? 'javascript' : (ext === 'md' ? 'markdown' : ext)),
+              filepath: targetPath
+            });
+            return;
+          }
+        }
+      } catch (err) {
+        console.warn('Live Canvas file open error:', err);
+      }
+
+      // Fallback: Copy path
+      navigator.clipboard.writeText(targetPath).then(() => {
+        if (window.showToast) window.showToast('File Path Copied', targetPath, 3000);
       });
     }
   });
@@ -678,17 +720,13 @@ if (document.readyState === 'loading') {
   boot();
 }
 
-//  GREETING & USER PROFILE & 3D AVATAR CYCLER 
+//  GREETING & USER PROFILE AVATAR
 function setup3DAvatar() {
-  const avatarUrl = '/static/carbon_icons/misc/user-avatar.svg';
+  const userSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 32 32" fill="currentColor"><path d="M16 4a6 6 0 1 0 6 6 6 6 0 0 0-6-6zm0 10a4 4 0 1 1 4-4 4 4 0 0 1-4 4zm10 14h-2a8 8 0 0 0-16 0H6a10 10 0 0 1 20 0z"/></svg>';
   ['sidebar-user-avatar', 'debate-sidebar-user-avatar'].forEach(id => {
     const sbAvatar = document.getElementById(id);
     if (!sbAvatar) return;
-    if (sbAvatar.tagName && sbAvatar.tagName.toLowerCase() === 'img') {
-      sbAvatar.src = avatarUrl;
-    } else {
-      sbAvatar.innerHTML = `<img class="sidebar-user-avatar" src="${avatarUrl}" alt="User Avatar" />`;
-    }
+    sbAvatar.innerHTML = userSvg;
   });
 }
 

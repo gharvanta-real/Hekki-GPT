@@ -1,1831 +1,407 @@
-import { scrollChat, enhanceCodeBlocks, enhanceTables, enhanceImagePreviews, enhanceMarkdownContent, escapeHtml, ChatSessionManager } from './chat.js';
+/**
+ * agent_stream.js — Main Stream Event Dispatcher & Message Lifecycle Orchestrator.
+ * Uses per-chat stream buffers so responses continue in background on page/chat switch.
+ */
+
+import { scrollChat, escapeHtml, ChatSessionManager } from './chat.js';
+import { createVoiceSummaryGenCard } from './chat/voice_summary_card.js';
+import { sanitizeHtml, playReminderChime, stripPlannerMetadata } from './stream/stream_utils.js';
+import { renderParsedMessage, appendThoughtChunk, finalizeStreamThought } from './stream/stream_thought.js';
+import {
+  ensureToolContainer, renderToolCallCard, handleToolLog, handleToolResult,
+  finalizeToolContainer, getFriendlyToolActionText, updateDynamicHeaderTitle
+} from './stream/stream_tools.js';
+import { attachAiActions } from './stream/stream_actions.js';
+import { isAiderActive, setAiderActive, handleAiderChunk, finalizeAiderConsole } from './stream/stream_aider.js';
+import { showQuestionCard, hideQuestionCard, initQuestionCard } from './chat/question_card.js';
+import {
+  initBuffer, getBuffer, isStreamActive, anyStreamActive, getActiveStreamChatIds,
+  appendText, appendThought, setText, pushToolRun, pushToolLog, pushWrittenFile, attachDomEl,
+  detachDomEl, markDone, clearBuffer, getDomEl
+} from './stream/stream_buffer.js';
+
 const appendHudLog = window.__HEKKI_DEBUG__ ? (msg) => console.log('[HUD LOG]', msg) : () => {};
 
-/**
- * [C-1] Lightweight HTML sanitizer — strips <script>, <iframe>, on* event handlers
- * from AI-generated markdown output before assigning to innerHTML.
- * Full DOMPurify can replace this when added via CDN/npm.
- */
-function sanitizeHtml(html) {
-  if (!html) return '';
-  // Remove <script> and <iframe> blocks entirely
-  let clean = html
-    .replace(/<script[\s\S]*?<\/script>/gi, '')
-    .replace(/<iframe[\s\S]*?<\/iframe>/gi, '')
-    .replace(/<object[\s\S]*?<\/object>/gi, '')
-    .replace(/<embed[\s\S]*?\/>/gi, '');
-  // Strip on* event handler attributes (e.g. onerror, onload, onclick)
-  clean = clean.replace(/\s+on\w+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]*)/gi, '');
-  // Strip javascript: hrefs
-  clean = clean.replace(/href\s*=\s*["']?javascript:[^"'>\s]*/gi, 'href="#"');
-  return clean;
+// Track the chatId that is currently streaming
+let _streamingChatId = null;
+
+// ─── Per-chat generating state (Set of chatIds currently generating) ──────────
+if (!window._generatingChats) window._generatingChats = new Set();
+
+export function setGeneratingState(isGen, chatId) {
+  const cid = chatId || _streamingChatId || ChatSessionManager?.getActiveChatId?.() || null;
+  if (!cid) {
+    // Fallback: legacy global flag
+    window.isGenerating = !!isGen;
+    if (window._syncGeneratingState) window._syncGeneratingState(!!isGen);
+    return;
+  }
+  if (isGen) {
+    window._generatingChats.add(cid);
+  } else {
+    window._generatingChats.delete(cid);
+  }
+  // Keep legacy flag in sync with active chat
+  const activeCid = ChatSessionManager?.getActiveChatId?.();
+  window.isGenerating = activeCid ? window._generatingChats.has(activeCid) : window._generatingChats.size > 0;
+  if (window._syncGeneratingState) window._syncGeneratingState(window.isGenerating);
 }
 
-let _streamThoughtCard  = null;
-let _streamThoughtBody  = null;
-let _streamThoughtText  = "";
-let _streamThoughtStartTime = 0;
-let _streamResponseEl   = null;
-let _streamResponseText = "";
-let _lastToolBlock = null;
-let _currentMessageActive = false;
+/** True if the CURRENT active chat is generating */
+export function isCurrentChatGenerating() {
+  const activeCid = ChatSessionManager?.getActiveChatId?.();
+  if (!activeCid) return window.isGenerating || false;
+  return window._generatingChats.has(activeCid);
+}
 
-// ── Codex-style 3-layer execution feed state ─────────────────────────────
-// Layer 1 ACTION: pre-tool narration (small label before tool badge)
-// Layer 2 TOOL:   badge (unchanged)
-// Layer 3 FINDING: post-tool micro-summary (compact, max 2 sentences)
-let _reasoningCard      = null;  // kept for compat, unused in new flow
-let _reasoningBody      = null;
-let _reasoningText      = "";
-let _findingEl          = null;  // FINDING label element
-let _findingText        = '';    // accumulated finding text
+// ─── DOM helpers ──────────────────────────────────────────────────────────────
+function _getCol() {
+  return document.getElementById('chat-col') || document.getElementById('chat-log');
+}
 
-let _aiderConsoleCard   = null;
-let _aiderConsoleLogArea = null;
-let _aiderActive        = false;
-let _aiderConsoleRawText = "";
+function _ensureResponseMsg(chatId, enterConversationCallback) {
+  let domEl = getDomEl(chatId);
+  if (domEl && domEl.isConnected) return domEl;
+  // Create new DOM element for this stream
+  enterConversationCallback();
+  const col = _getCol();
+  if (!col) return null;
+  domEl = document.createElement('div');
+  domEl.className = 'msg ai';
+  domEl.dataset.streamChatId = chatId;
+  col.appendChild(domEl);
+  attachDomEl(chatId, domEl);
+  return domEl;
+}
 
-// Grouped tool execution states (monochromatic, collapsible tool groups)
-let _streamToolContainer = null;
-let _streamToolBody      = null;
-let _streamToolCount     = 0;
-let _streamToolStartTime = 0;     // Timestamp when tool group started (for "Worked for Xs")
-let _currentMessageToolRuns = [];
-let _writtenFilesThisMsg = []; // Tracks files written by write_to_file during this message
+// ─── Finalization ─────────────────────────────────────────────────────────────
+function _finalizeStreamResponse(chatId) {
+  const buf = getBuffer(chatId);
+  if (!buf) return;
 
-import { stripPlannerMetadata } from './stream/stream_utils.js';
-
-
-function _renderParsedMessage(containerEl, rawText) {
-  if (!containerEl || !rawText) return;
-
-  const parseThinking = (raw) => {
-    if (!raw) return { thought: '', content: '' };
-    const tagMatch = raw.match(/<(think|thinking)>([\s\S]*?)(?:<\/\1>|$)/i);
-    if (tagMatch) {
-      return {
-        thought: tagMatch[2].trim(),
-        content: raw.replace(/<(think|thinking)>[\s\S]*?(?:<\/\1>|$)/gi, '').trim()
-      };
-    }
-
-    if (/^(?:\d+\.\s*\*\*(?:Analyze|Safety|Policy|Persona|Constraint|Formulate).*?\*\*)/i.test(raw.trim())) {
-      const paragraphs = raw.split(/\n\s*\n/);
-      const thoughtPs = [];
-      const contentPs = [];
-      let inThought = true;
-
-      for (let p of paragraphs) {
-        const trimmedP = p.trim();
-        if (inThought && (/^(?:\d+\.\s*\*|\*\*(?:Analyze|Safety|Policy|Persona|Constraint|Formulate).*?\*\*)/i.test(trimmedP) || trimmedP.startsWith('* **') || trimmedP.startsWith('- **'))) {
-          thoughtPs.push(p);
-        } else {
-          inThought = false;
-          contentPs.push(p);
-        }
-      }
-
-      if (thoughtPs.length > 0 && contentPs.length > 0) {
-        return {
-          thought: thoughtPs.join('\n\n').trim(),
-          content: contentPs.join('\n\n').trim()
-        };
-      }
-    }
-
-    return { thought: '', content: raw };
+  const domEl = getDomEl(chatId);
+  if (domEl && domEl.isConnected) {
+    attachAiActions(domEl, buf.text, buf.toolRuns);
+  }
+  const durationSec = Math.max(1, Math.round(((Date.now() - (buf.startTime || Date.now())) / 1000)) || ((buf.toolRuns?.length || 1) * 2));
+  const metadata = {
+    tool_runs: buf.toolRuns || [],
+    written_files: buf.writtenFiles || [],
+    thought: buf.thought || '',
+    duration_sec: durationSec
   };
+  ChatSessionManager.appendMessage('assistant', buf.text, metadata);
 
-  const { thought: thoughtContent, content: finalText } = parseThinking(rawText);
-  const cleanFinalText = stripPlannerMetadata(finalText);
-
-  let thoughtHtml = '';
-  if (thoughtContent) {
-    thoughtHtml = `
-      <div class="thought-container">
-        <div class="thought-header">
-          <span class="thought-title">Thinking Process</span>
-          <svg class="mi-chevron thought-chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" style="width:12px;height:12px;display:inline-block;vertical-align:middle;transition:transform 0.2s;flex-shrink:0;"><path d="M16 22L6 12l1.4-1.4 8.6 8.6 8.6-8.6L26 12z"/></svg>
-        </div>
-        <div class="thought-body collapsed" style="display: none;">
-          <div class="thought-step">${window.marked ? sanitizeHtml(marked.parse(thoughtContent)) : escapeHtml(thoughtContent)}</div>
-        </div>
-      </div>
-    `;
+  // Mark "new response" if user is NOT on this chat right now
+  const activeCid = ChatSessionManager?.getActiveChatId?.();
+  if (activeCid !== chatId) {
+    const chats = ChatSessionManager.getChats();
+    const chat = chats.find(c => c.id === chatId);
+    if (chat) {
+      chat.hasNewResponse = true;
+      ChatSessionManager.saveChats(chats);
+      ChatSessionManager.renderChatsList();
+    }
   }
 
-  const responseHtml = window.marked ? sanitizeHtml(marked.parse(cleanFinalText || rawText)) : escapeHtml(cleanFinalText || rawText);
-  containerEl.innerHTML = thoughtHtml + responseHtml;
-  enhanceMarkdownContent(containerEl);
-
-  const header = containerEl.querySelector('.thought-header');
-  const body = containerEl.querySelector('.thought-body');
-  if (header && body) {
-    header.onclick = () => {
-      const collapsed = body.classList.toggle('collapsed');
-      header.classList.toggle('open', !collapsed);
-      body.style.display = collapsed ? 'none' : 'flex';
-    };
+  // Inject Canvas Preview Pills for Written Files
+  if (buf.writtenFiles.length > 0) {
+    const col = _getCol();
+    if (col) {
+      const previewRow = document.createElement('div');
+      previewRow.className = 'doc-preview-pills-row';
+      previewRow.style.cssText = 'display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 4px 0;padding:0;align-items:center;';
+      buf.writtenFiles.forEach(filePath => {
+        const fileName = filePath.replace(/\\/g, '/').split('/').pop();
+        const ext = (fileName.split('.').pop() || '').toLowerCase();
+        const pill = document.createElement('button');
+        pill.className = 'doc-canvas-pill';
+        pill.style.cssText = 'display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:var(--radius-pill,9999px);background:var(--hover);border:none!important;color:var(--text-secondary);font-size:12px;font-family:var(--font);font-weight:500;cursor:pointer;transition:all 0.12s;';
+        pill.title = `Open in Live Canvas: ${filePath}`;
+        pill.innerHTML = `<i data-lucide="file-code" style="width:13px;height:13px;flex-shrink:0;"></i><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:200px;">${escapeHtml(fileName)}</span>`;
+        pill.addEventListener('click', async () => {
+          if (window.liveCanvas) {
+            try {
+              const res = await fetch(`/api/workspace/render?path=${encodeURIComponent(filePath.replace(/\\/g, '/'))}`);
+              const content = res.ok ? await res.text() : '';
+              window.liveCanvas.openArtifact({ code: content, language: ext, title: fileName, filepath: filePath });
+            } catch {
+              window.liveCanvas.openArtifact({ code: '', language: ext, title: fileName, filepath: filePath });
+            }
+          }
+        });
+        previewRow.appendChild(pill);
+      });
+      col.appendChild(previewRow);
+      if (window.lucide) lucide.createIcons({ parent: previewRow });
+    }
   }
-  if (window.lucide) setTimeout(() => lucide.createIcons({ parent: containerEl }), 0);
+
+  clearBuffer(chatId);
+  if (_streamingChatId === chatId) _streamingChatId = null;
 }
 
-function _getFriendlyToolActionText(toolName) {
-  if (!toolName) return 'Thinking...';
-  const name = toolName.toLowerCase();
-  
-  if (name.includes('search') || name.includes('scrape') || name.includes('news') || name.includes('wikipedia')) {
-    return 'Searching the web...';
-  }
-  if (name.includes('file') || name.includes('read') || name.includes('list') || name.includes('view')) {
-    return 'Reading codebase...';
-  }
-  if (name.includes('refactor') || name.includes('write') || name.includes('replace') || name.includes('edit')) {
-    return 'Modifying files...';
-  }
-  if (name.includes('command') || name.includes('bash') || name.includes('terminal')) {
-    return 'Running command...';
-  }
-  if (name.includes('recon') || name.includes('header') || name.includes('scan') || name.includes('security')) {
-    return 'Scanning security boundaries...';
-  }
-  if (name.includes('data') || name.includes('chart') || name.includes('analyzer')) {
-    return 'Analyzing data...';
-  }
-  if (name.includes('image') || name.includes('generate')) {
-    return 'Generating visual asset...';
-  }
-  if (name.includes('memory') || name.includes('episodic')) {
-    return 'Accessing memory...';
-  }
-  
-  const formatted = toolName.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-  return `Executing ${formatted}...`;
-}
-
-function _updateDynamicHeaderTitle(col, actionText) {
-  if (!col) return;
-  let titleEl = col.querySelector('.cad-ai-header-title');
-  if (titleEl && titleEl.textContent !== actionText) {
-    titleEl.style.transition = 'opacity 0.15s ease';
-    titleEl.style.opacity = '0.3';
-    setTimeout(() => {
-      titleEl.textContent = actionText;
-      titleEl.style.opacity = '1';
-    }, 150);
+// ─── Freeze / Thaw (called by router on page switch) ─────────────────────────
+/**
+ * Freeze: user navigated away from chat. Detach DOM reference but keep buffer alive.
+ * @param {string} chatId
+ */
+export function freezeActiveStream(chatId) {
+  if (chatId && isStreamActive(chatId)) {
+    detachDomEl(chatId);
   }
 }
 
-function playReminderChime() {
-  try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(587.33, ctx.currentTime);
-    osc.frequency.setValueAtTime(880, ctx.currentTime + 0.15);
-    gain.gain.setValueAtTime(0.3, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.start();
-    osc.stop(ctx.currentTime + 0.6);
-  } catch (err) {}
+/**
+ * Thaw: user navigated back to chat. Reconstruct DOM element from buffer.
+ * @param {string} chatId
+ * @param {Function} enterConversationCallback
+ */
+export function thawActiveStream(chatId, enterConversationCallback) {
+  if (!chatId || !isStreamActive(chatId)) return false;
+  const buf = getBuffer(chatId);
+  if (!buf) return false;
+
+  const col = _getCol();
+  if (!col) return false;
+
+  // Re-create DOM element and re-render buffered text
+  let domEl = col.querySelector(`[data-stream-chat-id="${chatId}"]`);
+  if (!domEl) {
+    domEl = document.createElement('div');
+    domEl.className = 'msg ai';
+    domEl.dataset.streamChatId = chatId;
+    col.appendChild(domEl);
+  }
+  attachDomEl(chatId, domEl);
+  if (buf.text) {
+    renderParsedMessage(domEl, buf.text);
+  }
+  if (enterConversationCallback) enterConversationCallback();
+  scrollChat();
+  return true;
 }
 
-
+// ─── Main Event Handler ───────────────────────────────────────────────────────
 export function handleChatAgentEvent(e, enterConversationCallback) {
   try {
-    const col = document.getElementById('chat-col') || document.getElementById('chat-log');
+    const col = _getCol();
     if (!col) return;
 
-    if (!_currentMessageActive && e.kind !== 'done' && e.kind !== 'error') {
-      _currentMessageActive = true;
-      _currentMessageToolRuns = [];
-      _writtenFilesThisMsg = [];
-      window._firstResponseChunkProcessed = false;
-      if (window.setGeneratingState) window.setGeneratingState(true);
+    // Determine chatId for this stream event
+    const activeCid = ChatSessionManager?.getActiveChatId?.() || null;
+
+    // On first non-done event: initialize buffer for this chat
+    if (e.kind !== 'done' && e.kind !== 'error') {
+      if (!_streamingChatId) {
+        _streamingChatId = activeCid;
+        if (_streamingChatId) {
+          initBuffer(_streamingChatId);
+          window._firstResponseChunkProcessed = false;
+          setGeneratingState(true, _streamingChatId);
+        }
+      }
     }
+
+    const cid = _streamingChatId;
+    // Is the user currently viewing this chat?
+    const isVisible = (activeCid === cid);
 
     switch (e.kind) {
     case 'reminder_trigger': {
       const text = e.data || 'Reminder Notification';
       playReminderChime();
       if (window.showToast) window.showToast('⏰ Reminder Alert', text, 8000);
-      const alertEl = document.createElement('div');
-      alertEl.className = 'chat-msg-row ai-msg';
-      alertEl.innerHTML = `
-        <div class="msg-bubble ai-bubble" style="border: 1px solid var(--accent, #2563eb) !important; background: var(--input-bg) !important; padding: 10px 14px; border-radius: 10px; margin-top: 10px;">
-          <div style="display:flex;align-items:center;gap:8px;font-weight:600;color:var(--text-primary);margin-bottom:4px;">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;color:var(--accent,#2563eb);flex-shrink:0;"><path d="M28.7 20.9C27.1 18.7 26 17.3 26 12a10 10 0 0 0-8-9.8V2h-4v.2A10 10 0 0 0 6 12c0 5.3-1.1 6.7-2.7 8.9l-.3.4V24h8a5 5 0 0 0 10 0h8v-2.7zm-12.7 7a3 3 0 0 1-3-3h6a3 3 0 0 1-3 3zm-9.9-6c1.5-2.1 2.9-4 2.9-9.9a8 8 0 0 1 16 0c0 5.9 1.4 7.8 2.9 9.9z"/></svg>
-            <span>⏰ REMINDER ALERT</span>
+      if (isVisible) {
+        const alertEl = document.createElement('div');
+        alertEl.className = 'chat-msg-row ai-msg';
+        alertEl.innerHTML = `
+          <div class="msg-bubble ai-bubble" style="border: none !important; background: var(--input-bg) !important; padding: 10px 14px; border-radius: 10px; margin-top: 10px;">
+            <div style="display:flex;align-items:center;gap:8px;font-weight:600;color:var(--text-primary);margin-bottom:4px;"><span>⏰ REMINDER ALERT</span></div>
+            <div style="font-size:13px;color:var(--text);">${escapeHtml(text)}</div>
           </div>
-          <div style="font-size:13px;color:var(--text);">${escapeHtml(text)}</div>
-        </div>
-      `;
-      col.appendChild(alertEl);
-      if (window.lucide) lucide.createIcons({ parent: alertEl });
-      scrollChat();
+        `;
+        col.appendChild(alertEl);
+        scrollChat();
+      }
       break;
     }
 
     case 'thinking': {
-      enterConversationCallback();
-      if (window.setGeneratingState) window.setGeneratingState(true);
-      if (e.data && e.data.includes('Aider')) {
-        _aiderActive = true;
+      if (isVisible) {
+        enterConversationCallback();
+        if (e.data && e.data.includes('Aider')) setAiderActive(true);
+        appendHudLog(`[INFO] ${e.data}`);
+        col.querySelectorAll('.chat-ai-stream-header').forEach(el => el.remove());
+        const headerEl = document.createElement('div');
+        headerEl.className = 'cad-ai-stream-header chat-ai-stream-header';
+        headerEl.style.marginTop = '16px';
+        headerEl.style.marginBottom = '6px';
+        headerEl.innerHTML = `
+          <canvas class="cad-ai-orb-avatar" id="chat-active-orb-canvas" width="26" height="26"></canvas>
+          <span class="cad-ai-header-title">Thinking...</span>
+        `;
+        col.appendChild(headerEl);
+        setTimeout(() => {
+          const canvas = headerEl.querySelector('#chat-active-orb-canvas');
+          if (canvas && window.RibbonGradientOrb) new window.RibbonGradientOrb(canvas).start();
+        }, 40);
+        scrollChat();
       }
-      appendHudLog(`[INFO] ${e.data}`);
-
-      // ── Inject Gemini 3.1 Reasoning Engine orb header (same as HekkiCAD) ──
-      col.querySelectorAll('.chat-ai-stream-header').forEach(el => el.remove());
-
-      const headerEl = document.createElement('div');
-      headerEl.className = 'cad-ai-stream-header chat-ai-stream-header';
-      headerEl.style.marginTop = '20px';
-      headerEl.style.marginBottom = '8px';
-      headerEl.innerHTML = `
-        <canvas class="cad-ai-orb-avatar" id="chat-active-orb-canvas" width="28" height="28"></canvas>
-        <span class="cad-ai-header-title">Thinking...</span>
-      `;
-      col.appendChild(headerEl);
-
-      setTimeout(() => {
-        const canvas = headerEl.querySelector('#chat-active-orb-canvas');
-        if (canvas && window.RibbonGradientOrb) {
-          new window.RibbonGradientOrb(canvas).start();
-        }
-      }, 50);
-
-      scrollChat();
       break;
     }
 
-    // ── LAYER 1: ACTION label — pre-tool narration (contained inside tool block) ──────
-    case 'reasoning': {
-      enterConversationCallback();
-      col.querySelectorAll('.action-label-temp').forEach(el => el.remove());
-      _findingEl   = null;
-      _findingText = '';
-      break;
-    }
-
-    // ── LAYER 3: FINDING label — post-tool micro-summary (nested inside tool block) ───
-    case 'reasoning_chunk': {
-      col.querySelectorAll('.action-label-temp').forEach(el => el.classList.remove('action-label-temp'));
-      if (!_findingEl) {
-        _findingEl = document.createElement('div');
-        _findingEl.className = 'finding-label';
-        _findingEl.style.cssText = 'width: 100%; margin-top: 3px; padding-left: 21px; font-size: 11.5px; color: var(--text-3); font-family: var(--font); opacity: 0.9; box-sizing: border-box;';
-        if (_lastToolBlock) {
-          _lastToolBlock.style.flexWrap = 'wrap';
-          _lastToolBlock.appendChild(_findingEl);
-        } else if (_streamToolBody) {
-          _streamToolBody.appendChild(_findingEl);
-        }
+    case 'thought': {
+      if (cid) appendThought(cid, e.data || '');
+      if (isVisible) {
+        appendThoughtChunk(e.data || '', col, enterConversationCallback);
+        scrollChat();
       }
-      _findingText += e.data;
-      const sentenceBreak = _findingText.search(/(?<=[.!?])\s+[A-Z]/);
-      const display = sentenceBreak > 0
-        ? _findingText.slice(0, sentenceBreak + 1).trim()
-        : _findingText.slice(0, 180).trim();
-      if (_findingEl) _findingEl.textContent = display;
-      if (_currentMessageToolRuns.length > 0) {
-        _currentMessageToolRuns[_currentMessageToolRuns.length - 1].reasoning += e.data;
+      break;
+    }
+
+    case 'response_chunk':
+    case 'text': {
+      if (cid) appendText(cid, e.data || '');
+      if (isVisible) {
+        if (!window._firstResponseChunkProcessed) {
+          col.querySelectorAll('.think-label-temp').forEach(el => el.remove());
+          col.querySelector('.chat-ai-stream-header #chat-stream-typing-dots')?.remove();
+          window._firstResponseChunkProcessed = true;
+        }
+        if (isAiderActive()) {
+          handleAiderChunk(e.data || '', col, enterConversationCallback);
+        } else {
+          const domEl = _ensureResponseMsg(cid, enterConversationCallback);
+          updateDynamicHeaderTitle(col, 'Writing response...');
+          if (domEl) renderParsedMessage(domEl, getBuffer(cid)?.text || '');
+        }
+        scrollChat();
       }
-      scrollChat();
       break;
     }
-
-    case 'reasoning_done': {
-      if (_findingEl) {
-        _findingEl.classList.remove('finding-label--streaming');
-      }
-      _reasoningCard = null;
-      _reasoningBody = null;
-      _reasoningText = '';
-      break;
-    }
-
-    case 'think_chunk': {
-      // Internal model inference token — not for user display.
-      // Codex/Claude Code pattern: internal chain-of-thought is never shown.
-      // Only ACTION (pre-tool) and FINDING (post-tool) labels are surfaced.
-      break;
-    }
-
-    case 'response_chunk': {
-      if (!window._firstResponseChunkProcessed) {
-        col.querySelectorAll('.think-label-temp').forEach(el => el.remove());
-        const activeOrb = document.querySelector('.chat-ai-stream-header #chat-stream-typing-dots');
-        if (activeOrb) activeOrb.remove();
-        if (_streamToolContainer) {
-          const statusEl = _streamToolContainer.querySelector('.tool-group-status');
-          if (statusEl && statusEl.innerHTML.includes('running')) {
-            statusEl.innerHTML = '<span style="color: var(--text-3);">&#10003; completed</span>';
-          }
-        }
-        window._firstResponseChunkProcessed = true;
-      }
-      
-      if (_aiderActive) {
-        appendHudLog(e.data);
-        _ensureAiderConsoleCard(enterConversationCallback);
-        if (_aiderConsoleLogArea) {
-          _aiderConsoleRawText += e.data;
-          _aiderConsoleLogArea.innerHTML = window.marked 
-            ? sanitizeHtml(marked.parse(_aiderConsoleRawText)) 
-            : escapeHtml(_aiderConsoleRawText);
-          enhanceMarkdownContent(_aiderConsoleLogArea);
-          _aiderConsoleLogArea.scrollTop = _aiderConsoleLogArea.scrollHeight;
-          
-          const addActivityStep = (text, isDone = false) => {
-            const feedEl = _aiderConsoleCard.querySelector('#aider-activity-steps');
-            if (feedEl) {
-              const lastChild = feedEl.lastElementChild;
-              if (lastChild && lastChild.innerText.includes(text)) return;
-              
-              while (feedEl.children.length >= 4) {
-                feedEl.removeChild(feedEl.firstChild);
-              }
-              
-              const step = document.createElement('div');
-              step.style.display = 'flex';
-              step.style.alignItems = 'center';
-              step.style.gap = '8px';
-              step.style.color = isDone ? 'var(--text-3)' : 'var(--text-2)';
-              step.style.fontWeight = 'normal';
-              step.style.fontSize = '13.5px';
-              step.innerHTML = `
-                <span style="color:var(--text-3)">Â·</span>
-                <span>${text}</span>
-              `;
-              feedEl.appendChild(step);
-            }
-          };
-
-          // Parse stats from incoming output stream
-          const lines = e.data.split('\n');
-          lines.forEach(line => {
-            const trimmed = line.trim();
-            if (!trimmed) return;
-            
-            // Live activity feed matches
-            if (trimmed.includes('Git repo:')) {
-              addActivityStep('Scanning Git repository and workspace files...');
-            } else if (trimmed.includes('Model:')) {
-              const modelName = trimmed.split('Model:')[1]?.trim() || 'Gemini';
-              addActivityStep(`Connecting to Aider backend model (${modelName})...`);
-            } else if (trimmed.match(/Added (.*) to the chat/i)) {
-              const file = trimmed.match(/Added (.*) to the chat/i)[1];
-              addActivityStep(`Loading file into AI context: ${file}`);
-            } else if (trimmed.includes('Thinking...')) {
-              addActivityStep('Analyzing codebase & planning implementation...');
-            } else if (trimmed.match(/Editing (.*)/i) || trimmed.match(/Updating (.*)/i)) {
-              const file = trimmed.match(/(?:Editing|Updating) (.*)/i)[1];
-              addActivityStep(`Generating and compiling edits for ${file}...`);
-            } else if (trimmed.match(/Applied edits to (.*)/i)) {
-              const file = trimmed.match(/Applied edits to (.*)/i)[1];
-              addActivityStep(`Successfully applied edits to ${file}`, true);
-            } else if (trimmed.match(/Commit ([a-f0-9]+)/i)) {
-              addActivityStep('Staging changeset and creating git commit...', true);
-            }
-
-            // 1. Detect file count
-            const fileMatch = trimmed.match(/Git repo:.*with (\d+) files/i);
-            if (fileMatch) {
-              const countEl = _aiderConsoleCard.querySelector('#aider-files-count');
-              if (countEl) countEl.textContent = `${fileMatch[1]} files`;
-              const badge = _aiderConsoleCard.querySelector('#aider-status-badge');
-              if (badge) {
-                badge.textContent = '[scanning]';
-              }
-            }
-            
-            // 2. Detect added files / reading / scanning
-            const readMatch = trimmed.match(/Added (.*) to the chat/i) || trimmed.match(/Referencing (.*)/i) || trimmed.match(/Loading (.*)/i);
-            if (readMatch) {
-              const opEl = _aiderConsoleCard.querySelector('#aider-active-op');
-              if (opEl) opEl.textContent = `${readMatch[1]}`;
-              const badge = _aiderConsoleCard.querySelector('#aider-status-badge');
-              if (badge) {
-                badge.textContent = '[reading]';
-              }
-            }
-            
-            // 3. Detect active edit file
-            const editMatch = trimmed.match(/Applied edits to (.*)/i) || trimmed.match(/Editing (.*)/i) || trimmed.match(/Updating (.*)/i) || trimmed.match(/Modify (.*)/i);
-            if (editMatch) {
-              const opEl = _aiderConsoleCard.querySelector('#aider-active-op');
-              const fileName = editMatch[1];
-              if (opEl) opEl.textContent = `${fileName}`;
-              const badge = _aiderConsoleCard.querySelector('#aider-status-badge');
-              if (badge) {
-                badge.textContent = '[editing]';
-              }
-              if (window.showWebPreviewIcon) window.showWebPreviewIcon();
-              
-              // Live animated additions counter to show work
-              if (!_aiderConsoleCard._diffInterval) {
-                _aiderConsoleCard._diffInterval = setInterval(() => {
-                  const addEl = _aiderConsoleCard?.querySelector('#aider-additions-count');
-                  if (addEl) {
-                    const currentVal = parseInt(addEl.textContent.replace('+', '')) || 0;
-                    addEl.textContent = `+${currentVal + Math.floor(Math.random() * 2 + 1)}`;
-                  }
-                }, 700);
-              }
-            }
-            
-            // 4. Detect diff stats
-            const diffMatch = trimmed.match(/(\d+) insertions?\(\+\),? (\d+) deletions?\(\-\)/i) || trimmed.match(/(\d+) additions?,? (\d+) deletions?/i);
-            if (diffMatch) {
-              if (_aiderConsoleCard._diffInterval) {
-                clearInterval(_aiderConsoleCard._diffInterval);
-                _aiderConsoleCard._diffInterval = null;
-              }
-              const addEl = _aiderConsoleCard.querySelector('#aider-additions-count');
-              const delEl = _aiderConsoleCard.querySelector('#aider-deletions-count');
-              if (addEl) addEl.textContent = `+${diffMatch[1]}`;
-              if (delEl) delEl.textContent = `-${diffMatch[2]}`;
-            }
-            
-            // 5. Detect commits count
-            const commitMatch = trimmed.match(/Commit ([a-f0-9]+)/i) || trimmed.match(/Created commit/i);
-            if (commitMatch) {
-              const commitEl = _aiderConsoleCard.querySelector('#aider-commits-count');
-              if (commitEl) {
-                const current = parseInt(commitEl.textContent) || 0;
-                commitEl.textContent = `${current + 1} commits`;
-              }
-              const badge = _aiderConsoleCard.querySelector('#aider-status-badge');
-              if (badge) {
-                badge.textContent = '[committing]';
-              }
-            }
-          });
-        }
-      } else {
-        _ensureResponseMsg(enterConversationCallback);
-        _streamResponseText += e.data;
-        _updateDynamicHeaderTitle(col, 'Writing response...');
-        if (_streamResponseEl) {
-          _renderParsedMessage(_streamResponseEl, _streamResponseText);
-        }
-        if (_streamResponseText.includes('```')) {
-          if (window.showWebPreviewIcon) window.showWebPreviewIcon();
-        }
-      }
-      scrollChat();
-      break;
-    }
-
-    case 'permission_request': {
-      col.querySelectorAll('.think-label-temp, .tool-block-temp').forEach(el => el.remove());
-      // Stop generating spinner — user must decide before we continue
-      if (window.setGeneratingState) window.setGeneratingState(false);
-      _currentMessageActive = false;
-      // Remove reasoning orb header completely
-      col.querySelectorAll('.chat-ai-stream-header, .cad-ai-stream-header').forEach(el => el.remove());
-
-      const targetPath = (e.metadata && e.metadata.path) || e.target_path || e.path || "D:/";
-      const targetFolder = targetPath.split(/[/\\]/).filter(Boolean).pop() || targetPath;
-
-      const card = document.createElement('div');
-      card.className = 'permission-request-card';
-      card.style.border = '1px solid var(--border)';
-      card.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.05)';
-      card.style.borderRadius = '12px';
-      card.style.background = 'var(--card)';
-      card.style.margin = '14px 0';
-      card.style.padding = '16px';
-      card.style.display = 'flex';
-      card.style.flexDirection = 'column';
-      card.style.gap = '12px';
-      card.style.fontFamily = 'var(--font)';
-      
-      card.innerHTML = `
-        <div style="display:flex; align-items:center; gap:8px; font-size:13.5px; font-weight:600; color:var(--text-primary);">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" style="width:16px;height:16px;color:#f59e0b;flex-shrink:0;"><path d="M15 17h2v-6h-2zm0 4h2v-2h-2z"/><path d="M16 2L4 6v10c0 7.4 5 14 12 16 7-2 12-8.6 12-16V6zm10 14c0 6.2-4.1 11.9-10 14-5.9-2.1-10-7.8-10-14V7.4l10-3.3 10 3.3z"/></svg>
-          <span>Workspace Access Permission Request</span>
-        </div>
-        <p style="font-size:12px; color:var(--text-secondary); margin:0; line-height:1.5;">
-          Hekki is trying to access <strong>${escapeHtml(targetPath)}</strong> which is outside the current workspace sandbox. Grant access to continue.
-        </p>
-        <div style="display:flex; align-items:center; gap:10px; margin-top:4px; flex-wrap:wrap;">
-          <button class="allow-everything-btn" style="border:none; background:var(--text-primary); color:var(--card); padding:8px 14px; border-radius:8px; font-size:12px; cursor:pointer; font-weight:600; display:flex; align-items:center; gap:6px; transition:opacity 0.1s;">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" style="width:13px;height:13px;flex-shrink:0;"><path d="M24 14h-2v-4a6 6 0 0 0-12 0h2a4 4 0 0 1 8 0v4H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V16a2 2 0 0 0-2-2zm0 14H8V16h16zm-9-5v-4h2v4h-2z"/></svg>
-            <span>Allow Everything</span>
-          </button>
-          <button class="allow-target-btn" style="border:none; background:var(--hover); color:var(--text-primary); padding:8px 14px; border-radius:8px; font-size:12px; cursor:pointer; font-weight:600; display:flex; align-items:center; gap:6px; transition:all 0.1s;">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" style="width:13px;height:13px;flex-shrink:0;"><path d="M14.5 12l-2-2H4v16h24V12zm9.5 12H6V8h5.7l2 2H24z"/><path d="M13.3 21.7L10 18.4l1.4-1.4 1.9 1.9 4.3-4.3 1.4 1.4z"/></svg>
-            <span>Allow Only: ${escapeHtml(targetPath)}</span>
-          </button>
-          <button class="deny-btn" style="border:none; background:transparent; color:var(--text-3); padding:8px 10px; border-radius:8px; font-size:11.5px; cursor:pointer; font-weight:500;">
-            Deny
-          </button>
-        </div>
-      `;
-      
-      col.appendChild(card);
-      if (window.lucide) lucide.createIcons();
-      
-      const activeChatId = localStorage.getItem('mariano_active_chat_id')
-                        || localStorage.getItem('hekki_active_chat_id');
-
-      const _retryQuery = (permissionMode, pathScope) => {
-        card.remove();
-        localStorage.setItem('mariano_permission_policy', permissionMode);
-        
-        if (window.showToast) {
-          const msg = permissionMode === 'everything' 
-            ? 'Full system access granted for this session.' 
-            : `Access allowed for: ${pathScope || targetFolder}`;
-          window.showToast('Access Granted', msg, 2500);
-        }
-
-        const chatLog = ChatSessionManager.getChats();
-        const activeChat = chatLog.find(c => c.id === activeChatId);
-        if (activeChat && activeChat.messages.length > 0) {
-          const userMsgs = activeChat.messages.filter(m => m.role === 'user');
-          if (userMsgs.length > 0) {
-            const lastQuery = userMsgs[userMsgs.length - 1].text;
-            
-            const retryEl = document.createElement('div');
-            retryEl.style.fontFamily = 'var(--font-mono)';
-            retryEl.style.fontSize = '11px';
-            retryEl.style.color = 'var(--text-3)';
-            retryEl.style.margin = '4px 0 12px 12px';
-            retryEl.innerHTML = `▸ retrying with permission: ${permissionMode}...`;
-            col.appendChild(retryEl);
-            
-            const activeProj = localStorage.getItem('mariano_active_project')
-                            || localStorage.getItem('hekki_active_project');
-            const activeProjPath = localStorage.getItem('mariano_active_project_path');
-            
-            window.socket.send(JSON.stringify({ 
-              type: 'query', 
-              text: lastQuery,
-              project: activeProj || null,
-              project_path: pathScope || activeProjPath || null,
-              permission_policy: permissionMode,
-              chat_id: activeChatId
-            }));
-            if (window.setGeneratingState) window.setGeneratingState(true);
-          }
-        }
-      };
-
-      card.querySelector('.allow-everything-btn').addEventListener('click', () => {
-        _retryQuery('everything', null);
-      });
-
-      card.querySelector('.allow-target-btn').addEventListener('click', () => {
-        _retryQuery('scoped', targetPath);
-      });
-
-      card.querySelector('.deny-btn').addEventListener('click', () => {
-        card.remove();
-        ChatSessionManager.appendMessage('assistant', 'failed **Permission Denied** — Action blocked by user.');
-        if (window.setGeneratingState) window.setGeneratingState(false);
-      });
-      
-      scrollChat();
-      break;
-    }
-
 
     case 'tool_call': {
-      enterConversationCallback();
-      _finalizeStreamResponse();
-
-      const toolName = e.data || e.metadata?.tool || 'action';
-      const actionText = _getFriendlyToolActionText(toolName);
-      _updateDynamicHeaderTitle(col, actionText);
-
+      if (isVisible) {
+        enterConversationCallback();
+        const toolName = e.data || e.metadata?.tool || 'action';
+        const actionText = getFriendlyToolActionText(toolName);
+        updateDynamicHeaderTitle(col, actionText);
+        appendHudLog(`[EXEC] ${toolName} args: ${JSON.stringify(e.metadata?.args || {})}`);
+      }
       const args = e.metadata?.args || {};
-      const argsStr = JSON.stringify(args);
-      appendHudLog(`[EXEC] ${toolName} args: ${argsStr}`);
-
-      if (toolName === 'generate_image') {
-        const imgCard = document.createElement('div');
-        imgCard.className = 'image-generation-card';
-        imgCard.id = 'active-image-gen-card';
-        imgCard.setAttribute('data-img-card', '1'); // For interval cleanup on error
-        
-        imgCard.innerHTML = `
-          <div class="image-generation-shimmer"></div>
-          <div class="image-generation-header">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" style="width:13px;height:13px;margin-right:4px;flex-shrink:0;"><path d="M19 14a3 3 0 1 0-3-3 3 3 0 0 0 3 3zm0-4a1 1 0 1 1-1 1 1 1 0 0 1 1-1z"/><path d="M26 4H6a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h20a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 22H6V20l5-5 5.6 5.6a2 2 0 0 0 2.8 0L21 19l5 5zm0-4.8-3.6-3.6a2 2 0 0 0-2.8 0L18 19.2l-5.6-5.6a2 2 0 0 0-2.8 0L6 17.2V6h20z"/></svg>
-            <span>Generating Image</span>
-          </div>
-          <div class="image-generation-center-content">
-            <div class="image-generation-spinner"></div>
-            <div class="image-generation-text">Designing details...</div>
-          </div>
-        `;
-        col.appendChild(imgCard);
-        scrollChat();
-        if (window.lucide) lucide.createIcons({ parent: imgCard });
-        
-        const phrases = [
-          "Conceptualizing prompt...",
-          "Mapping latent spaces...",
-          "Refining shapes...",
-          "Rendering colors...",
-          "Polishing details..."
-        ];
-        let phraseIdx = 0;
-        imgCard._textInterval = setInterval(() => {
-          const txtEl = imgCard.querySelector('.image-generation-text');
-          if (txtEl) {
-            phraseIdx = (phraseIdx + 1) % phrases.length;
-            txtEl.textContent = phrases[phraseIdx];
-          }
-        }, 2500);
+      const targetPath = args.TargetFile || args.target_file || args.file_path || args.filePath || args.path || args.file || '';
+      if (targetPath && cid && (e.data === 'write_to_file' || (e.data || '').includes('write'))) {
+        pushWrittenFile(cid, targetPath);
       }
-
-      // ── Determine display details ──────────────────────────────────────────
-      const action = args.action || '';
-      const rawPath = args.TargetFile || args.target_file || args.file_path || args.filePath || args.path || args.file || args.filename || args.query || '';
-      const fileName = rawPath ? rawPath.split(/[\/\\]/).pop() : toolName;
-      const startLine = args.start_line || '';
-      const endLine   = args.end_line   || '';
-      const lineRange = (startLine && endLine) ? `L${startLine}–${endLine}` : (startLine ? `L${startLine}+` : '');
-
-      // Icon and label mapping — updated with clean vector outline SVGs
-      const _toolMeta = {
-        'write_to_file':              { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>', label: 'Writing', detail: fileName },
-        'replace_file_content':       { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M10 13l2 2 4-4"/></svg>', label: 'Replacing', detail: fileName },
-        'multi_replace_file_content': { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M10 13l2 2 4-4"/></svg>', label: 'Multi-replacing', detail: fileName },
-        'file_manager:replace':       { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M10 13l2 2 4-4"/></svg>', label: 'Replacing',       detail: fileName },
-        'file_manager:multi_replace': { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M10 13l2 2 4-4"/></svg>', label: 'Multi-replacing', detail: fileName },
-        'run_command':                { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>', label: 'Ran command',    detail: escapeHtml(String(args.CommandLine||args.command||'').slice(0,55)) },
-        'generate_image':       { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>', label: 'generate_image', detail: escapeHtml(String(args.Prompt || args.prompt || Object.values(args)[0] || '').slice(0, 55)) },
-        'image_analysis':       { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>', label: 'image_analysis', detail: escapeHtml(String(args.prompt || Object.values(args)[0] || '').slice(0, 55)) },
-        'file_manager:read':    { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>', label: 'Reading',        detail: lineRange ? `${fileName}  <span style="opacity:0.45;font-size:10.5px;">${lineRange}</span>` : fileName },
-        'view_file':            { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>', label: 'view_file', detail: fileName },
-        'file_manager:write':   { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>', label: 'Writing',        detail: fileName },
-        'file_manager:list':    { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/></svg>', label: 'Listing',        detail: fileName || 'directory' },
-        'list_dir':             { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/></svg>', label: 'list_dir', detail: fileName || 'directory' },
-        'file_manager:grep':    { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>', label: 'Grepping',       detail: escapeHtml(args.pattern||args.Query||'') },
-        'grep_search':          { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>', label: 'grep_search', detail: escapeHtml(String(args.Query||args.query||'').slice(0,55)) },
-        'file_manager:search':  { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>', label: 'Searching',      detail: escapeHtml(args.pattern||'') },
-        'file_manager:delete':  { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>', label: 'Deleting',       detail: fileName },
-        'file_manager:create_dir': { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/></svg>', label: 'Creating dir', detail: fileName },
-        'web_search':           { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>', label: 'Web search',     detail: escapeHtml(String(args.query||'').slice(0,55)) },
-        'web_scraper':          { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>', label: 'Scraping',       detail: escapeHtml(String(args.url||'').slice(0,55)) },
-        'deep_research':        { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>', label: 'Deep research', detail: escapeHtml(String(args.query||'').slice(0,55)) },
-        'code_search':          { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>', label: 'Code search',    detail: escapeHtml(String(args.query||'').slice(0,55)) },
-        'xml_block':            { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>', label: 'Logic', detail: escapeHtml(String(Object.values(args)[0] || '').slice(0, 55)) },
-        'shell':                { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>', label: 'Ran command',    detail: escapeHtml(String(args.command||'').slice(0,55)) },
-        'run_tests':            { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><polyline points="20 6 9 17 4 12"/></svg>', label: 'Tests',          detail: '' },
-        'stock':                { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>', label: 'Stock market', detail: escapeHtml(String(args.symbol||args.query||Object.values(args)[0]||'').slice(0,55)) },
-        'stock_data':           { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>', label: 'Stock data',   detail: escapeHtml(String(args.symbol||args.query||Object.values(args)[0]||'').slice(0,55)) },
-        'growth':               { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>', label: 'Growth trend', detail: escapeHtml(String(args.query||Object.values(args)[0]||'').slice(0,55)) },
-        'audio_summary':        { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>', label: 'audio_summary', detail: escapeHtml(String(args.title || args.query || args.prompt || args.text || Object.values(args)[0] || '').slice(0, 55)) },
-        'voice_summary':        { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>', label: 'voice_summary', detail: escapeHtml(String(args.title || args.query || args.prompt || args.text || Object.values(args)[0] || '').slice(0, 55)) },
-      };
-      const metaKey = (toolName === 'file_manager' && action) ? `file_manager:${action}` : toolName;
-      let meta = _toolMeta[metaKey] || _toolMeta[toolName.toLowerCase()];
-      const lowerTool = (toolName || '').toLowerCase();
-      if (!meta && (lowerTool.includes('audio') || lowerTool.includes('voice') || lowerTool.includes('tts') || lowerTool.includes('sound') || lowerTool.includes('music') || lowerTool.includes('podcast'))) {
-        meta = {
-          icon: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>',
-          label: toolName,
-          detail: escapeHtml(String(args.title || args.query || args.prompt || args.text || Object.values(args)[0] || '').slice(0, 55))
-        };
-      } else if (!meta && (lowerTool.includes('stock') || lowerTool.includes('growth') || lowerTool.includes('market') || lowerTool.includes('finance') || lowerTool.includes('nifty') || lowerTool.includes('trade'))) {
-        meta = {
-          icon: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>',
-          label: toolName,
-          detail: escapeHtml(String(Object.values(args)[0] || '').slice(0, 55))
-        };
-      }
-      if (!meta) {
-        meta = {
-          icon: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;vertical-align:middle;display:inline-block;flex-shrink:0;"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>',
-          label: toolName,
-          detail: escapeHtml(String(Object.values(args)[0] || '').slice(0, 55))
-        };
-      }
-
-      // Line addition (+) and deletion (-) diff counter calculation for file operations
-      let diffBadgeHtml = '';
-      if (action === 'write' || action === 'replace' || action === 'multi_replace' || toolName === 'write_to_file' || toolName === 'replace_file_content' || toolName === 'multi_replace_file_content') {
-        let added = 0;
-        let deleted = 0;
-        const codeContent = args.CodeContent || args.code || args.content || '';
-        const repContent = args.ReplacementContent || args.replacement_content || args.replacement || '';
-        const tgtContent = args.TargetContent || args.target_content || args.target || '';
-
-        if (codeContent) {
-          added = String(codeContent).split('\n').length;
-        } else if (repContent) {
-          added = String(repContent).split('\n').length;
-          deleted = tgtContent ? String(tgtContent).split('\n').length : 0;
-        } else if (args.ReplacementChunks && Array.isArray(args.ReplacementChunks)) {
-          for (const chunk of args.ReplacementChunks) {
-            if (chunk.ReplacementContent) added += String(chunk.ReplacementContent).split('\n').length;
-            if (chunk.TargetContent) deleted += String(chunk.TargetContent).split('\n').length;
-          }
-        } else if (args.chunks && Array.isArray(args.chunks)) {
-          for (const chunk of args.chunks) {
-            if (chunk.replacement) added += String(chunk.replacement).split('\n').length;
-            if (chunk.target) deleted += String(chunk.target).split('\n').length;
-          }
-        }
-
-        if (added > 0 || deleted > 0) {
-          const parts = [];
-          if (added > 0) parts.push(`<span style="color:#22c55e;font-weight:600;">+${added}</span>`);
-          if (deleted > 0) parts.push(`<span style="color:#ef4444;font-weight:600;">-${deleted}</span>`);
-          diffBadgeHtml = `<span style="margin-left:6px;font-family:var(--font-mono);font-size:11px;letter-spacing:0.3px;">${parts.join(' ')}</span>`;
+      if (isVisible) {
+        renderToolCallCard(e, col, enterConversationCallback, getBuffer(cid)?.toolRuns || []);
+        const toolName = e.data || e.metadata?.tool || '';
+        if (toolName === 'audio_summary' || toolName === 'voice_summary') {
+          document.getElementById('active-voice-summary-gen-card')?.remove();
+          const vsCard = createVoiceSummaryGenCard('Scanning & extracting context...');
+          vsCard.id = 'active-voice-summary-gen-card';
+          col.appendChild(vsCard);
+          scrollChat();
         }
       }
-
-      const slashContent = meta.detail
-        ? `<span style="font-weight:500;color:var(--text-secondary);white-space:nowrap;">${meta.label}</span><span style="color:var(--text-secondary);opacity:0.6;margin:0 2px;">/</span><span class="tool-detail" style="font-weight:400;color:var(--text-secondary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:340px;">${meta.detail}</span>${diffBadgeHtml}`
-        : `<span style="font-weight:500;color:var(--text-secondary);white-space:nowrap;">${meta.label}</span>${diffBadgeHtml}`;
-
-      const card = document.createElement('div');
-      card.className = 'tool-block-temp tool-log-card';
-      card.dataset.tool = metaKey;
-      card.style.cssText = [
-        'display:flex',
-        'align-items:center',
-        'justify-content:space-between',
-        'margin:3px 0 4px 0',
-        'padding:4px 0',
-        'background:transparent',
-        'font-size:14px',
-        'font-family:var(--font)',
-        'color:var(--text-secondary)',
-        'gap:10px',
-      ].join(';');
-
-      card.innerHTML = `
-        <div style="display:flex;align-items:center;gap:6px;overflow:hidden;min-height:18px;">
-          <span style="flex-shrink:0;opacity:0.85;display:inline-flex;align-items:center;justify-content:center;min-width:15px;width:15px;height:15px;overflow:visible;">${meta.icon}</span>
-          ${slashContent}
-        </div>
-        <span class="tool-status" style="flex-shrink:0;font-size:13px;color:var(--text-secondary);white-space:nowrap;opacity:0.85;">running<span class="dots">.</span></span>
-      `;
-
-      // Live brief execution hint line for transparent execution feedback
-      const briefCmd = args.command || args.cmd || args.query || args.pattern || args.path || args.url || '';
-      if (briefCmd) {
-        card.style.flexWrap = 'wrap';
-        const hintEl = document.createElement('div');
-        hintEl.className = 'tool-brief-hint';
-        hintEl.style.cssText = 'width: 100%; margin-top: 2px; padding-left: 21px; font-size: 13px; color: var(--text-secondary); font-family: var(--font-mono); opacity: 0.9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; box-sizing: border-box;';
-        hintEl.innerHTML = `▸ Executing: ${escapeHtml(String(briefCmd).slice(0, 90))}`;
-        card.appendChild(hintEl);
-      }
-
-      _ensureToolContainer(col, enterConversationCallback);
-      _streamToolCount++;
-
-      const elapsedSec = Math.max(1, Math.round((Date.now() - (_streamToolStartTime || Date.now())) / 1000));
-      const titleEl = _streamToolContainer.querySelector('.tool-group-title');
-      if (titleEl) {
-        titleEl.textContent = `Worked for ${elapsedSec}s`;
-      }
-      
-      const bodyEl = _streamToolContainer.querySelector('.tool-group-body');
-      const chevronEl = _streamToolContainer.querySelector('.chevron-icon');
-      if (bodyEl) {
-        bodyEl.style.display = 'flex'; // Keep it expanded while tools are running
-        if (chevronEl) {
-          chevronEl.style.transform = 'rotate(90deg)';
-        }
-      }
-      
-      _streamToolBody.appendChild(card);
-      if (window.lucide) lucide.createIcons({ parent: card });
-      _lastToolBlock = card;
-
-      // ── Fluid Wave Animation "Creating image" Card ──
-      if (toolName === 'generate_image') {
-        const oldCard = document.getElementById('active-image-gen-card');
-        if (oldCard) oldCard.remove();
-
-        const imgGenCard = document.createElement('div');
-        imgGenCard.className = 'chat-image-generating-card';
-        imgGenCard.id = 'active-image-gen-card';
-        
-        imgGenCard.innerHTML = `
-          <div class="image-generation-shimmer"></div>
-          <div class="chat-image-gen-header">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" style="width:14px;height:14px;margin-right:6px;flex-shrink:0;"><path d="M19 14a3 3 0 1 0-3-3 3 3 0 0 0 3 3zm0-4a1 1 0 1 1-1 1 1 1 0 0 1 1-1z"/><path d="M26 4H6a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h20a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 22H6V20l5-5 5.6 5.6a2 2 0 0 0 2.8 0L21 19l5 5zm0-4.8-3.6-3.6a2 2 0 0 0-2.8 0L18 19.2l-5.6-5.6a2 2 0 0 0-2.8 0L6 17.2V6h20z"/></svg>
-            <span>Creating image</span>
-          </div>
-          <div class="image-generation-center-content">
-            <div class="image-generation-spinner"></div>
-            <div class="image-generation-text">Designing details...</div>
-          </div>
-        `;
-        col.appendChild(imgGenCard);
-        scrollChat();
-        if (window.lucide) lucide.createIcons({ parent: imgGenCard });
-      }
-
-      _currentMessageToolRuns.push({
-        icon: meta.icon,
-        label: meta.label,
-        detail: meta.detail,
-        status: 'running',
-        reasoning: ''
-      });
-
-
-      // Animated dots on the status
-      const dotsEl = card.querySelector('.dots');
-      if (dotsEl) {
-        card._dotsInterval = setInterval(() => {
-          const d = dotsEl.textContent;
-          dotsEl.textContent = d.length >= 3 ? '.' : d + '.';
-        }, 400);
-      }
-
-      scrollChat();
       break;
     }
 
     case 'tool_log': {
-      // ── Live streaming terminal output lines ──────────────────────────────
-      const logLine = e.data || '';
-
-      // Update active stream header title with real-time log (e.g. Expert Debate progress)
-      const activeHeaderTitle = col.querySelector('.cad-ai-header-title');
-      if (activeHeaderTitle && logLine.trim()) {
-        const cleanStatusText = logLine.replace(/^\[INFO\]\s*/, '').trim();
-        if (cleanStatusText) {
-          activeHeaderTitle.textContent = cleanStatusText.slice(0, 80);
-        }
-      }
-
-      if (!_lastToolBlock) break;
-
-      // Create or reuse the live-log container inside the tool card
-      let liveLog = _lastToolBlock.querySelector('.tool-live-log');
-      if (!liveLog) {
-        _lastToolBlock.style.flexWrap = 'wrap';
-        liveLog = document.createElement('div');
-        liveLog.className = 'tool-live-log tool-terminal-block';
-        _lastToolBlock.appendChild(liveLog);
-      }
-
-      // Append the new line (Monochromatic UI)
-      const lineEl = document.createElement('div');
-      lineEl.className = 'tool-log-line';
-      lineEl.style.color = 'inherit';
-      lineEl.style.opacity = logLine.startsWith('$ ') || logLine.startsWith('  cwd:') ? '0.95' : '0.85';
-      lineEl.textContent = logLine;
-      liveLog.appendChild(lineEl);
-
-      // Auto-scroll to bottom
-      liveLog.scrollTop = liveLog.scrollHeight;
-      scrollChat();
+      if (cid) pushToolLog(cid, e.data || '');
+      if (isVisible) handleToolLog(e.data || '', getBuffer(cid)?.toolRuns);
       break;
     }
 
     case 'tool_result': {
-      if (_lastToolBlock) {
-        const isSuccess = e.metadata?.success !== false;
-        appendHudLog(`[RESULT] ${isSuccess ? 'completed Success' : 'failed Failed'}`);
-
-        // Stop animated dots
-        if (_lastToolBlock._dotsInterval) {
-          clearInterval(_lastToolBlock._dotsInterval);
-          _lastToolBlock._dotsInterval = null;
-        }
-
-        const statusEl = _lastToolBlock.querySelector('.tool-status');
-        if (statusEl) {
-          if (isSuccess) {
-            statusEl.innerHTML = '<span style="color:var(--text-3);display:inline-flex;align-items:center;gap:3.5px;"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;display:inline-block;"><polyline points="20 6 9 17 4 12"/></svg> done</span>';
-          } else {
-            statusEl.innerHTML = '<span style="color:#ef4444;display:inline-flex;align-items:center;gap:3.5px;"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;display:inline-block;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> failed</span>';
-          }
-        }
-
-        if (_currentMessageToolRuns.length > 0) {
-          const lastRun = _currentMessageToolRuns[_currentMessageToolRuns.length - 1];
-          lastRun.status = isSuccess ? 'done' : 'failed';
-          if (e.data && typeof e.data === 'string') {
-            lastRun.output = e.data;
-          }
-        }
-
-        const toolName = e.metadata?.tool || '';
-
-        if (toolName === 'generate_image') {
-          const imgCard = document.getElementById('active-image-gen-card');
-          if (imgCard) {
-            if (imgCard._textInterval) {
-              clearInterval(imgCard._textInterval);
-            }
-            
-            const isSuccess = e.metadata?.success !== false;
-            if (isSuccess && e.data) {
-              let imagePath = '';
-              try {
-                const parsed = JSON.parse(e.data);
-                if (parsed.image_path) {
-                  imagePath = parsed.image_path;
-                } else if (parsed.path) {
-                  imagePath = parsed.path;
-                } else if (parsed.artifact_path) {
-                  imagePath = parsed.artifact_path;
-                }
-              } catch (err) {
-                const match = e.data.match(/([a-zA-Z]:[\\\/][^:\*\?"<>\|]+\.(?:png|jpg|jpeg|webp|gif))/i)
-                           || e.data.match(/(\/[^:\*\?"<>\|]+\.(?:png|jpg|jpeg|webp|gif))/i);
-                if (match) {
-                  imagePath = match[0];
-                }
-              }
-              
-              if (imagePath) {
-                imgCard.className = 'chat-image-preview-card';
-                imgCard.id = '';
-                
-                const relativeOrAbsolute = imagePath.replace(/\\/g, '/');
-                const renderUrl = `/api/workspace/render?path=${encodeURIComponent(relativeOrAbsolute)}`;
-                
-                imgCard.innerHTML = `
-                  <div class="chat-image-preview-body">
-                    <img src="${renderUrl}" alt="Generated Image" class="image-fade-in" />
-                  </div>
-                  <div class="chat-image-preview-header">
-                    <i data-lucide="image" style="width:12px;height:12px;flex-shrink:0;"></i>
-                    <span>Generated Image</span>
-                    <a href="${renderUrl}" target="_blank" class="chat-image-preview-open" title="Open original image">
-                      <i data-lucide="external-link" style="width:12px;height:12px;"></i>
-                    </a>
-                  </div>
-                `;
-                
-                if (_currentMessageToolRuns.length > 0) {
-                  _currentMessageToolRuns[_currentMessageToolRuns.length - 1].image_path = relativeOrAbsolute;
-                }
-
-                if (window.lucide) lucide.createIcons({ parent: imgCard });
-              } else {
-                imgCard.remove();
-              }
-            } else {
-              imgCard.remove();
-            }
-          }
-        }
-
-        if (toolName === 'audio_summary') {
-          const isSuccess = e.metadata?.success !== false;
-          if (isSuccess && e.data) {
-            let audioUrl = '';
-            let hindiScript = '';
-            let title = 'Voice Audio Summary';
-
-            if (e.metadata?.audio_url) {
-              audioUrl = e.metadata.audio_url;
-              hindiScript = e.metadata.script || '';
-              title = e.metadata.title || title;
-            } else {
-              const audioMatch = (typeof e.data === 'string') ? (e.data.match(/\[AUDIO_PLAYER:\s*([^\]|]+)(?:\|([^\]]+))?\]/i) || e.data.match(/(\/api\/audio-summary\/file\/[^\s\)\"\'\]]+)/i)) : null;
-              if (audioMatch) {
-                audioUrl = audioMatch[1].trim();
-                if (audioMatch[2]) title = audioMatch[2].trim();
-              }
-              const scriptMatch = (typeof e.data === 'string') ? e.data.match(/\*\*🔊 Spoken Hindi Voice Overview Script:\*\*\s*\n\n([\s\S]+?)(?=\n\n\*\(|$)/i) : null;
-              if (scriptMatch) {
-                hindiScript = scriptMatch[1].trim();
-              } else if (typeof e.data === 'string') {
-                hindiScript = e.data.replace(/\[AUDIO_PLAYER:[^\]]+\]/gi, '').replace(/\*\(.*?\)\*/gi, '').replace(/^#+.*$/gm, '').trim();
-              }
-            }
-
-            if (audioUrl && window.audioOverviewManager) {
-              const audioCard = document.createElement('div');
-              audioCard.className = 'research-voice-card';
-              audioCard.style.cssText = 'margin: 12px 0; width: 100%;';
-              audioCard.innerHTML = `
-                <div class="research-voice-header">
-                  <span class="pdf-meta-pill">Voice Audio Summary</span>
-                  <span>${title}</span>
-                </div>
-                ${hindiScript ? `<div class="chapter-hindi-script" style="max-height:140px; font-size:var(--fs-sm);">${hindiScript}</div>` : ''}
-                <div class="audio-player-mount-point" style="margin-top:8px;"></div>
-              `;
-
-              const targetMount = _currentContentDiv || (_lastToolBlock ? _lastToolBlock.parentNode : null);
-              if (targetMount) {
-                targetMount.appendChild(audioCard);
-                const mountPoint = audioCard.querySelector('.audio-player-mount-point');
-                window.audioOverviewManager.mountAudioPlayer(mountPoint, audioUrl, title);
-                scrollChat();
-              }
-            }
-          }
-        }
-
-        // ── Track written files for canvas preview links ──
-        if ((toolName === 'write_to_file' || toolName === 'replace_file_content' || toolName === 'multi_replace_file_content') && isSuccess && e.data) {
-          // Extract file path from result output, e.g. "Successfully wrote ... to C:\path\file.md"
-          const pathMatch = e.data.match(/(?:to|file:)\s+([A-Za-z]:[\\\/][^\n\r]+\.[a-zA-Z0-9]+)/i)
-                         || e.data.match(/written to\s+([A-Za-z]:[\\\/][^\n\r]+\.[a-zA-Z0-9]+)/i)
-                         || e.data.match(/([A-Za-z]:[\\\/][^\n\r"']+\.[a-zA-Z0-9]+)/i);
-          if (pathMatch && pathMatch[1]) {
-            const fp = pathMatch[1].trim();
-            if (!_writtenFilesThisMsg.includes(fp)) {
-              _writtenFilesThisMsg.push(fp);
-            }
-          }
-        }
-
-        // ── Render Web Source Favicons & Domain Chips for search / web tools ──
-        if (e.data && typeof e.data === 'string') {
-          const toolTag = (_lastToolBlock.dataset.tool || toolName || '').toLowerCase();
-          if (toolTag.includes('search') || toolTag.includes('scrape') || toolTag.includes('read') || toolTag.includes('web') || toolTag.includes('url')) {
-            const urlRegex = /(https?:\/\/[^\s"'<>\)]+)/gi;
-            const matches = e.data.match(urlRegex) || [];
-            const domains = new Set();
-            matches.forEach(u => {
-              try {
-                const cleanUrl = u.replace(/[`'"><\)]+$/, '').replace(/\.$/, '');
-                const parsed = new URL(cleanUrl);
-                let host = parsed.hostname.toLowerCase().replace(/^www\./, '').trim();
-                const isValidDomain = /^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?(\.[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)*\.[a-z]{2,}$/i.test(host);
-                if (isValidDomain && !host.includes('localhost') && !host.includes('127.0.0.1')) {
-                  domains.add(host);
-                }
-              } catch (err) {}
-            });
-            if (domains.size > 0) {
-              const chipsDiv = document.createElement('div');
-              chipsDiv.className = 'web-source-chips-row';
-              chipsDiv.style.cssText = 'width: 100%; margin-top: 6px; padding-left: 21px; display: flex; flex-wrap: wrap; gap: 6px; box-sizing: border-box;';
-              const domainList = Array.from(domains).slice(0, 10);
-              chipsDiv.innerHTML = domainList.map(dom => {
-                const rootDom = (dom || '').split('.').slice(-2).join('.');
-                const faviconUrl = `https://www.google.com/s2/favicons?domain=${encodeURIComponent(rootDom)}&sz=32`;
-                return `
-                  <span class="source-domain-chip" title="Verified Source: ${dom}" style="display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px; border-radius: 6px; background: rgba(255,255,255,0.05); font-size: 13px; font-family: var(--font); color: var(--text-secondary); font-weight: 500;">
-                    <img src="${faviconUrl}" style="width: 14px; height: 14px; border-radius: 3px; filter: grayscale(20%); opacity: 0.85;" onerror="this.onerror=null; this.removeAttribute('src'); this.style.display='none';">
-                    <span>${dom}</span>
-                  </span>
-                `;
-              }).join('');
-              _lastToolBlock.appendChild(chipsDiv);
-            }
-          }
-        }
-
-        // ── Render Output Details / Terminal UI Block (Enforce Single Terminal Log View) ──
-        if (e.data && typeof e.data === 'string' && e.data.trim().length > 0) {
-          const hint = _lastToolBlock.querySelector('.tool-brief-hint');
-          if (hint) hint.remove();
-          _lastToolBlock.style.flexWrap = 'wrap';
-          
-          const toolTag = _lastToolBlock.dataset.tool || toolName || 'action';
-          const isTerminalCmd = toolTag.includes('shell') || toolTag.includes('run_command') || toolTag.includes('system_control');
-          const hasLiveLog = _lastToolBlock.querySelector('.tool-live-log');
-
-          // If a live streaming terminal box is active, skip adding a second duplicate details box
-          if (!hasLiveLog || !isTerminalCmd) {
-            const isSearchGrep = toolTag.includes('grep') || toolTag.includes('search');
-            const iconName = isTerminalCmd ? 'terminal' : (isSearchGrep ? 'search' : 'file-text');
-            const summaryLabel = isTerminalCmd ? 'Terminal Output' : 'View output details';
-            const maxLen = isTerminalCmd ? 6000 : 3000;
-            const previewText = e.data.length > maxLen ? e.data.slice(0, maxLen) + '\n... (truncated)' : e.data;
-            
-            const outputDetail = document.createElement('div');
-            outputDetail.style.cssText = 'width: 100%; margin-top: 4px; padding-left: 21px; box-sizing: border-box;';
-            outputDetail.innerHTML = `
-              <details style="margin: 0; opacity: 0.95; width: 100%;" ${isTerminalCmd ? 'open' : ''}>
-                <summary style="cursor:pointer; color:var(--text-3); font-size:13px; font-weight:500; outline:none; user-select:none; display:inline-flex; align-items:center; gap:4px; padding: 2px 0;">
-                  <i data-lucide="${iconName}" style="width:13px;height:13px;color:var(--text-3);display:inline-block;vertical-align:middle;"></i>
-                  <span>${summaryLabel}</span>
-                </summary>
-                <pre class="tool-terminal-block" style="margin:6px 0 2px 0; max-height:220px; width:100%; box-sizing:border-box;">${escapeHtml(previewText)}</pre>
-              </details>
-            `;
-            _lastToolBlock.appendChild(outputDetail);
-            if (window.lucide) lucide.createIcons({ parent: outputDetail });
-          }
-        }
-        
-        _lastToolBlock.classList.remove('tool-block-temp');
-        _lastToolBlock = null;
-      }
-      scrollChat();
+      const toolRuns = getBuffer(cid)?.toolRuns;
+      if (toolRuns) handleToolResult(e, toolRuns);
       break;
     }
 
-    case 'response': {
-      col.querySelectorAll('.think-label-temp, .tool-block-temp, .thought-container').forEach(el => el.remove());
-      _finalizeToolContainer(true);
-      
-      if (_aiderActive && _aiderConsoleCard) {
-        if (_aiderConsoleCard._diffInterval) {
-          clearInterval(_aiderConsoleCard._diffInterval);
-          _aiderConsoleCard._diffInterval = null;
-        }
-        
-        const spinner = _aiderConsoleCard.querySelector('.console-spinner');
-        const title = _aiderConsoleCard.querySelector('.console-title');
-        const badge = _aiderConsoleCard.querySelector('#aider-status-badge');
-        
-        if (spinner) {
-          spinner.outerHTML = '<span style="color:var(--text-secondary); font-weight:bold; font-size:12px; margin-right:6px;">completed</span>';
-        }
-        if (title) {
-          title.textContent = 'Aider Task Completed';
-        }
-        if (badge) {
-          badge.textContent = '[success]';
-        }
-        
-        // Auto-collapse log area after completion to keep UI clean
-        const body = _aiderConsoleCard.querySelector('.console-body');
-        if (body) {
-          body.style.display = 'none';
-          const chevron = _aiderConsoleCard.querySelector('.chevron-icon');
-          if (chevron) chevron.style.transform = 'rotate(-90deg)';
-        }
-
-        // Render high fidelity Monochromic Review Changes card
-        const files = e.metadata?.files_changed || [];
-        const addCount = e.metadata?.total_additions || 0;
-        const delCount = e.metadata?.total_deletions || 0;
-        const fileWord = files.length === 1 ? 'file' : 'files';
-        
-        if (files.length > 0) {
-          const card = document.createElement('div');
-          card.className = 'aider-changes-card';
-          card.style.border = '1px solid var(--border)';
-          card.style.borderRadius = '8px';
-          card.style.background = 'var(--card)';
-          card.style.margin = '14px 0';
-          card.style.padding = '12px 16px';
-          card.style.display = 'flex';
-          card.style.flexDirection = 'column';
-          card.style.gap = '10px';
-          
-          card.innerHTML = `
-            <div style="display:flex; align-items:center; justify-content:space-between; font-size:12.5px; font-weight:500;">
-              <div style="display:flex; align-items:center; gap:6px; cursor:pointer; user-select:none;" class="changes-toggle-header">
-                <span style="font-weight:600; color:var(--text-primary);">${files.length} ${fileWord} changed</span>
-                <span style="color:#22c55e; font-weight:600;">+${addCount}</span>
-                <span style="color:#ef4444; font-weight:600;">-${delCount}</span>
-                <svg class="chevron-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" style="width:14px;height:14px;color:var(--text-secondary);transition:transform 0.15s;margin-left:2px;flex-shrink:0;"><path d="M16 22L6 12l1.4-1.4 8.6 8.6 8.6-8.6L26 12z"/></svg>
-              </div>
-              <button class="review-btn" style="display:flex; align-items:center; gap:6px; border:1px solid var(--border); background:var(--hover); padding:4px 10px; border-radius:6px; font-size:11.5px; color:var(--text-primary); cursor:pointer; font-weight:500; transition:all 0.1s;">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" style="width:13px;height:13px;color:var(--text-secondary);flex-shrink:0;"><path d="M13.3 21.7L10 18.4l1.4-1.4 1.9 1.9 4.3-4.3 1.4 1.4z"/><path d="M25.7 9.3l-7-7A1 1 0 0 0 18 2H8a2 2 0 0 0-2 2v24a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V10a1 1 0 0 0-.3-.7zM18 4.4L23.6 10H18zM24 28H8V4h8v7a1 1 0 0 0 1 1h7z"/></svg>
-                <span>Review</span>
-              </button>
-            </div>
-            
-            <div class="changes-files-list" style="display:flex; flex-direction:column; gap:6px; padding-top:8px; border-top:1px solid var(--border);">
-              ${files.map(f => {
-                const ext = f.filename.split('.').pop() || '';
-                let icon = 'file-code';
-                if (['png', 'jpg', 'jpeg', 'gif'].includes(ext)) icon = 'image';
-                const workspacePath = e.metadata?.workspace || '';
-                const fullPath = `${workspacePath}/${f.dir ? f.dir + '/' : ''}${f.filename}`.replace(/\\/g, '/').replace(/\/+/g, '/');
-                return `
-                  <div class="changed-file-row" data-filepath="${fullPath}" data-filename="${f.filename}" title="${fullPath}" style="display:flex; align-items:center; justify-content:space-between; font-size:12px; color:var(--text-secondary); cursor:pointer; padding:6px 8px; border-radius:6px; transition:background 0.1s;">
-                    <div style="display:flex; align-items:center; gap:8px; overflow:hidden;">
-                      <i data-lucide="${icon}" style="width:14px; height:14px; color:var(--text-3); flex-shrink:0;"></i>
-                      <div style="display:flex; align-items:baseline; gap:6px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
-                        <span style="font-weight:600; color:var(--text-primary);">${f.filename}</span>
-                        <span style="font-size:10px; color:var(--text-3); font-family:var(--font-mono);">${f.dir ? '/' + f.dir : ''}</span>
-                      </div>
-                    </div>
-                    <div style="display:flex; align-items:center; gap:6px; font-family:var(--font-mono); font-size:10.5px;">
-                      ${f.additions > 0 ? `<span style="color:#22c55e;">+${f.additions}</span>` : ''}
-                      ${f.deletions > 0 ? `<span style="color:#ef4444;">-${f.deletions}</span>` : ''}
-                    </div>
-                  </div>
-                `;
-              }).join('')}
-            </div>
-          `;
-          
-          col.appendChild(card);
-          
-          const toggleHeader = card.querySelector('.changes-toggle-header');
-          const filesList = card.querySelector('.changes-files-list');
-          if (toggleHeader && filesList) {
-            toggleHeader.addEventListener('click', () => {
-              const isHidden = filesList.style.display === 'none';
-              filesList.style.display = isHidden ? 'flex' : 'none';
-              card.querySelector('.chevron-icon').style.transform = isHidden ? 'rotate(0deg)' : 'rotate(-90deg)';
-            });
-          }
-
-          // Format git diff into pretty colored div list helper
-          function formatGitDiff(rawDiff) {
-            const lines = rawDiff.split('\n');
-            return lines.map(line => {
-              let color = 'var(--text-secondary)';
-              let bg = 'transparent';
-              if (line.startsWith('+') && !line.startsWith('+++')) {
-                color = '#22c55e';
-                bg = 'rgba(34, 197, 94, 0.08)';
-              } else if (line.startsWith('-') && !line.startsWith('---')) {
-                color = '#ef4444';
-                bg = 'rgba(239, 68, 68, 0.08)';
-              } else if (line.startsWith('@@')) {
-                color = '#a855f7';
-                bg = 'rgba(168, 85, 247, 0.05)';
-              } else if (line.startsWith('diff') || line.startsWith('index') || line.startsWith('---') || line.startsWith('+++')) {
-                color = 'var(--text-3)';
-              }
-              return `<div style="color:${color}; background:${bg}; padding:2px 6px; font-family:var(--font-mono); font-size:11px; border-radius:2px; white-space:pre-wrap; word-break:break-all;">${escapeHtml(line)}</div>`;
-            }).join('');
-          }
-
-          // Handle click on file row to show diff in right panel
-          card.querySelectorAll('.changed-file-row').forEach(row => {
-            row.addEventListener('click', async () => {
-              const filepath = row.getAttribute('data-filepath');
-              const filename = row.getAttribute('data-filename');
-              const workspacePath = e.metadata?.workspace || '';
-              
-              try {
-                const res = await fetch(`/api/workspace/file-diff?filepath=${encodeURIComponent(filepath)}&workspace=${encodeURIComponent(workspacePath)}`);
-                if (!res.ok) throw new Error(`HTTP ${res.status}`);
-                const data = await res.json();
-                
-                const formattedDiff = formatGitDiff(data.diff || '');
-                const html = `
-                  <div style="background:transparent; color:var(--text-primary); font-family:var(--font-mono); font-size:11.5px; padding:16px; height:100%; box-sizing:border-box; overflow-y:auto; display:flex; flex-direction:column; gap:12px;">
-                    <div style="font-weight:600; font-size:13px; color:var(--text-primary); border-bottom:1px solid var(--border); padding-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
-                      <div style="display:flex; align-items:center; gap:8px;">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" style="width:14px;height:14px;color:var(--text-3);flex-shrink:0;"><path d="M16 10a6 6 0 1 0 0 12 6 6 0 0 0 0-12zm0 10a4 4 0 1 1 0-8 4 4 0 0 1 0 8z"/><path d="M2 15h12v2H2zm16 0h12v2H18z"/></svg>
-                        <span>Diff: ${filename}</span>
-                      </div>
-                      <span style="font-size:10px; font-weight:normal; color:var(--text-3); font-family:var(--font-mono); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:280px;" title="${filepath}">${filepath}</span>
-                    </div>
-                    <div style="display:flex; flex-direction:column; gap:2px; line-height:1.6;">
-                      ${formattedDiff}
-                    </div>
-                  </div>
-                `;
-                
-                const appPane = document.getElementById('app-pane');
-                if (appPane) appPane.classList.remove('hidden-pane');
-                
-                if (window.tabs) {
-                  window.tabs.createTab(
-                    `diff-${filename}`, 
-                    `diff: ${filename}`, 
-                    html, 
-                    '', 
-                    'if (window.lucide) lucide.createIcons({ parent: shadow });', 
-                    'git-commit'
-                  );
-                }
-              } catch (err) {
-                if (window.showToast) {
-                  window.showToast('Error', `Could not load diff: ${err.message}`, 3000);
-                }
-              }
-            });
-          });
-          
-          const reviewBtn = card.querySelector('.review-btn');
-          if (reviewBtn) {
-            reviewBtn.addEventListener('click', () => {
-              const firstRow = card.querySelector('.changed-file-row');
-              if (firstRow) {
-                firstRow.click();
-              } else if (window.showToast) {
-                window.showToast('Workspace Review', `No files changed inside ${e.metadata?.workspace}`, 2500);
-              }
-            });
-          }
-          
-          if (window.lucide) lucide.createIcons({ parent: card });
-        }
-
-        // Save structured commit details to history
-        let historyMsg = `completed **Aider Task Completed** — Workspace updated successfully.`;
-        if (files.length > 0) {
-          historyMsg += `\n\n* ${files.length} ${fileWord} changed:`;
-          files.forEach(f => {
-            historyMsg += `\n  - \`${f.filename}\` (+${f.additions} -${f.deletions})`;
-          });
-
-
-        }
-        // Render Aider completion log bubble to Chat DOM
-        const summaryEl = document.createElement('div');
-        summaryEl.className = 'msg ai';
-        summaryEl.innerHTML = window.marked ? sanitizeHtml(marked.parse(historyMsg)) : escapeHtml(historyMsg);
-        enhanceMarkdownContent(summaryEl);
-        col.appendChild(summaryEl);
-        scrollChat();
-
-        ChatSessionManager.appendMessage('assistant', historyMsg, _consumeToolRuns());
-
-        _aiderConsoleCard = null;
-        _aiderConsoleLogArea = null;
-        _aiderConsoleRawText = "";
-        _aiderActive = false;
+    case 'done': {
+      if (isAiderActive()) {
+        if (isVisible) finalizeAiderConsole(true);
       } else {
-        // Non-Aider path: finalise the streaming bubble or create a new one.
-        // IMPORTANT: never create a NEW summaryEl when _streamResponseEl already
-        // exists — that causes the same content to appear twice in the chat.
-        if (_streamResponseEl) {
-          // Streaming bubble already exists — just update with final complete text.
-          if (e.data && e.data.trim()) {
-            _streamResponseText = e.data;   // overwrite with definitive final text
+        if (cid) {
+          const buf = getBuffer(cid);
+          if (buf) {
+            if (e.data && e.data.trim()) setText(cid, e.data);
+            const domEl = getDomEl(cid);
+            if (isVisible && domEl) {
+              renderParsedMessage(domEl, buf.text);
+            } else if (isVisible && buf.text) {
+              // No domEl yet but we have text — create it
+              const summaryEl = document.createElement('div');
+              summaryEl.className = 'msg ai';
+              renderParsedMessage(summaryEl, buf.text);
+              col.appendChild(summaryEl);
+              attachDomEl(cid, summaryEl);
+              scrollChat();
+            }
           }
-          _renderParsedMessage(_streamResponseEl, _streamResponseText);
-          _finalizeStreamResponse();
-        } else if (e.data && e.data.trim()) {
-          // No streaming bubble (pure non-streaming response) — create one.
-          const summaryEl = document.createElement('div');
-          summaryEl.className = 'msg ai';
-          _renderParsedMessage(summaryEl, e.data);
-          col.appendChild(summaryEl);
-          scrollChat();
-          ChatSessionManager.appendMessage('assistant', e.data, _consumeToolRuns());
-        } else {
-          _finalizeStreamResponse();
+          markDone(cid);
+          _finalizeStreamResponse(cid);
         }
       }
-      _finalizeStreamThought();
-      _finalizeReasoning();
-      _finalizeToolContainer(true);
-      // Remove reasoning orb header completely on response completion for clean output
-      col.querySelectorAll('.chat-ai-stream-header, .cad-ai-stream-header').forEach(el => el.remove());
-      _currentMessageActive = false;
 
-      if (window.sounds) window.sounds.playDone();
-      if (window.setGeneratingState) window.setGeneratingState(false);
-      // Auto-refresh drawer tabs (plan / tasks / walkthrough) silently
-      setTimeout(() => { if (window.refreshPlanDrawer) window.refreshPlanDrawer(); }, 600);
+      if (isVisible) {
+        finalizeStreamThought();
+        finalizeToolContainer(true);
+        col.querySelectorAll('.chat-ai-stream-header, .cad-ai-stream-header').forEach(el => el.remove());
+        if (window.sounds) window.sounds.playDone();
+      }
+
+      setGeneratingState(false, cid);
+      _streamingChatId = null;
       break;
     }
 
     case 'error': {
-      if (window.sounds) window.sounds.playError();
-      col.querySelectorAll('.think-label-temp, .tool-block-temp, .thought-container, .reasoning-inline-temp, .ai-reasoning-card').forEach(el => el.remove());
-      // Remove reasoning orb header completely on error
-      col.querySelectorAll('.chat-ai-stream-header, .cad-ai-stream-header').forEach(el => el.remove());
-      _finalizeReasoning();
-      _finalizeToolContainer(false);
-      
-      // Clear any dangling image-generation loading interval to prevent memory leak
-      col.querySelectorAll('[data-img-card]').forEach(card => {
-        if (card._textInterval) { clearInterval(card._textInterval); card._textInterval = null; }
-      });
+      if (isVisible) {
+        if (window.sounds) window.sounds.playError();
+        col.querySelectorAll('.chat-ai-stream-header, .cad-ai-stream-header').forEach(el => el.remove());
+        finalizeToolContainer(false);
+        finalizeStreamThought();
+      }
 
-      if (_aiderActive && _aiderConsoleCard) {
-        if (_aiderConsoleCard._diffInterval) {
-          clearInterval(_aiderConsoleCard._diffInterval);
-          _aiderConsoleCard._diffInterval = null;
-        }
-        
-        const spinner = _aiderConsoleCard.querySelector('.console-spinner');
-        const title = _aiderConsoleCard.querySelector('.console-title');
-        const badge = _aiderConsoleCard.querySelector('#aider-status-badge');
-        
-        if (spinner) {
-          spinner.outerHTML = '<span style="color:var(--text-secondary); font-weight:bold; font-size:12px; margin-right:6px;">failed</span>';
-        }
-        if (title) {
-          title.textContent = 'Aider Task Failed';
-        }
-        if (badge) {
-          badge.textContent = '[failed]';
-        }
-        ChatSessionManager.appendMessage('assistant', `failed **Aider Coding Task Failed**: ${e.data}`, _consumeToolRuns());
-        _aiderConsoleCard = null;
-        _aiderConsoleLogArea = null;
-        _aiderActive = false;
+      if (isAiderActive()) {
+        if (isVisible) finalizeAiderConsole(false);
+        ChatSessionManager.appendMessage('assistant', `failed **Aider Task Failed**: ${e.data}`, getBuffer(cid)?.toolRuns || []);
       } else {
-        if (_streamResponseEl) {
-          // Stream still open — append error into current bubble and finalize
-          _streamResponseText += `\n\nfailed **Error**: ${e.data}`;
-          _streamResponseEl.innerHTML = window.marked
-            ? sanitizeHtml(marked.parse(_streamResponseText))
-            : escapeHtml(_streamResponseText);
-          enhanceMarkdownContent(_streamResponseEl);
-          _finalizeStreamResponse();
+        const buf = getBuffer(cid);
+        if (buf) {
+          buf.text += `\n\nfailed **Error**: ${e.data}`;
+          const domEl = getDomEl(cid);
+          if (isVisible && domEl) renderParsedMessage(domEl, buf.text);
+          markDone(cid);
+          _finalizeStreamResponse(cid);
         } else {
-          // 'done' already fired and bubble was finalized — patch the last saved
-          // message in-session so it doesn't create a second separate DB entry
-          // that would appear as a split bubble on reload.
-          const errLabel = `\n\nfailed **Error**: ${e.data}`;
-          const col2 = document.getElementById('chat-col') || document.getElementById('chat-log');
-          const lastAiBubble = col2 ? col2.querySelector('.msg.ai:last-of-type') : null;
-          if (lastAiBubble) {
-            const patched = (lastAiBubble.textContent || '') + errLabel;
-            lastAiBubble.innerHTML = window.marked
-              ? sanitizeHtml(marked.parse(patched))
-              : escapeHtml(patched);
-            enhanceMarkdownContent(lastAiBubble);
-          }
-          // Patch the last saved session message text (no new DB entry)
-          ChatSessionManager.patchLastMessage('assistant', errLabel);
+          ChatSessionManager.appendMessage('assistant', `failed **Error**: ${e.data}`, []);
         }
       }
-      _finalizeStreamThought();
-      _currentMessageActive = false;
-      if (window.setGeneratingState) window.setGeneratingState(false);
+
+      setGeneratingState(false, cid);
+      _streamingChatId = null;
+      break;
+    }
+
+    case 'ask_question': {
+      if (isVisible) {
+        try {
+          const payload = typeof e.data === 'string' ? JSON.parse(e.data) : e.data;
+          showQuestionCard(payload);
+        } catch (err) {
+          console.warn('ask_question parse failed:', err);
+        }
+      }
       break;
     }
     }
   } catch (err) {
-    console.error('Error handling chat agent event:', err);
+    console.error('Error in agent stream handler:', err);
   }
 }
 
-function _ensureThoughtCard(enterConversationCallback) {
-  if (_streamThoughtCard) return;
-  enterConversationCallback();
-
-  const col = document.getElementById('chat-col') || document.getElementById('chat-log');
-  if (!col) return;
-
-  _streamThoughtStartTime = Date.now(); // Record start time of reasoning
-
-  _streamThoughtCard = document.createElement('div');
-  _streamThoughtCard.className = 'thought-container';
-  _streamThoughtCard.innerHTML = `
-    <div class="thought-header open thinking-active">
-      <span class="thought-spinner"></span>
-      <span class="thought-title">Thinking Process</span>
-      <svg class="mi-chevron thought-chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" style="width:12px;height:12px;display:inline-block;vertical-align:middle;transition:transform 0.2s;flex-shrink:0;"><path d="M16 22L6 12l1.4-1.4 8.6 8.6 8.6-8.6L26 12z"/></svg>
-    </div>
-    <div class="thought-body">
-      <p class="thought-step"></p>
-    </div>
-  `;
-
-  col.appendChild(_streamThoughtCard);
-  _streamThoughtBody = _streamThoughtCard.querySelector('.thought-step');
-
-  const header = _streamThoughtCard.querySelector('.thought-header');
-  const body = _streamThoughtCard.querySelector('.thought-body');
-  if (header && body) {
-    header.addEventListener('click', () => {
-      const collapsed = body.classList.toggle('collapsed');
-      header.classList.toggle('open', !collapsed);
-      body.style.display = collapsed ? 'none' : 'flex';
-    });
-  }
-  if (window.lucide) lucide.createIcons({ parent: _streamThoughtCard });
-}
-
-function _finalizeStreamThought() {
-  if (_streamThoughtCard) {
-    const header = _streamThoughtCard.querySelector('.thought-header');
-    const body = _streamThoughtCard.querySelector('.thought-body');
-    const titleSpan = _streamThoughtCard.querySelector('.thought-title');
-
-    let elapsedStr = "";
-    if (_streamThoughtStartTime > 0) {
-      const elapsed = Math.max(1, Math.round((Date.now() - _streamThoughtStartTime) / 1000));
-      elapsedStr = ` for ${elapsed}s`;
-    }
-
-    if (header) {
-      header.classList.remove('thinking-active');
-      header.classList.remove('open');
-      const spinner = header.querySelector('.thought-spinner');
-      if (spinner) spinner.remove();
-
-      if (titleSpan) {
-        titleSpan.textContent = `Thought${elapsedStr}`;
-      }
-    }
-    if (body) {
-      body.classList.add('collapsed');
-      body.style.display = 'none';
-    }
-  }
-  _streamThoughtCard = null;
-  _streamThoughtBody = null;
-  _streamThoughtText = "";
-  _streamThoughtStartTime = 0;
-}
-
-function _finalizeReasoning() {
-  _reasoningCard = null;
-  _reasoningBody = null;
-  _reasoningText = "";
-}
-
-function _consumeToolRuns() {
-  const runs = _currentMessageToolRuns;
-  _currentMessageToolRuns = [];
-  return runs.length > 0 ? { tool_runs: runs } : null;
-}
-
-
-function _ensureToolContainer(col, enterConversationCallback) {
-  if (_streamToolContainer) return;
-  enterConversationCallback();
-
-  _streamToolContainer = document.createElement('div');
-  _streamToolStartTime = Date.now();
-  _streamToolContainer.className = 'tool-group-card';
-  _streamToolContainer.style.cssText = [
-    'margin: 6px 0',
-    'display: flex',
-    'flex-direction: column',
-    'font-family: var(--font)',
-    'font-size: 14px',
-    'color: var(--text-3)',
-  ].join(';');
-
-  _streamToolContainer.innerHTML = `
-    <div class="tool-group-header" style="display: flex; align-items: center; justify-content: space-between; padding: 4px 0; cursor: pointer; user-select: none;">
-      <div style="display: flex; align-items: center; gap: 6px;">
-        <svg data-chevron="right" class="chevron-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" style="width:14px;height:14px;opacity:0.75;transition:transform 0.15s;display:inline-block;vertical-align:middle;transform:rotate(90deg);flex-shrink:0;"><path d="M12 8l10 8-10 8z"/></svg>
-        <span class="tool-group-title" style="font-weight: 500; font-size: 14.5px; color: var(--text-secondary);">Executing actions (0s)</span>
-      </div>
-      <span class="tool-group-status" style="font-size: 13.5px; color:var(--blue); font-weight:400;">0s<span class="dots">...</span></span>
-    </div>
-    <div class="tool-group-body" style="display: flex; flex-direction: column; padding-left: 14px; border-left: 1px dashed var(--border); margin-left: 4px; margin-top: 2px; gap: 4px;">
-    </div>
-  `;
-
-  col.appendChild(_streamToolContainer);
-  _streamToolBody = _streamToolContainer.querySelector('.tool-group-body');
-  if (window.lucide) lucide.createIcons({ parent: _streamToolContainer });
-
-  const header = _streamToolContainer.querySelector('.tool-group-header');
-  const body = _streamToolContainer.querySelector('.tool-group-body');
-  const chevron = _streamToolContainer.querySelector('.chevron-icon');
-  
-  if (header && body) {
-    header.addEventListener('click', () => {
-      const isHidden = body.style.display === 'none';
-      body.style.display = isHidden ? 'flex' : 'none';
-      if (chevron) {
-        chevron.style.transform = isHidden ? 'rotate(90deg)' : 'rotate(0deg)';
-      }
-    });
-  }
-
-  // Live 1-second ticking timer interval
-  _streamToolContainer._timerInterval = setInterval(() => {
-    if (!_streamToolContainer) return;
-    const elapsedSec = Math.max(0, Math.round((Date.now() - _streamToolStartTime) / 1000));
-    const titleEl = _streamToolContainer.querySelector('.tool-group-title');
-    const statusEl = _streamToolContainer.querySelector('.tool-group-status');
-    if (titleEl && statusEl) {
-      titleEl.textContent = `Executing actions (${elapsedSec}s)...`;
-      statusEl.innerHTML = `<span style="color:var(--blue);font-weight:400;">${elapsedSec}s</span> <span class="dots">...</span>`;
-    }
-  }, 1000);
-}
-
-function _finalizeToolContainer(isSuccess = true) {
-  if (_streamToolBody) {
-    _streamToolBody.querySelectorAll('.tool-log-card').forEach(card => {
-      if (card._dotsInterval) {
-        clearInterval(card._dotsInterval);
-        card._dotsInterval = null;
-      }
-    });
-  }
-  _lastToolBlock = null;
-
-  if (!_streamToolContainer) return;
-  
-  if (_streamToolContainer._timerInterval) {
-    clearInterval(_streamToolContainer._timerInterval);
-    _streamToolContainer._timerInterval = null;
-  }
-
-  const elapsedSec = Math.max(1, Math.round((Date.now() - (_streamToolStartTime || Date.now())) / 1000));
-  const statusEl = _streamToolContainer.querySelector('.tool-group-status');
-  if (statusEl) {
-    statusEl.innerHTML = isSuccess 
-      ? `<span style="color:var(--text-3);display:inline-flex;align-items:center;gap:4px;"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;"><polyline points="20 6 9 17 4 12"/></svg> completed in ${elapsedSec}s</span>` 
-      : `<span style="color:#ef4444;display:inline-flex;align-items:center;gap:4px;"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> failed after ${elapsedSec}s</span>`;
-  }
-
-  const titleEl = _streamToolContainer.querySelector('.tool-group-title');
-  if (titleEl) {
-    titleEl.textContent = `Worked for ${elapsedSec}s`;
-  }
-
-  const body = _streamToolBody;
-  const chevron = _streamToolContainer.querySelector('.chevron-icon');
-  const hasOpenDetails = body && body.querySelector('details[open]');
-  if (body && body.style.display !== 'none' && !hasOpenDetails) {
-    setTimeout(() => {
-      if (body) {
-        body.style.display = 'none';
-        if (chevron) {
-          chevron.style.transform = 'rotate(0deg)';
-        }
-      }
-    }, 2000);
-  }
-
-  _streamToolContainer = null;
-  _streamToolBody      = null;
-  _streamToolCount     = 0;
-}
-
-
-function _ensureResponseMsg(enterConversationCallback) {
-  if (_streamResponseEl) return;
-  enterConversationCallback();
-
-  const col = document.getElementById('chat-col') || document.getElementById('chat-log');
-  if (!col) return;
-
-  _streamResponseEl = document.createElement('div');
-  _streamResponseEl.className = 'msg ai';
-  col.appendChild(_streamResponseEl);
-}
-
-import { attachAiActions } from './stream/stream_actions.js';
-
-function _attachAiActions(msgEl, text, toolRuns = []) {
-  return attachAiActions(msgEl, text, toolRuns);
-}
-
-function _finalizeStreamResponse() {
-  if (_streamResponseEl) {
-    const activeToolRuns = _consumeToolRuns();
-    _attachAiActions(_streamResponseEl, _streamResponseText, activeToolRuns);
-    ChatSessionManager.appendMessage('assistant', _streamResponseText, activeToolRuns);
-
-    // ── Inject Canvas Preview Pill Links for Written Files ──
-    if (_writtenFilesThisMsg.length > 0) {
-      const col = document.getElementById('chat-col') || document.getElementById('chat-log');
-      if (col) {
-        const previewRow = document.createElement('div');
-        previewRow.className = 'doc-preview-pills-row';
-        previewRow.style.cssText = 'display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 4px 0;padding:0;align-items:center;';
-
-        _writtenFilesThisMsg.forEach(filePath => {
-          const fileName = filePath.replace(/\\/g, '/').split('/').pop();
-          const ext = (fileName.split('.').pop() || '').toLowerCase();
-          const isPreviewable = ['html','htm','md','markdown','txt','json','csv','svg','pdf'].includes(ext);
-          const iconName = ['md','markdown','txt'].includes(ext) ? 'file-text'
-                         : ['html','htm','svg'].includes(ext) ? 'layout'
-                         : ['json','csv'].includes(ext) ? 'file-code'
-                         : 'file';
-
-          const pill = document.createElement('button');
-          pill.className = 'doc-canvas-pill';
-          pill.style.cssText = [
-            'display:inline-flex',
-            'align-items:center',
-            'gap:6px',
-            'padding:5px 12px',
-            'border-radius:20px',
-            'background:var(--hover)',
-            'border:none',
-            'color:var(--text-2)',
-            'font-size:12px',
-            'font-family:var(--font)',
-            'font-weight:500',
-            'cursor:pointer',
-            'transition:background 0.15s ease,color 0.15s ease',
-            'max-width:280px',
-          ].join(';');
-          pill.title = `Open in Live Canvas: ${filePath}`;
-          pill.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" style="width:13px;height:13px;flex-shrink:0;">${
-            iconName === 'file-text' ? '<path d="M25.7 9.3l-7-7A1 1 0 0 0 18 2H8a2 2 0 0 0-2 2v24a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V10a1 1 0 0 0-.3-.7zM18 4.4L23.6 10H18zM24 28H8V4h8v7a1 1 0 0 0 1 1h7z"/>\n<rect x="10" y="18" width="12" height="2"/>\n<rect x="10" y="22" width="8" height="2"/>'
-            : iconName === 'layout' ? '<path d="M26 4H6a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h20a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 8H6V6h20zm-12 2h12v10H14zm-8 0h6v10H6z"/>'
-            : iconName === 'file-code' ? '<path d="M25.7 9.3l-7-7A1 1 0 0 0 18 2H8a2 2 0 0 0-2 2v24a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V10a1 1 0 0 0-.3-.7zM18 4.4L23.6 10H18zM24 28H8V4h8v7a1 1 0 0 0 1 1h7z"/>\n<path d="m14.5 22-1.4-1.4 2.6-2.6-2.6-2.6 1.4-1.4 4 4z"/>\n<rect x="10" y="22" width="5" height="2"/>'
-            : '<path d="M25.7 9.3l-7-7A1 1 0 0 0 18 2H8a2 2 0 0 0-2 2v24a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V10a1 1 0 0 0-.3-.7zM18 4.4L23.6 10H18zM24 28H8V4h8v7a1 1 0 0 0 1 1h7z"/>'
-          }</svg><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(fileName)}</span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" style="width:11px;height:11px;opacity:0.5;flex-shrink:0;"><path d="M26 26H6V6h10V4H6a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h20a2 2 0 0 0 2-2V16h-2z"/><path d="M26 6h-3.6l-8.2 8.2 1.4 1.4L24 7.4V11h2V4h-7v2z"/></svg>`;
-          pill.addEventListener('mouseenter', () => { pill.style.background = 'var(--hover-2)'; pill.style.color = 'var(--text)'; });
-          pill.addEventListener('mouseleave', () => { pill.style.background = 'var(--hover)'; pill.style.color = 'var(--text-2)'; });
-          pill.addEventListener('click', () => {
-            if (window.liveCanvas && isPreviewable) {
-              const renderUrl = `/api/workspace/render?path=${encodeURIComponent(filePath.replace(/\\/g, '/'))}`;
-              if (['md','markdown','txt'].includes(ext)) {
-                fetch(renderUrl).then(r => r.text()).then(content => {
-                  window.liveCanvas.openArtifact({ code: content, language: ext === 'md' || ext === 'markdown' ? 'markdown' : 'text', title: fileName, filepath: filePath });
-                }).catch(() => {
-                  window.liveCanvas.openArtifact({ code: `# ${fileName}\n\nFile preview unavailable.`, language: 'markdown', title: fileName, filepath: filePath });
-                });
-              } else {
-                window.liveCanvas.openArtifact({ code: '', language: ext, title: fileName, filepath: filePath });
-              }
-            } else {
-              // Fallback: open raw in new tab
-              const renderUrl = `/api/workspace/render?path=${encodeURIComponent(filePath.replace(/\\/g, '/'))}`;
-              window.open(renderUrl, '_blank');
-            }
-          });
-          previewRow.appendChild(pill);
-        });
-
-        col.appendChild(previewRow);
-        if (window.lucide) lucide.createIcons({ parent: previewRow });
-      }
-      _writtenFilesThisMsg = [];
-    }
-  }
-  _streamResponseEl = null;
-  _streamResponseText = "";
-}
-
-function _ensureAiderConsoleCard(enterConversationCallback) {
-  if (_aiderConsoleCard) return;
-  enterConversationCallback();
-
-  const col = document.getElementById('chat-col') || document.getElementById('chat-log');
-  if (!col) return;
-
-  _aiderConsoleCard = document.createElement('div');
-  _aiderConsoleCard.className = 'aider-console-card';
-  _aiderConsoleCard.style.background = 'transparent';
-  _aiderConsoleCard.style.margin = '14px 0';
-  _aiderConsoleCard.style.overflow = 'hidden';
-
-  _aiderConsoleCard.innerHTML = `
-    <div class="console-header" style="padding:10px 0; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--border); cursor:pointer; user-select:none;">
-      <div style="display:flex; align-items:center; gap:8px;">
-        <span class="console-spinner" style="display:inline-block; width:12px; height:12px; border:1.5px solid var(--text-3); border-top-color:var(--text-primary); border-radius:50%; animation:spin 1s linear infinite;"></span>
-        <span class="console-title" style="font-weight:600; font-size:14px; color:var(--text-primary); font-family:var(--font);">Aider Agent</span>
-      </div>
-      <div style="display:flex; align-items:center; gap:6px;">
-        <span id="aider-status-badge" style="font-size:11px; font-family:var(--font); font-weight:600; color:var(--text-secondary); text-transform:lowercase; letter-spacing:0.02em;">[scanning]</span>
-        <svg class="chevron-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" style="width:14px;height:14px;color:var(--text-secondary);transition:transform 0.15s;flex-shrink:0;"><path d="M16 22L6 12l1.4-1.4 8.6 8.6 8.6-8.6L26 12z"/></svg>
-      </div>
-    </div>
-    
-    <!-- MONOCHROMIC TRANSPARENT HUD PANEL -->
-    <div class="aider-ux-panel" style="padding:12px 0; display:grid; grid-template-columns:1fr 1fr; gap:10px; font-size:13.5px; font-family:var(--font); border-bottom:1px dashed var(--border);">
-      <div style="display:flex; flex-direction:column; gap:6px;">
-        <div style="display:flex; align-items:center; gap:6px; color:var(--text-secondary);">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" style="width:14px;height:14px;color:var(--text-3);flex-shrink:0;"><path d="M13 11h6v2h-6zm0 4h6v2h-6zm-2-4H9v2h2zm0 4H9v2h2z"/><path d="M17 2H5a1 1 0 0 0-1 1v26a1 1 0 0 0 1 1h22a1 1 0 0 0 1-1V13zm1 3.4L23.6 11H18zM26 28H6V4h10v8a1 1 0 0 0 1 1h9z"/></svg>
-          <span>Workspace files:</span>
-          <strong id="aider-files-count" style="color:var(--text-primary); font-weight:500;">detecting...</strong>
-        </div>
-        <div style="display:flex; align-items:center; gap:6px; color:var(--text-secondary);">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" style="width:14px;height:14px;color:var(--text-3);flex-shrink:0;"><path d="M25.7 9.3l-7-7A1 1 0 0 0 18 2H8a2 2 0 0 0-2 2v24a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V10a1 1 0 0 0-.3-.7zM18 4.4L23.6 10H18zM24 28H8V4h8v7a1 1 0 0 0 1 1h7z"/><path d="m14.5 22-1.4-1.4 2.6-2.6-2.6-2.6 1.4-1.4 4 4z"/><rect x="10" y="22" width="5" height="2"/></svg>
-          <span>Active file:</span>
-          <strong id="aider-active-op" style="color:var(--text-primary); font-family:var(--font); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:180px; font-weight:500;">none</strong>
-        </div>
-      </div>
-      <div style="display:flex; flex-direction:column; gap:6px; padding-left:14px; border-left:1px solid var(--border);">
-        <div style="display:flex; align-items:center; gap:6px; color:var(--text-secondary);">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" style="width:14px;height:14px;color:var(--text-3);flex-shrink:0;"><path d="M16 10a6 6 0 1 0 0 12 6 6 0 0 0 0-12zm0 10a4 4 0 1 1 0-8 4 4 0 0 1 0 8z"/><path d="M2 15h12v2H2zm16 0h12v2H18z"/></svg>
-          <span>Staged updates:</span>
-          <strong id="aider-commits-count" style="color:var(--text-primary); font-weight:500;">0 commits</strong>
-        </div>
-        <div style="display:flex; align-items:center; gap:6px; color:var(--text-secondary);">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" style="width:14px;height:14px;color:var(--text-3);flex-shrink:0;"><path d="M24 20H8v-2h16zm0-6H8v-2h16z"/><path d="M26 4H6a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h20a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 22H6V6h20z"/></svg>
-          <span>Changeset:</span>
-          <span style="font-weight:500; color:var(--text-primary);" id="aider-additions-count">+0</span>
-          <span style="font-weight:500; color:var(--text-secondary);" id="aider-deletions-count">-0</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- LIVE EXECUTIONS ACTIVITY FEED -->
-    <div id="aider-activity-feed" style="margin: 12px 0 10px 0; font-size: 13.5px; font-family: var(--font); color: var(--text-2); display: flex; flex-direction: column; gap: 6px;">
-      <div id="aider-activity-steps" style="display: flex; flex-direction: column; gap: 4px;">
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <span style="color: var(--text-3);">Â·</span>
-          <span>Initializing Aider session...</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- TRANSPARENT MONOSPACE LOG FEED -->
-    <div class="console-body" style="padding:10px 0; background:transparent; color:var(--text-2); font-family:var(--font); font-size:14px; max-height:350px; overflow-y:auto; line-height:1.7; white-space:pre-wrap; word-break:break-all;">
-    </div>
-  `;
-
-  col.appendChild(_aiderConsoleCard);
-  _aiderConsoleLogArea = _aiderConsoleCard.querySelector('.console-body');
-
-  const header = _aiderConsoleCard.querySelector('.console-header');
-  const body = _aiderConsoleCard.querySelector('.console-body');
-  if (header && body) {
-    header.addEventListener('click', () => {
-      const isHidden = body.style.display === 'none';
-      body.style.display = isHidden ? 'block' : 'none';
-      header.querySelector('.chevron-icon').style.transform = isHidden ? 'rotate(0deg)' : 'rotate(-90deg)';
-    });
-  }
-
-  if (!document.getElementById('console-spinner-keyframes')) {
-    const style = document.createElement('style');
-    style.id = 'console-spinner-keyframes';
-    style.innerHTML = `@keyframes spin { to { transform: rotate(360deg); } }`;
-    document.head.appendChild(style);
-  }
-
-  if (window.lucide) lucide.createIcons({ parent: _aiderConsoleCard });
-}
+export { initQuestionCard, anyStreamActive, getActiveStreamChatIds, isStreamActive };

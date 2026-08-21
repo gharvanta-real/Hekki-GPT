@@ -105,7 +105,7 @@ body[data-page="settings"] #sidebar-nav .nav-header {
 /* Container Cards */
 .settings-card-box {
   background: var(--bg-card) !important;
-  border: none !important;
+  border: 1px solid var(--border) !important;
   border-radius: var(--radius-lg) !important;
   margin-bottom: 20px !important;
   overflow: hidden !important;
@@ -277,7 +277,7 @@ body[data-page="settings"] #sidebar-nav .nav-header {
   padding: 14px 18px;
   border-radius: var(--radius-lg);
   background: var(--bg-card);
-  border: none !important;
+  border: 1px solid var(--border) !important;
   box-shadow: none !important;
   margin-bottom: 24px;
   gap: 16px;

@@ -6,6 +6,7 @@ import { updateModelPills } from './model_selector.js';
 let webSearchEnabled = true;
 
 const ARENA_MODELS = [
+  { id: 'gemini-3.5-flash-lite', name: 'Gemini 3.5 Flash Lite' },
   { id: 'gemini-3.1-flash-lite', name: 'Gemini 3.1 Flash Lite' }
 ];
 

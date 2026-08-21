@@ -49,8 +49,8 @@
   --card:               #FFFFFF; /* Flat card background */
   --bg-card:            #FFFFFF;
   --bg-card-secondary:  #F8FAFC;
-  --input-bg:           #F1F3F6; /* Inset controls fill */
-  --bg-inset:           #F1F3F6;
+  --input-bg:           #F0F2F5; /* Matches sidebar fill */
+  --bg-inset:           #F0F2F5;
   --sidebar-bg:         #F0F2F5; /* Left sidebar rail fill */
   --bg-sidebar:         #F0F2F5;
   --hover:              #E4E7EB; /* Neutral subtle hover state */
@@ -65,14 +65,14 @@
   --text-3:             #8E8E93;
   --text-muted:         #8E8E93;
   --text-inverse:       #FFFFFF;
-  --link-hover:         #2563EB;
+  --link-hover:         #18181B;
 
-  /* --- 4. Brand & Accent Tokens --- */
-  --accent:             #2563EB; /* Vibrant clean blue */
-  --accent-primary:     #2563EB;
-  --accent-hover:       #1D4ED8;
-  --accent-light:       #DBEAFE;
-  --accent-tint:        rgba(37, 99, 235, 0.10);
+  /* --- 4. Brand & Accent Tokens (Monochromatic High-Contrast) --- */
+  --accent:             #18181B;
+  --accent-primary:     #18181B;
+  --accent-hover:       #27272A;
+  --accent-light:       #F4F4F5;
+  --accent-tint:        rgba(0, 0, 0, 0.06);
 
   --green:              #16A34A;
   --orange:             #D97706;
@@ -95,13 +95,13 @@
   --chip-border:        transparent;
   --chip-active-bg:     #FFFFFF;
   --chip-active-text:   #141414;
-  --chip-accent-bg:     rgba(37, 99, 235, 0.10);
-  --chip-accent-text:   #2563EB;
+  --chip-accent-bg:     rgba(0, 0, 0, 0.06);
+  --chip-accent-text:   #18181B;
 
   /* --- 7. Flat Surface, Border & Shadow Tokens (Rule #3: Zero Shadows) --- */
-  --border:             transparent;
+  --border:             #E2E8F0;
   --border-subtle:      rgba(0, 0, 0, 0.08);
-  --border-focus:       rgba(37, 99, 235, 0.50);
+  --border-focus:       rgba(0, 0, 0, 0.25);
   --border-hover:       #CBD5E1;
   --border-none:        none !important;
   --box-shadow-none:    none !important;
@@ -157,7 +157,7 @@ body.light,
   --bg-sidebar:         #F0F2F5 !important;
   --hover:              #E4E7EB !important;
   --bg-hover:           #E4E7EB !important;
-  --bg-active:          #EFF6FF !important;
+  --bg-active:          #E4E7EB !important;
 
   --text:               #141414 !important;
   --text-primary:       #141414 !important;
@@ -166,7 +166,13 @@ body.light,
   --text-3:             #8E8E93 !important;
   --text-muted:         #8E8E93 !important;
   --text-inverse:       #FFFFFF !important;
-  --link-hover:         #2563EB !important;
+  --link-hover:         #18181B !important;
+
+  --accent:             #18181B !important;
+  --accent-primary:     #18181B !important;
+  --accent-hover:       #27272A !important;
+  --accent-light:       #F4F4F5 !important;
+  --accent-tint:        rgba(0, 0, 0, 0.06) !important;
 
   --btn-primary-bg:     #09090B !important;
   --btn-primary-text:   #FFFFFF !important;
@@ -175,7 +181,14 @@ body.light,
   --btn-secondary-text: #141414 !important;
   --btn-secondary-hover:#E4E7EB !important;
 
-  --border:             transparent !important;
+  --chip-bg:            #F1F3F6 !important;
+  --chip-text:          #52525B !important;
+  --chip-active-bg:     #FFFFFF !important;
+  --chip-active-text:   #141414 !important;
+  --chip-accent-bg:     rgba(0, 0, 0, 0.06) !important;
+  --chip-accent-text:   #18181B !important;
+
+  --border:             #E2E8F0 !important;
   --border-subtle:      rgba(0, 0, 0, 0.08) !important;
   --border-hover:       #CBD5E1 !important;
 }
@@ -193,13 +206,13 @@ body.dark,
   --card:               #1E1E1E !important;
   --bg-card:            #1E1E1E !important;
   --bg-card-secondary:  #242428 !important;
-  --input-bg:           #222225 !important;
-  --bg-inset:           #222225 !important;
+  --input-bg:           #181818 !important;
+  --bg-inset:           #181818 !important;
   --sidebar-bg:         #181818 !important;
   --bg-sidebar:         #181818 !important;
   --hover:              #28282D !important;
   --bg-hover:           #28282D !important;
-  --bg-active:          #1E293B !important;
+  --bg-active:          #28282D !important;
 
   --text:               #F4F4F5 !important;
   --text-primary:       #F4F4F5 !important;
@@ -208,7 +221,13 @@ body.dark,
   --text-3:             #71717A !important;
   --text-muted:         #71717A !important;
   --text-inverse:       #09090B !important;
-  --link-hover:         #93C5FD !important;
+  --link-hover:         #FFFFFF !important;
+
+  --accent:             #FFFFFF !important;
+  --accent-primary:     #FFFFFF !important;
+  --accent-hover:       #E4E4E7 !important;
+  --accent-light:       #27272A !important;
+  --accent-tint:        rgba(255, 255, 255, 0.10) !important;
 
   --btn-primary-bg:     #FFFFFF !important;
   --btn-primary-text:   #09090B !important;
@@ -221,8 +240,10 @@ body.dark,
   --chip-text:          #A1A1AA !important;
   --chip-active-bg:     #1E1E1E !important;
   --chip-active-text:   #F4F4F5 !important;
+  --chip-accent-bg:     rgba(255, 255, 255, 0.10) !important;
+  --chip-accent-text:   #FFFFFF !important;
 
-  --border:             transparent !important;
+  --border:             rgba(255, 255, 255, 0.12) !important;
   --border-subtle:      rgba(255, 255, 255, 0.08) !important;
   --border-hover:       #3F3F46 !important;
 }
@@ -240,13 +261,13 @@ body.oled,
   --card:               #121212 !important;
   --bg-card:            #121212 !important;
   --bg-card-secondary:  #181818 !important;
-  --input-bg:           #161616 !important;
-  --bg-inset:           #161616 !important;
+  --input-bg:           #0A0A0A !important;
+  --bg-inset:           #0A0A0A !important;
   --sidebar-bg:         #0A0A0A !important;
   --bg-sidebar:         #0A0A0A !important;
   --hover:              #202024 !important;
   --bg-hover:           #202024 !important;
-  --bg-active:          #1A2234 !important;
+  --bg-active:          #202024 !important;
 
   --text:               #F4F4F5 !important;
   --text-primary:       #F4F4F5 !important;
@@ -255,7 +276,13 @@ body.oled,
   --text-3:             #71717A !important;
   --text-muted:         #71717A !important;
   --text-inverse:       #000000 !important;
-  --link-hover:         #93C5FD !important;
+  --link-hover:         #FFFFFF !important;
+
+  --accent:             #FFFFFF !important;
+  --accent-primary:     #FFFFFF !important;
+  --accent-hover:       #E4E4E7 !important;
+  --accent-light:       #181818 !important;
+  --accent-tint:        rgba(255, 255, 255, 0.12) !important;
 
   --btn-primary-bg:     #FFFFFF !important;
   --btn-primary-text:   #09090B !important;
@@ -268,10 +295,65 @@ body.oled,
   --chip-text:          #A1A1AA !important;
   --chip-active-bg:     #121212 !important;
   --chip-active-text:   #F4F4F5 !important;
+  --chip-accent-bg:     rgba(255, 255, 255, 0.12) !important;
+  --chip-accent-text:   #FFFFFF !important;
 
-  --border:             transparent !important;
-  --border-subtle:      rgba(255, 255, 255, 0.08) !important;
+  --border:             rgba(255, 255, 255, 0.18) !important;
+  --border-subtle:      rgba(255, 255, 255, 0.10) !important;
   --border-hover:       #3F3F46 !important;
+}
+
+/* ==========================================================================
+   THEME OVERRIDES — CATPPUCCIN MOCHA / CAPPUCCINO WARM LUXURY THEME
+   ========================================================================== */
+body.catppuccin,
+:root[data-theme="catppuccin"] {
+  --bg:                 #1E1E2E !important;
+  --bg-app:             #1E1E2E !important;
+  --bg-primary:         #24273A !important;
+  --bg-secondary:       #181825 !important;
+  --bg-surface:         #24273A !important;
+  --card:               #24273A !important;
+  --bg-card:            #24273A !important;
+  --bg-card-secondary:  #313244 !important;
+  --input-bg:           #313244 !important;
+  --bg-inset:           #313244 !important;
+  --sidebar-bg:         #181825 !important;
+  --bg-sidebar:         #181825 !important;
+  --hover:              #363A4F !important;
+  --bg-hover:           #363A4F !important;
+  --bg-active:          #45475A !important;
+
+  --text:               #CDD6F4 !important;
+  --text-primary:       #CDD6F4 !important;
+  --text-2:             #BAC2DE !important;
+  --text-secondary:     #BAC2DE !important;
+  --text-3:             #A6ADC8 !important;
+  --text-muted:         #A6ADC8 !important;
+  --text-inverse:       #11111B !important;
+  --link-hover:         #F5C2E7 !important;
+
+  --accent:             #CBA6F7 !important;
+  --accent-primary:     #CBA6F7 !important;
+  --accent-hover:       #B4BEFE !important;
+  --accent-light:       #313244 !important;
+  --accent-tint:        rgba(203, 166, 247, 0.15) !important;
+
+  --btn-primary-bg:     #CBA6F7 !important;
+  --btn-primary-text:   #11111B !important;
+  --btn-primary-hover:  #B4BEFE !important;
+  --btn-secondary-bg:   #313244 !important;
+  --btn-secondary-text: #CDD6F4 !important;
+  --btn-secondary-hover:#363A4F !important;
+
+  --chip-bg:            #313244 !important;
+  --chip-text:          #BAC2DE !important;
+  --chip-active-bg:     #24273A !important;
+  --chip-active-text:   #CDD6F4 !important;
+
+  --border:             #45475A !important;
+  --border-subtle:      rgba(203, 166, 247, 0.12) !important;
+  --border-hover:       #585B70 !important;
 }
 
 /* System Dark Mode Auto-Detection Fallback */
@@ -291,7 +373,7 @@ body.oled,
     --bg-sidebar:         #181818;
     --hover:              #28282D;
     --bg-hover:           #28282D;
-    --bg-active:          #1E293B;
+    --bg-active:          #28282D;
 
     --text:               #FFFFFF;
     --text-primary:       #FFFFFF;
@@ -300,7 +382,7 @@ body.oled,
     --text-3:             #71717A;
     --text-muted:         #71717A;
     --text-inverse:       #09090B;
-    --link-hover:         #93C5FD;
+    --link-hover:         #FFFFFF;
 
     --btn-primary-bg:     #FFFFFF;
     --btn-primary-text:   #09090B;

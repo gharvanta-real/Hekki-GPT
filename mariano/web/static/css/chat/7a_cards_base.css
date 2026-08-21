@@ -175,7 +175,7 @@ body:not(.dark):not(.oled) .image-generation-shimmer {
   width: 5px;
   height: 56px;
   border-radius: 9999px;
-  background: var(--text-primary, #2563eb);
+  background: var(--text-primary);
   opacity: 0.3;
   animation: wave-bar-anim 1.4s ease-in-out infinite;
 }
@@ -194,7 +194,7 @@ body:not(.dark):not(.oled) .image-generation-shimmer {
 /* === CHAT IMAGE PREVIEW CARD === */
 .chat-image-preview-card {
   margin: 10px 0;
-  border: none !important;
+  border: 1px solid var(--border) !important;
   border-radius: 20px !important;
   overflow: hidden;
   width: 360px;
@@ -210,7 +210,7 @@ body:not(.dark):not(.oled) .image-generation-shimmer {
 body.dark .chat-image-preview-card,
 body.oled .chat-image-preview-card {
   background: #18181b;
-  border: none !important;
+  border: 1px solid var(--border) !important;
   box-shadow: none !important;
 }
 
@@ -323,4 +323,168 @@ body.oled .chat-image-preview-card {
   margin: 0 !important;
   box-sizing: border-box !important;
   scroll-snap-align: start;
+}
+
+/* === TRANSLATION CARD (Clean UX, Flat Design, Master Tokens) === */
+.translation-card {
+  width: 100%;
+  max-width: 100%;
+  margin: 14px 0 12px 0;
+  padding: 16px 18px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle) !important;
+  border-radius: 18px !important;
+  box-sizing: border-box;
+  font-family: var(--font);
+  box-shadow: none !important;
+  transition: border-color 0.15s ease;
+}
+
+.translation-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 12px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--border-subtle);
+  user-select: none;
+}
+
+.translation-lang-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.translation-lang-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--accent-primary, var(--blue));
+  flex-shrink: 0;
+}
+
+.translation-card-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.translation-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: transparent;
+  color: var(--text-secondary);
+  border: none !important;
+  border-radius: var(--radius-md, 8px);
+  padding: 5px 8px;
+  font-size: 12.5px;
+  font-family: var(--font);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  outline: none;
+  box-shadow: none !important;
+}
+
+.translation-action-btn:hover {
+  background: var(--hover);
+  color: var(--text-primary);
+}
+
+.translation-action-btn.btn-translation-listen {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: 50% !important;
+  aspect-ratio: 1/1 !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--hover);
+  color: var(--text-secondary);
+}
+
+.translation-action-btn.btn-translation-listen:hover {
+  background: var(--bg-active);
+  color: var(--text-primary);
+}
+
+.translation-action-btn.btn-translation-listen.is-speaking {
+  color: var(--text-primary) !important;
+  background: var(--hover) !important;
+  animation: pulse-listen 1.2s infinite ease-in-out;
+}
+
+@keyframes pulse-listen {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.translation-action-btn.btn-translation-copy {
+  background: var(--btn-primary-bg) !important;
+  color: var(--btn-primary-text) !important;
+  border-radius: var(--radius-pill, 20px) !important;
+  padding: 5px 14px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.translation-action-btn.btn-translation-copy svg {
+  stroke: var(--btn-primary-text) !important;
+  color: var(--btn-primary-text) !important;
+  stroke-width: 2.2;
+}
+
+.translation-action-btn.btn-translation-copy .copy-label {
+  color: var(--btn-primary-text) !important;
+  font-weight: 600;
+  font-size: 12.5px;
+}
+
+.translation-action-btn.btn-translation-copy:hover {
+  background: var(--btn-primary-hover) !important;
+  color: var(--btn-primary-text) !important;
+  opacity: 0.94;
+  transform: translateY(-1px);
+}
+
+.translation-action-btn.btn-translation-copy.is-copied {
+  background: #16a34a !important;
+  color: #ffffff !important;
+}
+
+.translation-action-btn.btn-translation-copy.is-copied svg,
+.translation-action-btn.btn-translation-copy.is-copied .copy-label {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
+}
+
+.translation-card-body {
+  width: 100%;
+}
+
+.translation-text {
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: var(--text-primary);
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-weight: 400;
+}
+
+.translation-context-note {
+  margin-top: 10px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-3);
+  font-style: normal;
 }

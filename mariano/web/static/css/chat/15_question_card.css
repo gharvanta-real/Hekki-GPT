@@ -1,0 +1,362 @@
+/* === 15_question_card.css — AI Clarification Question Card (In-Place Input Replacement) === */
+/* Flat legacy aesthetic, full in-place replacement of input bar, unbold fonts, vertical list options. */
+
+/* ─── Hides the normal input capsule when question card is active ─── */
+.qcard-hidden-capsule {
+  display: none !important;
+}
+
+/* ─── Wrapper inside .bottom-col ─── */
+#ai-question-card-wrap {
+  width: 100%;
+  position: relative;
+  z-index: 80;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+/* ─── The Question Card (Bubble-Like Round Edges) ─── */
+.ai-qcard {
+  width: 100%;
+  background: var(--bg-card);
+  border-radius: 20px;
+  border: 1px solid var(--border-subtle);
+  padding: 16px 18px 14px;
+  font-family: var(--font);
+  box-shadow: none !important;
+  box-sizing: border-box;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.ai-qcard.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ─── Header Meta Row ─── */
+.qcard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  position: relative;
+}
+
+.qcard-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.qcard-icon {
+  width: 15px;
+  height: 15px;
+  color: var(--text-3);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.qcard-icon svg {
+  width: 15px;
+  height: 15px;
+}
+
+.qcard-label {
+  font-size: 12px;
+  font-weight: 400 !important;
+  color: var(--text-3);
+  letter-spacing: 0.01em;
+}
+
+.qcard-slide-counter {
+  font-size: 12px;
+  font-weight: 400 !important;
+  color: var(--text-3);
+}
+
+/* ─── Question Text (Strictly Unbold) ─── */
+.qcard-question {
+  font-size: 14.5px;
+  font-weight: 400 !important;
+  color: var(--text-primary);
+  line-height: 1.5;
+  margin: 0 0 14px 0;
+}
+
+/* ─── Vertical List Options ─── */
+.qcard-options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  width: 100%;
+  margin-bottom: 14px;
+  box-sizing: border-box;
+}
+
+.qcard-option-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: var(--input-bg);
+  color: var(--text-primary);
+  font-size: 13.5px;
+  font-weight: 400 !important;
+  font-family: var(--font);
+  cursor: pointer;
+  border: none;
+  outline: none;
+  box-shadow: none !important;
+  text-align: left;
+  user-select: none;
+  box-sizing: border-box;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.qcard-option-row:hover {
+  background: var(--hover);
+  color: var(--text-primary);
+}
+
+.qcard-option-row.selected {
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+}
+
+/* Radio circle indicator (Single Select) */
+.qcard-radio-circle {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1.5px solid var(--text-3);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  transition: border-color 0.12s ease;
+}
+
+.qcard-radio-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: transparent;
+  transition: background 0.12s ease;
+}
+
+.qcard-option-row.selected .qcard-radio-circle {
+  border-color: var(--btn-primary-text);
+}
+
+.qcard-option-row.selected .qcard-radio-dot {
+  background: var(--btn-primary-text);
+}
+
+/* Checkbox indicator (Multi Select) */
+.qcard-checkbox-box {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 1.5px solid var(--text-3);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  transition: border-color 0.12s ease;
+}
+
+.qcard-checkbox-box svg {
+  width: 12px;
+  height: 12px;
+  display: none;
+  fill: currentColor;
+}
+
+.qcard-option-row.selected .qcard-checkbox-box {
+  border-color: var(--btn-primary-text);
+}
+
+.qcard-option-row.selected .qcard-checkbox-box svg {
+  display: block;
+  fill: var(--btn-primary-text);
+}
+
+.qcard-option-text {
+  flex: 1;
+  font-weight: 400 !important;
+  font-size: 13.5px;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+/* ─── "Other" Inline Custom Input Row ─── */
+.qcard-other-row {
+  cursor: text;
+}
+
+.qcard-other-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  box-shadow: none !important;
+  color: inherit;
+  font-family: var(--font);
+  font-size: 13.5px;
+  font-weight: 400 !important;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.qcard-other-input::placeholder {
+  color: var(--text-3);
+  font-weight: 400 !important;
+}
+
+.qcard-option-row.selected .qcard-other-input {
+  color: var(--btn-primary-text);
+}
+
+.qcard-option-row.selected .qcard-other-input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* ─── Free-Text Input (Text Mode) ─── */
+.qcard-write-wrap {
+  margin-bottom: 14px;
+  width: 100%;
+}
+
+.qcard-write-input {
+  width: 100%;
+  background: var(--input-bg);
+  border: none;
+  outline: none;
+  box-shadow: none !important;
+  border-radius: var(--radius-md, 8px);
+  padding: 10px 12px;
+  font-size: 13.5px;
+  font-weight: 400 !important;
+  font-family: var(--font);
+  color: var(--text-primary);
+  resize: none;
+  min-height: 44px;
+  max-height: 120px;
+  box-sizing: border-box;
+  line-height: 1.5;
+}
+
+.qcard-write-input::placeholder {
+  color: var(--text-3);
+  font-weight: 400 !important;
+}
+
+/* ─── Actions Bottom Row ─── */
+.qcard-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.qcard-actions-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Navigation Buttons (Strictly Unbold & Legacy Tokens) */
+.qcard-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 14px;
+  border-radius: var(--radius-btn, 8px);
+  font-size: 13px;
+  font-weight: 400 !important;
+  font-family: var(--font);
+  cursor: pointer;
+  border: none;
+  outline: none;
+  box-shadow: none !important;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.qcard-btn-ghost {
+  background: transparent;
+  color: var(--text-3);
+}
+
+.qcard-btn-ghost:hover {
+  background: var(--hover);
+  color: var(--text-primary);
+}
+
+.qcard-btn-skip {
+  background: transparent;
+  color: var(--text-3);
+  font-size: 12px;
+  font-weight: 400 !important;
+  padding: 4px 6px;
+}
+
+.qcard-btn-skip:hover {
+  color: var(--text-primary);
+}
+
+.qcard-btn-primary {
+  background: var(--btn-primary-bg) !important;
+  color: var(--btn-primary-text) !important;
+  margin-left: auto;
+  font-weight: 400 !important;
+}
+
+.qcard-btn-primary:hover {
+  background: var(--btn-primary-hover, var(--hover)) !important;
+}
+
+/* ─── Slide Dots (Centered at Top Header) ─── */
+.qcard-dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.qcard-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--border);
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.qcard-dot.active {
+  background: var(--text-primary);
+  transform: scale(1.3);
+}
+
+/* ─── Slide Fade Animation ─── */
+.qcard-slide-body {
+  animation: qcardSlideFade 0.15s ease both;
+}
+
+@keyframes qcardSlideFade {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

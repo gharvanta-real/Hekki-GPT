@@ -1,4 +1,4 @@
-﻿"""MARIANO - Session-isolated context window per chat_id."""
+"""MARIANO - Session-isolated context window per chat_id."""
 from __future__ import annotations
 from collections import deque
 from dataclasses import dataclass, field
@@ -27,6 +27,15 @@ class ContextWindow:
         self._chat_id = chat_id
         self._messages: deque[ContextMessage] = deque(maxlen=self.MAX_SIZE)
         self._synaptic_summary: str = ""
+        self._active_target_dir: str | None = None
+
+    @property
+    def active_target_dir(self) -> str | None:
+        return self._active_target_dir
+
+    def set_active_target_dir(self, target_dir: str | None) -> None:
+        if target_dir:
+            self._active_target_dir = str(target_dir).strip().replace("/", "\\")
 
     def add(self, role: str, content: str, tool_name: str | None = None,
             tool_calls: list[dict] | None = None, tool_response: dict | None = None) -> None:
@@ -36,9 +45,14 @@ class ContextWindow:
 
     def seed_from_history(self, messages: list[dict]) -> None:
         """Inject persisted messages as starting context on session restore."""
-        for m in messages[-20:]:
+        for m in messages[-40:]:
             self._messages.append(ContextMessage(
-                role=m.get("role", "user"), content=m.get("content", "")))
+                role=m.get("role", "user"),
+                content=m.get("content", ""),
+                tool_name=m.get("tool_name"),
+                tool_calls=m.get("tool_calls"),
+                tool_response=m.get("tool_response"),
+            ))
 
     def get_history(self) -> list[dict]:
         history = []
@@ -73,8 +87,12 @@ class ContextWindow:
                 if self._messages:
                     oldest.append(self._messages.popleft())
             lines = [m.role.upper() + ": " + m.content[:500] for m in oldest]
-            prompt = ("Compress into 3-4 sentence factual summary preserving: "
-                      "decisions, files changed, tasks done, errors, names/paths:\n\n" + "\n".join(lines))
+            prompt = (
+                "You are an internal context compression engine. Compress these past conversation turns "
+                "into a high-density, factual summary. Strictly preserve: user instructions, target goals, "
+                "links/URLs, file paths, directory organization rules, decisions made, errors, and task statuses:\n\n"
+                + "\n".join(lines)
+            )
             new_summary = (await gemini.complete(prompt)).strip()
             self._synaptic_summary = ((self._synaptic_summary + " | " + new_summary)
                                        if self._synaptic_summary else new_summary)

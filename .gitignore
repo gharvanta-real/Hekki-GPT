@@ -60,9 +60,26 @@ recon_engine/*.txt
 .history/
 .history
 
-# Assistant files
+# Assistant & scratch files
 .aider*
+.scratch/
+mariano/data/workspace/
+data/clat_papers/
+data/rate_limits.json
+extract_*.py
+split_*.py
+read_chapter1.py
+bypass_cf.py
+count_chapters_sections.py
+scan_plugins.py
+deep_scan.py
+full_scan.py
+fetch_readme.py
+combined_text.txt
+extracted_text.txt
+
 
 # OS metadata
 .DS_Store
 Thumbs.db
+

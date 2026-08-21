@@ -26,6 +26,9 @@ else:
 
 SKILLS_DIR = BASE_DIR / "mariano" / "skills"
 
+_GLOBAL_DYNAMIC_CACHE: dict = {}
+_GLOBAL_DYNAMIC_CACHE_TS: float = 0.0
+
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
@@ -37,7 +40,7 @@ class Settings(BaseSettings):
 
     # AI Brain Setup
     gemini_api_key: str = Field("", description="Gemini API key")
-    mariano_model: str = Field("gemini-3.1-flash-lite", description="Gemini model name")
+    mariano_model: str = Field("gemini-3.5-flash-lite", description="Gemini model name")
 
     # Data Paths
     mariano_data_dir: Path = Field(default=DATA_DIR)
@@ -83,27 +86,43 @@ class Settings(BaseSettings):
 
     @property
     def dynamic_config(self) -> dict:
+        global _GLOBAL_DYNAMIC_CACHE, _GLOBAL_DYNAMIC_CACHE_TS
         import json
+        import time
+        now = time.time()
+        # 2-second in-memory cache to prevent disk thrashing in tight execution loops
+        if _GLOBAL_DYNAMIC_CACHE and (now - _GLOBAL_DYNAMIC_CACHE_TS < 2.0):
+            return _GLOBAL_DYNAMIC_CACHE
+
         path = self.mariano_data_dir / "dynamic_settings.json"
         if path.exists():
             try:
                 with open(path, "r", encoding="utf-8") as f:
-                    return json.load(f)
+                    data = json.load(f)
+                    _GLOBAL_DYNAMIC_CACHE = data
+                    _GLOBAL_DYNAMIC_CACHE_TS = now
+                    return data
             except Exception:
                 pass
-        return {}
+        return _GLOBAL_DYNAMIC_CACHE or {}
 
     def save_dynamic_config(self, config: dict) -> None:
+        global _GLOBAL_DYNAMIC_CACHE, _GLOBAL_DYNAMIC_CACHE_TS
         import json
+        import time
         self.mariano_data_dir.mkdir(parents=True, exist_ok=True)
         path = self.mariano_data_dir / "dynamic_settings.json"
-        existing = self.dynamic_config
+        existing = dict(self.dynamic_config)
         existing.update(config)
         try:
             with open(path, "w", encoding="utf-8") as f:
                 json.dump(existing, f, indent=2)
-        except Exception:
-            pass
+            _GLOBAL_DYNAMIC_CACHE = existing
+            _GLOBAL_DYNAMIC_CACHE_TS = time.time()
+        except Exception as e:
+            import structlog
+            structlog.get_logger(__name__).error("settings.save_dynamic_config_failed", error=str(e))
+
 
     @property
     def active_model(self) -> str:
@@ -135,10 +154,19 @@ class Settings(BaseSettings):
     def active_ollama_base_url(self) -> str:
         return self.dynamic_config.get("local_base_url", self.dynamic_config.get("ollama_base_url", "http://localhost:11434"))
 
+    @property
+    def active_run_in_background(self) -> bool:
+        return self.dynamic_config.get("run_in_background", True)
+
+    @property
+    def active_auto_start(self) -> bool:
+        return self.dynamic_config.get("auto_start", False)
+
 
 from functools import lru_cache
 
 @lru_cache
 def get_settings() -> Settings:
     return Settings()
+
 

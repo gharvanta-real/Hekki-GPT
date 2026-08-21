@@ -193,7 +193,9 @@ function _buildLayout() {
 
           <!-- User Profile Action -->
           <div class="sidebar-user-profile" id="btn-debate-sidebar-user-profile" style="border-top: none;">
-            <img class="sidebar-user-avatar" id="debate-sidebar-user-avatar" src="/static/carbon_icons/misc/user-avatar.svg" alt="User Avatar" />
+            <div class="sidebar-user-avatar" id="debate-sidebar-user-avatar">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 32 32" fill="currentColor"><path d="M16 4a6 6 0 1 0 6 6 6 6 0 0 0-6-6zm0 10a4 4 0 1 1 4-4 4 4 0 0 1-4 4zm10 14h-2a8 8 0 0 0-16 0H6a10 10 0 0 1 20 0z"/></svg>
+            </div>
             <div class="sidebar-user-info">
               <div class="sidebar-user-name" id="debate-sidebar-user-name">User</div>
             </div>
@@ -2025,7 +2027,7 @@ function _getBorderColor(type) {
     case 'finding': return '#4f46e5';
     case 'definition': return '#0d9488';
     case 'hypothesis': return '#d97706';
-    case 'data_point': return '#2563eb';
+    case 'data_point': return '#a1a1aa';
     case 'conclusion': return '#16a34a';
     default: return '#cccccc';
   }
@@ -2319,8 +2321,8 @@ function _showActiveSearch(sender, query) {
   if (!card || !queryEl || !badge) return;
 
   let displayName = sender.toUpperCase();
-  let badgeBg = 'rgba(59, 130, 246, 0.15)';
-  let badgeColor = '#60a5fa';
+  let badgeBg = 'var(--hover)';
+  let badgeColor = 'var(--text-primary)';
 
   if (sender === 'alpha') {
     displayName = ALPHA_NAME;

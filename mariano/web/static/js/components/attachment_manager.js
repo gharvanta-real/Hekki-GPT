@@ -3,6 +3,12 @@
  * Renders ChatGPT-style preview chips with thumbnails & remove (X) buttons.
  */
 import { calculateTextStats, openSnippetModal } from '../chat/input_stats.js';
+import { showCustomAlert } from '../chat/dialogs.js';
+
+// Strict file upload limits
+const MAX_IMAGE_SIZE_BYTES = 15 * 1024 * 1024; // 15 MB per image
+const MAX_DOC_SIZE_BYTES = 50 * 1024 * 1024;   // 50 MB per document / data file
+const MAX_BATCH_FILES = 10;                    // Max 10 files per upload batch
 
 class AttachmentManager {
   constructor() {
@@ -12,16 +18,41 @@ class AttachmentManager {
 
   /**
    * Add File objects selected by user.
-   * Reads files asynchronously into base64 / dataUrl.
+   * Validates file size limits (15MB for images, 50MB for documents)
+   * and opens a custom error modal if limits are exceeded.
    */
   async addFiles(fileList) {
     const filesArray = Array.from(fileList || []);
     if (!filesArray.length) return;
 
-    for (const file of filesArray) {
+    const rejectedFiles = [];
+    const filesToProcess = [];
+
+    // 1. Check total files count
+    if (this._files.length + filesArray.length > MAX_BATCH_FILES) {
+      const allowedCount = Math.max(0, MAX_BATCH_FILES - this._files.length);
+      rejectedFiles.push(`Maximum ${MAX_BATCH_FILES} files allowed per message. Only processing first ${allowedCount} file(s).`);
+      filesToProcess.push(...filesArray.slice(0, allowedCount));
+    } else {
+      filesToProcess.push(...filesArray);
+    }
+
+    // 2. Validate individual file size limits
+    for (const file of filesToProcess) {
       const isImage = file.type.startsWith('image/');
       const ext = file.name.slice(((file.name.lastIndexOf(".") - 1) >>> 0) + 2).toLowerCase();
-      
+      const formattedSize = this._formatSize(file.size);
+
+      if (isImage && file.size > MAX_IMAGE_SIZE_BYTES) {
+        rejectedFiles.push(`🖼️ ${file.name} (${formattedSize}) exceeds 15 MB limit for images.`);
+        continue;
+      }
+
+      if (!isImage && file.size > MAX_DOC_SIZE_BYTES) {
+        rejectedFiles.push(`📄 ${file.name} (${formattedSize}) exceeds 50 MB limit for documents.`);
+        continue;
+      }
+
       const item = {
         id: `att_${Date.now()}_${this._nextId++}`,
         file,
@@ -54,6 +85,15 @@ class AttachmentManager {
       }
 
       this._files.push(item);
+    }
+
+    // 3. Show error modal dialog if any file was rejected
+    if (rejectedFiles.length > 0) {
+      showCustomAlert(
+        'Upload Limit Exceeded',
+        'Some files could not be uploaded because they exceed the maximum allowed size limit:',
+        rejectedFiles
+      );
     }
 
     this.renderAllPreviews();
@@ -154,27 +194,33 @@ class AttachmentManager {
 
   _buildChipsHtml() {
     return this._files.map(f => {
-      const sizeStr = this._formatSize(f.size);
-
-      let mediaHtml = '';
+      // 1. Image Attachments: Thumbnail ONLY (No metadata text), circular close icon on top-right corner
       if (f.isImage && f.dataUrl) {
-        mediaHtml = `<img class="chip-thumb" src="${f.dataUrl}" alt="${this._esc(f.name)}" />`;
-      } else {
-        const displayExt = f.ext.length <= 4 ? f.ext : 'doc';
-        mediaHtml = `<div class="chip-doc-icon">${displayExt}</div>`;
+        return `
+          <div class="attachment-chip attachment-chip-image" data-id="${f.id}" title="${this._esc(f.name)}">
+            <img class="chip-image-preview" src="${f.dataUrl}" alt="${this._esc(f.name)}" />
+            <button class="chip-img-remove-btn chip-remove-btn" data-id="${f.id}" aria-label="Remove image" title="Remove image">
+              <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+          </div>
+        `;
       }
 
+      // 2. Document & Text Attachments: Retain document icon, filename & size metadata
+      const sizeStr = this._formatSize(f.size);
+      const displayExt = f.ext.length <= 4 ? f.ext : 'doc';
+      const mediaHtml = `<div class="chip-doc-icon">${displayExt}</div>`;
       const isTextSnippet = Boolean(f.text || ['txt', 'md', 'py', 'js', 'json', 'log', 'csv'].includes(f.ext));
 
       return `
-        <div class="attachment-chip ${isTextSnippet ? 'attachment-chip-clickable' : ''}" data-id="${f.id}" title="${this._esc(f.name)} ${isTextSnippet ? '(Click to view/edit snippet)' : ''}">
+        <div class="attachment-chip attachment-chip-doc ${isTextSnippet ? 'attachment-chip-clickable' : ''}" data-id="${f.id}" title="${this._esc(f.name)} ${isTextSnippet ? '(Click to view/edit)' : ''}">
           ${mediaHtml}
           <div class="chip-info">
             <span class="chip-name">${this._esc(f.name)}</span>
             <span class="chip-size">${sizeStr}</span>
           </div>
-          <button class="chip-remove-btn" data-id="${f.id}" title="Remove attachment">
-            <i data-lucide="x" style="width:11px;height:11px;"></i>
+          <button class="chip-remove-btn" data-id="${f.id}" aria-label="Remove attachment" title="Remove attachment">
+            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
           </button>
         </div>
       `;

@@ -25,6 +25,9 @@ class SettingsUpdateRequest(BaseModel):
     quick_voice_enabled: bool | None = None
     debate_model_alpha: str | None = None
     debate_model_beta: str | None = None
+    run_in_background: bool | None = None
+    auto_start: bool | None = None
+
 
 
 @router.get("/api/models")
@@ -115,6 +118,8 @@ async def get_api_settings():
         "quick_voice_enabled": settings.dynamic_config.get("quick_voice_enabled", True),
         "debate_model_alpha": settings.dynamic_config.get("debate_model_alpha", "gemini-3.1-flash-lite"),
         "debate_model_beta": settings.dynamic_config.get("debate_model_beta", "gemini-3.1-flash-lite"),
+        "run_in_background": settings.dynamic_config.get("run_in_background", True),
+        "auto_start": settings.dynamic_config.get("auto_start", False),
     }
 
 
@@ -144,6 +149,8 @@ async def update_api_settings(req: SettingsUpdateRequest):
     if req.quick_voice_enabled is not None: update_dict["quick_voice_enabled"] = req.quick_voice_enabled
     if req.debate_model_alpha is not None: update_dict["debate_model_alpha"] = req.debate_model_alpha
     if req.debate_model_beta is not None: update_dict["debate_model_beta"] = req.debate_model_beta
+    if req.run_in_background is not None: update_dict["run_in_background"] = req.run_in_background
+    if req.auto_start is not None: update_dict["auto_start"] = req.auto_start
     try:
         settings.save_dynamic_config(update_dict)
         return {"success": True}
@@ -152,5 +159,6 @@ async def update_api_settings(req: SettingsUpdateRequest):
         import structlog
         structlog.get_logger(__name__).error("failed_to_save_settings", error=str(e))
         raise HTTPException(status_code=500, detail="Failed to save settings to disk")
+
 
 

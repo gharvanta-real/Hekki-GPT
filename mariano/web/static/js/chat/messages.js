@@ -2,6 +2,7 @@
 import { escapeHtml, formatTime, scrollChat, clearChatLogs } from './input.js';
 import { enhanceMarkdownContent } from './markdown.js';
 import { enhanceImagePreviews } from './media.js';
+import { openImageLightbox } from './dialogs.js';
 
 function sanitizeHtml(html) {
   if (!html) return '';
@@ -35,13 +36,14 @@ export function createMessageElement(type, text, timestamp, index, ChatSessionMa
     const imgRegex = /\[Attached Image:\s*([^\(]+)\s*\(saved at ([^\]]+)\)\]/g;
     const fileRegex = /\[Attached File:\s*([^\]]+)\]/g;
     let match;
-    const attachmentCards = [];
+    const imageCards = [];
+    const fileCards = [];
 
     // Extract images
     while ((match = imgRegex.exec(text)) !== null) {
       const fileName = match[1].trim(), rawPath = match[2].trim();
       const renderUrl = (rawPath.startsWith('data:') || rawPath.startsWith('http')) ? rawPath : `/api/workspace/render?path=${encodeURIComponent(rawPath)}`;
-      attachmentCards.push(`<div class="user-img-attachment-card" style="align-self:flex-end;margin-bottom:0;border-radius:12px;overflow:hidden;width:120px;height:120px;border:1px solid var(--border);flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,0.12);"><img src="${renderUrl}" alt="${escapeHtml(fileName)}" style="width:120px;height:120px;object-fit:cover;display:block;" /></div>`);
+      imageCards.push({ fileName, renderUrl });
     }
 
     while ((match = fileRegex.exec(text)) !== null) {
@@ -51,19 +53,43 @@ export function createMessageElement(type, text, timestamp, index, ChatSessionMa
       let iconName = 'file-text';
       if (['ZIP', 'RAR', '7Z', 'TAR', 'GZ'].includes(ext)) iconName = 'archive';
       else if (['PY', 'JS', 'HTML', 'CSS', 'JSON', 'CPP', 'C', 'TS'].includes(ext)) iconName = 'file-code';
-      attachmentCards.push(`<div class="user-file-attachment-card" style="align-self:flex-end;margin-bottom:0;padding:8px 14px;border-radius:12px;background:var(--card,#fff);border:1px solid var(--border)!important;display:inline-flex;align-items:center;gap:8px;font-size:14.5px;color:var(--text-primary);font-weight:500;max-width:320px;box-shadow:0 2px 6px rgba(0,0,0,0.06);"><i data-lucide="${iconName}" style="width:17px;height:17px;color:var(--accent,#2563eb);flex-shrink:0;"></i><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;">${escapeHtml(fileName)}</span><span style="font-size:11px;background:rgba(37,99,235,0.12);color:var(--accent,#2563eb);padding:2px 7px;border-radius:6px;text-transform:uppercase;font-weight:500;flex-shrink:0;">${ext}</span></div>`);
+      fileCards.push(`<div class="user-file-attachment-card" style="align-self:flex-end;margin-bottom:0;padding:8px 14px;border-radius:12px;background:var(--card,#fff);border:none!important;box-shadow:none!important;display:inline-flex;align-items:center;gap:8px;font-size:14.5px;color:var(--text-primary);font-weight:500;max-width:320px;"><i data-lucide="${iconName}" style="width:17px;height:17px;color:var(--text-primary);flex-shrink:0;"></i><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;">${escapeHtml(fileName)}</span><span style="font-size:11px;background:var(--hover);color:var(--text-primary);padding:2px 7px;border-radius:6px;text-transform:uppercase;font-weight:500;flex-shrink:0;">${ext}</span></div>`);
     }
 
-    if (attachmentCards.length > 0) {
+    if (imageCards.length > 0 || fileCards.length > 0) {
       const attachContainer = document.createElement('div');
       attachContainer.className = 'user-attachment-container';
-      attachContainer.style.display = 'flex';
-      attachContainer.style.flexDirection = 'column';
-      attachContainer.style.alignItems = 'flex-end';
-      attachContainer.style.gap = '6px';
-      attachContainer.style.marginBottom = '8px';
-      attachContainer.style.width = '100%';
-      attachContainer.innerHTML = attachmentCards.join('');
+
+      // 1. Horizontal Multi-Image Grid (Max 5 images per row, auto-scaling up to 10 images)
+      if (imageCards.length > 0) {
+        const grid = document.createElement('div');
+        grid.className = 'user-images-grid';
+        const cols = Math.min(5, imageCards.length);
+        grid.style.setProperty('--img-cols', cols);
+        grid.dataset.count = imageCards.length;
+
+        imageCards.forEach(({ fileName, renderUrl }) => {
+          const card = document.createElement('div');
+          card.className = 'user-img-attachment-card';
+          card.title = fileName;
+          card.innerHTML = `<img src="${renderUrl}" alt="${escapeHtml(fileName)}" loading="lazy" />`;
+          card.addEventListener('click', (e) => {
+            e.stopPropagation();
+            openImageLightbox(renderUrl, renderUrl);
+          });
+          grid.appendChild(card);
+        });
+        attachContainer.appendChild(grid);
+      }
+
+      // 2. Document/File Attachment Chips
+      if (fileCards.length > 0) {
+        const fileList = document.createElement('div');
+        fileList.className = 'user-files-list';
+        fileList.innerHTML = fileCards.join('');
+        attachContainer.appendChild(fileList);
+      }
+
       group.appendChild(attachContainer);
     }
 
@@ -76,7 +102,7 @@ export function createMessageElement(type, text, timestamp, index, ChatSessionMa
       if (slashMatch) {
         const cmdTag = escapeHtml(slashMatch[1]);
         const restText = escapeHtml(slashMatch[2]);
-        bubble.innerHTML = `<span class="user-cmd-highlight" style="display:inline-flex; align-items:center; background:transparent !important; color:#3b82f6; padding:0 !important; font-weight:400 !important; margin-right:6px; font-size:15px !important; font-family:var(--font); letter-spacing:0.2px;">${cmdTag}</span>${restText}`;
+        bubble.innerHTML = `<span class="user-cmd-highlight" style="display:inline-flex; align-items:center; background:transparent !important; color:var(--text-primary); padding:0 !important; font-weight:500 !important; margin-right:6px; font-size:15px !important; font-family:var(--font); letter-spacing:0.2px;">${cmdTag}</span>${restText}`;
       } else {
         bubble.innerHTML = escapeHtml(cleanText);
       }
@@ -195,8 +221,10 @@ export function createMessageElement(type, text, timestamp, index, ChatSessionMa
         return { thought: '', content: raw };
       };
 
-      const { thought: thoughtContent, content: parsedFinalText } = parseThinking(text);
+      const { thought: parsedThought, content: parsedFinalText } = parseThinking(text);
       finalText = parsedFinalText;
+      const metadataObj = (metadata && typeof metadata === 'object' && !Array.isArray(metadata)) ? metadata : {};
+      const thoughtContent = parsedThought || metadataObj.thought || '';
 
       if (thoughtContent) {
         thoughtHtml = `
@@ -233,7 +261,7 @@ export function createMessageElement(type, text, timestamp, index, ChatSessionMa
         // Extract web domains mentioned in response links/markdown AND tool runs
         const urlRegex = /(https?:\/\/[^\s"'<>\)]+)/gi;
         let allContent = text || '';
-        const toolRuns = (metadata && (metadata.tool_runs || metadata.toolRuns)) || [];
+        const toolRuns = (metadata && Array.isArray(metadata)) ? metadata : ((metadata && (metadata.tool_runs || metadata.toolRuns)) || []);
         if (Array.isArray(toolRuns)) {
           toolRuns.forEach(tr => {
             if (tr.result) allContent += ' ' + (typeof tr.result === 'string' ? tr.result : JSON.stringify(tr.result));
@@ -349,93 +377,13 @@ export function createMessageElement(type, text, timestamp, index, ChatSessionMa
   }
 }
 
-/** Render tool run cards restored from metadata on chat history load */
-export function createToolGroupCard(msg, escapeHtmlFn) {
-  const runs = msg.metadata.tool_runs || [];
-  const durationSec = msg.metadata?.duration_sec || msg.metadata?.tool_runs_duration_sec || Math.max(1, (runs.length * 2));
-  const titleText = `Worked for ${durationSec}s`;
-  const hasFailed = runs.some(r => r.status === 'failed');
-  const svgCheck = '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;display:inline-block;"><polyline points="20 6 9 17 4 12"/></svg>';
-  const svgCross = '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;display:inline-block;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
-  const svgChevron = '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;display:inline-block;vertical-align:middle;margin-right:3px;"><polyline points="9 18 15 12 9 6"/></svg>';
-  const fallbackIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:middle;"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>';
-
-  const statusHtml = hasFailed
-    ? `<span style="color:#ef4444;display:inline-flex;align-items:center;gap:4px;">${svgCross} failed</span>`
-    : `<span style="color:var(--text-3);display:inline-flex;align-items:center;gap:4px;">${svgCheck} completed</span>`;
-
-  const toolCard = document.createElement('div');
-  toolCard.className = 'tool-group-card';
-  toolCard.style.cssText = 'margin:6px 0;display:flex;flex-direction:column;font-family:var(--font);font-size:14px;color:var(--text-3);';
-
-  toolCard.innerHTML = `
-    <div class="tool-group-header" style="display:flex;align-items:center;justify-content:space-between;padding:4px 0;cursor:pointer;user-select:none;">
-      <div style="display:flex;align-items:center;gap:6px;">
-        <svg data-chevron="right" class="chevron-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;opacity:0.75;transition:transform 0.15s;display:inline-block;vertical-align:middle;flex-shrink:0;"><polyline points="9 18 15 12 9 6"/></svg>
-        <span class="tool-group-title" style="font-weight:500;font-size:14.5px;color:var(--text-secondary);">${titleText}</span>
-      </div>
-      <span class="tool-group-status" style="font-size:13.5px;opacity:0.85;font-weight:400;">${statusHtml}</span>
-    </div>
-    <div class="tool-group-body" style="display:none;flex-direction:column;padding-left:14px;border-left:1px dashed var(--border-subtle);margin-left:4px;margin-top:2px;gap:4px;">
-      ${runs.map(r => {
-        const statusSpan = r.status === 'done'
-          ? `<span style="color:var(--text-3);display:inline-flex;align-items:center;gap:3.5px;">${svgCheck} done</span>`
-          : `<span style="color:#ef4444;display:inline-flex;align-items:center;gap:3.5px;">${svgCross} failed</span>`;
-        const reasoningHtml = r.reasoning
-          ? `<div class="ai-reasoning-card" style="margin:3px 0 6px 14px;padding:4px 0 4px 10px;border-left:1px dashed var(--border-subtle);background:transparent;font-size:13.5px;font-family:var(--font);color:var(--text-3);line-height:1.5;opacity:0.9;"><div style="white-space:pre-wrap;word-break:break-word;"><span>${escapeHtmlFn(r.reasoning)}</span></div></div>`
-          : '';
-        const isTerminal = r.label && (r.label.includes('Shell') || r.label.includes('Command') || r.label.includes('System') || r.label.includes('run_command'));
-        const outputHtml = r.output
-          ? `<div style="width:100%;margin-top:4px;padding-left:21px;box-sizing:border-box;">
-              <details style="margin:0;opacity:0.95;width:100%;">
-                <summary style="cursor:pointer;color:var(--text-3);font-size:13px;font-weight:500;outline:none;user-select:none;display:inline-flex;align-items:center;gap:2px;padding:2px 0;">
-                  ${svgChevron}<span>${isTerminal ? 'Terminal Output' : 'View output details'}</span>
-                </summary>
-                <pre class="tool-output-block tool-terminal-block">${escapeHtmlFn(r.output)}</pre>
-              </details>
-            </div>`
-          : '';
-        const iconToUse = r.icon || fallbackIcon;
-        const rLabel = escapeHtmlFn(r.label || '');
-        const rSlashDetail = r.detail
-          ? `<span style="font-weight:500;font-size:14px;color:var(--text-secondary);white-space:nowrap;">${rLabel}</span><span style="color:var(--text-3);opacity:0.55;margin:0 2px;">/</span><span class="tool-detail" style="color:var(--text-3);font-size:13.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:340px;">${r.detail}</span>`
-          : `<span style="font-weight:500;font-size:14px;color:var(--text-secondary);white-space:nowrap;">${rLabel}</span>`;
-
-        return `
-          <div class="tool-log-card" style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;margin:3px 0 4px 0;padding:4px 0;background:transparent;font-size:14px;font-family:var(--font);color:var(--text-3);gap:10px;">
-            <div style="display:flex;align-items:center;gap:6px;overflow:hidden;">
-              <span style="flex-shrink:0;opacity:0.85;display:inline-flex;align-items:center;">${iconToUse}</span>
-              ${rSlashDetail}
-            </div>
-            <span class="tool-status" style="flex-shrink:0;font-size:13px;color:var(--text-3);white-space:nowrap;opacity:0.85;">${statusSpan}</span>
-            ${outputHtml}
-          </div>
-          ${reasoningHtml}
-        `;
-      }).join('')}
-    </div>
-  `;
-
-  const header = toolCard.querySelector('.tool-group-header');
-  const body = toolCard.querySelector('.tool-group-body');
-  const chevron = toolCard.querySelector('.chevron-icon');
-  if (header && body) {
-    header.addEventListener('click', () => {
-      const isHidden = body.style.display === 'none';
-      body.style.display = isHidden ? 'flex' : 'none';
-      if (chevron) chevron.style.transform = isHidden ? 'rotate(90deg)' : 'rotate(0deg)';
-    });
-  }
-
-  return toolCard;
-}
+export { createToolGroupCard } from './tool_cards.js';
 
 /** Converts user bubble to edit textarea form in place */
 function makeUserMessageEditable(groupEl, originalText, index, ChatSessionManager, globalSendCallbackRef) {
   const bubble = groupEl.querySelector('.msg.user');
   const actions = groupEl.querySelector('.msg-actions');
   if (!bubble) return;
-
   bubble.style.display = 'none';
   if (actions) actions.style.display = 'none';
 

@@ -51,7 +51,7 @@
 .permission-pill {
   height: 24px;
   padding: 0 10px;
-  border: none !important;
+  border: 1px solid var(--border) !important;
   outline: none !important;
   box-shadow: none !important;
   background: var(--hover);
@@ -73,7 +73,7 @@
   position: absolute;
   z-index: 10000;
   background: var(--card);
-  border: none !important;
+  border: 1px solid var(--border) !important;
   border-radius: 12px;
   box-shadow: none !important;
   padding: 6px;
@@ -86,7 +86,7 @@
 .stop-btn {
   height: 28px;
   padding: 0 12.5px;
-  border: none;
+  border: 1px solid var(--border) !important;
   background: var(--hover);
   color: var(--text-2);
   cursor: pointer;
@@ -115,7 +115,7 @@
 .shortcut {
   height: 32px;
   padding: 0 14px;
-  border: none !important;
+  border: 1px solid var(--border) !important;
   outline: none !important;
   box-shadow: none !important;
   background: var(--input-bg, #F4F4F6);

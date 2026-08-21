@@ -24,6 +24,10 @@ class RunCommandSkill(BaseSkill):
     version = "1.1.0"
     tags = ["system", "terminal", "cmd", "powershell", "execute"]
 
+    def __init__(self) -> None:
+        super().__init__()
+        self._last_stream_result: SkillResult | None = None
+
     # ── Internal helpers ──────────────────────────────────────────────────────
     async def _get_workdir(self, cwd_param: str) -> Path:
         try:
@@ -49,6 +53,57 @@ class RunCommandSkill(BaseSkill):
             return False  # Allowed in super mode
         return True  # Blocked
 
+    def _transform_inline_python(self, command: str, work_dir: Path) -> tuple[str, Path | None]:
+        """Transparently convert inline python -c commands to safe scratch scripts on Windows."""
+        cmd_strip = command.strip()
+        prefix = None
+        if cmd_strip.startswith("python -c"):
+            prefix = "python -c"
+        elif cmd_strip.startswith("python3 -c"):
+            prefix = "python3 -c"
+
+        if not prefix:
+            return command, None
+
+        code_part = cmd_strip[len(prefix):].strip()
+        if (code_part.startswith('"') and code_part.endswith('"')) or (code_part.startswith("'") and code_part.endswith("'")):
+            code_part = code_part[1:-1]
+
+        scratch_dir = work_dir / ".scratch"
+        scratch_dir.mkdir(parents=True, exist_ok=True)
+        import uuid
+        temp_script = scratch_dir / f"auto_exec_{uuid.uuid4().hex[:8]}.py"
+        temp_script.write_text(code_part, encoding="utf-8")
+        return f'python "{temp_script.resolve()}"', temp_script
+
+    _MODULE_MAP = {
+        "fitz": "pymupdf", "cv2": "opencv-python", "bs4": "beautifulsoup4",
+        "yaml": "pyyaml", "PIL": "pillow", "dotenv": "python-dotenv",
+        "sklearn": "scikit-learn", "dateutil": "python-dateutil", "jwt": "pyjwt",
+        "pypdf2": "pypdf2", "pypdf": "pypdf", "pdfplumber": "pdfplumber",
+        "playwright": "playwright", "duckduckgo_search": "duckduckgo_search",
+        "fastapi": "fastapi", "uvicorn": "uvicorn", "requests": "requests",
+        "pandas": "pandas", "numpy": "numpy", "scipy": "scipy",
+        "matplotlib": "matplotlib", "seaborn": "seaborn", "openpyxl": "openpyxl",
+        "docx": "python-docx", "pptx": "python-pptx", "websockets": "websockets",
+        "aiohttp": "aiohttp", "httpx": "httpx", "send2trash": "send2trash"
+    }
+
+    def _extract_missing_module(self, lines: list[str]) -> str | None:
+        """Parse stdout/stderr lines for missing python module names."""
+        import re
+        for line in reversed(lines):
+            m = re.search(r"ModuleNotFoundError:\s+No module named ['\"]([^'\"]+)['\"]", line)
+            if m:
+                return m.group(1)
+            m2 = re.search(r"ImportError:\s+cannot import name .* from ['\"]([^'\"]+)['\"]", line)
+            if m2:
+                return m2.group(1)
+            m3 = re.search(r"No module named ['\"]([^'\"]+)['\"]", line)
+            if m3:
+                return m3.group(1)
+        return None
+
     # ── stream_execute: real-time line-by-line stdout streaming ───────────────
     async def stream_execute(self, **kwargs: Any) -> AsyncGenerator:
         command = kwargs.get("command", kwargs.get("cmd", kwargs.get("command_line", "")))
@@ -67,63 +122,114 @@ class RunCommandSkill(BaseSkill):
             yield ("done", 1)
             return
 
-        # Inline python -c guard
-        cmd_strip = command.strip()
-        if cmd_strip.startswith("python -c") or cmd_strip.startswith("python3 -c"):
-            if "#" in command or "\n" in command or len(command) > 250:
-                yield ("log", "ERROR: Execution Policy Error: Inline 'python -c' with '#' comments or long scripts is forbidden. You MUST write your python code to a file (e.g. scratch/temp_script.py) using file_manager / write_to_file and then execute 'python scratch/temp_script.py'.")
-                yield ("done", 1)
-                return
-
         work_dir = await self._get_workdir(cwd_param)
+        exec_command, temp_script = self._transform_inline_python(command, work_dir)
+
         yield ("log", f"$ {command}")
         yield ("log", f"  cwd: {work_dir}")
 
-        try:
-            process = await asyncio.create_subprocess_shell(
-                command,
-                stdout=asyncio.subprocess.PIPE,
-                stderr=asyncio.subprocess.STDOUT,  # merge stderr → stdout for unified stream
-                cwd=str(work_dir)
-            )
-
+        timeout_secs = int(kwargs.get("timeout", 300))
+        for attempt in range(2):
+            captured_lines: list[str] = []
+            process = None
             try:
-                async with asyncio.timeout(120):
-                    async for raw in process.stdout:
-                        line = raw.decode("utf-8", errors="replace").rstrip("\r\n")
-                        yield ("log", line)
-            except asyncio.TimeoutError:
-                yield ("log", "ERROR: Command timed out after 120 seconds.")
+                process = await asyncio.create_subprocess_shell(
+                    exec_command,
+                    stdout=asyncio.subprocess.PIPE,
+                    stderr=asyncio.subprocess.STDOUT,
+                    cwd=str(work_dir)
+                )
+
                 try:
-                    process.kill()
-                except Exception:
-                    pass
+                    async with asyncio.timeout(timeout_secs):
+                        async for raw in process.stdout:
+                            line = raw.decode("utf-8", errors="replace").rstrip("\r\n")
+                            captured_lines.append(line)
+                            yield ("log", line)
+                except asyncio.TimeoutError:
+                    yield ("log", f"ERROR: Command timed out after {timeout_secs} seconds.")
+                    try:
+                        process.kill()
+                    except Exception:
+                        pass
 
-            await process.wait()
-            yield ("done", process.returncode or 0)
+                await process.wait()
+                exit_code = process.returncode or 0
 
-        except Exception as e:
-            yield ("log", f"ERROR: {e}")
-            yield ("done", 1)
+                # Auto-Dependency Healing: Check for missing module on failure
+                if exit_code != 0 and attempt == 0:
+                    missing_mod = self._extract_missing_module(captured_lines)
+                    if missing_mod:
+                        pip_pkg = self._MODULE_MAP.get(missing_mod, missing_mod)
+                        yield ("log", f"⚡ [Auto-Dependency Healing] Missing module '{missing_mod}' detected. Auto-installing '{pip_pkg}'...")
+                        try:
+                            pip_proc = await asyncio.create_subprocess_shell(
+                                f"pip install {pip_pkg}",
+                                stdout=asyncio.subprocess.PIPE,
+                                stderr=asyncio.subprocess.STDOUT,
+                                cwd=str(work_dir)
+                            )
+                            async with asyncio.timeout(180):
+                                async for raw in pip_proc.stdout:
+                                    line = raw.decode("utf-8", errors="replace").rstrip("\r\n")
+                                    yield ("log", f"  [pip] {line}")
+                            await pip_proc.wait()
+                            if pip_proc.returncode == 0:
+                                yield ("log", f"✅ Successfully installed '{pip_pkg}'. Retrying command autonomously...")
+                                continue  # Retry the script with new package
+                        except Exception as e:
+                            yield ("log", f"⚠️ Auto-install of '{pip_pkg}' failed: {e}")
+
+                yield ("done", exit_code)
+
+                # Cache stream result so subsequent execute() does not rerun the command
+                stdout_lines = [l for l in captured_lines if not l.startswith("$ ") and not l.startswith("  cwd: ")]
+                actual_stdout = "\n".join(stdout_lines).strip()
+                out_lower = actual_stdout.lower()
+                error_patterns = [
+                    "syntaxerror:", "traceback (most recent call last):", "failed because", 
+                    "is not recognized as an internal", "command not found",
+                    "module_not_found_error", "importerror:", "indentationerror:"
+                ]
+                has_error_keyword = any(pat in out_lower for pat in error_patterns)
+                is_success = (exit_code == 0 or len(actual_stdout) > 0) and not has_error_keyword
+                output_text = "\n".join(captured_lines) if captured_lines else "(no output)"
+                self._last_stream_result = SkillResult(
+                    success=is_success,
+                    data=f"Exit code: {exit_code}\nSTDOUT:\n{output_text}",
+                    metadata={"command": command, "exit_code": exit_code, "cwd": str(work_dir)}
+                )
+                break
+
+            except Exception as e:
+                yield ("log", f"ERROR: {e}")
+                yield ("done", 1)
+                self._last_stream_result = SkillResult(
+                    success=False,
+                    data=None,
+                    error=f"Failed to execute command '{command}': {e}"
+                )
+                break
+            finally:
+                if temp_script and temp_script.exists():
+                    try:
+                        temp_script.unlink()
+                    except Exception:
+                        pass
 
     # ── execute: buffered (used as fallback / for AI result text) ────────────
     async def execute(self, **kwargs: Any) -> SkillResult:
+        if self._last_stream_result is not None:
+            res = self._last_stream_result
+            self._last_stream_result = None
+            return res
+
         command = kwargs.get("command", kwargs.get("cmd", kwargs.get("command_line", "")))
         cwd_param = kwargs.get("cwd", kwargs.get("path", ""))
 
         if not command:
             return SkillResult(success=False, data=None, error="Parameter 'command' is required.")
         command = str(command)
-
-        # Inline python -c guard
-        cmd_strip = command.strip()
-        if cmd_strip.startswith("python -c") or cmd_strip.startswith("python3 -c"):
-            if "#" in command or "\n" in command or len(command) > 250:
-                return SkillResult(
-                    success=False,
-                    data=None,
-                    error="Execution Policy Error: Inline 'python -c' with '#' comments or long scripts is forbidden because Windows command line truncates them. You MUST write your python code to a file (e.g. scratch/temp_script.py) using file_manager / write_to_file and then execute 'python scratch/temp_script.py'."
-                )
 
         # Security Policy check
         from mariano.core.workspace import active_permission_policy
@@ -161,6 +267,11 @@ class RunCommandSkill(BaseSkill):
 
         work_dir = await self._get_workdir(cwd_param)
 
+        if self._last_stream_result is not None:
+            res = self._last_stream_result
+            self._last_stream_result = None
+            return res
+
         try:
             all_lines: list[str] = []
             exit_code = 0
@@ -169,6 +280,7 @@ class RunCommandSkill(BaseSkill):
                     all_lines.append(val)
                 elif tag == "done":
                     exit_code = int(val or 0)
+
 
             stdout_lines = [l for l in all_lines if not l.startswith("$ ") and not l.startswith("  cwd: ")]
             actual_stdout = "\n".join(stdout_lines).strip()
@@ -193,6 +305,7 @@ class RunCommandSkill(BaseSkill):
                 data=None,
                 error=f"Failed to execute command '{command}': {e}"
             )
+
 
     def get_parameters_schema(self) -> dict:
         return {

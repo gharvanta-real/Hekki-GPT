@@ -80,7 +80,7 @@ function _appendUserBubble(topic) {
   group.className = 'msg-group user';
   const bubble = document.createElement('div');
   bubble.className = 'msg user';
-  bubble.innerHTML = `<span class="user-cmd-highlight" style="display:inline-flex;align-items:center;background:transparent !important;color:#3b82f6;padding:0 !important;font-weight:400 !important;margin-right:6px;font-size:16px !important;letter-spacing:0.2px;">/debate</span>${_esc(topic)}`;
+  bubble.innerHTML = `<span class="user-cmd-highlight" style="display:inline-flex;align-items:center;background:transparent !important;color:var(--text-primary);padding:0 !important;font-weight:500 !important;margin-right:6px;font-size:16px !important;letter-spacing:0.2px;">/debate</span>${_esc(topic)}`;
   group.appendChild(bubble);
   col.appendChild(group);
   if (window.ChatSessionManager) {

@@ -1,7 +1,7 @@
 /* === CODE BLOCK WRAPPER & ACTIONS (Modern Soft Rounded Theme-Adaptive Style) === */
 .code-block-wrapper {
-  background: var(--card, #ffffff);
-  border: none !important;
+  background: var(--card) !important;
+  border: 1px solid var(--border) !important;
   border-radius: 16px !important;
   margin: 12px 0;
   overflow: hidden;
@@ -12,9 +12,12 @@
 
 body.dark .code-block-wrapper,
 body.oled .code-block-wrapper,
-[data-theme="dark"] .code-block-wrapper {
-  background: #121212 !important;
-  border: none !important;
+body.catppuccin .code-block-wrapper,
+[data-theme="dark"] .code-block-wrapper,
+[data-theme="oled"] .code-block-wrapper,
+[data-theme="catppuccin"] .code-block-wrapper {
+  background: var(--card) !important;
+  border: 1px solid var(--border) !important;
   box-shadow: none !important;
 }
 
@@ -149,18 +152,19 @@ body.oled .code-action-btn:hover,
   word-break: break-all !important;
 }
 
-/* Tool execution output box (Adaptive Light/Dark Theme contrast) */
+/* Tool execution output box (Adaptive Theme flat clean aesthetic) */
 .tool-output-block,
-.tool-terminal-block {
-  margin: 6px 0 2px 0;
-  padding: 10px 12px;
-  background: var(--input-bg, #F0F2F5) !important;
-  color: var(--text-primary) !important;
-  border-radius: 8px !important;
+.tool-terminal-block,
+.tool-live-log {
+  margin: 4px 0 2px 0;
+  padding: 8px 12px;
+  background: var(--input-bg) !important;
+  color: var(--text-secondary) !important;
+  border-radius: var(--radius-sm, 8px) !important;
   border: none !important;
-  font-size: 13.5px !important;
+  font-size: 13px !important;
   font-family: var(--font-mono) !important;
-  line-height: 1.55 !important;
+  line-height: 1.5 !important;
   overflow-x: auto;
   box-shadow: none !important;
   max-height: 220px;
@@ -170,21 +174,25 @@ body.oled .code-action-btn:hover,
   word-break: break-all;
 }
 
-body.light .tool-output-block,
-body.light .tool-terminal-block,
-:root[data-theme="light"] .tool-output-block,
-:root[data-theme="light"] .tool-terminal-block {
-  background: #F0F2F5 !important;
+body.catppuccin .tool-output-block,
+body.catppuccin .tool-terminal-block,
+body.catppuccin .tool-live-log,
+:root[data-theme="catppuccin"] .tool-output-block,
+:root[data-theme="catppuccin"] .tool-terminal-block,
+:root[data-theme="catppuccin"] .tool-live-log {
+  background: var(--input-bg) !important;
+  color: var(--text-secondary) !important;
   border: none !important;
-  color: #18181B !important;
 }
 
-body.dark .tool-output-block,
-body.dark .tool-terminal-block,
-:root[data-theme="dark"] .tool-output-block,
-:root[data-theme="dark"] .tool-terminal-block {
-  background: #181818 !important;
+body.oled .tool-output-block,
+body.oled .tool-terminal-block,
+body.oled .tool-live-log,
+:root[data-theme="oled"] .tool-output-block,
+:root[data-theme="oled"] .tool-terminal-block,
+:root[data-theme="oled"] .tool-live-log {
+  background: var(--bg-card, #121212) !important;
+  color: var(--text-secondary) !important;
   border: none !important;
-  color: #F4F4F5 !important;
 }
 

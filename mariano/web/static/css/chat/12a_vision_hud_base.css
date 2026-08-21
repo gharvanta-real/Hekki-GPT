@@ -230,8 +230,8 @@ body[data-theme="oled"] .vision-hud-peek-handle {
   margin-right: auto !important;
   margin-left: 0 !important;
   max-width: 85% !important;
-  background: rgba(37, 99, 235, 0.12) !important;
-  color: #2563eb !important;
+  background: var(--input-bg) !important;
+  color: var(--text-primary) !important;
   padding: 8px 12px !important;
   border-radius: 14px 14px 14px 4px !important;
 }
@@ -239,8 +239,8 @@ body[data-theme="oled"] .vision-hud-peek-handle {
 body.dark .vision-hud-msg.user,
 body[data-theme="dark"] .vision-hud-msg.user,
 body[data-theme="oled"] .vision-hud-msg.user {
-  background: rgba(37, 99, 235, 0.22) !important;
-  color: #93c5fd !important;
+  background: var(--input-bg) !important;
+  color: var(--text-primary) !important;
 }
 
 .vision-hud-msg.ai {

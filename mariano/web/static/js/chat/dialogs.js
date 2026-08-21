@@ -91,6 +91,63 @@ export function showCustomPrompt(title, message, defaultValue = '') {
 }
 
 /**
+ * Reusable Custom Modal Alert / Warning Dialog (e.g. for Upload Limit Exceeded)
+ * Returns a Promise resolving when user clicks 'Got it' or closes dialog.
+ */
+export function showCustomAlert(title, message, items = []) {
+  return new Promise((resolve) => {
+    const esc = (s) => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    const modal = document.getElementById('custom-dialog-modal');
+    if (!modal) {
+      alert(message + (items.length ? '\n\n• ' + items.join('\n• ') : ''));
+      resolve();
+      return;
+    }
+
+    const titleEl = document.getElementById('custom-dialog-title');
+    const msgEl = document.getElementById('custom-dialog-message');
+    const inputContainer = document.getElementById('custom-dialog-input-container');
+    const btnCancel = document.getElementById('custom-dialog-cancel');
+    const btnConfirm = document.getElementById('custom-dialog-confirm');
+    const btnClose = document.getElementById('custom-dialog-close');
+
+    let itemsHtml = '';
+    if (Array.isArray(items) && items.length > 0) {
+      itemsHtml = `
+        <div style="margin-top: 10px; padding: 8px 12px; border-radius: 8px; background: var(--input-bg); font-family: var(--font); font-size: 12.5px; color: var(--text-2); display: flex; flex-direction: column; gap: 6px; max-height: 160px; overflow-y: auto;">
+          ${items.map(it => `<div style="display:flex; align-items:center; gap:6px; word-break:break-all;"><span style="color:#ef4444; font-weight:600;">•</span> <span>${esc(it)}</span></div>`).join('')}
+        </div>
+      `;
+    }
+
+    titleEl.textContent = title || 'Notice';
+    msgEl.innerHTML = `<div>${esc(message)}</div>${itemsHtml}`;
+    inputContainer.classList.add('hidden');
+    if (btnCancel) btnCancel.style.display = 'none';
+    if (btnConfirm) btnConfirm.textContent = 'Got it';
+
+    const cleanUp = () => {
+      modal.classList.add('hidden');
+      msgEl.innerHTML = '';
+      if (btnCancel) btnCancel.style.display = 'inline-flex';
+      if (btnConfirm) btnConfirm.textContent = 'Confirm';
+      btnConfirm.replaceWith(btnConfirm.cloneNode(true));
+      if (btnCancel) btnCancel.replaceWith(btnCancel.cloneNode(true));
+      if (btnClose) btnClose.replaceWith(btnClose.cloneNode(true));
+      resolve();
+    };
+
+    const newConfirmBtn = document.getElementById('custom-dialog-confirm');
+    const newCloseBtn = document.getElementById('custom-dialog-close');
+
+    if (newConfirmBtn) newConfirmBtn.addEventListener('click', cleanUp);
+    if (newCloseBtn) newCloseBtn.addEventListener('click', cleanUp);
+
+    modal.classList.remove('hidden');
+  });
+}
+
+/**
  * Full-Screen Image Lightbox Popup Modal
  * Displays image in clean dark backdrop overlay with floating action tools ON the image:
  * [Download] [Copy Link] [Open External] [Toggle Zoom] [Close]

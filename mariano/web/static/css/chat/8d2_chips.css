@@ -21,9 +21,9 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   width: 100%;
-  padding-bottom: 8px;
+  padding: 2px 2px 8px 2px;
   margin-bottom: 4px;
   border-bottom: 1px solid var(--border);
 }
@@ -47,6 +47,95 @@
 .attachment-chip:hover {
   border-color: var(--text-3) !important;
   background: var(--hover);
+}
+
+/* ── Pure Image Attachment (Thumbnail Only + Circular Floating Close Button) ── */
+.attachment-chip-image {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  max-width: none !important;
+  width: 70px;
+  height: 70px;
+  margin: 3px 6px 3px 2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible !important;
+  flex-shrink: 0 !important;
+}
+
+.attachment-chip-image:hover {
+  background: transparent !important;
+  border: none !important;
+}
+
+.chip-image-preview {
+  width: 70px;
+  height: 70px;
+  border-radius: 12px;
+  object-fit: cover;
+  display: block;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--border) !important;
+  transition: opacity 0.15s ease;
+}
+
+.attachment-chip-image:hover .chip-image-preview {
+  opacity: 0.92;
+}
+
+.chip-img-remove-btn {
+  position: absolute !important;
+  top: -5px !important;
+  right: -5px !important;
+  width: 19px !important;
+  height: 19px !important;
+  min-width: 19px !important;
+  min-height: 19px !important;
+  max-width: 19px !important;
+  max-height: 19px !important;
+  aspect-ratio: 1 / 1 !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  line-height: 1 !important;
+  box-sizing: border-box !important;
+  background: rgba(20, 20, 25, 0.92) !important;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  transform: none !important;
+  transition: transform 0.15s ease, background 0.15s ease !important;
+  z-index: 20 !important;
+  flex-shrink: 0 !important;
+}
+
+.chip-img-remove-btn svg {
+  width: 9px !important;
+  height: 9px !important;
+  min-width: 9px !important;
+  min-height: 9px !important;
+  max-width: 9px !important;
+  max-height: 9px !important;
+  display: block !important;
+  flex-shrink: 0 !important;
+  stroke: #ffffff !important;
+  pointer-events: none !important;
+}
+
+.chip-img-remove-btn:hover {
+  background: #000000 !important;
+  color: #ffffff !important;
+  transform: scale(1.15) !important;
 }
 
 .chip-thumb {

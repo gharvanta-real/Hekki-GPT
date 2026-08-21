@@ -20,7 +20,7 @@
 
 /* ACCESSIBILITY & FOCUS VISIBLE */
 :focus-visible {
-  outline: 2px solid var(--accent-primary, #2563EB) !important;
+  outline: 2px solid var(--text-2) !important;
   outline-offset: 2px !important;
 }
 

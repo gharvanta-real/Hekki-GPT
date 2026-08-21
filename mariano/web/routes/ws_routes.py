@@ -57,6 +57,20 @@ async def websocket_endpoint(websocket: WebSocket):
 
     async def run_query(query_text, project=None, project_path=None, chat_id=None, permission_policy=None, aider_enabled=False, model_alpha=None, model_beta=None):
         try:
+            # 0. Direct /test-logs & /all-logs slash command interceptor (Instant test suite)
+            clean_q = query_text.strip().lower()
+            if clean_q in ("/test-logs", "/all-logs", "/showcase-logs", "test logs", "showcase logs", "all logs demo"):
+                from mariano.web.routes.demo_logs_runner import run_all_logs_showcase
+                await run_all_logs_showcase(websocket, chat_id)
+                return
+
+            # 1. Direct /voice & /audio slash command interceptor (100% deterministic & lossless)
+            if query_text.strip().lower().startswith(("/voice", "/audio", "/narrate")):
+                from mariano.core.voice_direct_handler import handle_direct_voice_summary
+                await handle_direct_voice_summary(query_text, websocket)
+                return
+
+
             is_debate_query = query_text.strip().startswith("/debate") or \
                               query_text.strip().lower().startswith("run debate") or \
                               query_text.strip().lower().startswith("expert debate")
@@ -125,9 +139,42 @@ async def websocket_endpoint(websocket: WebSocket):
                 await websocket.send_json({"type": "agent_event", "kind": "done", "data": "", "metadata": {}})
                 return
 
+            _full_response_accum = ""
+            _ask_user_emitted = False
+
             async for event in agent.run(query_text, project=project, project_path=project_path, chat_id=chat_id, permission_policy=permission_policy, aider_enabled=aider_enabled):
+                if event.kind in ("response_chunk", "text", "chunk"):
+                    chunk = event.data or ""
+                    _full_response_accum += chunk
+
+                    # Check if [ASK_USER] block is complete in the accumulated stream
+                    if not _ask_user_emitted and "[ASK_USER]" in _full_response_accum and "[/ASK_USER]" in _full_response_accum:
+                        match = re.search(r'\[ASK_USER\]([\s\S]*?)\[/ASK_USER\]', _full_response_accum, re.IGNORECASE)
+                        if match:
+                            try:
+                                import json as _json
+                                payload = _json.loads(match.group(1).strip())
+                                await websocket.send_json({"type": "agent_event", "kind": "ask_question", "data": payload, "metadata": {}})
+                                _ask_user_emitted = True
+                            except Exception as _pe:
+                                log.warning("ws.ask_user_parse_failed", error=str(_pe))
+
                 await websocket.send_json({"type": "agent_event", "kind": event.kind, "data": event.data, "metadata": event.metadata or {}})
-            
+                # Yield event loop after each send to prevent chunk queuing / stream stutter
+                await asyncio.sleep(0)
+
+            # Final check on done if [ASK_USER] was present without closing tag
+            if not _ask_user_emitted and "[ASK_USER]" in _full_response_accum:
+                match = re.search(r'\[ASK_USER\]([\s\S]*?)(?:\[/ASK_USER\]|$)', _full_response_accum, re.IGNORECASE)
+                if match and match.group(1).strip():
+                    try:
+                        import json as _json
+                        payload = _json.loads(match.group(1).strip())
+                        await websocket.send_json({"type": "agent_event", "kind": "ask_question", "data": payload, "metadata": {}})
+                        _ask_user_emitted = True
+                    except Exception as _pe:
+                        log.warning("ws.ask_user_final_parse_failed", error=str(_pe))
+
             await websocket.send_json({"type": "agent_event", "kind": "done", "data": "", "metadata": {}})
             
             latest_chem = neuromodulator.state
@@ -249,6 +296,30 @@ async def websocket_endpoint(websocket: WebSocket):
                     from mariano.memory.memory_manager import MemoryManager
                     await MemoryManager.get_instance().restore_session(chat_id, messages)
                     log.info("web.session_synced", chat_id=chat_id, message_count=len(messages))
+
+            elif action_type == "question_answer":
+                # User answered an AI clarification question card.
+                # Inject the formatted answers into the agent's question queue so
+                # the running or next query picks them up automatically.
+                qid = payload.get("id", "")
+                answers = payload.get("answers", [])
+                log.info("web.question_answer_received", qid=qid, answers=answers)
+                # Store in app state so agent can poll it
+                if not hasattr(websocket.app.state, "pending_question_answers"):
+                    websocket.app.state.pending_question_answers = {}
+                websocket.app.state.pending_question_answers[qid] = answers
+                # If there's a running query task, inject as a follow-up query
+                answer_text = "\n".join(
+                    f"Q{i+1}: {a}" if isinstance(a, str) else f"Q{i+1}: {', '.join(a) if isinstance(a, list) else str(a)}"
+                    for i, a in enumerate(answers) if a is not None
+                )
+                if answer_text.strip():
+                    follow_text = f"[User answered your clarification questions]\n{answer_text}"
+                    async def _run_follow_with_timeout(*args, **kwargs):
+                        await asyncio.wait_for(run_query(*args, **kwargs), timeout=300)
+                    query_task = asyncio.create_task(
+                        _run_follow_with_timeout(follow_text, chat_id=None)
+                    )
 
             elif action_type == "debate_start":
                 topic = payload.get("topic", "")
@@ -405,88 +476,4 @@ async def live_audio_websocket_endpoint(websocket: WebSocket):
             await engine.close_session(session_id)
 
 
-class OpenAIChatMessage(BaseModel):
-    role: str
-    content: str
-
-class OpenAIChatCompletionRequest(BaseModel):
-    model: str | None = "hekki-gpt"
-    messages: list[OpenAIChatMessage]
-    stream: bool | None = True
-    chat_id: str | None = None
-    project: str | None = None
-
-
-@router.post("/api/v1/chat/completions")
-@router.post("/v1/chat/completions")
-async def openai_chat_completions(
-    req: OpenAIChatCompletionRequest,
-    raw_req: Request,
-    authorization: str | None = Header(None)
-):
-    """GPT-Grade OpenAI-compatible Server-Sent Events (SSE) chat streaming endpoint."""
-    settings_obj = get_settings()
-    expected_key = getattr(settings_obj, "openai_api_key", None)
-    if expected_key and authorization:
-        token = authorization.replace("Bearer ", "").strip()
-        if token != expected_key:
-            raise HTTPException(status_code=401, detail="Invalid API Key provided")
-
-    import time
-    if not req.messages:
-        raise HTTPException(status_code=400, detail="messages array cannot be empty")
-
-    user_input = req.messages[-1].content
-    chat_id = req.chat_id or f"chat_{uuid.uuid4().hex[:8]}"
-    completion_id = f"chatcmpl-{uuid.uuid4().hex[:12]}"
-    created_ts = int(time.time())
-
-    agent = raw_req.app.state.agent
-
-    async def sse_event_generator():
-        try:
-            async for event in agent.run(user_input=user_input, chat_id=chat_id, project=req.project):
-                if event.type == "response":
-                    chunk_payload = {
-                        "id": completion_id,
-                        "object": "chat.completion.chunk",
-                        "created": created_ts,
-                        "model": req.model or "hekki-gpt",
-                        "choices": [{"index": 0, "delta": {"content": event.content}, "finish_reason": None}]
-                    }
-                    yield f"data: {json.dumps(chunk_payload)}\n\n"
-
-            stop_payload = {
-                "id": completion_id,
-                "object": "chat.completion.chunk",
-                "created": created_ts,
-                "model": req.model or "hekki-gpt",
-                "choices": [{"index": 0, "delta": {}, "finish_reason": "stop"}]
-            }
-            yield f"data: {json.dumps(stop_payload)}\n\n"
-            yield "data: [DONE]\n\n"
-
-        except Exception as e:
-            log.error("web.openai_sse_stream_error", error=str(e))
-            err_payload = {"error": {"message": str(e)[:300], "type": "server_error"}}
-            yield f"data: {json.dumps(err_payload)}\n\n"
-
-    if req.stream is not False:
-        return StreamingResponse(
-            sse_event_generator(),
-            media_type="text/event-stream",
-            headers={"Cache-Control": "no-cache", "Connection": "keep-alive", "X-Accel-Buffering": "no"}
-        )
-    else:
-        full_text = ""
-        async for event in agent.run(user_input=user_input, chat_id=chat_id, project=req.project):
-            if event.type == "response":
-                full_text += event.content
-
-        return {
-            "id": completion_id,
-            "object": "chat.completion",
-            "created": created_ts,
-            "model": req.model or "hekki-gpt",
-            "choices": [{"index": 0, "message": {"role": "assistant", "content": full_text}, "finish_reason": "stop"}]
-        }
+# OpenAI-compatible /v1/chat/completions endpoint is in routes/openai_compat.py

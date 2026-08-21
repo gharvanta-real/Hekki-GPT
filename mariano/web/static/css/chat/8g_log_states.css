@@ -1,0 +1,117 @@
+﻿/* ==========================================================================
+   8g_log_states.css — Tool Card Condition States, Log Line Coloring,
+   Markdown Polish Additions (blockquote, links, lists)
+   ========================================================================== */
+
+/* ── Tool Card State Classes ── */
+.tool-log-card.state-running .tool-detail { color: var(--text-3); }
+
+.tool-log-card.state-done .tool-lead-status { opacity: 0.6; }
+.tool-log-card.state-done > .tool-log-row > span:nth-child(2) { color: var(--text-2); }
+
+.tool-log-card.state-failed > .tool-log-row > span:nth-child(2) { color: #ef4444; }
+
+.tool-log-card.state-timeout > .tool-log-row > span:nth-child(2) { color: #f97316; }
+
+.tool-log-card.state-cancelled > .tool-log-row > span:nth-child(2) {
+  color: var(--text-3);
+  text-decoration: line-through;
+  text-decoration-color: var(--text-3);
+}
+.tool-log-card.state-cancelled .tool-lead-status { color: #f97316; }
+
+/* Timeout pill badge */
+.tool-timeout-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 6px;
+  border-radius: var(--radius-pill, 9999px);
+  background: rgba(249, 115, 22, 0.10);
+  color: #f97316;
+  font-size: 12px;
+  font-weight: 500;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* ── Live Terminal Log — Left Rail + Line Colors ── */
+.tool-live-log {
+  border-left: 2px solid var(--border);
+  padding-left: 8px;
+  margin-top: 5px;
+  width: 100%;
+  box-sizing: border-box;
+  max-height: 160px;
+  overflow-y: auto;
+  font-family: var(--font-mono, monospace);
+  font-size: 12.5px;
+  line-height: 1.55;
+}
+
+.tool-log-line { padding: 0.5px 0; white-space: pre-wrap; word-break: break-all; }
+.tool-log-line.log-error { color: #f87171 !important; opacity: 0.9; }
+.tool-log-line.log-warn  { color: #fb923c !important; opacity: 0.9; }
+.tool-log-line.log-ok    { color: #4ade80 !important; opacity: 0.75; }
+.tool-log-line.log-info  { color: var(--text-3); opacity: 0.85; }
+.tool-log-line.log-path  { color: var(--text-3); font-family: var(--font-mono, monospace); opacity: 0.8; }
+
+/* ── Tool Group Header Live Dot ── */
+.tool-group-title-live::after {
+  content: '';
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent-primary, #2563EB);
+  margin-left: 7px;
+  vertical-align: middle;
+  animation: pulse-dot 1.4s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 0.3; transform: scale(0.85); }
+  50%       { opacity: 1;   transform: scale(1.15); }
+}
+
+/* ── Markdown Blockquote Left Accent Rail ── */
+.msg.ai blockquote, .markdown-body blockquote {
+  margin: 10px 0 14px 0;
+  padding: 2px 0 2px 14px;
+  border-left: 3px solid var(--accent-primary, #2563EB);
+  border-right: none !important;
+  border-top: none !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+  background: transparent;
+  color: var(--text-2);
+  font-size: 17.5px;
+  font-style: normal;
+  line-height: 1.65;
+}
+.msg.ai blockquote p, .markdown-body blockquote p {
+  margin-bottom: 0 !important;
+  color: var(--text-2);
+}
+
+/* ── Markdown Links ── */
+.msg.ai a, .markdown-body a {
+  color: var(--accent-primary, #2563EB);
+  text-decoration: none;
+  transition: opacity 0.12s ease;
+}
+.msg.ai a:hover, .markdown-body a:hover {
+  opacity: 0.75;
+  text-decoration: underline;
+}
+
+/* ── List Markers Faded ── */
+.msg.ai ol { list-style-type: decimal; }
+.msg.ai ul { list-style-type: disc; }
+.msg.ai li::marker { color: var(--text-3); }
+
+/* ── HR Divider ── */
+.msg.ai hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  opacity: 0.5;
+  margin: 18px 0;
+}

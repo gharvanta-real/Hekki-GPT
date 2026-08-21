@@ -162,7 +162,7 @@ export class GlobalAudioPlayer {
   _updateScrubberFill(el, pct) {
     if (!el) return;
     const isDark = document.body.classList.contains('dark') || document.body.classList.contains('oled') || document.documentElement.getAttribute('data-theme') === 'dark';
-    const activeColor = '#2563EB';
+    const activeColor = isDark ? '#FFFFFF' : '#09090B';
     const trackColor = isDark ? 'rgba(255, 255, 255, 0.16)' : 'rgba(0, 0, 0, 0.12)';
     el.style.background = `linear-gradient(to right, ${activeColor} 0%, ${activeColor} ${pct}%, ${trackColor} ${pct}%, ${trackColor} 100%)`;
   }
@@ -348,7 +348,7 @@ export class GlobalAudioPlayer {
       if (eqEl) eqEl.style.opacity = isPlaying ? '1' : '0.4';
     }
     if (this._topnavBtnEl) {
-      this._topnavBtnEl.style.color = isPlaying ? 'var(--accent-primary, #2563EB)' : 'var(--text-2)';
+      this._topnavBtnEl.style.color = isPlaying ? 'var(--text-primary)' : 'var(--text-2)';
     }
   }
 

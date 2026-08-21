@@ -7,7 +7,10 @@ import {
   enhanceLinks,
   autoLinkTextNodes,
   enhanceStorytellingLayout,
-  enhanceAudioPlayers
+  enhanceAudioPlayers,
+  enhanceTranslationCards,
+  enhanceVoiceSummaryCards,
+  enhanceMapCanvasCards
 } from './markdown_enhancers.js';
 
 export {
@@ -17,7 +20,10 @@ export {
   enhanceLinks,
   autoLinkTextNodes,
   enhanceStorytellingLayout,
-  enhanceAudioPlayers
+  enhanceAudioPlayers,
+  enhanceTranslationCards,
+  enhanceVoiceSummaryCards,
+  enhanceMapCanvasCards
 };
 
 // Configure marked parser options and custom link renderer
@@ -34,12 +40,14 @@ if (window.marked) {
           const isFile = /^file:\/\/\//i.test(href) || /^file:\/\//i.test(href) || /^[a-zA-Z]:[\\\/]/.test(href);
 
           let fullHref = /^www\./i.test(href) ? `https://${href}` : href;
+          let cleanPath = '';
           if (isFile) {
-            const cleanPath = fullHref.replace(/^file:\/\/\//i, '').replace(/^file:\/\//i, '').replace(/\\/g, '/');
+            cleanPath = fullHref.replace(/^file:\/\/\//i, '').replace(/^file:\/\//i, '').replace(/\\/g, '/');
             fullHref = `/api/workspace/render?path=${encodeURIComponent(cleanPath)}`;
           }
 
-          const target = (isExternal || isFile) ? ' target="_blank" rel="noopener noreferrer"' : '';
+          const target = isExternal ? ' target="_blank" rel="noopener noreferrer"' : '';
+          const dataPathAttr = cleanPath ? ` data-filepath="${escapeHtmlLocal(cleanPath)}"` : '';
 
           let linkClass = 'chat-link';
           let iconMarkup = '';
@@ -51,7 +59,7 @@ if (window.marked) {
             iconMarkup = `<i data-lucide="file-text" class="chat-link-icon" style="width:12px;height:12px;display:inline-block;vertical-align:middle;margin-left:3px;"></i>`;
           }
 
-          return `<a href="${escapeHtmlLocal(fullHref)}"${titleAttr}${target} class="${linkClass}">${text || href}${iconMarkup}</a>`;
+          return `<a href="${escapeHtmlLocal(fullHref)}"${titleAttr}${dataPathAttr}${target} class="${linkClass}">${text || href}${iconMarkup}</a>`;
         }
       }
     });
@@ -74,6 +82,12 @@ export function enhanceCodeBlocks(container) {
     const classes = code.className.split(' ');
     for (const cls of classes) {
       if (cls.startsWith('language-')) { lang = cls.replace('language-', ''); break; }
+    }
+
+    // Skip translation, voice summary & map blocks — handled exclusively by dedicated card enhancers
+    const lowerLang = lang.toLowerCase();
+    if (lowerLang.startsWith('translation') || lowerLang.startsWith('translate') || lowerLang.startsWith('voice_summary') || lowerLang.startsWith('audio_summary') || lowerLang === 'voice' || lowerLang === 'map' || lowerLang === 'location' || lowerLang === 'geo' || lowerLang.startsWith('map:')) {
+      return;
     }
 
     // Mermaid Flowchart Rendering
@@ -340,6 +354,9 @@ export function enhanceCallouts(container) {
 /** Complete markdown response enhancement pipeline */
 export function enhanceMarkdownContent(container) {
   if (!container) return;
+  try { enhanceTranslationCards(container); } catch (e) { console.error(e); }
+  try { enhanceVoiceSummaryCards(container); } catch (e) { console.error(e); }
+  try { enhanceMapCanvasCards(container); } catch (e) { console.error(e); }
   try { enhanceLinks(container); } catch (e) { console.error(e); }
   try { enhanceCallouts(container); } catch (e) { console.error(e); }
   try { enhanceCodeBlocks(container); } catch (e) { console.error(e); }

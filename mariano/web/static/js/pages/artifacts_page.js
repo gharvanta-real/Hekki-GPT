@@ -17,8 +17,8 @@ export class ArtifactsPage {
       <div style="padding:16px;color:var(--text);font-family:var(--font, system-ui, sans-serif)">
         <h3 style="margin:0 0 12px;font-size:14px;font-weight:400;color:var(--text)">Active Artifacts</h3>
         <div style="font-size:13px;display:flex;flex-direction:column;gap:8px">
-          ${this._artifactCard('notebook-pen', '#2563eb', 'UI Refactor Notes', '20 minutes ago', 'Clean Carbon layout design details')}
-          ${this._artifactCard('grid-3x3', '#2563eb', 'Custom Widgets List', '1 hour ago', 'Mounted components directory')}
+          ${this._artifactCard('notebook-pen', 'var(--text-primary)', 'UI Refactor Notes', '20 minutes ago', 'Clean Carbon layout design details')}
+          ${this._artifactCard('grid-3x3', 'var(--text-primary)', 'Custom Widgets List', '1 hour ago', 'Mounted components directory')}
           ${this._artifactCard('file-text', '#16a34a', 'Research Summary', '2 hours ago', 'AI workspace storage design notes')}
         </div>
       </div>`;

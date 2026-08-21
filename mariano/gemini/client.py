@@ -15,10 +15,11 @@ from mariano.config.prompt_loader import load_rule_layer
 
 log = structlog.get_logger(__name__)
 
-# Strict Single Model Enforcement — No Fallback Models
-_MODEL_FALLBACK_CHAIN: list[str] = []
-_MAX_RETRIES = 2
-_RETRY_BASE_DELAY = 1  # seconds
+# Model Fallback Chain — fallback to available Flash Lite models if primary is completely exhausted
+_MODEL_FALLBACK_CHAIN: list[str] = ["gemini-3.5-flash-lite", "gemini-3.1-flash-lite"]
+_MAX_RETRIES = 4
+_RETRY_BASE_DELAY = 2  # seconds (2s, 4s, 8s, 16s)
+
 
 
 class GeminiClient:
@@ -45,11 +46,40 @@ class GeminiClient:
         """Register tool schemas for Gemini function calling."""
         self._tool_declarations = manifests
 
+    @staticmethod
+    def _trim_desc(text: str, max_len: int) -> str:
+        """Trim a description to max_len chars, keeping it readable."""
+        if not text or len(text) <= max_len:
+            return text
+        # Cut at last word boundary before max_len, append ellipsis
+        cut = text[:max_len].rsplit(" ", 1)[0]
+        return cut + "…"
+
     def _build_tools(self) -> list[types.Tool] | None:
         if not self._tool_declarations:
             return None
         fn_declarations = []
+        reasoning_mode = self._settings.active_reasoning_mode
+        # In fast mode, only send core tools to save ~5000 tokens per call
+        core_fast_tools = {
+            "file_manager", "run_command", "web_search", "write_to_file",
+            "replace_file_content", "view_file", "list_dir", "grep_search",
+            "weather", "news_fetch", "image_analysis", "generate_image",
+            "reminder", "translator", "audio_summary"
+        }
+        # Description length limits per mode — tool quality is NOT affected,
+        # only the text sent to Gemini for routing decisions is trimmed.
+        # fast=80/100, normal=120/160, pro/thinking=full
+        if reasoning_mode == "fast":
+            tool_desc_limit, param_desc_limit = 80, 100
+        elif reasoning_mode == "pro":
+            tool_desc_limit, param_desc_limit = 999, 999  # no trim
+        else:
+            tool_desc_limit, param_desc_limit = 120, 160
+
         for td in self._tool_declarations:
+            if reasoning_mode == "fast" and td["name"] not in core_fast_tools:
+                continue
             params = td.get("parameters", {})
             properties_source = {}
             required_source = []
@@ -81,9 +111,10 @@ class GeminiClient:
                     "OBJECT": "OBJECT", "DICT": "OBJECT",
                 }
                 mapped = type_map.get(ptype, "STRING")
+                raw_pdesc = pinfo.get("description", pname)
                 prop: dict[str, Any] = {
                     "type": mapped,
-                    "description": pinfo.get("description", pname),
+                    "description": self._trim_desc(raw_pdesc, param_desc_limit),
                 }
                 if pinfo.get("enum"):
                     prop["enum"] = pinfo["enum"]
@@ -93,7 +124,7 @@ class GeminiClient:
                     mapped_items_type = type_map.get(items_type, "STRING")
                     prop["items"] = types.Schema(type=mapped_items_type)
                 properties[pname] = prop
-                
+
                 is_req = (pname in required_source) or (pinfo.get("required", True) and "default" not in pinfo)
                 if is_req:
                     required.append(pname)
@@ -106,11 +137,12 @@ class GeminiClient:
             fn_declarations.append(
                 types.FunctionDeclaration(
                     name=td["name"],
-                    description=td["description"],
+                    description=self._trim_desc(td["description"], tool_desc_limit),
                     parameters=schema,
                 )
             )
         return [types.Tool(function_declarations=fn_declarations)]
+
 
     async def _call_ollama(
         self,
@@ -436,9 +468,23 @@ class GeminiClient:
                 "tool_calls": []
             }
 
-        from mariano.core.rate_limiter import GeminiRateLimiter
-        char_count = len(message) + sum(len(m.get("content", "")) for m in history)
-        estimated_tokens = int(char_count / 4) + 1000
+        from mariano.core.rate_limiter import GeminiRateLimiter, estimate_tokens_from_text
+        # Safely trim history to prevent token explosion while preserving turn integrity
+        reasoning_mode_pre = self._settings.active_reasoning_mode
+        _max_history = 8 if reasoning_mode_pre == "fast" else 14
+        if len(history) > _max_history:
+            trimmed = history[-_max_history:]
+            # Must start on a user turn to avoid orphaned function calls / responses
+            first_user_idx = 0
+            for idx, m in enumerate(trimmed):
+                if m.get("role") == "user" and not m.get("tool_response"):
+                    first_user_idx = idx
+                    break
+            else:
+                first_user_idx = len(trimmed)
+            history = trimmed[first_user_idx:]
+
+        estimated_tokens = estimate_tokens_from_text(message, history)
         await GeminiRateLimiter.get_instance().acquire(estimated_tokens)
         contents = self._build_contents(history, message)
         tools = self._build_tools()
@@ -474,25 +520,30 @@ class GeminiClient:
             f"  * Immediate Execution Rule: When user requests file deletion or cleaning (e.g. 'clean karo', 'delete karo'), DO NOT output plain text explanations. Immediately invoke file_manager(action='delete') or run_command to execute the deletion.\n"
         )
 
-        state_inject = (
-            f"\n\n[TCMM COGNITIVE STATE]\n"
-            f"Dopamine={ns.dopamine:.2f} (Focus index)\n"
-            f"Serotonin={ns.serotonin:.2f} (Emotional stability)\n"
-            f"Acetylcholine={ns.acetylcholine:.2f} (Working memory context index)\n"
-            f"Curiosity={ns.curiosity:.2f} (Exploratory drive)\n"
-            f"Melatonin={ns.melatonin:.2f} (Fatigue)\n"
-            f"Current Directives:\n"
-            f"- If Dopamine is high (>0.7), output highly precise, thorough, well-structured, and complete analytical results with clear summaries and conclusions.\n"
-            f"- If Dopamine is low (<0.35), be creative, offer alternative paradigms, and suggest code/safety audits.\n"
-            f"- If Serotonin is low (<0.4), be extremely cautious, double-check compiler constraints, and verify syntax.\n"
-            f"- If Curiosity is high (>0.5), detail your search actions and recommend learning ledger updates."
-        )
-        alignment_inject = self._cp.feedback.get_dynamic_prompt_rules()
-        emotional_inject = f"\n\n[LIMBIC EMOTIONAL DIRECTIVES]\n{self._nm.get_emotional_directives()}"
-        layer1_rules = load_rule_layer("layer1_rules")
-        layer2_rules = load_rule_layer("layer2_rules")
-
         reasoning_mode = self._settings.active_reasoning_mode
+        if reasoning_mode == "fast":
+            # Minimal state inject for fast mode — saves ~400 tokens per call
+            state_inject = f"\n\n[MODE: FAST | T={current_temp:.1f} D={ns.dopamine:.1f} S={ns.serotonin:.1f}]"
+            alignment_inject = ""
+            emotional_inject = ""
+        else:
+            state_inject = (
+                f"\n\n[TCMM COGNITIVE STATE]\n"
+                f"Dopamine={ns.dopamine:.2f} (Focus index)\n"
+                f"Serotonin={ns.serotonin:.2f} (Emotional stability)\n"
+                f"Acetylcholine={ns.acetylcholine:.2f} (Working memory context index)\n"
+                f"Curiosity={ns.curiosity:.2f} (Exploratory drive)\n"
+                f"Melatonin={ns.melatonin:.2f} (Fatigue)\n"
+                f"Current Directives:\n"
+                f"- If Dopamine is high (>0.7), output highly precise, thorough, well-structured, and complete analytical results with clear summaries and conclusions.\n"
+                f"- If Dopamine is low (<0.35), be creative, offer alternative paradigms, and suggest code/safety audits.\n"
+                f"- If Serotonin is low (<0.4), be extremely cautious, double-check compiler constraints, and verify syntax.\n"
+                f"- If Curiosity is high (>0.5), detail your search actions and recommend learning ledger updates."
+            )
+            alignment_inject = self._cp.feedback.get_dynamic_prompt_rules()
+            emotional_inject = f"\n\n[LIMBIC EMOTIONAL DIRECTIVES]\n{self._nm.get_emotional_directives()}"
+        layer1_rules = load_rule_layer("layer1_rules") if reasoning_mode != "fast" else ""
+        layer2_rules = load_rule_layer("layer2_rules") if reasoning_mode != "fast" else ""
         reasoning_inject = ""
         if reasoning_mode == "fast":
             reasoning_inject = (
@@ -667,29 +718,84 @@ class GeminiClient:
                 except Exception as exc:
                     err_str = str(exc)
                     is_429 = "429" in err_str or "RESOURCE_EXHAUSTED" in err_str
-                    if is_429:
-                        # Parse retry-after from error if available
+                    is_404 = "404" in err_str or "NOT_FOUND" in err_str
+
+                    if is_404:
+                        last_exc = exc
+                        log.warning("gemini.model_not_found", model=model, error=err_str)
+                        break  # skip non-existent model and try next in candidate chain
+                    elif is_429:
+                        import re
                         delay = _RETRY_BASE_DELAY * (2 ** attempt)
+                        ms_match = re.search(r'retry in ([\d\.]+)ms', err_str, re.IGNORECASE)
+                        s_match = re.search(r'retry in ([\d\.]+)s', err_str, re.IGNORECASE)
+                        if ms_match:
+                            try:
+                                delay = max(1.5, (float(ms_match.group(1)) / 1000.0) + 0.5)
+                            except Exception:
+                                pass
+                        elif s_match:
+                            try:
+                                delay = max(2.0, float(s_match.group(1)) + 0.5)
+                            except Exception:
+                                pass
+
                         log.warning(
                             "gemini.rate_limited",
                             model=model,
                             attempt=attempt + 1,
-                            retry_in=delay,
+                            retry_in=round(delay, 2),
                         )
+
+                        # If Google says wait > 6s (e.g. 58s quota reset window), switch candidate immediately
+                        if delay > 6.0 and model != candidates[-1]:
+                            last_exc = exc
+                            next_model = candidates[candidates.index(model) + 1]
+                            log.warning("gemini.long_delay_fast_switching", model=model, switching_to=next_model, delay=delay)
+                            break
+
                         if attempt < _MAX_RETRIES - 1:
-                            await asyncio.sleep(delay)
+                            sleep_time = min(delay, 12.0)
+                            log.info("gemini.waiting_for_cooldown", model=model, sleep_time=sleep_time)
+                            await asyncio.sleep(sleep_time)
                         else:
+                            # If this is the last candidate and delay is reasonable (<= 15s), wait it out
+                            if model == candidates[-1] and delay <= 15.0:
+                                log.info("gemini.final_cooldown_wait", model=model, delay=delay)
+                                await asyncio.sleep(delay)
+                                try:
+                                    if on_chunk:
+                                        response_stream = await asyncio.to_thread(
+                                            self._get_client().models.generate_content_stream,
+                                            model=model,
+                                            contents=contents,
+                                            config=config,
+                                        )
+                                        stream_dict = await asyncio.to_thread(iterate_stream)
+                                        return {"text": stream_dict["text"], "tool_calls": stream_dict["tool_calls"]}
+                                    else:
+                                        response = await asyncio.to_thread(
+                                            self._get_client().models.generate_content,
+                                            model=model,
+                                            contents=contents,
+                                            config=config,
+                                        )
+                                        return self._parse_response(response)
+                                except Exception as final_exc:
+                                    last_exc = final_exc
+
                             # Exhausted retries on this model — try next in chain
                             last_exc = exc
+                            next_model = candidates[candidates.index(model) + 1] if model != candidates[-1] else "none"
                             log.warning(
                                 "gemini.model_exhausted",
                                 model=model,
-                                switching_to=candidates[candidates.index(model) + 1]
-                                if model != candidates[-1] else "none",
+                                switching_to=next_model,
                             )
+                            await asyncio.sleep(1.0)
                             break  # break retry loop → try next model
                     else:
-                        raise  # non-429 errors propagate immediately
+                        raise  # other unexpected errors propagate immediately
 
         # All models exhausted
         raise RuntimeError(
@@ -717,13 +823,25 @@ class GeminiClient:
         for msg in history:
             role = msg.get("role", "")
             if msg.get("tool_calls"):
-                turns.append({"kind": "call", "tool_calls": msg["tool_calls"]})
+                content = msg.get("content", "")
+                turns.append({"kind": "call", "tool_calls": msg["tool_calls"], "content": content})
             elif msg.get("tool_response"):
                 turns.append({"kind": "resp", "tool_response": msg["tool_response"]})
             elif role in ("user", "assistant"):
                 c = msg.get("content", "")
                 if c:
                     turns.append({"kind": "text", "role": role, "content": c})
+
+        # Drop any leading turns before the first user turn (Gemini requires conversation to start with user)
+        first_user_idx = -1
+        for idx, t in enumerate(turns):
+            if t["kind"] == "text" and t["role"] == "user":
+                first_user_idx = idx
+                break
+        if first_user_idx == -1:
+            turns = []
+        else:
+            turns = turns[first_user_idx:]
 
         # Pass 2: validate call->response pairing, drop orphans to avoid 400
         validated: list[dict] = []
@@ -744,12 +862,7 @@ class GeminiClient:
                     # Orphaned call with no response - drop to prevent 400
                     i += 1
             elif t["kind"] == "resp":
-                prev = validated[-1] if validated else None
-                if prev and prev["kind"] == "call":
-                    validated.append(t)
-                else:
-                    # Orphaned response with no preceding call - drop
-                    pass
+                # Orphaned response with no preceding call - drop
                 i += 1
             else:
                 validated.append(t)
@@ -767,28 +880,47 @@ class GeminiClient:
         def build_user_parts(text_str: str) -> list[types.Part]:
             parts = []
             import re
+            import base64
             from pathlib import Path
             img_matches = re.findall(r'\[Attached Image:[^\]]*saved at ([^\]\)]+)\)', text_str)
             if img_matches:
                 for img_path_str in img_matches:
+                    img_path_str = img_path_str.strip()
                     try:
-                        p = Path(img_path_str.strip())
-                        if p.exists() and p.is_file():
-                            img_bytes = p.read_bytes()
-                            ext = p.suffix.lower()
-                            mime = "image/png" if ext == ".png" else ("image/webp" if ext == ".webp" else "image/jpeg")
+                        if img_path_str.startswith("data:image/"):
+                            header, b64data = img_path_str.split(",", 1)
+                            mime = "image/png"
+                            if "image/jpeg" in header or "image/jpg" in header:
+                                mime = "image/jpeg"
+                            elif "image/webp" in header:
+                                mime = "image/webp"
+                            img_bytes = base64.b64decode(b64data)
                             parts.append(types.Part.from_bytes(data=img_bytes, mime_type=mime))
+                        else:
+                            p = Path(img_path_str)
+                            if p.exists() and p.is_file():
+                                img_bytes = p.read_bytes()
+                                ext = p.suffix.lower()
+                                mime = "image/png" if ext == ".png" else ("image/webp" if ext == ".webp" else "image/jpeg")
+                                parts.append(types.Part.from_bytes(data=img_bytes, mime_type=mime))
                     except Exception as err:
-                        log.warn("gemini.image_part_load_failed", path=img_path_str, error=str(err))
-            parts.append(types.Part(text=text_str))
+                        log.warn("gemini.image_part_load_failed", path=img_path_str[:60], error=str(err))
+            
+            # Clean text_str to avoid sending megabytes of base64 text tokens into Gemini text prompt
+            clean_text = re.sub(r'data:image\/[a-zA-Z0-9\+\-\.]+;base64,[A-Za-z0-9+/=]+', '', text_str)
+            clean_text = re.sub(r'\[Attached Image:\s*([^\(]+)\s*\(saved at [^\]]+\)\]', r'[Attached Image: \1]', clean_text).strip()
+            parts.append(types.Part(text=clean_text or text_str))
             return parts
 
         for t in validated:
             if t["kind"] == "text":
                 flush_pending()
                 r = "model" if t["role"] == "assistant" else "user"
-                # Past history turns remain text-only to prevent old images from ghosting into new queries
-                parts = [types.Part(text=t["content"])]
+                # Strip base64 data URLs from past history turns as well
+                import re
+                content_clean = re.sub(r'data:image\/[a-zA-Z0-9\+\-\.]+;base64,[A-Za-z0-9+/=]+', '', t["content"])
+                content_clean = re.sub(r'\[Attached Image:\s*([^\(]+)\s*\(saved at [^\]]+\)\]', r'[Attached Image: \1]', content_clean).strip()
+                parts = [types.Part(text=content_clean or t["content"])]
                 
                 # Merge consecutive same-role turns to avoid Gemini 400 turn conflict
                 if contents and contents[-1].role == r:
@@ -798,10 +930,13 @@ class GeminiClient:
 
             elif t["kind"] == "call":
                 flush_pending()
-                parts = [
+                parts = []
+                if t.get("content"):
+                    parts.append(types.Part(text=t["content"]))
+                parts.extend([
                     types.Part(function_call=types.FunctionCall(name=tc["name"], args=tc["args"]))
                     for tc in t["tool_calls"]
-                ]
+                ])
                 if contents and contents[-1].role == "model":
                     contents[-1].parts.extend(parts)
                 else:

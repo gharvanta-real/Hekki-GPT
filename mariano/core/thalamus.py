@@ -64,9 +64,13 @@ class ThalamusGating:
             )
             return response.embeddings[0].values
         except Exception as exc:
-            log.error("thalamus.embedding_failed", error=str(exc))
-            # Fallback to random normalized vector if API fails to prevent blocking
-            vec = np.random.randn(768)
+            log.warning("thalamus.embedding_failed_using_deterministic_fallback", error=str(exc))
+            # Deterministic pseudo-embedding based on hash to avoid chaotic random routing
+            import hashlib
+            h = hashlib.sha256(text.encode("utf-8")).digest()
+            seed = int.from_bytes(h[:4], "big")
+            rng = np.random.RandomState(seed)
+            vec = rng.randn(768)
             return (vec / np.linalg.norm(vec)).tolist()
 
     async def register_skill_signature(self, skill_name: str, description: str) -> None:
@@ -152,8 +156,16 @@ class ThalamusGating:
             active = [s for s, _ in scores[:3]]
 
         # Dynamic ACh limiting: restrict maximum active tools based on complexity
-        limit = nm.get_cache_limit(base=6)
+        limit = max(5, nm.get_cache_limit(base=8))
         active = active[:limit]
+
+        # Essential Tool Safety Floor: always ensure fundamental execution tools
+        # (run_command, file_manager, web_search) remain available for coding & research
+        core_essential_names = {"run_command", "file_manager", "web_search"}
+        active_names = {s.get("name") for s in active}
+        for s in skills:
+            if s.get("name") in core_essential_names and s.get("name") not in active_names:
+                active.append(s)
 
         log.info(
             "thalamus.gating_complete",
@@ -168,3 +180,4 @@ class ThalamusGating:
             nm.surge_curiosity(0.35)
 
         return active, best_score
+

@@ -66,8 +66,8 @@
   padding: 3px 10px;
   border-radius: 20px;
   border: none !important;
-  color: var(--text-secondary);
-  background-color: var(--card);
+  color: var(--chip-text, var(--text-secondary));
+  background-color: var(--chip-bg, var(--card));
   box-shadow: none !important;
   transition: background-color 0.12s, color 0.12s;
 }
@@ -122,22 +122,22 @@
 .debate-round-pill {
   font-size: 12px;
   font-weight: 500;
-  color: var(--text-secondary);
+  color: var(--chip-text, var(--text-secondary));
   padding: 3px 12px;
   border: none !important;
   border-radius: 20px; /* pill shape */
-  background-color: var(--card);
+  background-color: var(--chip-bg, var(--card));
   box-shadow: none !important;
 }
 .debate-topbar-btn {
   font-size: 12px;
   font-weight: 500;
-  color: var(--text-secondary);
+  color: var(--chip-text, var(--text-secondary));
   padding: 4px 12px;
   border: none !important;
   border-radius: 20px; /* pill shape - same as bubble */
   cursor: pointer;
-  background: var(--sidebar-bg);
+  background: var(--chip-bg, var(--sidebar-bg));
   box-shadow: none !important;
   transition: background 0.12s, color 0.12s;
   display: flex;
@@ -149,6 +149,7 @@
   background: var(--hover);
   color: var(--text-primary);
 }
+
 .debate-back-btn {
   display: flex;
   align-items: center;

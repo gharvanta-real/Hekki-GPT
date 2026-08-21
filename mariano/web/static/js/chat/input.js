@@ -114,29 +114,46 @@ export function formatTime(timestamp) {
   return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
 }
 
-export function setGeneratingState(isGen) {
-  window.isGenerating = !!isGen;
+export function setGeneratingState(isGen, chatId) {
+  // Per-chat generating state: window._generatingChats is a Set of chatIds
+  if (!window._generatingChats) window._generatingChats = new Set();
+  const activeCid = chatId || (window.ChatSessionManager?.getActiveChatId?.()) || null;
+  if (activeCid) {
+    if (isGen) window._generatingChats.add(activeCid);
+    else        window._generatingChats.delete(activeCid);
+  }
+  // Sync legacy global flag based on whether the CURRENT active chat is generating
+  const currentCid = window.ChatSessionManager?.getActiveChatId?.() || null;
+  window.isGenerating = currentCid
+    ? window._generatingChats.has(currentCid)
+    : (window._generatingChats.size > 0);
 
+  _syncInputButtons(window.isGenerating);
+}
+
+function _syncInputButtons(isGen) {
   ['chat-input', 'chat-input-conv'].forEach(inputId => {
     const isConv = inputId === 'chat-input-conv';
     const submitBtn = document.getElementById(isConv ? 'btn-submit-conv' : 'btn-submit-home');
     const stopBtn   = document.getElementById(isConv ? 'btn-stop-gen-conv' : 'btn-stop-gen');
     const voiceBtn  = document.getElementById(isConv ? 'btn-voice-conv' : 'btn-voice');
 
-    if (window.isGenerating) {
-      // Generating: hide send + mic, show ONLY stop
+    if (isGen) {
       if (voiceBtn)  { voiceBtn.style.display  = 'none'; voiceBtn.classList.add('hidden'); }
       if (submitBtn) { submitBtn.style.display = 'none'; submitBtn.classList.add('hidden'); }
       if (stopBtn)   { stopBtn.style.display   = 'inline-flex'; stopBtn.classList.remove('hidden'); }
     } else {
-      // Idle: hide stop, show send + mic
       if (stopBtn)   { stopBtn.style.display   = 'none';        stopBtn.classList.add('hidden'); }
       if (voiceBtn)  { voiceBtn.style.display  = 'inline-flex'; voiceBtn.classList.remove('hidden'); }
       if (submitBtn) { submitBtn.style.display = 'inline-flex'; submitBtn.classList.remove('hidden'); }
     }
   });
 }
+
+// Allow agent_stream.js to sync button state when per-chat state changes
+window._syncGeneratingState = _syncInputButtons;
 window.setGeneratingState = setGeneratingState;
+
 
 let _inputsBound = false;
 

@@ -156,6 +156,13 @@ class Router {
     // Step 0: Fire leave callbacks before hiding — allows cleanup
     this._fireLeaveCallbacks(leavingPage);
 
+    // Freeze active stream DOM when leaving chat (stream continues buffering)
+    if (leavingPage === 'chat') {
+      const activeCid = window.ChatSessionManager?.getActiveChatId?.();
+      const freezeFn = window._streamBufferApi?.freezeActiveStream;
+      if (activeCid && freezeFn) freezeFn(activeCid);
+    }
+
     // Step 1: Hide everything — no overlap possible after this
     this._hideAllPanes();
 
@@ -199,13 +206,11 @@ class Router {
         if (innerChat) innerChat.style.display = 'flex';
         const innerSettings = document.getElementById('nav-inner-settings');
         if (innerSettings) innerSettings.style.display = 'none';
-        // Ensure coder subpanel is fully gone (triple-hide)
         if (innerCoder) {
           innerCoder.style.display = 'none';
           innerCoder.style.visibility = 'hidden';
           innerCoder.style.pointerEvents = 'none';
         }
-        // Restore right panel to the state it was in before leaving Chat
         const appPaneChat = document.getElementById('app-pane');
         const resizerChat = document.getElementById('app-pane-resizer');
         const expandBtn   = document.getElementById('btn-expand-app-pane');
@@ -219,7 +224,20 @@ class Router {
             resizerChat.classList.add('hidden-pane');
           }
         }
-        // Clear breadcrumb — chat page has no project path
+        // Thaw active stream when returning to chat
+        const activeCid = window.ChatSessionManager?.getActiveChatId?.();
+        const thawFn = window._streamBufferApi?.thawActiveStream;
+        if (activeCid && thawFn) {
+          const thawed = thawFn(activeCid, () => {
+            if (window.inConversationState) window.inConversationState.val = true;
+            document.getElementById('home-screen')?.classList.add('hidden');
+            document.getElementById('bottom-input-bar')?.classList.remove('hidden');
+          });
+          if (thawed) {
+            const isGen = window._generatingChats?.has(activeCid) || false;
+            if (window._syncGeneratingState) window._syncGeneratingState(isGen);
+          }
+        }
         if (window.updateTitleBreadcrumb) window.updateTitleBreadcrumb('', '');
         break;
       }

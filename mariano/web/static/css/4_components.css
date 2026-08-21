@@ -7,7 +7,7 @@
 .card, .panel, .modal-content {
   background-color: var(--bg-card);
   border-radius: var(--radius-card);
-  border: none !important;
+  border: 1px solid var(--border) !important;
   box-shadow: none !important;
   padding: var(--space-4);
   color: var(--text-primary);
@@ -21,7 +21,7 @@
 .btn-clear-docs:hover {
   background: var(--hover) !important;
   color: var(--red) !important;
-  border: none !important;
+  border: 1px solid var(--border) !important;
 }
 
 .img-del-btn:hover svg,
@@ -36,7 +36,7 @@
 .card-secondary {
   background-color: var(--bg-card-secondary);
   border-radius: var(--radius-card);
-  border: none !important;
+  border: 1px solid var(--border) !important;
   box-shadow: none !important;
   padding: var(--space-3);
 }
@@ -64,7 +64,7 @@
   font-weight: 500;
   background-color: var(--chip-bg);
   color: var(--chip-text);
-  border: none !important;
+  border: 1px solid var(--border) !important;
   box-shadow: none !important;
   text-transform: none;
   transition: background-color 0.12s ease, color 0.12s ease;
@@ -75,6 +75,7 @@
 .filter-pill.active {
   background-color: var(--bg-active) !important;
   color: var(--accent-primary) !important;
+  border: 1px solid var(--accent-primary) !important;
 }
 
 /* Action Buttons & Standard Controls */
@@ -99,7 +100,7 @@
   font-weight: 500;
   background-color: var(--btn-secondary-bg);
   color: var(--btn-secondary-text);
-  border: none !important;
+  border: 1px solid var(--border) !important;
   box-shadow: none !important;
   cursor: pointer;
   transition: background-color 0.15s ease, color 0.15s ease;
@@ -231,7 +232,7 @@ body.oled img[src*="carbon_icons"]:not(.no-invert),
 .terminal-output,
 .diff-container,
 pre:has(code) {
-  border: none !important;
+  border: 1px solid var(--border) !important;
   background-color: var(--bg-card-secondary);
   border-radius: var(--radius-md);
 }
@@ -263,7 +264,7 @@ pre:has(code) {
 .btn-dialog-confirm {
   background: var(--btn-primary-bg) !important;
   color: var(--btn-primary-text) !important;
-  border: none !important;
+  border: 1px solid var(--border) !important;
   font-weight: 500 !important;
   cursor: pointer !important;
   transition: background-color 0.15s ease, opacity 0.15s ease !important;
@@ -309,7 +310,7 @@ pre:has(code) {
 .dialog-btn-cancel {
   background: var(--input-bg) !important;
   color: var(--text-2) !important;
-  border: none !important;
+  border: 1px solid var(--border) !important;
   font-weight: 400 !important;
   cursor: pointer !important;
   transition: background-color 0.15s ease, color 0.15s ease !important;

@@ -7,8 +7,9 @@ import structlog
 
 log = structlog.get_logger(__name__)
 
-def _smart_truncate_tool_result(text: str, max_chars: int = 5000) -> str:
-    """Intelligently truncates large tool outputs for ultra-fast LLM token processing."""
+def _smart_truncate_tool_result(text: str, max_chars: int = 6000) -> str:
+    """Intelligently truncates large tool outputs for ultra-fast LLM token processing,
+    preserving beginning, end, and full error tracebacks."""
     if not text or len(text) <= max_chars:
         return text
     
@@ -17,9 +18,9 @@ def _smart_truncate_tool_result(text: str, max_chars: int = 5000) -> str:
     tail = text[-half:]
     
     err_lines = [line for line in text.splitlines() if any(kw in line.lower() for kw in ["error", "exception", "traceback", "failed", "syntaxerror"])]
-    err_snippet = ("\n... [Extracted Error Traceback]:\n" + "\n".join(err_lines[:5]) + "\n") if err_lines else ""
+    err_snippet = ("\n... [Extracted Error Traceback]:\n" + "\n".join(err_lines[:10]) + "\n") if err_lines else ""
     
-    return f"{head}\n\n... [Truncated {len(text) - max_chars} characters for speed] ...\n{err_snippet}\n{tail}"
+    return f"{head}\n\n... [Truncated {len(text) - max_chars} characters for token safety] ...\n{err_snippet}\n{tail}"
 _PRE_TOOL_TEMPLATES: dict[str, str] = {
     "code_search":      "Searching the codebase for `{query}` to find relevant locations.",
     "web_search":       "Searching the web for `{query}` to gather up-to-date information.",
@@ -75,6 +76,7 @@ async def _stream_post_reasoning(
 ) -> AsyncIterator[AgentEvent]:
     """Make a focused mini Gemini call to explain what was found and what comes next.
     Yields reasoning_chunk events for typewriter streaming, then a reasoning_done event.
+    RATE-SAFE: Acquires rate limiter token before firing — never bypasses quota guard.
     """
     prompt = (
         f"You are an internal reasoning layer of a coding AI. "
@@ -84,6 +86,19 @@ async def _stream_post_reasoning(
         f"Be direct and specific — no preamble, no markdown."
     )
     try:
+        # ── Rate Limit Guard: acquire a slot before firing extra Gemini call ──
+        from mariano.core.rate_limiter import GeminiRateLimiter
+        estimated_tokens = int((len(prompt) + 200) / 4)
+        try:
+            await GeminiRateLimiter.get_instance().acquire(estimated_tokens)
+        except RuntimeError as quota_err:
+            # Daily quota exhausted — skip post-reasoning silently
+            log.warning("react.post_reasoning_skipped_quota", reason=str(quota_err))
+            return
+
+        # Minimum inter-call buffer to prevent burst spikes in multi-tool loops
+        await asyncio.sleep(0.5)
+
         queue: asyncio.Queue[str | None] = asyncio.Queue()
         loop = asyncio.get_running_loop()
 
@@ -110,6 +125,7 @@ async def _stream_post_reasoning(
         log.warning("react.post_reasoning_failed", error=str(exc))
         # Silently skip — reasoning is supplemental, not critical
 
+
 async def run_react_loop(
     agent,
     user_input: str,
@@ -125,6 +141,7 @@ async def run_react_loop(
     success = False
     halt_execution = False
     consecutive_failures = 0
+    total_failures = 0
     last_failed_tool = None
 
     last_tool_call_sig = None
@@ -140,6 +157,8 @@ async def run_react_loop(
                 history = ctx.get_history()[:-1]
                 message_to_send = user_input
             else:
+                # Inter-step safety pacing delay
+                await asyncio.sleep(0.3)
                 history = ctx.get_history()
                 # Steps remaining check — bias towards finishing early
                 steps_remaining = max_steps_adjusted - step
@@ -230,9 +249,9 @@ async def run_react_loop(
 
             # Execute tool calls
             if tool_calls:
-                # Add structured tool calls message to context
+                # Add structured tool calls message to context (preserving any streamed assistant reasoning/text)
                 tool_calls_data = [{"name": tc["name"], "args": tc["args"]} for tc in tool_calls]
-                ctx.add("assistant", "", tool_calls=tool_calls_data)
+                ctx.add("assistant", text or "", tool_calls=tool_calls_data)
 
                 for tc in tool_calls:
                     name = tc["name"]
@@ -246,7 +265,7 @@ async def run_react_loop(
                         tool_call_repeat_count = 0
                         last_tool_call_sig = call_sig
 
-                    if tool_call_repeat_count >= 2:
+                    if tool_call_repeat_count >= 4:
                         yield AgentEvent("thinking", f"Redundancy Guard: Tool '{name}' called with identical arguments {tool_call_repeat_count + 1} times. Breaking loop to prevent infinite execution.")
                         yield AgentEvent("response", "I detected a repetitive tool execution loop while trying to gather info. Here is what I know so far...")
                         halt_execution = True
@@ -304,6 +323,7 @@ async def run_react_loop(
                     )
                     
                     if not result.success:
+                        total_failures += 1
                         agent._nm.surge_curiosity(0.20)
                         from mariano.core.curiosity_learner import CuriosityLearner
                         CuriosityLearner.get_instance().trigger_learning(failed_query=name, error_message=str(result.error))
@@ -314,15 +334,16 @@ async def run_react_loop(
                             consecutive_failures = 1
                             last_failed_tool = name
 
-                        # Only halt after 4 consecutive failures on same tool — otherwise retry autonomously
-                        if consecutive_failures >= 4:
-                            yield AgentEvent("thinking", f"Tried '{name}' {consecutive_failures} times — genuinely stuck. Reporting to user.")
-                            yield AgentEvent("response", f"\n\n❌ **Task could not be completed** after {consecutive_failures} attempts with `{name}`.\n\n**What went wrong:** `{result.error}`\n\nMain khud se kuch aur nahi kar sakta is situation mein. Kya aap mujhe alag approach ya naya command dena chahenge?")
+                        # Halt after 5 consecutive failures on same tool or 8 total failures across all tools
+                        if consecutive_failures >= 5 or total_failures >= 8:
+                            yield AgentEvent("thinking", f"Tried '{name}' {consecutive_failures} times (total failures: {total_failures}) — genuinely stuck. Reporting to user.")
+                            yield AgentEvent("response", f"\n\n❌ **Task could not be completed** after multiple autonomous attempts with `{name}`.\n\n**Last error:** `{result.error}`\n\nMain khud se is situation mein saare approaches try kar chuka hoon. Kya aap mujhe koi different direction dena chahenge?")
                             halt_execution = True
                             break
                     else:
                         consecutive_failures = 0
                         last_failed_tool = None
+
 
                     # Add structured tool response message to context (smart truncated for fast token processing)
                     ctx.add(
@@ -346,6 +367,18 @@ async def run_react_loop(
                     except Exception:
                         pass
                     
+                    # Update active target directory in context when tool operates on a path
+                    if result.success:
+                        raw_target = args.get("path") or args.get("SearchDirectory") or args.get("target_path") or args.get("TargetFile") or args.get("file_path")
+                        if raw_target and isinstance(raw_target, str) and not raw_target.startswith("."):
+                            try:
+                                tp = Path(raw_target)
+                                if tp.is_absolute():
+                                    target_d = str(tp if (tp.exists() and tp.is_dir()) or not tp.suffix else tp.parent)
+                                    ctx.set_active_target_dir(target_d)
+                            except Exception:
+                                pass
+
                     # Build merged metadata including skill result metadata
                     event_meta = {"tool": name, "success": result.success, "time_ms": result.execution_time_ms}
                     if result.metadata and isinstance(result.metadata, dict):

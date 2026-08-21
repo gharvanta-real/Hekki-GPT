@@ -101,13 +101,13 @@ a.chat-link.file-link:hover { color: #047857; }
 body.dark .msg.ai a,
 [data-theme="dark"] a.chat-link,
 body.dark a.chat-link {
-  color: #60a5fa !important;
+  color: var(--text-primary) !important;
 }
 [data-theme="dark"] .msg.ai a:hover,
 body.dark .msg.ai a:hover,
 [data-theme="dark"] a.chat-link:hover,
 body.dark a.chat-link:hover {
-  color: #93c5fd !important;
+  color: var(--link-hover, var(--text-primary)) !important;
 }
 
 /* ── Clean Flat Callouts & Bottom Lines (No Card Box, Thin Divider Line Above) ── */
@@ -131,7 +131,7 @@ body.dark a.chat-link:hover {
   box-sizing: border-box;
 }
 
-.chat-callout.callout-note { border-left-color: #2563EB !important; }
+.chat-callout.callout-note { border-left-color: var(--text-primary) !important; }
 .chat-callout.callout-tip { border-left-color: #10B981 !important; }
 .chat-callout.callout-important { border-left-color: #8B5CF6 !important; }
 .chat-callout.callout-warning { border-left-color: #F59E0B !important; }
@@ -147,7 +147,7 @@ body.dark a.chat-link:hover {
   color: var(--text-primary);
 }
 
-.chat-callout.callout-note .callout-header { color: #2563EB; }
+.chat-callout.callout-note .callout-header { color: var(--text-primary); }
 .chat-callout.callout-tip .callout-header { color: #10B981; }
 .chat-callout.callout-important .callout-header { color: #8B5CF6; }
 .chat-callout.callout-warning .callout-header { color: #F59E0B; }
@@ -258,7 +258,7 @@ body.dark a.chat-link:hover {
 .msg p:last-child {
   margin-bottom: 0;
 }
-/* Inline code pills ONLY */
+/* Inline code pills ONLY — tokenized across all themes */
 .msg p code,
 .msg li code,
 .msg span code,
@@ -269,23 +269,13 @@ table :not(pre) > code,
   font-family: var(--font-mono), monospace;
   font-size: 13.5px;
   font-weight: 500;
-  background: #e5e7eb;
-  color: #991b1b;
-  padding: 2px 6px;
-  border-radius: 5px;
+  background: var(--input-bg) !important;
+  color: var(--text-primary) !important;
+  padding: 2px 7px;
+  border-radius: var(--radius-sm, 6px);
   border: none !important;
   outline: none !important;
   white-space: nowrap;
-}
-/* Dark & OLED modes inline code pills */
-[data-theme="dark"] .msg :not(pre) > code,
-[data-theme="oled"] .msg :not(pre) > code,
-body.dark .msg :not(pre) > code,
-body.oled .msg :not(pre) > code {
-  background: rgba(255, 255, 255, 0.08) !important;
-  color: #fbbf24 !important;
-  border: none !important;
-  outline: none !important;
 }
 
 .msg pre {
@@ -362,13 +352,13 @@ body.dark .story-tag-pill.tag-why {
 }
 
 .story-tag-pill.tag-what {
-  background: rgba(37, 99, 235, 0.12) !important;
-  color: #2563eb !important;
+  background: var(--hover) !important;
+  color: var(--text-primary) !important;
 }
 [data-theme="dark"] .story-tag-pill.tag-what,
 body.dark .story-tag-pill.tag-what {
-  background: rgba(96, 165, 250, 0.15) !important;
-  color: #60a5fa !important;
+  background: var(--hover) !important;
+  color: var(--text-primary) !important;
 }
 
 .story-tag-pill.tag-impact {

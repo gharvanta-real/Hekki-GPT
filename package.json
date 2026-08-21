@@ -23,6 +23,7 @@
     },
     "files": [
       "electron_main.js",
+      "electron_backend.js",
       "preload.js",
       "package.json",
       "splash.html",

@@ -48,45 +48,38 @@
 #input-capsule-conv {
   position: relative;
   width: 100%;
-  background: var(--input-bg, #F4F4F6);
-  border: 1px solid var(--border-subtle, rgba(0, 0, 0, 0.08)) !important;
+  background: var(--sidebar-bg) !important;
+  border: none !important;
   outline: none !important;
   box-shadow: none !important;
-  transition: border-color 0.18s ease, border-radius 0.22s cubic-bezier(0.4, 0, 0.2, 1), padding 0.22s cubic-bezier(0.4, 0, 0.2, 1), min-height 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: border-radius 0.22s cubic-bezier(0.4, 0, 0.2, 1), padding 0.22s cubic-bezier(0.4, 0, 0.2, 1), min-height 0.22s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 body.light #input-capsule,
 body.light #input-capsule-conv,
 :root[data-theme="light"] #input-capsule,
-:root[data-theme="light"] #input-capsule-conv {
-  border: 1px solid rgba(0, 0, 0, 0.08) !important;
-  outline: none !important;
-  box-shadow: none !important;
-}
-
+:root[data-theme="light"] #input-capsule-conv,
 body.dark #input-capsule,
 body.dark #input-capsule-conv,
 :root[data-theme="dark"] #input-capsule,
-:root[data-theme="dark"] #input-capsule-conv {
-  border: 1px solid rgba(255, 255, 255, 0.09) !important;
-  outline: none !important;
-  box-shadow: none !important;
-}
-
+:root[data-theme="dark"] #input-capsule-conv,
 body.oled #input-capsule,
 body.oled #input-capsule-conv,
 :root[data-theme="oled"] #input-capsule,
 :root[data-theme="oled"] #input-capsule-conv {
-  border: 1px solid rgba(255, 255, 255, 0.11) !important;
+  border: none !important;
   outline: none !important;
   box-shadow: none !important;
+  background: var(--sidebar-bg) !important;
 }
 
 #input-capsule:focus-within,
 #input-capsule-conv:focus-within,
 #input-capsule:hover,
 #input-capsule-conv:hover {
-  border-color: var(--accent-primary, #2563eb) !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
 }
 
 #input-capsule {
@@ -193,19 +186,19 @@ body.oled #input-capsule-conv,
   align-items: stretch !important;
   justify-content: flex-start !important;
   border-radius: 18px !important;
-  padding: 12px 14px 10px !important;
-  min-height: 92px !important;
+  padding: 10px 14px 10px !important;
+  min-height: auto !important;
   height: auto !important;
-  gap: 8px !important;
+  gap: 6px !important;
 }
 
 #input-capsule.is-multiline #chat-input,
 #input-capsule-conv.is-multiline #chat-input-conv {
   width: 100% !important;
   flex: none !important;
-  min-height: 48px !important;
+  min-height: 28px !important;
   max-height: 240px !important;
-  line-height: 1.5 !important;
+  line-height: 1.4 !important;
   padding: 2px 4px !important;
   overflow-y: auto !important;
   white-space: pre-wrap !important;

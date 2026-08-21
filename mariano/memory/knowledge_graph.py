@@ -37,7 +37,7 @@ class KnowledgeGraphEngine:
 
     def _seed_default_graph(self) -> None:
         nodes = [
-            {"id": "c_hekki", "label": "Hekki Assistant", "category": "Core", "radius": 22, "color": "#3b82f6", "notes": "Autonomous AI Agent platform & local desktop runtime."},
+            {"id": "c_hekki", "label": "Hekki Assistant", "category": "Core", "radius": 22, "color": "#71717a", "notes": "Autonomous AI Agent platform & local desktop runtime."},
             {"id": "c_agent", "label": "Agentic Loop", "category": "Architecture", "radius": 16, "color": "#10b981", "notes": "ReAct tool execution, planner, observer & memory."},
             {"id": "c_memory", "label": "Memory Ledger", "category": "Memory", "radius": 15, "color": "#8b5cf6", "notes": "Semantic SQLite vector store and persistent profile facts."},
             {"id": "c_skills", "label": "Modular Skills", "category": "Execution", "radius": 15, "color": "#f59e0b", "notes": "Decoupled capability modules registered with Gemini Tools API."},
@@ -48,7 +48,7 @@ class KnowledgeGraphEngine:
             {"id": "c_workflows", "label": "Workflow Engine", "category": "Automation", "radius": 15, "color": "#f43f5e", "notes": "Multi-step automated DAG pipelines and agentic triggers."},
             {"id": "c_graph", "label": "Knowledge Graph", "category": "Intelligence", "radius": 16, "color": "#eab308", "notes": "Interactive conceptual relationship explorer & mind-map."},
             {"id": "c_python", "label": "Python & FastAPI", "category": "Technology", "radius": 13, "color": "#64748b", "notes": "High performance async web and orchestration backend."},
-            {"id": "c_gemini", "label": "Google Gemini 3.1", "category": "Model", "radius": 17, "color": "#3b82f6", "notes": "Multimodal reasoning LLM with function calling."}
+            {"id": "c_gemini", "label": "Google Gemini 3.1", "category": "Model", "radius": 17, "color": "#a1a1aa", "notes": "Multimodal reasoning LLM with function calling."}
         ]
 
         links = [
@@ -102,7 +102,7 @@ class KnowledgeGraphEngine:
         if "radius" not in node:
             node["radius"] = 14
         if "color" not in node:
-            node["color"] = "#3b82f6"
+            node["color"] = "#71717a"
         self._nodes.append(node)
         self._save_graph()
         return node

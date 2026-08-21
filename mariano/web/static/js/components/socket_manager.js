@@ -1,11 +1,16 @@
-import { handleChatAgentEvent } from '../agent_stream.js';
+import { handleChatAgentEvent, initQuestionCard, anyStreamActive, getActiveStreamChatIds, isStreamActive, freezeActiveStream, thawActiveStream } from '../agent_stream.js';
 import { appendMsg, clearInputs, scrollChat } from '../chat.js';
 import { showToast } from './toast.js';
 import { attachmentManager } from './attachment_manager.js';
 
+// Expose stream buffer API so router.js and session.js can use it without circular imports
+window._streamBufferApi = { freezeActiveStream, thawActiveStream, isStreamActive, anyStreamActive, getActiveStreamChatIds };
+
 const wsScheme = location.protocol === 'https:' ? 'wss:' : 'ws';
 export let socket = new WebSocket(`${wsScheme}://${location.host}/ws`);
 window.socket = socket;
+initQuestionCard(socket);
+
 
 let reconnectAttempts = 0;
 const MAX_RECONNECT_ATTEMPTS = 5;
@@ -63,6 +68,7 @@ export function rebindSocket(onMessageCallback, log) {
     setTimeout(() => { 
       socket = new WebSocket(`${wsScheme}://${location.host}/ws`); 
       window.socket = socket;
+      initQuestionCard(socket);
       rebindSocket(onMessageCallback, log); 
     }, 3000);
   };

@@ -127,8 +127,8 @@
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: #000000;
-  color: #ffffff;
+  background: var(--text-primary, #000000);
+  color: var(--bg, #ffffff);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -136,9 +136,18 @@
   font-size: 12px;
   flex-shrink: 0;
 }
-body.dark .des-card-avatar {
+body.light .des-card-avatar {
+  background: #000000;
+  color: #ffffff;
+}
+body.dark .des-card-avatar,
+body.oled .des-card-avatar {
   background: #ffffff;
   color: #000000;
+}
+body.catppuccin .des-card-avatar {
+  background: #CBA6F7;
+  color: #11111B;
 }
 .des-card-text {
   font-size: 13px;
@@ -181,17 +190,17 @@ body.dark .des-card-avatar {
   content: '';
   flex: 1;
   height: 1px;
-  border-top: 1px dashed var(--border);
+  border-top: 1px dashed var(--border-subtle, var(--border));
   display: block !important;
 }
 .debate-round-sep span {
   position: relative;
   z-index: 2;
   padding: 4px 14px;
-  background: var(--sidebar-bg);
+  background: var(--chip-bg, var(--sidebar-bg));
   border: none !important;
   border-radius: 20px; /* pill chip */
-  color: var(--text-secondary);
+  color: var(--chip-text, var(--text-secondary));
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.02em;
@@ -232,15 +241,15 @@ body.dark .des-card-avatar {
   padding: 3px 10px;
   border-radius: 20px;
   border: none;
-  background: var(--sidebar-bg);
-  color: var(--text-secondary);
+  background: var(--chip-bg, var(--sidebar-bg));
+  color: var(--chip-text, var(--text-secondary));
 }
-.alpha-badge { color: var(--text); }
-.beta-badge  { color: var(--text); }
-.user-badge  { color: var(--text-secondary); }
+.alpha-badge { color: var(--text-primary); background: var(--chip-bg); }
+.beta-badge  { color: var(--text-primary); background: var(--chip-bg); }
+.user-badge  { color: var(--text-secondary); background: var(--chip-bg); }
 .synthesis-badge {
-  background: var(--hover);
-  color: var(--text-primary);
+  background: var(--chip-accent-bg, var(--hover));
+  color: var(--chip-accent-text, var(--text-primary));
   border-radius: 20px;
   padding: 3px 10px;
   font-family: var(--font) !important;
@@ -251,6 +260,7 @@ body.dark .des-card-avatar {
   align-items: center;
   gap: 4px;
 }
+
 
 .debate-arrow { font-size: 11px; color: var(--text-3); }
 .debate-target-badge { font-size: 11px; color: var(--text-3); }

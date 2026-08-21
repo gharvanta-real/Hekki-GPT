@@ -24,6 +24,16 @@ contextBridge.exposeInMainWorld('electronAPI', {
   /** Toggle the system-wide floating overlay window */
   toggleOverlay: () => ipcRenderer.send('toggle-overlay'),
 
+  /** Set auto start on Windows boot */
+  setAutoStart: (enabled) => ipcRenderer.invoke('set-auto-start', enabled),
+
+  /** Get current auto start status */
+  getAutoStart: () => ipcRenderer.invoke('get-auto-start'),
+
+  /** Set run in background (close to tray) */
+  setRunInBackground: (enabled) => ipcRenderer.send('set-run-in-background', enabled),
+
   /** Check if we are running inside Electron (vs plain browser). */
   isElectron: true,
 });
+

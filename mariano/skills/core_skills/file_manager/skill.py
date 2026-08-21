@@ -326,8 +326,10 @@ class FileManagerSkill(BaseSkill):
                 return SkillResult(success=False, data=None, error=f"File not found: {path}")
             if path.is_dir():
                 return self._list(path)
-            if path.stat().st_size > 500_000:
-                return SkillResult(success=False, data=None, error=f"File too large (>500KB): {path}")
+            
+            size = path.stat().st_size
+            if size > 10_000_000 and start is None and end is None:
+                return SkillResult(success=False, data=None, error=f"File is very large ({round(size/1024/1024, 1)}MB): {path}. Specify start/end line numbers to read chunks.")
 
             lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
             total = len(lines)
@@ -339,14 +341,23 @@ class FileManagerSkill(BaseSkill):
                 header = f"<!-- {path.name} lines {s}-{e} of {total} -->\n"
                 content = header + "```\n" + "\n".join(chunk) + "\n```"
             else:
-                content = "```\n" + "\n".join(lines) + "\n```"
+                s = 1
+                if total > 500:
+                    e = 500
+                    chunk = lines[:500]
+                    header = f"<!-- {path.name} showing first 500 of {total} lines. Use start=501 to continue reading -->\n"
+                    content = header + "```\n" + "\n".join(chunk) + f"\n... [Truncated {total - 500} lines. Use file_manager(action='read', path='...', start=501) to read more] ...\n```"
+                else:
+                    e = total
+                    content = "```\n" + "\n".join(lines) + "\n```"
 
             return SkillResult(
                 success=True, data=content,
-                metadata={"path": str(path), "total_lines": total, "action": "read"}
+                metadata={"path": str(path), "total_lines": total, "start_line": s, "end_line": e, "action": "read"}
             )
         except Exception as e:
             return SkillResult(success=False, data=None, error=str(e))
+
 
     def _list(self, path: Path) -> SkillResult:
         try:
@@ -355,12 +366,16 @@ class FileManagerSkill(BaseSkill):
             target = path if path.is_dir() else path.parent
             entries = sorted(target.iterdir(), key=lambda p: (p.is_file(), p.name.lower()))
             lines = []
+            items = []
             for e in entries:
-                prefix = "__DIR__" if e.is_dir() else "__FILE__"
-                size = f" ({e.stat().st_size:,}B)" if e.is_file() else ""
-                lines.append(f"{prefix} {e.name}{size}")
+                is_d = e.is_dir()
+                prefix = "__DIR__" if is_d else "__FILE__"
+                sz = e.stat().st_size if e.is_file() else None
+                sz_str = f" ({sz:,}B)" if sz is not None else ""
+                lines.append(f"{prefix} {e.name}{sz_str}")
+                items.append({"name": e.name, "is_dir": is_d, "size": sz})
             text = f"Directory: {target}\n" + ("\n".join(lines) or "(empty)")
-            return SkillResult(success=True, data=text, metadata={"path": str(target), "count": len(entries), "action": "list"})
+            return SkillResult(success=True, data=text, metadata={"path": str(target), "count": len(entries), "action": "list", "items": items})
         except Exception as e:
             return SkillResult(success=False, data=None, error=str(e))
 
@@ -383,7 +398,7 @@ class FileManagerSkill(BaseSkill):
                 if len(results) >= 100:
                     break
             text = "\n".join(results) if results else f"No matches for '{pattern}'"
-            return SkillResult(success=True, data=text, metadata={"pattern": pattern, "matches": len(results), "action": "grep"})
+            return SkillResult(success=True, data=text, metadata={"pattern": pattern, "matches": len(results), "action": "grep", "path": str(root)})
         except Exception as e:
             return SkillResult(success=False, data=None, error=str(e))
 
@@ -391,9 +406,11 @@ class FileManagerSkill(BaseSkill):
         try:
             root = path if path.is_dir() else path.parent
             pat  = pattern or "*"
-            matches = [str(m.relative_to(root)) for m in sorted(root.rglob(pat))[:80]]
+            matches_list = sorted(root.rglob(pat))[:80]
+            matches = [str(m.relative_to(root)) for m in matches_list]
+            items = [{"path": str(m.relative_to(root)), "is_dir": m.is_dir()} for m in matches_list]
             text = "\n".join(matches) if matches else f"No files matching '{pat}'"
-            return SkillResult(success=True, data=text, metadata={"pattern": pat, "count": len(matches), "action": "search"})
+            return SkillResult(success=True, data=text, metadata={"pattern": pat, "count": len(matches), "action": "search", "items": items, "path": str(root)})
         except Exception as e:
             return SkillResult(success=False, data=None, error=str(e))
 

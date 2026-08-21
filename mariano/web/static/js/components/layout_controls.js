@@ -106,9 +106,11 @@ function _notifyElectronTheme(isDark) {
   }
 }
 
+const AVAILABLE_THEMES = ['dark', 'light', 'oled', 'catppuccin'];
+
 function _applyTheme(theme, btn) {
-  if (!theme || theme === 'oled') theme = 'dark';
-  document.body.classList.remove('dark', 'light', 'oled');
+  if (!theme || !AVAILABLE_THEMES.includes(theme)) theme = 'dark';
+  document.body.classList.remove('dark', 'light', 'oled', 'catppuccin');
   document.documentElement.removeAttribute('data-theme');
 
   document.body.classList.add(theme);
@@ -120,7 +122,7 @@ function _applyTheme(theme, btn) {
   if (btn) {
     const icon = btn.querySelector('[data-lucide]');
     if (icon) {
-      const lucideName = (theme === 'light') ? 'sun' : 'moon';
+      const lucideName = (theme === 'light') ? 'sun' : (theme === 'catppuccin' ? 'coffee' : (theme === 'oled' ? 'circle' : 'moon'));
       icon.setAttribute('data-lucide', lucideName);
       if (window.lucide) lucide.createIcons();
     }
@@ -149,16 +151,18 @@ export function bindThemeToggle() {
 
   // Restore persisted theme on page load (defaults to Cursor Dark)
   let savedTheme = localStorage.getItem('hekki_theme') || 'dark';
-  if (savedTheme === 'oled') savedTheme = 'dark';
+  if (!AVAILABLE_THEMES.includes(savedTheme)) savedTheme = 'dark';
   localStorage.setItem('hekki_theme', savedTheme);
   _applyTheme(savedTheme, btn);
 
   if (btn) {
-    // ── Toggle on button click (Clean 2-State: dark <-> light) ─────
+    // ── Toggle on button click (Cycle through all 4 themes: dark -> light -> oled -> catppuccin) ─────
     btn.addEventListener('click', () => {
       let currentTheme = localStorage.getItem('hekki_theme') || 'dark';
-      if (currentTheme === 'oled') currentTheme = 'dark';
-      const newTheme = (currentTheme === 'light') ? 'dark' : 'light';
+      const currentIndex = AVAILABLE_THEMES.indexOf(currentTheme);
+      const nextIndex = (currentIndex + 1) % AVAILABLE_THEMES.length;
+      const newTheme = AVAILABLE_THEMES[nextIndex];
+      
       localStorage.setItem('hekki_theme', newTheme);
       _applyTheme(newTheme, btn);
 

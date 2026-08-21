@@ -43,7 +43,7 @@
 }
 
 .settings-select {
-  border: none !important;
+  border: 1px solid var(--border) !important;
   outline: none !important;
   box-shadow: none !important;
   background: var(--input-bg);
@@ -82,7 +82,7 @@
 }
 
 .settings-input {
-  border: none !important;
+  border: 1px solid var(--border) !important;
   outline: none !important;
   box-shadow: none !important;
   background: var(--input-bg);
@@ -108,7 +108,7 @@
 .settings-textarea {
   width: 100%;
   height: 90px;
-  border: none !important;
+  border: 1px solid var(--border) !important;
   outline: none !important;
   box-shadow: none !important;
   background: var(--input-bg);

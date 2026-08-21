@@ -156,6 +156,7 @@ export function enhanceLinks(container) {
   links.forEach((a) => {
     const href = a.getAttribute('href') || '';
     if (!href) return;
+    if (a.closest('.map-canvas-card') || a.classList.contains('no-chat-link-icon')) return;
     const isExternal = /^https?:\/\//i.test(href) || /^www\./i.test(href);
     const isFile = /^file:\/\/\//i.test(href);
     if (isExternal || isFile) {
@@ -284,3 +285,9 @@ export function enhanceAudioPlayers(container) {
     parent.replaceChild(frag, textNode);
   });
 }
+
+export { enhanceTranslationCards } from './translation_card.js';
+export { enhanceVoiceSummaryCards } from './voice_summary_card.js';
+export { enhanceMapCanvasCards } from './map_canvas_card.js';
+
+

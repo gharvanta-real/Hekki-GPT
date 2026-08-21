@@ -135,6 +135,9 @@ app.include_router(ws_router)
 from mariano.web.routes.audio_summary_routes import router as audio_summary_router
 app.include_router(audio_summary_router)
 
+from mariano.web.routes.openai_compat import router as openai_compat_router
+app.include_router(openai_compat_router)
+
 
 @app.get("/")
 async def get_index():

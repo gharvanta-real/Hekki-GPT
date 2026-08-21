@@ -1,0 +1,314 @@
+/* ==========================================================================
+   14_MAP_CANVAS.CSS — Full-Bleed Map Canvas Card with Location Info Strip
+   Strict Rules: 18px Rounded, Zero Shadows, Zero Outlines, Clean Tokenized Design.
+   ========================================================================== */
+
+.map-canvas-card {
+  display: flex !important;
+  flex-direction: column !important;
+  position: relative !important;
+  width: 100% !important;
+  border-radius: 18px !important;
+  overflow: hidden !important;
+  margin: 12px 0 !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: var(--input-bg) !important;
+  animation: fadeIn 0.2s ease-out;
+}
+
+/* Map Viewport Area (+10% Height) */
+.map-viewport-wrapper {
+  position: relative !important;
+  width: 100% !important;
+  height: 288px !important;
+  overflow: hidden !important;
+  border-radius: 18px 18px 0 0 !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: #121214 !important;
+}
+
+:root[data-theme="light"] .map-viewport-wrapper {
+  background: #f8fafc !important;
+}
+
+.map-canvas-viewport {
+  width: 100% !important;
+  height: 100% !important;
+  background: #121214 !important;
+  position: relative !important;
+  z-index: 1 !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+:root[data-theme="light"] .map-canvas-viewport {
+  background: #f8fafc !important;
+}
+
+/* Leaflet Container & Tile Seam Anti-Artifact Rules */
+.leaflet-container {
+  background: #121214 !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+:root[data-theme="light"] .leaflet-container {
+  background: #f8fafc !important;
+}
+
+.leaflet-tile {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.leaflet-tile-container {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.leaflet-tile-pane {
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
+}
+
+/* Floating Sleek Minimal Location Tag (Top-Left) */
+.map-floating-tag {
+  position: absolute !important;
+  top: 12px !important;
+  left: 12px !important;
+  z-index: 1000 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  padding: 5px 12px !important;
+  border-radius: var(--radius-pill, 9999px) !important;
+  background: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  opacity: 0.94;
+  pointer-events: auto;
+}
+
+.map-floating-tag svg {
+  color: var(--text-primary);
+  flex-shrink: 0;
+  border: none !important;
+}
+
+.map-floating-title {
+  max-width: 260px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Floating Sleek Directions Pill Button (Bottom-Right) */
+.map-floating-directions-btn,
+.map-floating-directions-btn:hover,
+.map-floating-directions-btn:visited,
+.map-floating-directions-btn * {
+  text-decoration: none !important;
+}
+
+.map-floating-directions-btn {
+  position: absolute !important;
+  bottom: 12px !important;
+  right: 12px !important;
+  z-index: 1000 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  padding: 6px 14px !important;
+  border-radius: var(--radius-pill, 9999px) !important;
+  background: var(--btn-primary-bg) !important;
+  color: var(--btn-primary-text) !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  text-decoration: none !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  cursor: pointer;
+  opacity: 0.96;
+  transition: opacity 0.15s ease, transform 0.1s ease;
+  pointer-events: auto;
+}
+
+.map-floating-directions-btn:hover {
+  opacity: 1;
+  transform: translateY(-1px);
+}
+
+/* Location Status Info Strip Underneath */
+.map-location-info-strip {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 10px !important;
+  padding: 10px 14px !important;
+  background: var(--input-bg) !important;
+  border-radius: 0 0 18px 18px !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.map-info-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  overflow: hidden;
+}
+
+.map-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px;
+  border-radius: var(--radius-pill, 9999px);
+  font-size: 11.5px;
+  font-weight: 500 !important;
+  flex-shrink: 0;
+  border: none !important;
+}
+
+.map-status-pill.status-open {
+  background: rgba(22, 163, 74, 0.12);
+  color: #16a34a;
+}
+
+.map-status-pill.status-open .status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #16a34a;
+}
+
+.map-status-pill.status-closed {
+  background: rgba(220, 38, 38, 0.12);
+  color: #dc2626;
+}
+
+.map-status-pill.status-closed .status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #dc2626;
+}
+
+.map-info-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow: hidden;
+  color: var(--text-2);
+  font-size: 12px;
+}
+
+.map-info-hours {
+  font-weight: 400 !important;
+  flex-shrink: 0;
+}
+
+.map-info-divider {
+  color: var(--text-3);
+  opacity: 0.6;
+}
+
+.map-info-addr {
+  color: var(--text-3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 320px;
+}
+
+.map-info-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 500 !important;
+  color: var(--text-primary);
+  flex-shrink: 0;
+  padding: 2px 7px;
+  border-radius: var(--radius-pill, 9999px);
+  background: var(--hover);
+  border: none !important;
+}
+
+/* Custom Animated Radar Pulse Pin Marker (Monochromatic) */
+.custom-map-radar-pin {
+  background: transparent !important;
+  border: none !important;
+}
+
+.map-pin-beacon {
+  position: relative;
+  width: 24px;
+  height: 24px;
+}
+
+.map-pin-core {
+  position: absolute;
+  top: 7px;
+  left: 7px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--text-primary) !important;
+  border: 2px solid var(--bg-card);
+  z-index: 2;
+}
+
+.map-pin-pulse {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--text-primary) !important;
+  opacity: 0.35;
+  animation: mapPulse 1.8s infinite ease-out;
+  z-index: 1;
+}
+
+@keyframes mapPulse {
+  0% { transform: scale(0.3); opacity: 0.8; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+/* Leaflet UI Overrides (Flat Modern 0-Shadows) */
+.leaflet-popup-content-wrapper {
+  background: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+  border-radius: 10px !important;
+  box-shadow: none !important;
+  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.1)) !important;
+  padding: 2px !important;
+}
+
+.leaflet-popup-tip {
+  background: var(--bg-card) !important;
+}
+
+.map-popup-card strong {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-primary);
+}

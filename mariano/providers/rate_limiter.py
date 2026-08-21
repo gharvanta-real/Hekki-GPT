@@ -15,10 +15,11 @@ Usage:
     from mariano.providers.rate_limiter import PersistentRateLimiter
 
     limiter = PersistentRateLimiter.get_instance()
-    allowed, reason = await limiter.check_and_record("openrouter", rpm=18, rpd=180)
+    allowed, reason = await limiter.check_and_record("gemini-3.5-flash-lite", rpm=15, rpd=500)
     if not allowed:
         return {"text": f"⏳ Rate limit reached: {reason}", "tool_calls": []}
 """
+
 from __future__ import annotations
 
 import asyncio
@@ -116,7 +117,8 @@ class PersistentRateLimiter:
         Check if a request is allowed under rate limits, then record it.
 
         Args:
-            key:  Unique identifier string (e.g. 'openrouter', 'gemini_fast')
+            key:  Unique identifier string (e.g. 'gemini_fast', 'gemini_thinking')
+
             rpm:  Max requests per minute (already buffered safe value)
             rpd:  Max requests per day    (already buffered safe value)
 

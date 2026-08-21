@@ -44,6 +44,7 @@ CORE_SKILL_MODULES = [
     "mariano.skills.core_skills.expert_debate.skill",
     "mariano.skills.core_skills.safe_recycler.skill",
     "mariano.skills.core_skills.audio_summary.skill",
+    "mariano.skills.core_skills.skill_creator.skill",
 ]
 
 
@@ -89,6 +90,18 @@ class SkillDiscovery:
                     except Exception as exc:
                         log.error("discovery.evolved_skill_load_failed", skill=skill_dir.name, error=str(exc))
                         failed.append(f"evolved:{skill_dir.name}")
+
+        # User-created dynamic skills
+        user_skills_dir = Path(__file__).resolve().parent.parent / "user_skills"
+        if user_skills_dir.exists() and user_skills_dir.is_dir():
+            for u_dir in user_skills_dir.iterdir():
+                if u_dir.is_dir() and (u_dir / "skill.py").exists():
+                    try:
+                        ok = await self._loader.load_from_path(u_dir)
+                        (loaded if ok else failed).append(f"user:{u_dir.name}")
+                    except Exception as exc:
+                        log.error("discovery.user_skill_load_failed", skill=u_dir.name, error=str(exc))
+                        failed.append(f"user:{u_dir.name}")
 
         log.info(
             "discovery.complete",

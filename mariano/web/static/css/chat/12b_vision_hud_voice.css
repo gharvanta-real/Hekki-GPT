@@ -96,11 +96,11 @@ body[data-theme="oled"] .vision-hud-input-capsule {
   box-sizing: border-box !important;
   padding: 0 !important;
   border-radius: 50% !important;
-  background: #2563eb !important;
+  background: var(--btn-primary-bg) !important;
   border: none !important;
   outline: none !important;
   box-shadow: none !important;
-  color: #ffffff !important;
+  color: var(--btn-primary-text) !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -242,8 +242,8 @@ body.dark .vision-hud-voice-sub-status {
 }
 
 .vision-hud-voice-circle-btn.mic-active {
-  background: rgba(37, 99, 235, 0.15) !important;
-  color: #2563eb !important;
+  background: var(--hover) !important;
+  color: var(--text-primary) !important;
 }
 
 /* SMART PLUS DROPDOWN MENU */

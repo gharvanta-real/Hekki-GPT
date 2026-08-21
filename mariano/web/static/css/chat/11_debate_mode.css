@@ -54,9 +54,9 @@
   align-self: flex-start !important;
   width: fit-content !important;
   gap: 0 !important;
-  font-size: 13.5px !important;
+  font-size: 13px !important;
   line-height: 18px !important;
-  font-weight: 400 !important;
+  font-weight: 500 !important;
   padding: 3px 12px !important;
   border-radius: 9999px !important;
   border: none !important;
@@ -64,8 +64,9 @@
   box-shadow: none !important;
   margin-bottom: 12px !important;
   user-select: none !important;
-  background: #f0f2f5 !important;
-  color: #475569 !important;
+  background: var(--chip-bg, #f0f2f5) !important;
+  color: var(--chip-text, #52525b) !important;
+  transition: background 0.15s ease, color 0.15s ease !important;
 }
 
 .debate-round-label::before,
@@ -74,15 +75,25 @@
   display: none !important;
 }
 
-body:not(.light) .debate-round-label,
-body.dark .debate-round-label {
+body.light .debate-round-label {
+  background: #f0f2f5 !important;
+  color: #475569 !important;
+}
+
+body.dark .debate-round-label,
+body:not(.light):not(.oled):not(.catppuccin) .debate-round-label {
   background: #1e1e22 !important;
   color: #a1a1aa !important;
 }
 
-body.light .debate-round-label {
-  background: #f0f2f5 !important;
-  color: #475569 !important;
+body.oled .debate-round-label {
+  background: #161616 !important;
+  color: #a1a1aa !important;
+}
+
+body.catppuccin .debate-round-label {
+  background: #313244 !important;
+  color: #bac2de !important;
 }
 
 /* ─── Individual Debater Agent Row ───────────────────────────────────────── */
@@ -111,7 +122,7 @@ body.light .debate-round-label {
 .debate-agent-name {
   font-size: 16px !important;
   font-weight: 600 !important;
-  color: #3b82f6 !important;
+  color: var(--text-primary) !important;
   margin-right: 6px !important;
   display: inline !important;
 }
@@ -148,17 +159,25 @@ body.light .debate-round-label {
   left: 0 !important;
   right: 0 !important;
   height: 1px !important;
-  background: rgba(128, 128, 128, 0.15) !important;
+  background: var(--border-subtle, rgba(128, 128, 128, 0.15)) !important;
   z-index: 1 !important;
-}
-
-body:not(.light) .debate-breakline-line,
-body.dark .debate-breakline-line {
-  background: rgba(255, 255, 255, 0.09) !important;
 }
 
 body.light .debate-breakline-line {
   background: rgba(0, 0, 0, 0.08) !important;
+}
+
+body.dark .debate-breakline-line,
+body:not(.light):not(.oled):not(.catppuccin) .debate-breakline-line {
+  background: rgba(255, 255, 255, 0.09) !important;
+}
+
+body.oled .debate-breakline-line {
+  background: rgba(255, 255, 255, 0.12) !important;
+}
+
+body.catppuccin .debate-breakline-line {
+  background: rgba(203, 166, 247, 0.14) !important;
 }
 
 .debate-expand-pill {
@@ -166,49 +185,58 @@ body.light .debate-breakline-line {
   z-index: 2 !important;
   display: inline-flex !important;
   align-items: center !important;
-  gap: 3px !important;
+  gap: 4px !important;
   padding: 2px 10px !important;
   border-radius: 9999px !important;
-  background: #f0f2f5 !important;
+  background: var(--chip-bg, #f0f2f5) !important;
   border: none !important;
   outline: none !important;
-  color: #64748b !important;
+  color: var(--text-3, #64748b) !important;
   font-size: 11px !important;
   line-height: 15px !important;
-  font-weight: 400 !important;
+  font-weight: 500 !important;
   cursor: pointer !important;
   transition: background 0.15s ease, color 0.15s ease !important;
   user-select: none !important;
   box-shadow: none !important;
 }
 
-body:not(.light) .debate-expand-pill,
-body.dark .debate-expand-pill {
-  background: #1e1e22 !important;
-  color: #a1a1aa !important;
-}
-
 body.light .debate-expand-pill {
   background: #f0f2f5 !important;
   color: #64748b !important;
 }
-
-.debate-expand-pill:hover {
+body.light .debate-expand-pill:hover {
   background: #e2e5e9 !important;
   color: #111827 !important;
-  border: none !important;
-  outline: none !important;
 }
 
-body:not(.light) .debate-expand-pill:hover,
-body.dark .debate-expand-pill:hover {
+body.dark .debate-expand-pill,
+body:not(.light):not(.oled):not(.catppuccin) .debate-expand-pill {
+  background: #1e1e22 !important;
+  color: #a1a1aa !important;
+}
+body.dark .debate-expand-pill:hover,
+body:not(.light):not(.oled):not(.catppuccin) .debate-expand-pill:hover {
   background: #2a2a30 !important;
   color: #ffffff !important;
 }
 
-body.light .debate-expand-pill:hover {
-  background: #e2e5e9 !important;
-  color: #111827 !important;
+body.oled .debate-expand-pill {
+  background: #161616 !important;
+  color: #a1a1aa !important;
+}
+body.oled .debate-expand-pill:hover {
+  background: #202024 !important;
+  color: #ffffff !important;
+}
+
+body.catppuccin .debate-expand-pill {
+  background: #313244 !important;
+  color: #bac2de !important;
+}
+body.catppuccin .debate-expand-pill:hover {
+  background: #363a4f !important;
+  color: #cdd6f4 !important;
 }
 
 .debate-expand-pill svg {
@@ -217,6 +245,7 @@ body.light .debate-expand-pill:hover {
   stroke: currentColor !important;
   transition: transform 0.2s ease !important;
 }
+
 
 .debate-expand-pill.expanded svg {
   transform: rotate(180deg) !important;
@@ -253,8 +282,8 @@ body.light .debate-expand-pill:hover {
   width: 16px !important;
   height: 16px !important;
   border: 2px solid transparent !important;
-  border-top-color: #3b82f6 !important;
-  border-right-color: #3b82f6 !important;
+  border-top-color: var(--text-primary) !important;
+  border-right-color: var(--text-primary) !important;
   border-radius: 50% !important;
   animation: debateSpinnerSpin 0.75s linear infinite !important;
   display: inline-block !important;
@@ -294,7 +323,7 @@ body.light .debate-expand-pill:hover {
 
 .debate-canvas-wrap {
   width: 100% !important;
-  background: var(--sidebar-bg, #18181b) !important;
+  background: var(--bg-card, var(--sidebar-bg, #18181b)) !important;
   border: none !important;
   border-radius: 12px !important;
   overflow: hidden !important;
@@ -308,7 +337,7 @@ body.light .debate-expand-pill:hover {
   justify-content: space-between !important;
   padding: 14px 20px !important;
   background: transparent !important;
-  border-bottom: 1px solid var(--border, rgba(255,255,255,0.08)) !important;
+  border-bottom: 1px solid var(--border-subtle, rgba(255,255,255,0.08)) !important;
   font-size: 16px !important;
   font-weight: 400 !important;
   color: var(--text-primary) !important;
@@ -344,16 +373,27 @@ body.light .debate-expand-pill:hover {
   animation: debateShimmerAnim 1.6s infinite ease-in-out !important;
 }
 
-body:not(.light) .debate-shimmer-line,
-body.dark .debate-shimmer-line {
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0.04) 25%, rgba(255, 255, 255, 0.12) 50%, rgba(255, 255, 255, 0.04) 75%) !important;
-  background-size: 200% 100% !important;
-}
-
 body.light .debate-shimmer-line {
   background: linear-gradient(90deg, rgba(0, 0, 0, 0.04) 25%, rgba(0, 0, 0, 0.10) 50%, rgba(0, 0, 0, 0.04) 75%) !important;
   background-size: 200% 100% !important;
 }
+
+body.dark .debate-shimmer-line,
+body:not(.light):not(.oled):not(.catppuccin) .debate-shimmer-line {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.04) 25%, rgba(255, 255, 255, 0.12) 50%, rgba(255, 255, 255, 0.04) 75%) !important;
+  background-size: 200% 100% !important;
+}
+
+body.oled .debate-shimmer-line {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.06) 25%, rgba(255, 255, 255, 0.18) 50%, rgba(255, 255, 255, 0.06) 75%) !important;
+  background-size: 200% 100% !important;
+}
+
+body.catppuccin .debate-shimmer-line {
+  background: linear-gradient(90deg, rgba(203, 166, 247, 0.06) 25%, rgba(203, 166, 247, 0.18) 50%, rgba(203, 166, 247, 0.06) 75%) !important;
+  background-size: 200% 100% !important;
+}
+
 
 @keyframes debateShimmerAnim {
   0%   { background-position: 200% 0; }

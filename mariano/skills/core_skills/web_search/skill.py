@@ -47,7 +47,7 @@ class WebSearchSkill(BaseSkill):
 
         results: list[dict] = []
 
-        async with httpx.AsyncClient(timeout=7, follow_redirects=True, headers=headers) as client:
+        async with httpx.AsyncClient(timeout=12, follow_redirects=True, headers=headers) as client:
             # 1. Primary Provider: Google Live Web Search / News RSS (Fast, High Uptime, Fresh 2026 data)
             try:
                 g_results = await self._search_google_rss(client, q_clean, max_results)
@@ -76,12 +76,13 @@ class WebSearchSkill(BaseSkill):
 
         if not results:
             return SkillResult(
-                success=False,
-                data=None,
-                error=f"No search results found for query: '{q_clean}'"
+                success=True,
+                data=f"No direct search results found for query: '{q_clean}'. Try searching with different keywords or terms.",
+                metadata={"query": q_clean, "count": 0}
             )
 
         return self._format_results(results[:max_results], q_clean)
+
 
     async def _search_google_rss(self, client: httpx.AsyncClient, query: str, max_results: int) -> list[dict]:
         encoded = urllib.parse.quote(query)

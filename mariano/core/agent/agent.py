@@ -22,7 +22,7 @@ log = structlog.get_logger(__name__)
 
 def _get_project_files_summary(proj_dir: Path) -> str:
     """Recursively lists files inside the project directory, skipping git/node_modules/etc."""
-    ignored = {".git", "node_modules", "__pycache__", "venv", ".venv"}
+    ignored = {".git", "node_modules", "__pycache__", "venv", ".venv", "dist", "build", ".next", ".cache"}
     files = []
     try:
         for p in proj_dir.rglob("*"):
@@ -30,7 +30,7 @@ def _get_project_files_summary(proj_dir: Path) -> str:
                 continue
             if p.is_file():
                 files.append(str(p.relative_to(proj_dir)))
-                if len(files) >= 80:
+                if len(files) >= 200:
                     break
     except Exception:
         pass
@@ -129,7 +129,8 @@ class MarianoAgent:
             return
 
         # 7. Context Sliding Window Compression
-        if ctx.message_count >= self._settings.short_term_window:
+        window_size = int(self._settings.dynamic_config.get("short_term_window", self._settings.short_term_window))
+        if ctx.message_count >= window_size:
             yield AgentEvent("thinking", "Context window saturated. Compressing older turns to preserve memory...")
             await ctx.compress_history(self._gemini)
 
@@ -153,7 +154,24 @@ class MarianoAgent:
                 f"Memory Engine: Auto-selected {len(memories)} relevant long-term memories."
             )
 
-        if project and not aider_enabled:
+        # Detect user-specified file/folder paths in user_input (e.g. E:\Office, C:\Users\..., /var/data)
+        path_matches = re.findall(r'([A-Za-z]:\\[^\s*?"<>|]+)', user_input)
+        if path_matches:
+            matched_p = Path(path_matches[0])
+            if matched_p.exists():
+                target_dir = str(matched_p if matched_p.is_dir() else matched_p.parent)
+                ctx.set_active_target_dir(target_dir)
+            else:
+                ctx.set_active_target_dir(path_matches[0])
+
+        if ctx.active_target_dir:
+            prefix_context.append(
+                f"[Active Working Target Directory: {ctx.active_target_dir}]\n"
+                f"NOTE: The user is actively operating on directory '{ctx.active_target_dir}'. "
+                f"All follow-up file operations (e.g. listing, organizing, moving PDFs, creating subdirectories) "
+                f"MUST be performed within '{ctx.active_target_dir}' unless the user explicitly provides a different directory path."
+            )
+        elif project and not aider_enabled:
             if project_path and Path(project_path).is_absolute():
                 proj_dir = Path(project_path)
             else:
@@ -178,17 +196,18 @@ class MarianoAgent:
         ctx.add("user", full_user_input)
 
         # 10. Execute core ReAct loop
-        # Smart step limits: enough for 4-5 autonomous retries, but not infinite.
-        # User wants Hekki to keep trying on its own until task is done or genuinely impossible.
+        # Autonomous step limits: robust runway for multi-step projects, iterative builds, and self-healing.
         reasoning_mode = self._settings.active_reasoning_mode
+        configured_max = int(self._settings.dynamic_config.get("max_steps", self._settings.max_steps or 35))
         if reasoning_mode == "fast":
-            max_steps_limit = 5    # Up to 4 tool calls + final answer
+            max_steps_limit = min(15, configured_max)   # Quick targeted tasks
         elif reasoning_mode == "pro":
-            max_steps_limit = 12   # Up to 10 tool calls — enough for multi-step recon/scrape/download
-        else:  # thinking
-            max_steps_limit = 20   # Up to 18 tool calls — deep autonomous tasks
+            max_steps_limit = min(28, configured_max)   # Multi-file builds, refactors, scraping
+        else:  # thinking / autonomous deep tasks
+            max_steps_limit = configured_max            # Full 35+ step runway
 
-        max_steps_adjusted = self._nm.get_context_limit(max_steps_limit)
+        # Ensure neuromodulator fatigue never starves the agent below a usable floor
+        max_steps_adjusted = max(10, self._nm.get_context_limit(max_steps_limit))
         async for event in run_react_loop(
             agent=self,
             user_input=user_input,
