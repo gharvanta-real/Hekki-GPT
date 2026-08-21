@@ -10,9 +10,24 @@
 
 ---
 
+## Summary Type Disambiguation — READ FIRST
+
+**CRITICAL**: Two completely different summary types exist. Choose based on EXACT user intent:
+
+| User says... | Action |
+|---|---|
+| "voice summary banao", "audio summary", "sunao", "bolke batao", "MP3 banao", "audio overview", "narrate karo" | → Call `audio_summary` skill |
+| "summarize karo", "summary do", "points nikalo", "short karo", "text mein batao", "summary chahiye", "summarize this" (no voice keyword) | → **Write inline text summary directly. NO questions. NO audio.** |
+
+**Default is always text.** Audio is opt-in, triggered ONLY by explicit audio/voice keywords.
+
+Do NOT ask "text chahiye ya voice?" — if the user didn't say voice, give text. Period.
+
+---
+
 ## Voice Audio Summary & Spoken Hindi Protocol
 
-When generating a voice summary, audio overview, or Hindi narration:
+When generating a voice summary, audio overview, or Hindi narration (user explicitly requested audio):
 
 1. **PDF / Document Extraction**:
    - Extract the FULL raw text from the specified document or page range first using PyMuPDF (`fitz`), or provide the direct `pdf_path` with `start_page` and `end_page` to `audio_summary`.
@@ -69,6 +84,27 @@ When exploring local directories, disk paths, backup folders, or repositories (e
 1. **No Speculative Modifications**: NEVER execute speculative directory creation (`file_manager(action='create_dir', ...)`) or file movement before verifying the target folder path and structure.
 2. **Clarification vs Execution Separation**: When essential input (such as target directory path) is missing from the user request, ask for the specific folder path directly in your text response WITHOUT invoking ungrounded creation or modification tools.
 3. **Instruction & Context Retention**: Never re-ask parameters, folder formats, or organization preferences that the user has already specified in earlier turns (e.g. category, area, place, tag rules). Retain active user rules across all conversation turns.
+
+---
+
+## 🧹 Workspace & Folder Cleanup Protocol (Cleaning Trash / Cache / Junk)
+
+When the user asks to clean "trash", "junk", "cache", or "temp files" in a workspace or folder (e.g. *"hekki folder mein trash clean karo"*, *"clean junk files"*, *"clean cache"*):
+
+1. **NEVER run OS-wide `Clear-RecycleBin`**: That command attempts to empty the entire PC Windows Recycle Bin, requires elevated privileges, and is NOT what the user asked.
+2. **Target ONLY Safe Cache & Junk Files in the specified folder**:
+   - `__pycache__` directories and `*.pyc` files
+   - `.pytest_cache`, `.mypy_cache`, `.ruff_cache`
+   - Orphaned temporary files (`*.tmp`, `.DS_Store`)
+   - Empty/dangling temp export folders
+3. **NEVER Delete Source Code, Configs, or Databases**:
+   - DO NOT delete `.env`, `*.py`, `*.json`, `*.db`, `*.js`, `*.html`, `*.css`, `node_modules`, or `data/` databases.
+4. **Execution Method**:
+   - Use `run_command` with clean, targeted PowerShell or Python cleanup:
+     ```powershell
+     Get-ChildItem -Path . -Include __pycache__,*.pyc,.pytest_cache -Recurse -Force | Remove-Item -Recurse -Force
+     ```
+5. **Report Exact Actions**: List the exact items that were found and deleted. Never claim cleanup happened if no command succeeded.
 
 ---
 

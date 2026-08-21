@@ -192,7 +192,16 @@ async def websocket_endpoint(websocket: WebSocket):
             })
         except asyncio.CancelledError:
             log.info("web.query_cancelled")
-            await websocket.send_json({"type": "agent_event", "kind": "error", "data": "Generation stopped by user.", "metadata": {}})
+            # Send `stopped` + `done` so frontend isGenerating is guaranteed to reset
+            # regardless of whether stream had started or not
+            try:
+                await websocket.send_json({"type": "agent_event", "kind": "stopped", "data": "Generation stopped.", "metadata": {}})
+            except Exception:
+                pass
+            try:
+                await websocket.send_json({"type": "agent_event", "kind": "done", "data": "", "metadata": {}})
+            except Exception:
+                pass
         except asyncio.TimeoutError:
             log.error("web.query_timeout")
             await websocket.send_json({"type": "agent_event", "kind": "error", "data": "Request timed out after 5 minutes. Please try again.", "metadata": {}})
@@ -224,7 +233,8 @@ async def websocket_endpoint(websocket: WebSocket):
 
                 if attachments:
                     try:
-                        attach_dir = Path(__file__).resolve().parent.parent.parent / "data" / "workspace" / "attachments"
+                        from mariano.config import get_settings as _get_settings
+                        attach_dir = _get_settings().mariano_data_dir / "workspace" / "attachments"
                         attach_dir.mkdir(parents=True, exist_ok=True)
                         extra_context = []
 
@@ -371,6 +381,18 @@ async def websocket_endpoint(websocket: WebSocket):
                 log.info("web.stop_query_requested")
                 if query_task and not query_task.done():
                     query_task.cancel()
+                    # Give the task up to 0.5s to handle CancelledError and send its own done event.
+                    # If it finishes in time, its own handler already sent done. If not, we send it
+                    # here as a guaranteed fallback so the frontend never stays stuck.
+                    try:
+                        await asyncio.wait_for(asyncio.shield(query_task), timeout=0.5)
+                    except (asyncio.CancelledError, asyncio.TimeoutError, Exception):
+                        pass
+                # Unconditional fallback: ensure frontend receives done
+                try:
+                    await websocket.send_json({"type": "agent_event", "kind": "done", "data": "", "metadata": {}})
+                except Exception:
+                    pass
 
             elif action_type == "voice":
                 b64_audio = payload.get("audio", "")

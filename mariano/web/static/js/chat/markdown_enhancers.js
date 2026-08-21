@@ -197,37 +197,9 @@ export function enhanceStorytellingLayout(container) {
     }
   });
 
-  // 2. Storytelling Meta Tags & Metrics (What happened, Why it matters, Impact, Next)
-  const strongElements = container.querySelectorAll('strong, b');
-  strongElements.forEach(st => {
-    if (st.classList.contains('story-tag-pill')) return;
-    const raw = st.innerText.trim().replace(/:$/, '').toLowerCase();
-    let tagType = null;
-    let icon = '';
+  // 2. Storytelling Meta Tags & Metrics (Keep clean text, NO artificial background chips/pills)
+  // Bold headings remain normal clean bold text without colored chip wraps.
 
-    if (raw.includes('why it matters') || raw.includes('why you should care') || raw.includes('why this matters')) {
-      tagType = 'why';
-      icon = '⚡';
-    } else if (raw.includes('what happened') || raw.includes('what we know')) {
-      tagType = 'what';
-      icon = '📌';
-    } else if (raw.includes('impact') || raw.includes('market impact') || raw.includes('key takeaways')) {
-      tagType = 'impact';
-      icon = '📈';
-    } else if (raw.includes('what happens next') || raw.includes('what to watch') || raw.includes('what\'s next')) {
-      tagType = 'next';
-      icon = '🔮';
-    } else if (raw.includes('tl;dr') || raw.includes('in 10 seconds') || raw.includes('quick take') || raw.includes('key point')) {
-      tagType = 'tldr';
-      icon = '🎯';
-    }
-
-    if (tagType) {
-      st.classList.add('story-tag-pill', `tag-${tagType}`);
-      const cleanLabel = st.innerText.trim().replace(/^[\u{1F300}-\u{1F9FF}\s]+/u, '');
-      st.innerHTML = `<span class="tag-icon">${icon}</span><span>${escapeHtmlLocal(cleanLabel)}</span>`;
-    }
-  });
 
   // 3. Transform Impact Metrics strips with arrows (e.g. 🛢️ Oil ↑ | 📈 Markets ⚠️)
   const paragraphs = container.querySelectorAll('p');

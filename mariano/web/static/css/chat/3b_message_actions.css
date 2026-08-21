@@ -322,74 +322,15 @@ table :not(pre) > code,
   flex-shrink: 0;
 }
 
+/* Clean flat storytelling headers (Zero chips / No badge backgrounds) */
 .story-tag-pill {
-  display: inline-flex !important;
-  align-items: center !important;
-  gap: 5px !important;
-  padding: 2px 8px !important;
-  border-radius: 6px !important;
-  font-size: 12.5px !important;
-  font-weight: 600 !important;
-  line-height: 1.4 !important;
-  vertical-align: middle !important;
-  margin-right: 6px !important;
-  margin-bottom: 3px !important;
+  display: inline !important;
+  background: transparent !important;
+  color: inherit !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
 }
 
-.story-tag-pill .tag-icon {
-  font-size: 12px !important;
-  line-height: 1 !important;
-}
-
-.story-tag-pill.tag-why {
-  background: rgba(245, 158, 11, 0.12) !important;
-  color: #d97706 !important;
-}
-[data-theme="dark"] .story-tag-pill.tag-why,
-body.dark .story-tag-pill.tag-why {
-  background: rgba(251, 191, 36, 0.15) !important;
-  color: #fbbf24 !important;
-}
-
-.story-tag-pill.tag-what {
-  background: var(--hover) !important;
-  color: var(--text-primary) !important;
-}
-[data-theme="dark"] .story-tag-pill.tag-what,
-body.dark .story-tag-pill.tag-what {
-  background: var(--hover) !important;
-  color: var(--text-primary) !important;
-}
-
-.story-tag-pill.tag-impact {
-  background: rgba(16, 185, 129, 0.12) !important;
-  color: #059669 !important;
-}
-[data-theme="dark"] .story-tag-pill.tag-impact,
-body.dark .story-tag-pill.tag-impact {
-  background: rgba(52, 211, 153, 0.15) !important;
-  color: #34d399 !important;
-}
-
-.story-tag-pill.tag-next {
-  background: rgba(139, 92, 246, 0.12) !important;
-  color: #7c3aed !important;
-}
-[data-theme="dark"] .story-tag-pill.tag-next,
-body.dark .story-tag-pill.tag-next {
-  background: rgba(167, 139, 250, 0.15) !important;
-  color: #a78bfa !important;
-}
-
-.story-tag-pill.tag-tldr {
-  background: rgba(6, 182, 212, 0.12) !important;
-  color: #0891b2 !important;
-}
-[data-theme="dark"] .story-tag-pill.tag-tldr,
-body.dark .story-tag-pill.tag-tldr {
-  background: rgba(34, 211, 238, 0.15) !important;
-  color: #22d3ee !important;
-}
 
 /* Impact Metrics Ticker / Strip */
 .msg.ai p.chat-metric-strip {

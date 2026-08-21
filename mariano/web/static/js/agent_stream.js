@@ -292,7 +292,10 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
       }
       const args = e.metadata?.args || {};
       const targetPath = args.TargetFile || args.target_file || args.file_path || args.filePath || args.path || args.file || '';
-      if (targetPath && cid && (e.data === 'write_to_file' || (e.data || '').includes('write'))) {
+      const isWriteOp = e.data === 'write_to_file' || 
+                        (e.data || '').includes('write') || 
+                        ((e.data === 'file_manager' || e.metadata?.tool === 'file_manager') && (args.action === 'write' || args.action === 'create'));
+      if (targetPath && cid && isWriteOp) {
         pushWrittenFile(cid, targetPath);
       }
       if (isVisible) {
@@ -318,6 +321,31 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
     case 'tool_result': {
       const toolRuns = getBuffer(cid)?.toolRuns;
       if (toolRuns) handleToolResult(e, toolRuns);
+      break;
+    }
+
+    case 'stopped': {
+      // Server explicitly confirmed stop — unconditional, immediate UI reset
+      const stopCid = _streamingChatId;
+      setGeneratingState(false, stopCid);
+      _streamingChatId = null;
+      if (isVisible) {
+        col.querySelectorAll('.chat-ai-stream-header, .cad-ai-stream-header').forEach(el => el.remove());
+        finalizeStreamThought();
+        finalizeToolContainer(false);
+      }
+      // Partial content: if buffer has text, finalize it so it's not lost
+      if (stopCid) {
+        const buf = getBuffer(stopCid);
+        if (buf && buf.text && buf.text.trim()) {
+          const domEl = getDomEl(stopCid);
+          if (isVisible && domEl) renderParsedMessage(domEl, buf.text);
+          markDone(stopCid);
+          _finalizeStreamResponse(stopCid);
+        } else if (stopCid) {
+          clearBuffer(stopCid);
+        }
+      }
       break;
     }
 

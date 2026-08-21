@@ -1,16 +1,18 @@
 /* === MARIANO MAIN ENTRY POINT === */
 
-import { initWaveCanvas } from '/static/wave_canvas.js';
+import { restoreFont } from '/static/js/components/font_manager.js';
+import { bindGlobalShortcuts } from '/static/js/components/global_shortcuts.js';
+import { setGreeting } from '/static/js/components/greeting_manager.js';
+import { HudLogger } from '/static/js/components/hud_logger.js';
+
 import { VoiceProcessor } from '/static/voice_processor.js';
 import { TabManager }     from '/static/tab_manager.js';
-
 import { bindInputs, clearInputs, setGeneratingState, appendMsg, scrollChat, ChatSessionManager } from '/static/js/chat.js';
 import { initSettings }    from '/static/js/settings.js';
 import { bindNavigation }  from '/static/js/nav.js';
 import { router, initRouterState } from '/static/js/router.js';
 import { SearchModal }     from '/static/js/components/search_modal.js';
 import { SkillsPage }      from '/static/js/pages/skills_page.js?v=205';
-import { handleChatAgentEvent } from '/static/js/agent_stream.js';
 import { sounds } from '/static/js/sound_effects.js';
 
 // Modular UI component imports
@@ -20,19 +22,15 @@ import { initAttachDropdowns } from '/static/js/components/attach_dropdown.js';
 import { bindSidebarToggle, bindTitlebarActions, bindThemeToggle, bindImageLightbox } from '/static/js/components/layout_controls.js';
 import { bindVoice, resetVoiceUIInstance } from '/static/js/components/voice_controller.js';
 import { socket, setupSocketEvents, send } from '/static/js/components/socket_manager.js?v=201';
-// Debate playground  isolated module
+
+// Debate playground & Coder IDE page
 import { initDebatePage, handleDebateEvent } from '/static/js/debate/debate_page.js?v=136';
-// Coder IDE page
 import { initCoderPage, teardownCoderPage } from '/static/js/pages/coder_page.js';
-// Universal Library page (Images, Voice, PDFs, Data)
 import { LibraryPage } from '/static/js/pages/library_page.js';
-// Interactive Live Canvas Engine (Claude Canvas style)
 import { LiveCanvasEngine } from '/static/js/components/live_canvas.js';
 import { SlashMenuManager } from '/static/js/components/slash_menu.js';
 import { ChatMinimapManager } from '/static/js/components/chat_minimap.js';
-// Audio Overview & Lossless Hindi Chapter Voice Engine
 import { audioOverviewManager } from '/static/js/chat/audio_overview.js';
-// Global Persistent Audio Player (Plays uninterrupted across all pages)
 import { globalAudioPlayer } from '/static/js/audio_player.js';
 
 window.updateModelPills = updateModelPills;
@@ -40,8 +38,10 @@ window.showToast = showToast;
 window.handleDebateEvent = handleDebateEvent;
 window.ChatMinimapManager = ChatMinimapManager;
 window.audioOverviewManager = audioOverviewManager;
+window.isGenerating = false;
+window.setGeneratingState = setGeneratingState;
 
-/* === PWA Service Worker & Installability Engine === */
+/* === PWA Service Worker Engine === */
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js', { scope: '/' })
@@ -49,73 +49,6 @@ if ('serviceWorker' in navigator) {
       .catch(err => console.error('[PWA] ServiceWorker failed:', err));
   });
 }
-
-// ── Boot-time Font Restore (runs instantly, zero flash) ───────────────────
-(function _restoreFont() {
-  const FONT_MAP = {
-    'google-sans': {
-      font:  '"Google Sans", "Google Sans Flex", "Open Sans", sans-serif',
-      serif: '"Google Sans", "Google Sans Flex", sans-serif',
-      ai:    '"Google Sans", "Google Sans Flex", sans-serif'
-    },
-    'segoe-ui': {
-      font:  '"Segoe WPC", "Segoe UI", -apple-system-body, ui-sans-serif, "system-ui", sans-serif',
-      serif: '"Segoe WPC", "Segoe UI", sans-serif',
-      ai:    '"Segoe WPC", "Segoe UI", sans-serif'
-    },
-    'inter': {
-      font:  '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
-      serif: '"Inter", sans-serif',
-      ai:    '"Inter", sans-serif'
-    },
-    'plus-jakarta': {
-      font:  '"Plus Jakarta Sans", "Inter", sans-serif',
-      serif: '"Plus Jakarta Sans", sans-serif',
-      ai:    '"Plus Jakarta Sans", sans-serif'
-    },
-    'outfit': {
-      font:  '"Outfit", "Plus Jakarta Sans", sans-serif',
-      serif: '"Outfit", sans-serif',
-      ai:    '"Outfit", sans-serif'
-    },
-    'open-sans': {
-      font:  '"Open Sans", "Google Sans", sans-serif',
-      serif: '"Open Sans", "Google Sans", sans-serif',
-      ai:    '"Open Sans", "Google Sans", sans-serif'
-    },
-    'roboto': {
-      font:  '"Roboto", "Open Sans", sans-serif',
-      serif: '"Roboto", sans-serif',
-      ai:    '"Roboto", sans-serif'
-    },
-    'system': {
-      font:  '-apple-system-body, ui-sans-serif, -apple-system, "system-ui", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, "sans-serif", "Segoe UI Emoji", "Segoe UI Symbol"',
-      serif: '-apple-system-body, ui-sans-serif, -apple-system, "system-ui", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, "sans-serif", "Segoe UI Emoji", "Segoe UI Symbol"',
-      ai:    '-apple-system-body, ui-sans-serif, -apple-system, "system-ui", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, "sans-serif", "Segoe UI Emoji", "Segoe UI Symbol"'
-    },
-    'jetbrains-mono': {
-      font:  '"JetBrains Mono", "Fira Code", ui-monospace, monospace',
-      serif: '"JetBrains Mono", monospace',
-      ai:    '"JetBrains Mono", monospace'
-    },
-    'fira-code': {
-      font:  '"Fira Code", "JetBrains Mono", ui-monospace, monospace',
-      serif: '"Fira Code", monospace',
-      ai:    '"Fira Code", monospace'
-    },
-    'anthropic': {
-      font:  '"anthropic-sans", system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
-      serif: '"anthropic-serif", "Anthropic Serif Fallback Georgia", Georgia, "Times New Roman", serif',
-      ai:    '"anthropic-serif", "Anthropic Serif Fallback Georgia", Georgia, "Times New Roman", serif'
-    }
-  };
-  const key = localStorage.getItem('hekki_font') || 'segoe-ui';
-  const cfg = FONT_MAP[key] || FONT_MAP['segoe-ui'];
-  document.documentElement.style.setProperty('--font', cfg.font);
-  document.documentElement.style.setProperty('--font-sans', cfg.font);
-  document.documentElement.style.setProperty('--font-serif', cfg.serif);
-  document.documentElement.style.setProperty('--font-ai', cfg.ai);
-})();
 
 let deferredPwaPrompt = null;
 window.addEventListener('beforeinstallprompt', (e) => {
@@ -125,305 +58,48 @@ window.addEventListener('beforeinstallprompt', (e) => {
   if (pwaBtn) pwaBtn.style.display = 'flex';
 });
 
-document.addEventListener('DOMContentLoaded', () => {
-  const pwaBtn = document.getElementById('btn-pwa-install');
-  if (pwaBtn) {
-    pwaBtn.addEventListener('click', async () => {
-      if (deferredPwaPrompt) {
-        deferredPwaPrompt.prompt();
-        const { outcome } = await deferredPwaPrompt.userChoice;
-        console.log('[PWA] User response:', outcome);
-        deferredPwaPrompt = null;
-      } else {
-        showToast('Install App', 'To install HEKKI on your device, use your browser menu (...) and select "Install App" or "Add to Home Screen".', 3500);
-      }
-    });
-  }
-
-  // Double-enforce font persistence
-  const FONT_MAP_BOOT = {
-    'google-sans': {
-      font:  '"Google Sans", "Google Sans Flex", "Open Sans", sans-serif',
-      serif: '"Google Sans", "Google Sans Flex", sans-serif',
-      ai:    '"Google Sans", "Google Sans Flex", sans-serif'
-    },
-    'segoe-ui': {
-      font:  '"Segoe WPC", "Segoe UI", -apple-system-body, ui-sans-serif, "system-ui", sans-serif',
-      serif: '"Segoe WPC", "Segoe UI", sans-serif',
-      ai:    '"Segoe WPC", "Segoe UI", sans-serif'
-    },
-    'inter': {
-      font:  '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
-      serif: '"Inter", sans-serif',
-      ai:    '"Inter", sans-serif'
-    },
-    'plus-jakarta': {
-      font:  '"Plus Jakarta Sans", "Inter", sans-serif',
-      serif: '"Plus Jakarta Sans", sans-serif',
-      ai:    '"Plus Jakarta Sans", sans-serif'
-    },
-    'outfit': {
-      font:  '"Outfit", "Plus Jakarta Sans", sans-serif',
-      serif: '"Outfit", sans-serif',
-      ai:    '"Outfit", sans-serif'
-    },
-    'open-sans': {
-      font:  '"Open Sans", "Google Sans", sans-serif',
-      serif: '"Open Sans", "Google Sans", sans-serif',
-      ai:    '"Open Sans", "Google Sans", sans-serif'
-    },
-    'roboto': {
-      font:  '"Roboto", "Open Sans", sans-serif',
-      serif: '"Roboto", sans-serif',
-      ai:    '"Roboto", sans-serif'
-    },
-    'system': {
-      font:  '-apple-system-body, ui-sans-serif, -apple-system, "system-ui", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, "sans-serif", "Segoe UI Emoji", "Segoe UI Symbol"',
-      serif: '-apple-system-body, ui-sans-serif, -apple-system, "system-ui", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, "sans-serif", "Segoe UI Emoji", "Segoe UI Symbol"',
-      ai:    '-apple-system-body, ui-sans-serif, -apple-system, "system-ui", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, "sans-serif", "Segoe UI Emoji", "Segoe UI Symbol"'
-    },
-    'jetbrains-mono': {
-      font:  '"JetBrains Mono", "Fira Code", ui-monospace, monospace',
-      serif: '"JetBrains Mono", monospace',
-      ai:    '"JetBrains Mono", monospace'
-    },
-    'fira-code': {
-      font:  '"Fira Code", "JetBrains Mono", ui-monospace, monospace',
-      serif: '"Fira Code", monospace',
-      ai:    '"Fira Code", monospace'
-    },
-    'anthropic': {
-      font:  '"anthropic-sans", system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
-      serif: '"anthropic-serif", "Anthropic Serif Fallback Georgia", Georgia, "Times New Roman", serif',
-      ai:    '"anthropic-serif", "Anthropic Serif Fallback Georgia", Georgia, "Times New Roman", serif'
-    }
-  };
-  const _fk   = localStorage.getItem('hekki_font') || 'segoe-ui';
-  const _cfg  = FONT_MAP_BOOT[_fk] || FONT_MAP_BOOT['segoe-ui'];
-  document.documentElement.style.setProperty('--font', _cfg.font);
-  document.documentElement.style.setProperty('--font-sans', _cfg.font);
-  document.documentElement.style.setProperty('--font-serif', _cfg.serif);
-  document.documentElement.style.setProperty('--font-ai', _cfg.ai);
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//  GLOBALS 
+// State
 let voice  = null;
 let tabs   = null;
-let stopWave = null;
-
-// Page instances
-let agentPage       = null;
-let skillsPage      = null;
-let changelogPage   = null;
-let projectsSidebar = null;
-
-// Wrap primitive boolean in an object to share mutable state across ES6 modules
 const inConversationState = { val: false };
 window.inConversationState = inConversationState;
 
-// Helper
 const $ = id => document.getElementById(id);
 
-const hasAnyPastProject = () => {
-  const activeProj = localStorage.getItem('mariano_active_project');
-  if (activeProj) return true;
+function log(text, type = '') {
+  console.log(`[${type || 'log'}] ${text}`);
+}
 
-  try {
-    const chats = JSON.parse(localStorage.getItem('mariano_chats') || '[]');
-    if (chats.some(c => c.project)) return true;
-  } catch (e) {}
-
-  try {
-    const sessions = JSON.parse(localStorage.getItem('hekki_agent_sessions') || '[]');
-    if (sessions.some(s => s.project)) return true;
-  } catch (e) {}
-
-  return false;
-};
-
-window.HudLogger = {
-  logs: [
-    { type: 'info', text: 'System initialized.', timestamp: new Date().toLocaleTimeString() }
-  ],
-  append(type, text) {
-    const timestamp = new Date().toLocaleTimeString();
-    const logEntry = { type, text, timestamp };
-    this.logs.push(logEntry);
-    
-    // If the shadow DOM for the tab is active, append it in real time
-    const tab = window.tabs?.map.get('tab-process-hud');
-    if (tab) {
-      const shadow = tab.view.firstChild?.shadowRoot;
-      const container = shadow?.getElementById('hud-log-container');
-      if (container) {
-        const line = document.createElement('div');
-        line.className = 'log-line';
-        line.innerHTML = `
-          <span class="log-time">[${timestamp}]</span>
-          <span class="log-text ${type}">${text}</span>
-        `;
-        container.appendChild(line);
-        
-        // Auto-scroll to bottom
-        const view = tab.view.firstChild;
-        if (view) view.scrollTop = view.scrollHeight;
-      }
-    }
-  },
-  show() {
-    if (!window.tabs) return;
-    
-    const key = 'tab-process-hud';
-    const appPane = document.getElementById('app-pane');
-    const resizer = document.getElementById('app-pane-resizer');
-    
-    if (!window.tabs.map.has(key)) {
-      const html = `
-        <div style="padding: 16px; min-height: 100%; box-sizing: border-box; background: var(--bg); color: var(--text);">
-          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border);">
-            <span style="font-size: 13.5px; font-weight: 600; color: var(--text);">Process Execution Logs</span>
-            <button id="btn-copy-hud-logs" style="background: var(--sidebar-bg); color: var(--text); border: none; padding: 4px 10px; border-radius: 6px; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 4px;">Copy Logs</button>
-          </div>
-          <div id="hud-log-container" style="display: flex; flex-direction: column; gap: 6px; font-family: monospace; font-size: 13.5px;"></div>
-        </div>
-      `;
-      const css = `
-        :host {
-          background: var(--bg) !important;
-        }
-        .log-line {
-          display: flex;
-          gap: 8px;
-          line-height: 1.5;
-          font-family: monospace;
-        }
-        .log-time {
-          color: var(--text-3);
-          flex-shrink: 0;
-        }
-        .log-text {
-          word-break: break-all;
-          color: var(--text);
-        }
-        .log-text.exec { color: var(--text-primary); }
-        .log-text.success { color: var(--green, #16a34a); }
-        .log-text.failed { color: #dc2626; }
-        .log-text.info { color: var(--text-3); }
-
-        :host-context(body.dark) .log-text.exec { color: var(--text-primary); }
-        :host-context(body.dark) .log-text.success { color: #34d399; }
-        :host-context(body.dark) .log-text.failed { color: #f87171; }
-      `;
-      window.tabs.createTab('process-hud', 'Process HUD', html, css, '', 'terminal');
-      
-      // Populate with existing logs
-      const tab = window.tabs.map.get(key);
-      const shadow = tab?.view.firstChild?.shadowRoot;
-      const container = shadow?.getElementById('hud-log-container');
-      const copyBtn = shadow?.getElementById('btn-copy-hud-logs');
-
-      if (copyBtn) {
-        copyBtn.addEventListener('click', () => {
-          const logText = window.HudLogger.logs.map(l => `[${l.timestamp}] [${l.type.toUpperCase()}] ${l.text}`).join('\n');
-          navigator.clipboard.writeText(logText).then(() => {
-            if (window.showToast) window.showToast('Logs Copied', 'All execution logs copied to clipboard', 2500);
-          });
-        });
-      }
-
-      if (container) {
-        this.logs.forEach(log => {
-          const line = document.createElement('div');
-          line.className = 'log-line';
-          line.innerHTML = `
-            <span class="log-time">[${log.timestamp}]</span>
-            <span class="log-text ${log.type}">${log.text}</span>
-          `;
-          container.appendChild(line);
-        });
-        const view = tab.view.firstChild;
-        if (view) view.scrollTop = view.scrollHeight;
-      }
-    } else {
-      if (appPane && appPane.classList.contains('hidden-pane')) {
-        window.tabs.switchTo(key);
-      } else if (window.tabs.active === key) {
-        appPane?.classList.add('hidden-pane');
-        resizer?.classList.add('hidden-pane');
-      } else {
-        window.tabs.switchTo(key);
-      }
-    }
+function enterConversation() {
+  inConversationState.val = true;
+  const home = document.getElementById('home-screen');
+  if (home) {
+    home.style.display = 'none';
+    home.classList.add('hidden');
   }
-};
+  document.getElementById('bottom-input-bar')?.classList.remove('hidden');
+  document.getElementById('chat-input-conv')?.focus();
+}
+window.enterConversation = enterConversation;
+window.enterConversationState = enterConversation;
 
-//  BOOT 
 function boot() {
   console.log("Booting MARIANO dashboard...");
-  window._router = router;   // expose for coder_page.js and other modules
+  window._router = router;
   initDebatePage();
   initCoderPage();
-  // Register coder page teardown so navigating away always cleans up DOM
   router.onLeave('coder', teardownCoderPage);
-  // Enforce initial page state = chat (clears any coder DOM/breadcrumb written at boot)
   initRouterState();
+
   if (window.lucide) {
-    console.log("Lucide detected, compiling icons.");
     lucide.createIcons();
-  } else {
-    console.warn("Lucide library not found on load!");
   }
 
   voice = new VoiceProcessor();
   tabs  = new TabManager('pane-tabs', 'pane-content', log);
   window.tabs = tabs;
 
-  // Initialize drag resizer for right panel
+  // Resizer drag handler
   const resizer = $('app-pane-resizer');
   const appPane = $('app-pane');
   if (resizer && appPane) {
@@ -439,9 +115,7 @@ function boot() {
     document.addEventListener('mousemove', (e) => {
       if (!isDragging) return;
       const width = window.innerWidth - e.clientX;
-      const minWidth = 280;
-      const maxWidth = window.innerWidth * 0.8;
-      if (width >= minWidth && width <= maxWidth) {
+      if (width >= 280 && width <= window.innerWidth * 0.8) {
         appPane.style.width = `${width}px`;
       }
     });
@@ -462,30 +136,18 @@ function boot() {
   bindImageLightbox();
   bindVoice(voice, socket, inConversationState, log);
 
-  // Bind inputs and send queries through WS
   bindInputs((text) => {
     if (window.sounds) window.sounds.playSend();
     send(text, enterConversation, log);
   });
   window.clearInputs = clearInputs;
 
-  bindShortcuts();
+  bindGlobalShortcuts();
   initSettings(setGreeting);
-  // Register model pill reactive refresh (auto-updates on every navigation, no hard refresh needed)
   registerModelPillRefresh();
   bindModelPills();
-  window.updateModelPills = updateModelPills;
 
-  // Global router refresh hook — re-syncs all input bar UI state on every page switch
   router.onRefresh((page) => {
-    // Re-sync bottom input bar vs home screen visibility
-    const homeScreen = document.getElementById('home-screen');
-    const bottomBar = document.getElementById('bottom-input-bar');
-    if (page === 'chat') {
-      // Let inConversationState decide which input to show — just re-trigger Lucide icons
-      if (window.lucide) lucide.createIcons();
-    }
-    // Re-init Lucide icons in case any were injected dynamically
     if (window.lucide) lucide.createIcons();
   });
 
@@ -500,25 +162,17 @@ function boot() {
   new SearchModal(ChatSessionManager);
   window.slashMenu = new SlashMenuManager((text) => send(text, enterConversation, log));
 
-  // Initialize Chat Minimap
   window.chatMinimap = new ChatMinimapManager({ containerSelector: '#chat-log', paneSelector: '#chat-pane', isDebate: false });
-
   router.onRefresh((page) => {
-    if (page === 'chat' && window.chatMinimap) {
-      window.chatMinimap.refresh();
-    }
+    if (page === 'chat' && window.chatMinimap) window.chatMinimap.refresh();
   });
 
-
-  // Setup WS events routing and logs reconnect loops
   setupSocketEvents(
     enterConversation,
     log,
     (p) => {
       if (!p.text) return;
-      
       if (resetVoiceUIInstance) resetVoiceUIInstance();
-      
       const debateInput = document.getElementById('debate-input');
       const agentInput = document.getElementById('agent-task-input');
       if (router.currentRoute === 'debate' && debateInput) {
@@ -539,28 +193,16 @@ function boot() {
     }
   );
 
-
-
-
-
-  //  Register router page callbacks 
-  skillsPage      = new SkillsPage(showToast);
+  const skillsPage = new SkillsPage(showToast);
   window.router = router;
-
-
-
-
-
   router.onNavigate('skills', () => {
     const pane = $('skills-pane');
     if (pane) skillsPage.mount(pane);
   });
 
-  // Global Persistent Audio Player
   globalAudioPlayer.init();
   window.globalAudioPlayer = globalAudioPlayer;
 
-  // Universal Library (Images, Voice, PDFs, Data)
   const libraryPage = new LibraryPage(showToast);
   window.libraryPageInstance = libraryPage;
   router.onNavigate('library', () => {
@@ -573,35 +215,20 @@ function boot() {
   });
 
   router.onNavigate('chat', () => {
-    // NOTE: ensureNormalChatActive() intentionally NOT called here.
-    // It was causing blank screens by redirecting away from valid playground/debate
-    // sessions every time the user switched back to the chat page.
-    // Boot-time restore handles the initial state; runtime navigation must be non-destructive.
-
     document.querySelectorAll('.agent-welcome-wrapper').forEach(el => el.remove());
-
-    // During an active debate, input bar must stay visible and home screen hidden
-    // regardless of inConversationState — debate_mode manages these directly.
-    if (window._debateRunning) {
-      $('home-screen')?.classList.add('hidden');
-      $('bottom-input-bar')?.classList.remove('hidden');
-    } else if (inConversationState.val) {
+    if (window._debateRunning || inConversationState.val) {
       $('home-screen')?.classList.add('hidden');
       $('bottom-input-bar')?.classList.remove('hidden');
     } else {
       $('home-screen')?.classList.remove('hidden');
       $('bottom-input-bar')?.classList.add('hidden');
     }
-    // Only refresh the dynamic chat session list — never rebuild sidebar HTML,
-    // which would destroy all event listeners (theme, toggle, settings, etc.)
     ChatSessionManager.renderChatsList();
   });
 
-  //  Bind dock navigation buttons 
   bindNavigation(tabs, showToast, inConversationState);
   ChatSessionManager.renderChatsList();
 
-  // Auto-resize textareas
   ['chat-input', 'chat-input-conv'].forEach(id => {
     const el = $(id);
     if (!el) return;
@@ -613,18 +240,12 @@ function boot() {
     });
   });
 
-  // Restore active chat if stored in localStorage
-  // CRITICAL: Must check isPlayground flag before deciding how to restore.
-  // Debate/Playground chats must NEVER be loaded as normal chats — they belong
-  // in the Debates & Playgrounds section and must restore through debate page.
   const storedId = localStorage.getItem('hekki_active_chat_id') || localStorage.getItem('mariano_active_chat_id');
   if (storedId) {
     const chats = ChatSessionManager.getChats();
     const activeChat = chats.find(c => c.id === storedId);
     if (activeChat) {
       if (activeChat.isPlayground && activeChat.messages && activeChat.messages.length === 0) {
-        // Empty playground chat (stale/incomplete debate): reset to home screen.
-        // The debate session is still accessible from the Playground sidebar section.
         ChatSessionManager.setActiveChatId(null);
         localStorage.removeItem('hekki_active_chat_id');
         localStorage.removeItem('mariano_active_chat_id');
@@ -633,7 +254,6 @@ function boot() {
         inConversationState.val = false;
         ChatSessionManager.renderChatsList();
       } else {
-        // Normal chat OR playground chat with messages (completed debate): restore it.
         ChatSessionManager.loadChat(storedId);
         if (!activeChat.isPlayground) enterConversation();
       }
@@ -656,7 +276,6 @@ function boot() {
     if (isFileLink) {
       e.preventDefault();
       e.stopPropagation();
-      
       let targetPath = link.dataset.filepath || '';
       if (!targetPath) {
         if (href.includes('path=')) {
@@ -669,7 +288,6 @@ function boot() {
       const fileName = targetPath.split('/').pop() || 'File';
       const ext = fileName.includes('.') ? fileName.split('.').pop().toLowerCase() : 'text';
 
-      // Images open in lightbox
       if (['png', 'jpg', 'jpeg', 'webp', 'gif', 'svg'].includes(ext)) {
         if (window.openImageLightbox) {
           window.openImageLightbox(`/api/workspace/render?path=${encodeURIComponent(targetPath)}`);
@@ -677,7 +295,6 @@ function boot() {
         }
       }
 
-      // Open in Live Canvas
       try {
         const res = await fetch(`/api/workspace/render?path=${encodeURIComponent(targetPath)}`);
         if (res.ok) {
@@ -696,19 +313,17 @@ function boot() {
         console.warn('Live Canvas file open error:', err);
       }
 
-      // Fallback: Copy path
       navigator.clipboard.writeText(targetPath).then(() => {
         if (window.showToast) window.showToast('File Path Copied', targetPath, 3000);
       });
     }
   });
 
-  // Fade out loader and fade in shell
   setTimeout(() => {
     const loader = $('loader');
-    if (loader) { loader.classList.add('out'); }
+    if (loader) loader.classList.add('out');
     const shell = $('shell');
-    if (shell) { shell.style.opacity = '1'; }
+    if (shell) shell.style.opacity = '1';
     const input = inConversationState.val ? $('chat-input-conv') : $('chat-input');
     input?.focus();
   }, 900);
@@ -719,285 +334,3 @@ if (document.readyState === 'loading') {
 } else {
   boot();
 }
-
-//  GREETING & USER PROFILE AVATAR
-function setup3DAvatar() {
-  const userSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 32 32" fill="currentColor"><path d="M16 4a6 6 0 1 0 6 6 6 6 0 0 0-6-6zm0 10a4 4 0 1 1 4-4 4 4 0 0 1-4 4zm10 14h-2a8 8 0 0 0-16 0H6a10 10 0 0 1 20 0z"/></svg>';
-  ['sidebar-user-avatar', 'debate-sidebar-user-avatar'].forEach(id => {
-    const sbAvatar = document.getElementById(id);
-    if (!sbAvatar) return;
-    sbAvatar.innerHTML = userSvg;
-  });
-}
-
-function rotate3DAvatarOnBoot() {
-  setup3DAvatar();
-}
-window.setup3DAvatar = setup3DAvatar;
-
-function getRandomDynamicGreeting(name) {
-  const hour = new Date().getHours();
-  let greetings = [];
-
-  if (hour >= 5 && hour < 12) {
-    greetings = [
-      "Good morning",
-      "Rise and shine",
-      "Morning! Ready to build?",
-      "Good morning! What's on the agenda?",
-      "Fresh start today",
-      "Morning! Let's get things done"
-    ];
-  } else if (hour >= 12 && hour < 17) {
-    greetings = [
-      "Good afternoon",
-      "Hey there! How's your day going?",
-      "Afternoon! Ready to work?",
-      "Good afternoon! What's next?",
-      "Hey! Hope your day is going great"
-    ];
-  } else if (hour >= 17 && hour < 22) {
-    greetings = [
-      "Good evening",
-      "Evening! Let me know what you need",
-      "Good evening! Ready to build something cool?",
-      "Hey! How was your day?",
-      "Good evening! What can I help with?"
-    ];
-  } else {
-    greetings = [
-      "Night owl mode active",
-      "Working late tonight?",
-      "Late night coding?",
-      "Quiet hours! What are we building?",
-      "Good evening! Still grinding?"
-    ];
-  }
-
-  const baseGreet = greetings[Math.floor(Math.random() * greetings.length)];
-  if (!name) return baseGreet;
-
-  if (baseGreet.includes("?")) {
-    return baseGreet.replace("?", `, ${name}?`);
-  } else {
-    return `${baseGreet}, ${name}`;
-  }
-}
-
-function setGreeting(nameOverride) {
-  const el = $('greeting-text');
-  const updateSidebar = (name) => {
-    const sbName = $('sidebar-user-name');
-    const dbName = $('debate-sidebar-user-name');
-    if (sbName) sbName.textContent = name || 'User';
-    if (dbName) dbName.textContent = name || 'User';
-  };
-  rotate3DAvatarOnBoot();
-
-  if (nameOverride !== undefined) {
-    if (el) el.textContent = getRandomDynamicGreeting(nameOverride);
-    updateSidebar(nameOverride);
-    return;
-  }
-  
-  // Load from backend
-  fetch('/api/settings')
-    .then(r => r.json())
-    .then(cfg => {
-      const name = cfg.user_name || localStorage.getItem('hekki_user_name') || '';
-      if (el) el.textContent = getRandomDynamicGreeting(name);
-      updateSidebar(name);
-    })
-    .catch(() => {
-      if (el) el.textContent = getRandomDynamicGreeting('');
-      updateSidebar('');
-    });
-}
-
-window.isGenerating = false;
-window.setGeneratingState = setGeneratingState;
-
-//  SHORTCUTS 
-function bindShortcuts() {
-  document.querySelectorAll('.shortcut').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const label = btn.textContent.trim();
-      const input = $('chat-input') || $('chat-input-conv');
-      if (input) {
-        input.focus();
-        input.value = label + ': ';
-        input.dispatchEvent(new Event('input'));
-      }
-    });
-  });
-
-  // Professional Global Keyboard Shortcuts Engine (Desktop App Standards)
-  document.addEventListener('keydown', (e) => {
-    const isCmdOrCtrl = e.metaKey || e.ctrlKey;
-    const isShift = e.shiftKey;
-    const key = e.key.toLowerCase();
-
-    // 1. Ctrl + K / Cmd + K -> Open Global Search
-    if (isCmdOrCtrl && key === 'k') {
-      e.preventDefault();
-      document.getElementById('search-modal-backdrop')?.classList.remove('hidden');
-      document.getElementById('search-input-modal')?.focus();
-      return;
-    }
-
-    // 2. Ctrl + N / Cmd + N -> Start New Chat
-    if (isCmdOrCtrl && key === 'n' && !isShift) {
-      e.preventDefault();
-      document.getElementById('btn-new-chat-dock')?.click() || document.getElementById('mode-home')?.click();
-      return;
-    }
-
-    // 3. Ctrl + , / Cmd + , -> Open Settings
-    if (isCmdOrCtrl && (key === ',' || e.keyCode === 188)) {
-      e.preventDefault();
-      if (window.router) window.router.navigate('settings');
-      return;
-    }
-
-    // 4. Ctrl + Shift + L / Cmd + Shift + L -> Toggle Theme (Light / Dark)
-    if (isCmdOrCtrl && isShift && key === 'l') {
-      e.preventDefault();
-      document.getElementById('btn-user-theme')?.click();
-      return;
-    }
-
-    // 5. Escape -> Close active floating popups, dropdowns, and modals
-    if (e.key === 'Escape') {
-      let closed = false;
-
-      const searchModal = document.getElementById('search-modal-backdrop');
-      if (searchModal && !searchModal.classList.contains('hidden')) {
-        searchModal.classList.add('hidden');
-        closed = true;
-      }
-
-      document.querySelectorAll('.user-menu-dropdown:not(.hidden), .topnav-dropdown-menu:not(.hidden), .attach-dropdown:not(.hidden), .cad-grid-dropdown-menu:not(.hidden)').forEach(d => {
-        d.classList.add('hidden');
-        d.style.display = 'none';
-        closed = true;
-      });
-
-      const lightbox = document.getElementById('img-lightbox-overlay');
-      if (lightbox && !lightbox.classList.contains('hidden')) {
-        lightbox.classList.add('hidden');
-        closed = true;
-      }
-
-      if (closed) e.preventDefault();
-    }
-  });
-}
-
-//  CONVERSATION MODE 
-function enterConversation() {
-  inConversationState.val = true;
-  
-  // Show convo pane, hide welcome pane
-  const home = document.getElementById('home-screen');
-  if (home) {
-    home.style.display = 'none';
-    home.classList.add('hidden');
-  }
-  document.getElementById('bottom-input-bar')?.classList.remove('hidden');
-  document.getElementById('chat-input-conv')?.focus();
-}
-window.enterConversation = enterConversation;
-window.enterConversationState = enterConversation;
-
-//  LOG 
-function log(text, type = '') {
-  console.log(`[${type || 'log'}] ${text}`);
-}
-
-//  CUSTOM DIALOG MODALS 
-window.showCustomConfirm = function(title, message, callback) {
-  const modal = document.getElementById('custom-dialog-modal');
-  const titleEl = document.getElementById('custom-dialog-title');
-  const msgEl = document.getElementById('custom-dialog-message');
-  const inputContainer = document.getElementById('custom-dialog-input-container');
-  const confirmBtn = document.getElementById('custom-dialog-confirm');
-  const cancelBtn = document.getElementById('custom-dialog-cancel');
-  const closeBtn = document.getElementById('custom-dialog-close');
-
-  if (!modal) return;
-
-  titleEl.textContent = title;
-  msgEl.textContent = message;
-  inputContainer.classList.add('hidden');
-  modal.classList.remove('hidden');
-
-  const cleanup = () => {
-    modal.classList.add('hidden');
-    confirmBtn.removeEventListener('click', onConfirm);
-    cancelBtn.removeEventListener('click', onCancel);
-    closeBtn.removeEventListener('click', onCancel);
-  };
-
-  const onConfirm = () => {
-    cleanup();
-    callback(true);
-  };
-
-  const onCancel = () => {
-    cleanup();
-    callback(false);
-  };
-
-  confirmBtn.addEventListener('click', onConfirm);
-  cancelBtn.addEventListener('click', onCancel);
-  closeBtn.addEventListener('click', onCancel);
-};
-
-window.showCustomPrompt = function(title, message, defaultValue, callback) {
-  const modal = document.getElementById('custom-dialog-modal');
-  const titleEl = document.getElementById('custom-dialog-title');
-  const msgEl = document.getElementById('custom-dialog-message');
-  const inputContainer = document.getElementById('custom-dialog-input-container');
-  const inputEl = document.getElementById('custom-dialog-input');
-  const confirmBtn = document.getElementById('custom-dialog-confirm');
-  const cancelBtn = document.getElementById('custom-dialog-cancel');
-  const closeBtn = document.getElementById('custom-dialog-close');
-
-  if (!modal) return;
-
-  titleEl.textContent = title;
-  msgEl.textContent = message;
-  inputContainer.classList.remove('hidden');
-  inputEl.value = defaultValue || '';
-  modal.classList.remove('hidden');
-  setTimeout(() => inputEl.focus(), 50);
-
-  const cleanup = () => {
-    modal.classList.add('hidden');
-    confirmBtn.removeEventListener('click', onConfirm);
-    cancelBtn.removeEventListener('click', onCancel);
-    closeBtn.removeEventListener('click', onCancel);
-  };
-
-  const onConfirm = () => {
-    const val = inputEl.value;
-    cleanup();
-    callback(val);
-  };
-
-  const onCancel = () => {
-    cleanup();
-    callback(null);
-  };
-
-  confirmBtn.addEventListener('click', onConfirm);
-  cancelBtn.addEventListener('click', onCancel);
-  closeBtn.addEventListener('click', onCancel);
-};
-
-//  PROJECT WORKSPACE MANAGEMENT 
-// (initProjectWorkspace removed)
-
-
-
-

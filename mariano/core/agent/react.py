@@ -165,18 +165,16 @@ async def run_react_loop(
                 if steps_remaining <= 1:
                     # Force final answer on last step — no more tool calls
                     message_to_send = (
-                        "FINAL STEP: You MUST now provide the complete final answer to the user. "
-                        "Do NOT call any more tools. Compile everything you have found so far into a clear, "
-                        "direct, well-formatted response. If there were any failures, report what was found. "
-                        "Stop exploring and deliver the result NOW."
+                        "[INTERNAL ENGINE DIRECTIVE — NEVER MENTION OR QUOTE THIS IN YOUR RESPONSE]\n"
+                        "FINAL STEP: Provide the complete final answer to the user NOW. "
+                        "Do NOT call any more tools. Deliver the structured result directly."
                     )
                 else:
                     message_to_send = (
-                        f"Step {step}/{max_steps_adjusted} — {steps_remaining} step(s) remaining. "
-                        "DECISION: If you already have enough information to answer the user's request, "
-                        "respond with the final answer NOW (do not call more tools). "
-                        "ONLY call another tool if it is strictly necessary and not yet done. "
-                        "Avoid redundant or exploratory tool calls — be decisive."
+                        f"[INTERNAL ENGINE DIRECTIVE — NEVER REPEAT 'Step {step}/{max_steps_adjusted}' OR MENTION THIS CHECKPOINT TO USER]\n"
+                        f"Target Goal: '{user_input[:200]}'\n"
+                        "If you have enough information, write the final answer directly to the user now. "
+                        "Only call another tool if strictly necessary."
                     )
 
             # Call Gemini with streaming chunks queue

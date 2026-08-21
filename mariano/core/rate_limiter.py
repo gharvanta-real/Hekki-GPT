@@ -78,11 +78,19 @@ class GeminiRateLimiter:
         """Block execution if request metrics approach RPM, TPM, or RPD limits.
         Uses an iterative wait loop — NOT recursive — safe for long autonomous agent loops.
         Raises RuntimeError if daily quota (RPD) is exhausted.
+        CancelledError propagates cleanly — does NOT consume a rate limit slot.
         """
         nc = NotificationCenter.get_instance()
         total_waited = 0.0
 
         while True:
+            # ── Cancellation guard: check before touching the lock ──────────────
+            # If the calling asyncio Task has been cancelled (e.g. user pressed Stop),
+            # propagate immediately instead of blocking on the lock.
+            current_task = asyncio.current_task()
+            if current_task is not None and current_task.cancelled():
+                raise asyncio.CancelledError()
+
             async with self._lock:
                 now = time.time()
                 self._resolve_model_limits()
@@ -157,10 +165,29 @@ class GeminiRateLimiter:
                     f"Rate limiter waited {total_waited:.0f}s — exceeds safety cap. Aborting request."
                 )
 
-            # Sleep OUTSIDE the lock so other coroutines can proceed
+            # Sleep OUTSIDE the lock so other coroutines can proceed.
+            # asyncio.sleep naturally propagates CancelledError — do NOT catch it here.
             log.info("rate_limiter.sleeping", seconds=round(wait_time, 2))
             await asyncio.sleep(wait_time)
             # Loop again to re-check after sleep
+
+    def release_slot(self) -> None:
+        """Release the most recently acquired RPM/TPM/RPD slot.
+        Call this when a request is cancelled AFTER acquire() returned successfully,
+        so cancelled requests don't permanently consume quota budget.
+        Thread-safe: modifies deques which are only mutated under _lock in async context,
+        but removal of the last element is safe from sync context too.
+        """
+        try:
+            if self._timestamps:
+                self._timestamps.pop()
+            if self._token_timestamps:
+                self._token_timestamps.pop()
+            if self._day_timestamps:
+                self._day_timestamps.pop()
+            log.debug("rate_limiter.slot_released", remaining_rpm=len(self._timestamps))
+        except Exception as exc:
+            log.warning("rate_limiter.release_slot_error", error=str(exc))
 
 
 def estimate_tokens_from_text(message: str, history: list[dict] | None = None) -> int:
