@@ -104,39 +104,6 @@ function _finalizeStreamResponse(chatId) {
     }
   }
 
-  // Inject Canvas Preview Pills for Written Files
-  if (buf.writtenFiles.length > 0) {
-    const col = _getCol();
-    if (col) {
-      const previewRow = document.createElement('div');
-      previewRow.className = 'doc-preview-pills-row';
-      previewRow.style.cssText = 'display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 4px 0;padding:0;align-items:center;';
-      buf.writtenFiles.forEach(filePath => {
-        const fileName = filePath.replace(/\\/g, '/').split('/').pop();
-        const ext = (fileName.split('.').pop() || '').toLowerCase();
-        const pill = document.createElement('button');
-        pill.className = 'doc-canvas-pill';
-        pill.style.cssText = 'display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:var(--radius-pill,9999px);background:var(--hover);border:none!important;color:var(--text-secondary);font-size:12px;font-family:var(--font);font-weight:500;cursor:pointer;transition:all 0.12s;';
-        pill.title = `Open in Live Canvas: ${filePath}`;
-        pill.innerHTML = `<i data-lucide="file-code" style="width:13px;height:13px;flex-shrink:0;"></i><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:200px;">${escapeHtml(fileName)}</span>`;
-        pill.addEventListener('click', async () => {
-          if (window.liveCanvas) {
-            try {
-              const res = await fetch(`/api/workspace/render?path=${encodeURIComponent(filePath.replace(/\\/g, '/'))}`);
-              const content = res.ok ? await res.text() : '';
-              window.liveCanvas.openArtifact({ code: content, language: ext, title: fileName, filepath: filePath });
-            } catch {
-              window.liveCanvas.openArtifact({ code: '', language: ext, title: fileName, filepath: filePath });
-            }
-          }
-        });
-        previewRow.appendChild(pill);
-      });
-      col.appendChild(previewRow);
-      if (window.lucide) lucide.createIcons({ parent: previewRow });
-    }
-  }
-
   clearBuffer(chatId);
   if (_streamingChatId === chatId) _streamingChatId = null;
 }
