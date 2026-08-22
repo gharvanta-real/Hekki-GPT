@@ -3,16 +3,20 @@
  * Kept separate to maintain stream_tools.js under 500 lines.
  */
 
-export function getFriendlyToolActionText(toolName) {
+export function getFriendlyToolActionText(toolName, args = {}) {
   const t = (toolName || '').toLowerCase();
-  if (t === 'web_search' || t === 'search_web') return 'Searching the web...';
-  if (t === 'web_scraper' || t === 'web_scrape') return 'Reading web page...';
-  if (t === 'write_to_file') return 'Writing file...';
-  if (t === 'replace_file_content' || t === 'multi_replace_file_content') return 'Editing file...';
-  if (t === 'view_file') return 'Reading file...';
-  if (t === 'list_dir') return 'Listing directory...';
-  if (t === 'grep_search') return 'Searching code...';
-  if (t === 'run_command' || t === 'shell') return 'Executing command...';
+  const rawPath = args.TargetFile || args.target_file || args.file_path || args.filePath || args.path || args.file || args.filename || args.query || args.pattern || '';
+  const fileName = rawPath ? (rawPath.split(/[\/\\]/).pop() || rawPath) : '';
+  const cmd = args.CommandLine || args.command || args.cmd || '';
+
+  if (t === 'web_search' || t === 'search_web') return args.query ? `Searching for "${args.query.slice(0, 25)}..."` : 'Searching the web...';
+  if (t === 'web_scraper' || t === 'web_scrape' || t === 'read_url_content') return 'Reading web page...';
+  if (t === 'write_to_file') return fileName ? `Writing ${fileName}...` : 'Writing file...';
+  if (t === 'replace_file_content' || t === 'multi_replace_file_content') return fileName ? `Editing ${fileName}...` : 'Editing file...';
+  if (t === 'view_file') return fileName ? `Reading ${fileName}...` : 'Reading file...';
+  if (t === 'list_dir') return 'Scanning directory...';
+  if (t === 'grep_search' || t === 'find_by_name') return 'Searching workspace...';
+  if (t === 'run_command' || t === 'shell') return cmd ? `Running ${cmd.slice(0, 25)}...` : 'Executing command...';
   if (t === 'generate_image') return 'Generating image...';
   if (t === 'image_analysis') return 'Analyzing image...';
   if (t === 'audio_summary' || t === 'voice_summary') return 'Synthesizing voice audio...';
@@ -22,19 +26,18 @@ export function getFriendlyToolActionText(toolName) {
   if (t === 'translator') return 'Translating content...';
   if (t === 'wikipedia_search') return 'Searching Wikipedia...';
   if (t === 'deep_research') return 'Synthesizing research...';
-  if (t === 'morning_briefing') return 'Compiling morning briefing...';
-  if (t === 'reminder' || t === 'schedule') return 'Configuring reminder & schedule...';
-  if (t === 'physics_solver' || t === 'real_simulation') return 'Running physics simulation...';
+  if (t === 'reminder' || t === 'schedule') return 'Scheduling task...';
+  if (t === 'physics_solver' || t === 'real_simulation') return 'Running simulation...';
   if (t === 'coder_refactor') return 'Refactoring code...';
   if (t === 'data_analyzer') return 'Analyzing dataset...';
   if (t.includes('security') || t.includes('recon') || t.includes('red_team')) return 'Auditing security...';
   if (t === 'expert_debate') return 'Running expert debate...';
-  if (t === 'safe_recycler') return 'Moving file to recycle bin...';
+  if (t === 'safe_recycler') return 'Recycling files...';
   if (t === 'invoke_subagent') return 'Delegating to subagent...';
-  if (t === 'manage_task') return 'Managing background task...';
-  if (t === 'skill_creator') return 'Creating new skill...';
+  if (t === 'manage_task') return 'Managing task...';
+  if (t === 'skill_creator') return 'Creating skill...';
   if (t.includes('memory')) return 'Updating memory...';
-  return `Running ${toolName}...`;
+  return `Executing ${toolName}...`;
 }
 
 /**

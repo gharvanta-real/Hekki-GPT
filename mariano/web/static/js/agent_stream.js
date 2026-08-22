@@ -199,16 +199,24 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
         enterConversationCallback();
         if (e.data && e.data.includes('Aider')) setAiderActive(true);
         appendHudLog(`[INFO] ${e.data}`);
-        col.querySelectorAll('.chat-ai-stream-header').forEach(el => el.remove());
-        const headerEl = document.createElement('div');
-        headerEl.className = 'cad-ai-stream-header chat-ai-stream-header';
-        headerEl.style.marginTop = '16px';
-        headerEl.style.marginBottom = '6px';
-        headerEl.innerHTML = `
-          <svg class="cad-ai-spinner animate-spin" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;color:var(--accent-primary);animation:spin 0.85s linear infinite;flex-shrink:0;transform:translateY(1px);"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
-          <span class="cad-ai-header-title">Thinking...</span>
-        `;
-        col.appendChild(headerEl);
+        let thinkText = (e.data && typeof e.data === 'string' && !e.data.startsWith('{')) ? e.data.trim() : 'Thinking...';
+        if (thinkText.length > 48) thinkText = thinkText.slice(0, 45) + '...';
+
+        let headerEl = col.querySelector('.cad-ai-stream-header');
+        if (!headerEl) {
+          headerEl = document.createElement('div');
+          headerEl.className = 'cad-ai-stream-header chat-ai-stream-header';
+          headerEl.style.marginTop = '16px';
+          headerEl.style.marginBottom = '6px';
+          headerEl.innerHTML = `
+            <svg class="cad-ai-spinner animate-spin" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;color:var(--accent-primary);animation:spin 0.85s linear infinite;flex-shrink:0;transform:translateY(1px);"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+            <span class="cad-ai-header-title">${escapeHtml(thinkText)}</span>
+          `;
+          col.appendChild(headerEl);
+        } else {
+          const titleEl = headerEl.querySelector('.cad-ai-header-title');
+          if (titleEl) titleEl.textContent = thinkText;
+        }
         scrollChat();
       }
       break;
@@ -245,14 +253,14 @@ export function handleChatAgentEvent(e, enterConversationCallback) {
     }
 
     case 'tool_call': {
+      const args = e.metadata?.args || {};
       if (isVisible) {
         enterConversationCallback();
         const toolName = e.data || e.metadata?.tool || 'action';
-        const actionText = getFriendlyToolActionText(toolName);
+        const actionText = getFriendlyToolActionText(toolName, args);
         updateDynamicHeaderTitle(col, actionText);
-        appendHudLog(`[EXEC] ${toolName} args: ${JSON.stringify(e.metadata?.args || {})}`);
+        appendHudLog(`[EXEC] ${toolName} args: ${JSON.stringify(args)}`);
       }
-      const args = e.metadata?.args || {};
       const targetPath = args.TargetFile || args.target_file || args.file_path || args.filePath || args.path || args.file || '';
       const isWriteOp = e.data === 'write_to_file' || 
                         (e.data || '').includes('write') || 
