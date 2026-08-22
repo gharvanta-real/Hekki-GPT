@@ -102,12 +102,7 @@ function _appendThinkingHeader() {
   el.style.marginTop = '20px';
   el.style.marginBottom = '8px';
   el.innerHTML = `
-    <div class="cad-ai-dot-grid" aria-hidden="true">
-      <span style="--d:0"></span><span style="--d:1"></span><span style="--d:2"></span><span style="--d:3"></span>
-      <span style="--d:1"></span><span style="--d:2"></span><span style="--d:3"></span><span style="--d:4"></span>
-      <span style="--d:2"></span><span style="--d:3"></span><span style="--d:4"></span><span style="--d:5"></span>
-      <span style="--d:3"></span><span style="--d:4"></span><span style="--d:5"></span><span style="--d:6"></span>
-    </div>
+    <svg class="cad-ai-spinner animate-spin" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;color:var(--accent-primary);animation:spin 0.85s linear infinite;flex-shrink:0;transform:translateY(1px);"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
     <span class="cad-ai-header-title debate-thinking-txt-unbold" id="debate-thinking-txt" style="font-weight:400 !important; font-size:16px !important; color:var(--text-2); background:none !important; -webkit-text-fill-color:var(--text-2) !important;">${THINKING_MSGS[0]}</span>
   `;
   col.appendChild(el);

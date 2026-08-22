@@ -194,8 +194,13 @@ export function handleToolLog(logLine, toolRunsRef) {
   if (!_lastToolBlock || !logLine) return;
   let liveLog = _lastToolBlock.querySelector('.tool-live-log');
   if (!liveLog) {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'tool-tree-output-wrapper';
+    wrapper.style.width = '100%';
+
     liveLog = document.createElement('div');
     liveLog.className = 'tool-live-log tool-terminal-block';
+    liveLog.style.cssText = 'width:100%;margin-top:4px;max-height:240px;overflow-y:auto;background:var(--bg) !important;padding:8px 12px;border-radius:var(--radius-sm, 8px);font-family:var(--font-mono);font-size:13px;line-height:1.5;border:1px solid var(--border-subtle, var(--border)) !important;box-shadow:none !important;';
     
     // Add command prompt line if command tool
     const cmdStr = _lastToolBlock._cmdStr;
@@ -209,7 +214,8 @@ export function handleToolLog(logLine, toolRunsRef) {
       liveLog.appendChild(promptEl);
     }
 
-    _lastToolBlock.appendChild(liveLog);
+    wrapper.appendChild(liveLog);
+    _lastToolBlock.appendChild(wrapper);
   }
   const lineEl = document.createElement('div');
   lineEl.className = 'tool-log-line';

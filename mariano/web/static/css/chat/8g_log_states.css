@@ -1,4 +1,4 @@
-﻿/* ==========================================================================
+/* ==========================================================================
    8g_log_states.css — Tool Card Condition States, Log Line Coloring,
    Markdown Polish Additions (blockquote, links, lists)
    ========================================================================== */
@@ -44,7 +44,7 @@
   max-height: 160px;
   overflow-y: auto;
   font-family: var(--font-mono, monospace);
-  font-size: 12.5px;
+  font-size: 13.5px;
   line-height: 1.55;
 }
 

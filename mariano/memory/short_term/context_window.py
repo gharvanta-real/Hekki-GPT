@@ -55,14 +55,17 @@ class ContextWindow:
             ))
 
     def get_history(self) -> list[dict]:
-        history = []
-        if self._synaptic_summary:
-            history.append({"role": "user", "content": "[CONTEXT SUMMARY]: " + self._synaptic_summary})
-            history.append({"role": "assistant", "content": "Understood. Continuing from context summary."})
+        from mariano.memory.context_budgeter import optimize_conversation_history
+        raw = []
         for m in self._messages:
-            history.append({"role": m.role, "content": m.content,
-                            "tool_calls": m.tool_calls, "tool_response": m.tool_response})
-        return history
+            raw.append({"role": m.role, "content": m.content,
+                        "tool_calls": m.tool_calls, "tool_response": m.tool_response})
+        return optimize_conversation_history(
+            history=raw,
+            max_token_budget=16000,
+            max_recent_turns=16,
+            synaptic_summary=self._synaptic_summary,
+        )
 
     def get_last_n(self, n: int) -> list[ContextMessage]:
         return list(self._messages)[-n:]

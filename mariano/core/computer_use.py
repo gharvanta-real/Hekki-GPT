@@ -136,37 +136,37 @@ class ComputerUseEngine:
     # ── Power Control ─────────────────────────────────────────────────────────
     @staticmethod
     def power_shutdown(delay_sec: int = 10) -> str:
-        subprocess.Popen(f"shutdown /s /t {delay_sec}", shell=True)
+        subprocess.Popen(["shutdown", "/s", "/t", str(int(delay_sec))], shell=False)
         return f"PC shutdown scheduled in {delay_sec} seconds. Type 'cancel shutdown' to abort."
 
     @staticmethod
     def power_restart(delay_sec: int = 10) -> str:
-        subprocess.Popen(f"shutdown /r /t {delay_sec}", shell=True)
+        subprocess.Popen(["shutdown", "/r", "/t", str(int(delay_sec))], shell=False)
         return f"PC restart scheduled in {delay_sec} seconds. Type 'cancel shutdown' to abort."
 
     @staticmethod
     def power_sleep() -> str:
-        subprocess.Popen("rundll32.exe powrprof.dll,SetSuspendState 0,1,0", shell=True)
+        subprocess.Popen(["rundll32.exe", "powrprof.dll,SetSuspendState", "0,1,0"], shell=False)
         return "Putting PC to sleep now."
 
     @staticmethod
     def power_lock() -> str:
-        subprocess.Popen("rundll32.exe user32.dll,LockWorkStation", shell=True)
+        subprocess.Popen(["rundll32.exe", "user32.dll,LockWorkStation"], shell=False)
         return "Screen locked."
 
     @staticmethod
     def power_cancel_shutdown() -> str:
-        subprocess.Popen("shutdown /a", shell=True)
+        subprocess.Popen(["shutdown", "/a"], shell=False)
         return "Shutdown / restart cancelled."
 
     @staticmethod
     def power_hibernate() -> str:
-        subprocess.Popen("shutdown /h", shell=True)
+        subprocess.Popen(["shutdown", "/h"], shell=False)
         return "Hibernating now."
 
     @staticmethod
     def power_logoff() -> str:
-        subprocess.Popen("shutdown /l", shell=True)
+        subprocess.Popen(["shutdown", "/l"], shell=False)
         return "Logging off now."
 
     # ── Volume Control ────────────────────────────────────────────────────────

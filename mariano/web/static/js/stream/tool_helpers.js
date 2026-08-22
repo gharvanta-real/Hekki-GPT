@@ -174,6 +174,17 @@ export function resolveToolDisplayMeta(toolName, action, args, fileName, rawPath
     icon = '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 32 32" fill="currentColor" style="width:13px;height:13px;display:inline-block;vertical-align:middle;flex-shrink:0;color:var(--accent-primary);"><circle cx="16" cy="8" r="4"/><path d="M26,24a6,6,0,0,0-6-6H12a6,6,0,0,0-6,6v4H26Z"/></svg>';
     const subDesc = args.Role || args.TypeName || args.role || fileName;
     detailHtml = `<span class="tool-detail" style="font-weight:400;color:var(--text-secondary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:340px;">${escapeHtml(subDesc)}</span>`;
+  } else if (toolName === 'schedule' || toolName === 'reminder') {
+    label = 'Timed';
+    icon = '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 32 32" fill="currentColor" style="width:13px;height:13px;display:inline-block;vertical-align:middle;flex-shrink:0;color:var(--text-secondary);"><circle cx="16" cy="16" r="14" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="16 8 16 16 22 16" fill="none" stroke="currentColor" stroke-width="2"/></svg>';
+    const dur = args.DurationSeconds ? `${args.DurationSeconds}s` : (args.CronExpression || args.Prompt || fileName);
+    detailHtml = `<span class="tool-detail" style="font-weight:400;color:var(--text-secondary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:340px;">${escapeHtml(dur)}</span>`;
+  } else if (toolName === 'manage_task') {
+    label = 'Task';
+    icon = '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 32 32" fill="currentColor" style="width:13px;height:13px;display:inline-block;vertical-align:middle;flex-shrink:0;color:var(--text-secondary);"><rect x="4" y="4" width="24" height="24" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="9 16 14 21 23 11" fill="none" stroke="currentColor" stroke-width="2"/></svg>';
+    const tAct = args.Action || args.action || 'status';
+    const tId = (args.TaskId || args.taskId || '').split('/').pop();
+    detailHtml = `<span class="tool-detail" style="font-weight:400;color:var(--text-secondary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:340px;">${escapeHtml(tAct + (tId ? ' ' + tId : ''))}</span>`;
   } else if (metaKey.includes('memory')) {
     label = 'Memory';
     icon = '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 32 32" fill="currentColor" style="width:13px;height:13px;display:inline-block;vertical-align:middle;flex-shrink:0;color:var(--text-secondary);"><path d="M12 28h-2c-3.86 0-7-3.14-7-7v-2h2v2c0 2.76 2.24 5 5 5h2v2zM28 19h-9c-1.1 0-2 .9-2 2v5c0 1.1.9 2 2 2h3v-2h-3v-5h9v5h-2.54l-2.59 3.89 1.66 1.11 2-3h1.47c1.1 0 2-.9 2-2v-5c0-1.1-.9-2-2-2z"/></svg>';

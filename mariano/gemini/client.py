@@ -85,18 +85,14 @@ class GeminiClient:
             }
 
         from mariano.core.rate_limiter import GeminiRateLimiter, estimate_tokens_from_text
+        from mariano.memory.context_budgeter import optimize_conversation_history
+
         reasoning_mode_pre = self._settings.active_reasoning_mode
-        _max_history = 8 if reasoning_mode_pre == "fast" else 14
-        if len(history) > _max_history:
-            trimmed = history[-_max_history:]
-            first_user_idx = 0
-            for idx, m in enumerate(trimmed):
-                if m.get("role") == "user" and not m.get("tool_response"):
-                    first_user_idx = idx
-                    break
-            else:
-                first_user_idx = len(trimmed)
-            history = trimmed[first_user_idx:]
+        history = optimize_conversation_history(
+            history=history,
+            max_token_budget=16000 if reasoning_mode_pre != "fast" else 8000,
+            max_recent_turns=16 if reasoning_mode_pre != "fast" else 8,
+        )
 
         estimated_tokens = estimate_tokens_from_text(message, history)
         limiter = GeminiRateLimiter.get_instance()

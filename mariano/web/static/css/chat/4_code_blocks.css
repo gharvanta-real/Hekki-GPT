@@ -152,22 +152,22 @@ body.oled .code-action-btn:hover,
   word-break: break-all !important;
 }
 
-/* Tool execution output box (Adaptive Theme flat clean aesthetic) */
+/* Tool execution output box (Consistent On-BG + Subtle Outline aesthetic) */
 .tool-output-block,
 .tool-terminal-block,
 .tool-live-log {
   margin: 4px 0 2px 0;
   padding: 8px 12px;
-  background: var(--input-bg) !important;
+  background: var(--bg) !important;
   color: var(--text-secondary) !important;
   border-radius: var(--radius-sm, 8px) !important;
-  border: none !important;
+  border: 1px solid var(--border-subtle, var(--border)) !important;
   font-size: 13px !important;
   font-family: var(--font-mono) !important;
   line-height: 1.5 !important;
   overflow-x: auto;
   box-shadow: none !important;
-  max-height: 220px;
+  max-height: 240px;
   width: 100%;
   box-sizing: border-box;
   white-space: pre-wrap;
@@ -180,9 +180,9 @@ body.catppuccin .tool-live-log,
 :root[data-theme="catppuccin"] .tool-output-block,
 :root[data-theme="catppuccin"] .tool-terminal-block,
 :root[data-theme="catppuccin"] .tool-live-log {
-  background: var(--input-bg) !important;
+  background: var(--bg) !important;
   color: var(--text-secondary) !important;
-  border: none !important;
+  border: 1px solid var(--border-subtle, var(--border)) !important;
 }
 
 body.oled .tool-output-block,
@@ -191,8 +191,8 @@ body.oled .tool-live-log,
 :root[data-theme="oled"] .tool-output-block,
 :root[data-theme="oled"] .tool-terminal-block,
 :root[data-theme="oled"] .tool-live-log {
-  background: var(--bg-card, #121212) !important;
+  background: #000000 !important;
   color: var(--text-secondary) !important;
-  border: none !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
 }
 

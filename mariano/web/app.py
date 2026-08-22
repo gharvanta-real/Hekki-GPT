@@ -132,6 +132,9 @@ app.include_router(graph_router)
 from mariano.web.routes.ws_routes import router as ws_router
 app.include_router(ws_router)
 
+from mariano.web.routes.live_audio_routes import router as live_audio_router
+app.include_router(live_audio_router)
+
 from mariano.web.routes.audio_summary_routes import router as audio_summary_router
 app.include_router(audio_summary_router)
 

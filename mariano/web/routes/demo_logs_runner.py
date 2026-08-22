@@ -1,4 +1,4 @@
-﻿"""MARIANO Log Matrix Showcase Runner — Comprehensive showcase of 14+ rich system tool logs."""
+"""MARIANO Log Matrix Showcase Runner — Comprehensive showcase of 14+ rich system tool logs."""
 import asyncio
 from fastapi import WebSocket
 

@@ -1,10 +1,9 @@
 /* === chat/session.js — ChatSessionManager: CRUD, load, render list === */
 import { showCustomConfirm, showCustomPrompt, openImageLightbox } from './dialogs.js';
-import { scrollChat, clearChatLogs, setActiveChatId as _setActive } from './input.js';
+import { scrollChat, clearChatLogs, setActiveChatId as _setActive, escapeHtml } from './input.js';
 import { createMessageElement, createToolGroupCard } from './messages.js';
 import { enhanceImagePreviews } from './media.js';
-import { escapeHtml } from './input.js';
-import { renderPlaygroundList, closeAllDropdowns, buildDropdown } from './session_sidebar.js';
+import { renderPlaygroundList, renderRecentChatsList, closeAllDropdowns, buildDropdown, getLatestActivityTime, isPlaygroundChat } from './session_sidebar.js';
 
 let _activeChatId = localStorage.getItem('hekki_active_chat_id') || localStorage.getItem('mariano_active_chat_id') || null;
 let _globalSendCallback = null;
@@ -433,99 +432,20 @@ export const ChatSessionManager = {
   },
 
   renderChatsList() {
-    const chatList = document.getElementById('recent-list');
-    const playgroundList = document.getElementById('playground-list');
-    const playgroundSection = document.getElementById('nav-section-playground');
+    const chats = this.getChats().filter(c => !c.project && !c.archived && !isPlaygroundChat(c));
+    chats.sort((a, b) => {
+      const aPinned = a.pinned ? 1 : 0, bPinned = b.pinned ? 1 : 0;
+      if (aPinned !== bPinned) return bPinned - aPinned;
+      return getLatestActivityTime(b) - getLatestActivityTime(a);
+    });
 
-    const getLatestActivityTime = (c) => {
-      if (!c) return 0;
-      if (c.messages && c.messages.length > 0) {
-        for (let i = c.messages.length - 1; i >= 0; i--) {
-          const m = c.messages[i];
-          if (m && m.timestamp) {
-            const t = new Date(m.timestamp).getTime();
-            if (!isNaN(t) && t > 0) return t;
-          }
-        }
-      }
-      if (c.timestamp) {
-        const t = new Date(c.timestamp).getTime();
-        if (!isNaN(t) && t > 0) return t;
-      }
-      if (c.id && c.id.includes('_')) {
-        const parts = c.id.split('_');
-        const tsFromId = parseInt(parts[parts.length - 1], 10);
-        if (!isNaN(tsFromId) && tsFromId > 1000000000) return tsFromId;
-      }
-      return 0;
-    };
-
-    const isPlaygroundChat = (c) => Boolean(c && (
-      c.isPlayground ||
-      c.isDebate ||
-      (c.id && (String(c.id).startsWith('playground_') || String(c.id).startsWith('debate_')))
-    ));
-
-    if (chatList) {
-      const chats = this.getChats().filter(c => !c.project && !c.archived && !isPlaygroundChat(c));
-      chats.sort((a, b) => {
-        const aPinned = a.pinned ? 1 : 0, bPinned = b.pinned ? 1 : 0;
-        if (aPinned !== bPinned) return bPinned - aPinned;
-        return getLatestActivityTime(b) - getLatestActivityTime(a);
-      });
-      chatList.innerHTML = '';
-      if (chats.length === 0) {
-        chatList.innerHTML = '<div style="color:var(--text-3);font-size:12px;padding:8px 6px">No recent chats.</div>';
-      } else {
-        chats.forEach(c => {
-          const item = document.createElement('div');
-          item.className = 'section-item';
-          if (c.id === _activeChatId) item.classList.add('active');
-
-          const cleanTitle = (c.title || '').replace(/^🔀\s*/, '').replace(/^\/(?:debate|detective|web|code|pdf|image)\s*/i, '').trim() || c.title;
-          item.title = cleanTitle;
-
-          let badgeContent = '';
-          if (c.pinned) {
-            badgeContent = '<i data-lucide="pin" style="width:14px;height:14px;"></i>';
-          } else if (c.forkedFrom || cleanTitle.toLowerCase().startsWith('branch:')) {
-            badgeContent = '<i data-lucide="git-fork" style="width:14px;height:14px;"></i>';
-          } else {
-            const firstChar = Array.from(cleanTitle)[0] || 'C';
-            badgeContent = firstChar.toUpperCase();
-          }
-
-          // Check if this chat is actively streaming in background
-          const isStreaming = window._streamBufferApi?.isStreamActive?.(c.id) || false;
-          // Check if this chat has a new unread response
-          const hasNew = c.hasNewResponse && c.id !== _activeChatId;
-
-          let dotHtml = '';
-          if (isStreaming && c.id !== _activeChatId) {
-            // Orange pulsing dot — generating in background
-            dotHtml = `<span style="width:6px;height:6px;border-radius:50%;background:#f97316;display:inline-block;flex-shrink:0;animation:sidebar-pulse 1.2s ease-in-out infinite;" title="Generating..."></span>`;
-          } else if (hasNew) {
-            // Green static dot — new response received while away
-            dotHtml = `<span style="width:6px;height:6px;border-radius:50%;background:#22c55e;display:inline-block;flex-shrink:0;" title="New response"></span>`;
-          }
-
-          item.innerHTML = `
-            <span class="lbl" style="display:flex;align-items:center;gap:5px;min-width:0;flex:1;overflow:hidden;">${c.pinned ? '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 32 32" fill="currentColor" style="width:12px;height:12px;margin-right:6px;color:var(--text-3);display:inline-block;vertical-align:-1px;flex-shrink:0;"><path d="M22.41,16.59,20,14.17V5h1V3H11V5h1V14.17L9.59,16.59A2,2,0,0,0,9,18v2h6v7h2V20h6V18A2,2,0,0,0,22.41,16.59Z"/></svg>' : ''}<span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(cleanTitle)}</span>${dotHtml}</span>
-            <span class="opt" style="cursor:pointer; display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; flex-shrink:0;">
-              <i data-lucide="more-vertical" style="width:14px; height:14px; pointer-events:none;"></i>
-            </span>
-          `;
-          item.addEventListener('click', (e) => {
-            if (e.target.classList.contains('opt') || e.target.closest('.opt')) return;
-            this.loadChat(c.id);
-          });
-          const optBtn = item.querySelector('.opt');
-          optBtn.addEventListener('click', (e) => { e.stopPropagation(); this.toggleDropdown(e, c.id, optBtn, c.pinned); });
-          chatList.appendChild(item);
-        });
-        if (window.lucide) lucide.createIcons({ parent: chatList });
-      }
-    }
+    renderRecentChatsList(
+      chats,
+      _activeChatId,
+      (id) => this.loadChat(id),
+      (e, id, btn, pinned) => this.toggleDropdown(e, id, btn, pinned),
+      (s) => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+    );
 
     // Playground/Arena list — delegated to session_sidebar.js
     const pChats = this.getChats().filter(c => isPlaygroundChat(c) && !c.archived);
@@ -537,7 +457,7 @@ export const ChatSessionManager = {
     renderPlaygroundList(pChats, _activeChatId,
       (id) => this.loadChat(id),
       (e, id, btn, pinned) => this.toggleDropdown(e, id, btn, pinned),
-      escapeHtml
+      (s) => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
     );
 
     if (window.lucide) lucide.createIcons();

@@ -167,6 +167,7 @@ class ComputerVisionController:
 
     def launch_app(self, app_path_or_name: str) -> ActionExecutionResult:
         """Launches application executable or opens shell path."""
+        import shlex
         try:
             os.startfile(app_path_or_name)
             return ActionExecutionResult(
@@ -175,9 +176,10 @@ class ComputerVisionController:
                 message=f"Launched '{app_path_or_name}'",
                 data={"target": app_path_or_name}
             )
-        except Exception:
+        except Exception as start_err:
             try:
-                subprocess.Popen(app_path_or_name, shell=True)
+                cmd_parts = shlex.split(app_path_or_name, posix=False)
+                subprocess.Popen(cmd_parts, shell=False)
                 return ActionExecutionResult(
                     success=True,
                     action="launch_app",
@@ -185,7 +187,7 @@ class ComputerVisionController:
                     data={"target": app_path_or_name}
                 )
             except Exception as e:
-                return ActionExecutionResult(success=False, action="launch_app", message="Launch failed", error=str(e))
+                return ActionExecutionResult(success=False, action="launch_app", message="Launch failed", error=f"startfile: {start_err}, popen: {e}")
 
     def rename_file(self, old_file_path: str, new_name_or_path: str) -> ActionExecutionResult:
         """Renames a file or folder on the local filesystem."""

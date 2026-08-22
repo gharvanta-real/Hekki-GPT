@@ -1,4 +1,33 @@
-﻿/* === chat/session_sidebar.js — Sidebar playground list, dropdowns, rename/archive/delete === */
+/* === chat/session_sidebar.js — Sidebar playground list, dropdowns, rename/archive/delete === */
+
+export const getLatestActivityTime = (c) => {
+  if (!c) return 0;
+  if (c.messages && c.messages.length > 0) {
+    for (let i = c.messages.length - 1; i >= 0; i--) {
+      const m = c.messages[i];
+      if (m && m.timestamp) {
+        const t = new Date(m.timestamp).getTime();
+        if (!isNaN(t) && t > 0) return t;
+      }
+    }
+  }
+  if (c.timestamp) {
+    const t = new Date(c.timestamp).getTime();
+    if (!isNaN(t) && t > 0) return t;
+  }
+  if (c.id && c.id.includes('_')) {
+    const parts = c.id.split('_');
+    const tsFromId = parseInt(parts[parts.length - 1], 10);
+    if (!isNaN(tsFromId) && tsFromId > 1000000000) return tsFromId;
+  }
+  return 0;
+};
+
+export const isPlaygroundChat = (c) => Boolean(c && (
+  c.isPlayground ||
+  c.isDebate ||
+  (c.id && (String(c.id).startsWith('playground_') || String(c.id).startsWith('debate_')))
+));
 
 /**
  * renderPlaygroundList — renders the Playground/Arena section in the sidebar.
@@ -126,4 +155,50 @@ export function buildDropdown(chatId, optBtn, isPinned, manager, showCustomPromp
   };
   window._dropdownCloseHandler = closeHandler;
   setTimeout(() => document.addEventListener('click', closeHandler), 50);
+}
+
+/**
+ * renderRecentChatsList — renders recent chats in sidebar
+ */
+export function renderRecentChatsList(chats, activeChatId, loadChatFn, toggleDropdownFn, escapeHtmlFn) {
+  const chatList = document.getElementById('recent-list');
+  if (!chatList) return;
+  chatList.innerHTML = '';
+  if (chats.length === 0) {
+    chatList.innerHTML = '<div style="color:var(--text-3);font-size:12px;padding:8px 6px">No recent chats.</div>';
+    return;
+  }
+  chats.forEach(c => {
+    const item = document.createElement('div');
+    item.className = 'section-item';
+    if (c.id === activeChatId) item.classList.add('active');
+
+    const cleanTitle = (c.title || '').replace(/^🔀\s*/, '').replace(/^\/(?:debate|detective|web|code|pdf|image)\s*/i, '').trim() || c.title;
+    item.title = cleanTitle;
+
+    const isStreaming = window._streamBufferApi?.isStreamActive?.(c.id) || false;
+    const hasNew = c.hasNewResponse && c.id !== activeChatId;
+
+    let dotHtml = '';
+    if (isStreaming && c.id !== activeChatId) {
+      dotHtml = `<span style="width:6px;height:6px;border-radius:50%;background:#f97316;display:inline-block;flex-shrink:0;animation:sidebar-pulse 1.2s ease-in-out infinite;" title="Generating..."></span>`;
+    } else if (hasNew) {
+      dotHtml = `<span style="width:6px;height:6px;border-radius:50%;background:#22c55e;display:inline-block;flex-shrink:0;" title="New response"></span>`;
+    }
+
+    item.innerHTML = `
+      <span class="lbl" style="display:flex;align-items:center;gap:5px;min-width:0;flex:1;overflow:hidden;">${c.pinned ? '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 32 32" fill="currentColor" style="width:12px;height:12px;margin-right:6px;color:var(--text-3);display:inline-block;vertical-align:-1px;flex-shrink:0;"><path d="M22.41,16.59,20,14.17V5h1V3H11V5h1V14.17L9.59,16.59A2,2,0,0,0,9,18v2h6v7h2V20h6V18A2,2,0,0,0,22.41,16.59Z"/></svg>' : ''}<span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtmlFn(cleanTitle)}</span>${dotHtml}</span>
+      <span class="opt" style="cursor:pointer; display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; flex-shrink:0;">
+        <i data-lucide="more-vertical" style="width:14px; height:14px; pointer-events:none;"></i>
+      </span>
+    `;
+    item.addEventListener('click', (e) => {
+      if (e.target.classList.contains('opt') || e.target.closest('.opt')) return;
+      loadChatFn(c.id);
+    });
+    const optBtn = item.querySelector('.opt');
+    optBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleDropdownFn(e, c.id, optBtn, c.pinned); });
+    chatList.appendChild(item);
+  });
+  if (window.lucide) lucide.createIcons({ parent: chatList });
 }
